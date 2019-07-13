@@ -1,0 +1,7 @@
+@charset "UTF-8";
+.offline-ui.offline-ui-up .offline-ui-content:before {
+  content: "Connect├⌐"; }
+.offline-ui.offline-ui-down .offline-ui-content:before {
+  content: "Pas connect├⌐"; }
+
+/*# sourceMappingURL=offline-language-french-indicator.css.map */

@@ -1,0 +1,14 @@
+{
+  "name": "jquery.sessionTimeout",
+  "homepage": "https://github.com/travishorn/jquery-sessionTimeout",
+  "version": "1.0.3",
+  "_release": "1.0.3",
+  "_resolution": {
+    "type": "version",
+    "tag": "1.0.3",
+    "commit": "7e803a2757002ec172dc187ded80af2b4bbb5729"
+  },
+  "_source": "https://github.com/travishorn/jquery-sessionTimeout.git",
+  "_target": "^1.0.3",
+  "_originalSource": "jquery.sessionTimeout"
+}

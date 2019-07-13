@@ -1,0 +1,7 @@
+@charset "UTF-8";
+.offline-ui.offline-ui-up .offline-ui-content:before {
+  content: "├çevrimi├ºi"; }
+.offline-ui.offline-ui-down .offline-ui-content:before {
+  content: "├çevrimd─▒┼ƒ─▒"; }
+
+/*# sourceMappingURL=offline-language-turkish-indicator.css.map */

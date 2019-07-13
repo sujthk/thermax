@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": ";AAIQ,oDAA0B;EACtB,OAAO,EAAE,aAAa;AAI1B,sDAA0B;EACtB,OAAO,EAAE,gBAAgB",
+"sources": ["../sass/offline-language-turkish-indicator.sass"],
+"names": [],
+"file": "offline-language-turkish-indicator.css"
+}

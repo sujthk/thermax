@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAIQ,oDAA0B;EACtB,OAAO,EAAE,QAAQ;AAIrB,sDAA0B;EACtB,OAAO,EAAE,SAAS",
+"sources": ["../sass/offline-language-italian-indicator.sass"],
+"names": [],
+"file": "offline-language-italian-indicator.css"
+}

@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": ";AAEQ,oDAA0B;EACtB,OAAO,EAAE,WAAW;AAExB,sDAA0B;EACtB,OAAO,EAAE,iBAAiB",
+"sources": ["../sass/offline-language-spanish-indicator.sass"],
+"names": [],
+"file": "offline-language-spanish-indicator.css"
+}

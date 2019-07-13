@@ -1,0 +1,17 @@
+{
+  "name": "yui",
+  "main": "build/yui/yui.js",
+  "devDependencies": {
+    "pure": "0.4.2"
+  },
+  "homepage": "https://github.com/liferay/yui3",
+  "_release": "6858ca6ff9",
+  "_resolution": {
+    "type": "branch",
+    "branch": "patched-v3.18.1",
+    "commit": "6858ca6ff999cbc5cef5062e0e8cae8bb41b12af"
+  },
+  "_source": "https://github.com/liferay/yui3.git",
+  "_target": "patched-v3.18.1",
+  "_originalSource": "liferay/yui3"
+}

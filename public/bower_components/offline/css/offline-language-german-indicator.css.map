@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAIQ,oDAA0B;EACtB,OAAO,EAAE,QAAQ;AAIrB,sDAA0B;EACtB,OAAO,EAAE,SAAS",
+"sources": ["../sass/offline-language-german-indicator.sass"],
+"names": [],
+"file": "offline-language-german-indicator.css"
+}
