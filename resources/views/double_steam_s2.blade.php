@@ -45,7 +45,7 @@
                                                 <option value="310">S2 D3</option>
                                             </select>
                                         </div>
-                                        <label class="col-sm-2 col-form-label">TAC S2 C3</label>
+                                        <label class="col-sm-2 col-form-label" id="model_name"></label>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Capacity</label>
@@ -90,13 +90,13 @@
 
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="tube_metallurgy" value="standard" checked="checked">
+	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
 	                                                <i class="helper"></i>Standard
 	                                            </label>
 	                                        </div>
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="tube_metallurgy" value="non_standard">
+	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_non_standard" value="non_standard">
 	                                                <i class="helper"></i>Non Standard
 	                                            </label>
 	                                        </div>
@@ -266,19 +266,19 @@
 
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="glycol" value="none" id="glycol_none" checked="checked">
+	                                                <input type="radio" name="glycol" value="1" id="glycol_none" checked="checked">
 	                                                <i class="helper"></i>None
 	                                            </label>
 	                                        </div>
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="glycol" value="ethylene">
+	                                                <input type="radio" name="glycol" id="2" value="ethylene">
 	                                                <i class="helper"></i>Ethylene
 	                                            </label>
 	                                        </div>
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="glycol" value="propylene">
+	                                                <input type="radio" name="glycol" id="3" value="propylene">
 	                                                <i class="helper"></i>Propylene
 	                                            </label>
 	                                        </div>
@@ -287,7 +287,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Chilled Water </label>
                                         <div class="col-sm-6">
-                                            <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="" class="form-control">
+                                            <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" onblur="changeValues()" value="" class="form-control">
                                         </div>
                                     </div> 
                                     <div class="form-group row">
@@ -338,11 +338,13 @@
 		// console.log(model_values.capacity);
 		$( document ).ready(function() {
 		    updateValues();
+		    // swal("Hello world!");
 		});
 
 		function updateValues() {
 			
 			$('#capacity').val(model_values.capacity);
+			$('#model_name').html(model_values.model_name);
 			$('#chilled_water_in').val(model_values.chilled_water_in);
 			$('#chilled_water_out').val(model_values.chilled_water_out);
 			$('#min_chilled_water_out').html(model_values.min_chilled_water_out);
@@ -350,7 +352,7 @@
 			$('#cooling_water_in').val(model_values.cooling_water_in);
 			$('#cooling_water_flow').val(model_values.cooling_water_flow);
 			$('#cooling_water_ranges').html(model_values.cooling_water_ranges);
-			$("#glycol_none").attr('disabled', model_values.glycol_none);
+			// $("#glycol_none").attr('disabled', model_values.glycol_none);
 			$('#glycol_chilled_water').val(model_values.glycol_chilled_water);
 			$('#glycol_cooling_water').val(model_values.glycol_cooling_water);
 			$('#evaporator_thickness').val(model_values.evaporator_thickness);
@@ -361,18 +363,45 @@
 			$("#condenser_material").val(model_values.condenser_material_value);
 			$("#steam_pressure").val(model_values.steam_pressure);
 			$('#steam_pressure_range').html(model_values.steam_pressure_range);
+			// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
+			$("#glycol_none").prop('disabled', model_values.glycol_none);
 
 			foulingFactor(model_values.fouling_factor);
 
-			if(!model_values.glycol_none){
+			if(model_values.glycol_selected == 1){
+				$("#glycol_none").prop('checked', true);
 				$("#glycol_chilled_water").prop('disabled', true);
 				$("#glycol_cooling_water").prop('disabled', true);
+
+			}
+			else if(model_values.glycol_selected == 2){
+				$("#glycol_ethylene").prop('checked', true);
+				$("#glycol_chilled_water").prop('disabled', false);
+				$("#glycol_cooling_water").prop('disabled', false);
+			}
+			else{
+				$("#glycol_propylene").prop('checked', true);
+				$("#glycol_chilled_water").prop('disabled', false);
+				$("#glycol_cooling_water").prop('disabled', false);
+
 			}
 
+
 			if(model_values.metallurgy_standard){
+				$("#tube_metallurgy_standard").prop('checked', true);
 				$(".metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard_span").html("");
 
+			}else{
+				$("#tube_metallurgy_non_standard").prop('checked', true);
+				$("#tube_metallurgy_standard").prop('disabled', true);
+				$(".metallurgy_standard").prop('disabled', false);
+		    	var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+				$("#evaporator_range").html(evaporator_range);
+				var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+				$("#absorber_range").html(absorber_range);
+				var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+				$("#condenser_range").html(condenser_range);
 			}
 
 			if(model_values.calculate_option){
@@ -389,6 +418,8 @@
 		    	$("#glycol_chilled_water").prop('disabled', true);
 				$("#glycol_cooling_water").prop('disabled', true);
 		  	} else {
+		  		// $("#glycol_none").prop('checked', false);
+		  		$("#glycol_ethylene").prop('checked', true);
 		    	$("#glycol_chilled_water").prop('disabled', false);
 				$("#glycol_cooling_water").prop('disabled', false);
 		  	}
@@ -400,9 +431,12 @@
 				$(".metallurgy_standard_span").html("");
 		  	} else {
 		    	$(".metallurgy_standard").prop('disabled', false);
-				$("#evaporator_range").html(model_values.evaporator_thickness_range);
-				$("#absorber_range").html(model_values.absorber_thickness_range);
-				$("#condenser_range").html(model_values.condenser_thickness_range);
+		    	var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+				$("#evaporator_range").html(evaporator_range);
+				var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+				$("#absorber_range").html(absorber_range);
+				var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+				$("#condenser_range").html(condenser_range);
 		  	}
 		});
 
@@ -502,7 +536,8 @@
 					}
 					else{
 						$("#calculate_button").prop('disabled', true);
-						alert(response.msg);
+						// alert(response.msg);
+						swal(response.msg, "", "error");
 					}					
 				},
 			});

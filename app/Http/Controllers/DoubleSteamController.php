@@ -8,6 +8,9 @@ class DoubleSteamController extends Controller
 {
     
 
+
+
+
     public function getDoubleEffectS2(){
 
 
@@ -30,27 +33,119 @@ class DoubleSteamController extends Controller
 
 	public function postAjaxDoubleEffectS2(Request $request){
 		$post_values = $request->all();
-		// Log::info($post_values);
+		Log::info($post_values);
 		$model_number = floatval($request->model_number);
-		$capacity = floatval($request->capacity);
-		$chilled_water_out = floatval($request->chilled_water_out);
+		
+		// update user values with model values
+		$model_values = $this->updateModelDatas($post_values,$model_number);
 
-		$model_values = $this->getModelDefaultData(130);
-
-		$model_values['capacity'] = $capacity;
-		$model_values['chilled_water_out'] = $chilled_water_out;
-
-		$range_calculation = $this->RANGECAL($model_number,$chilled_water_out,$capacity);
+		$range_calculation = $this->RANGECAL($model_number,$model_values['chilled_water_out'],$model_values['capacity']);
 		if($range_calculation['status']){
 			$range_values = $range_calculation['range_values'];
 			$model_values['cooling_water_ranges'] = $range_values;
 		}
 		else{
-			return response()->json(['status'=>'fail','msg'=>'Errors To Display']);
+			return response()->json(['status'=>'fail','msg'=>$range_calculation['msg']]);
 		}
+
+		if ($model_values['chilled_water_out'] < 3.5)
+		{
+		    if ($model_values['steam_pressure'] < 6.01)
+		    {
+		        $model_values['model_name'] = "TZC S2 C3 N";
+		    }
+		    else
+		    {
+		        $model_values['model_name'] = "TZC S2 C3";
+		    }
+		}
+		else
+		{
+		    if ($model_values['steam_pressure'] < 6.01)
+		    {
+		        $model_values['model_name'] = "TAC S2 C3 N";
+		    }
+		    else
+		    {
+		        $model_values['model_name'] = "TAC S2 C3";
+		    }
+		}
+
+		if($model_values['chilled_water_out'] < 1){
+			$model_values['glycol_none'] = true;
+			$model_values['glycol_selected'] = 2;
+		}
+		else{
+			$model_values['glycol_none'] = false;
+			$model_values['glycol_selected'] = 2;
+
+		}
+		$glycol_change = $this->getGlycolChangeValue($model_values,$model_values['glycol_selected']);
+		if ($model_values['chilled_water_out'] < 3.499 && $model_values['chilled_water_out'] > 0.99 && $model_values['glycol_chilled_water'] == 0)
+		{
+			$model_values['metallurgy_standard'] = false;
+			$model_values['evaporator_material_value'] = 3;
+			$model_values['evaporator_thickness'] = 0.8;
+
+			$model_values = $this->chillerAttributesChanged($model_values,"EVAPORATORTUBETYPE");
+
+		 }
+		else
+		{
+		    $model_values['metallurgy_standard'] = true;
+		}
+
+
+
+
+
+
 		
 
 		return response()->json(['status'=>'success','msg'=>'Ajax Datas','model_values'=>$model_values]);
+	}
+
+	public function updateModelDatas($post_values,$model_number){
+		// Log::info("post_values = ".$post_values);
+
+		$model_number = floatval($post_values['model_number']);
+		$capacity = floatval($post_values['capacity']);
+		$chilled_water_out = floatval($post_values['chilled_water_out']);
+		$steam_pressure = floatval($post_values['steam_pressure']);
+		$glycol_chilled_water = floatval(isset($post_values['glycol_chilled_water']) ? $post_values['glycol_chilled_water'] : 0);
+		$glycol_type = floatval($post_values['glycol']);
+
+		$model_values = $this->getModelDefaultData($model_number);
+
+		$model_values['capacity'] = $capacity;
+		$model_values['chilled_water_out'] = $chilled_water_out;
+		$model_values['steam_pressure'] = $steam_pressure;
+		$model_values['glycol_chilled_water'] = $glycol_chilled_water;
+		$model_values['glycol_selected'] = $glycol_type;
+
+		return $model_values;
+	}
+
+	public function getGlycolChangeValue($model_values,$glycol_type){
+		switch ($glycol_type)
+		{
+		    
+		    case 1:
+	            $model_values['glycol_selected'] = 1;
+	            $model_values['glycol_chilled_water'] = 0;
+	            $model_values['glycol_cooling_water'] = 0;
+		        $evaporator_validator = $this->validateChillerAttributesChanged($model_values,'EVAPORATORTUBETYPE');
+		        if(!$evaporator_validator['status'])
+		        	return $evaporator_validator;
+		    break;
+
+
+
+		}
+
+
+		return  array('status' => true,'msg' => "process run successfully",'model_values' => $model_values);
+
 	}
 
 	public function getEvaporatorOptions($model_number){
@@ -110,7 +205,84 @@ class DoubleSteamController extends Controller
 	
 	public function getModelDefaultData($model_number){
 
-		return array('capacity' => 114,'chilled_water_in' => 12,'chilled_water_out' => 7,'min_chilled_water_out' => 0,'cooling_water_in' => 32,'cooling_water_flow' => 114,'cooling_water_in_range' => "25.0 - 36.0",'cooling_water_ranges' => "(87.5 - 217.4)<br>(218.2 - 234.9)",'evaporator_material_value' => 2,'evaporator_thickness' => 0.5700,'evaporator_thickness_range' => "(0.57 - 1.0)",'absorber_material_value' => 2,'absorber_thickness' => 0.6500,'absorber_thickness_range' => "(0.65 - 1.0)",'condenser_material_value' => 2,'condenser_thickness' => 0.6500,'condenser_thickness_range' => "(0.65 - 1.0)",'glycol_none' => false,'metallurgy_standard' => true,'glycol_chilled_water' => 0.0,'glycol_cooling_water' => 0.0,'steam_pressure_range' => "3.5 - 10.0",'steam_pressure' => 8.0,'fouling_factor' => "standard",'fouling_non_chilled' => 0.00001,'fouling_non_cooling' => 0.00001,'fouling_ari_chilled' => 0.00002,'fouling_ari_cooling' => 0.00005,'calculate_option' => true );
+		return array('model_name' => "TAC S2 C3",'capacity' => 114,'chilled_water_in' => 12,'chilled_water_out' => 7,'min_chilled_water_out' => 0,'cooling_water_in' => 32,'cooling_water_flow' => 114,'cooling_water_in_range' => "25.0 - 36.0",'cooling_water_ranges' => "(87.5 - 217.4)<br>(218.2 - 234.9)",'evaporator_material_value' => 2,'evaporator_thickness' => 0.5700,'evaporator_thickness_min_range' => 0.57,'evaporator_thickness_max_range' => 1.0,'absorber_material_value' => 2,'absorber_thickness' => 0.6500,'absorber_thickness_min_range' => 0.65,'absorber_thickness_max_range' => 1,'condenser_material_value' => 2,'condenser_thickness' => 0.6500,'condenser_thickness_min_range' => 0.65,'condenser_thickness_max_range' => 1,'glycol_selected' => 1,'glycol_none' => false,'metallurgy_standard' => true,'glycol_chilled_water' => 0.0,'glycol_cooling_water' => 0.0,'steam_pressure_range' => "3.5 - 10.0",'steam_pressure' => 8.0,'fouling_factor' => "standard",'fouling_non_chilled' => 0.00001,'fouling_non_cooling' => 0.00001,'fouling_ari_chilled' => 0.00002,'fouling_ari_cooling' => 0.00005,'calculate_option' => true);
+	}
+
+
+	public function validateChillerAttributesChanged($model_values,$attribute){
+
+		switch (strtoupper($attribute))
+		{
+		    
+		    case "EVAPORATORTUBETYPE":
+                    if ($model_values['chilled_water_out'] < 3.5 && $model_values['glycol_chilled_water'] == 0)
+                    {
+                        if ($model_values['evaporator_material_value'] != 3)
+                        {
+                            return array('status' => false,'msg' => "cooling water flow crossing limit");
+                        }
+                    }
+                    break;
+		}
+
+
+		return array('status' => true,'msg' => "process run successfully",'model_values' => $model_values);
+
+	}
+
+
+	public function chillerAttributesChanged($model_values,$attribute){
+
+		switch (strtoupper($attribute))
+		{
+		    
+		    case "EVAPORATORTUBETYPE":
+	            if ($model_values['evaporator_material_value'] == 0 || $model_values['evaporator_material_value'] == 2)
+	            {
+	                if ($model_values['model_number'] < 750)
+	                {
+	                    
+	                    $model_values['evaporator_thickness_min_range'] = 0.57;
+	                }
+	                else
+	                {
+	                    
+	                    $model_values['evaporator_thickness_range'] = 0.65;
+	                }
+	               	$model_values['evaporator_thickness_max_range'] = 1;
+
+	            }
+	            else if ($model_values['evaporator_material_value'] == 1)
+	            {
+	                if ($model_values['model_number'] < 750)
+	                {
+	                    $model_values['evaporator_thickness_min_range'] = 0.6;
+	                }
+	                else
+	                {
+	                    $model_values['evaporator_thickness_min_range'] = 0.65;
+	                }
+
+	                $model_values['evaporator_thickness_max_range'] = 1.0;
+	            }
+	            else if ($model_values['evaporator_material_value'] == 4)
+	            {
+	                $model_values['evaporator_thickness_min_range'] = 0.9;
+	                $model_values['evaporator_thickness_max_range'] = 1.2;
+	            } 
+	            else
+	            {
+	                $model_values['evaporator_thickness_min_range'] = 0.6;
+	                $model_values['evaporator_thickness_max_range'] = 1.0;
+	            }
+		        
+		    break;
+
+		}
+
+
+		return $model_values;
+
 	}
 
 	public function RANGECAL($model_number,$chilled_water_out,$capacity)

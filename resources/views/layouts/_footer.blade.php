@@ -33,6 +33,7 @@
     <!-- Custom js -->
     
     <script type="text/javascript" src="{{asset('dark-assets/assets/js/script.js')}}"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     @yield('scripts')
 </body>
 
