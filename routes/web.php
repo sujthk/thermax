@@ -25,4 +25,4 @@ Route::get('/users', function () {
 
 Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2');
 Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
-Route::get('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
+Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');

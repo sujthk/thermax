@@ -2,7 +2,7 @@
 
 @section('styles')	
 	<!-- Data Table Css -->
-	
+	<meta name="csrf-token" content="{{ csrf_token() }}" />
 @endsection
 
 @section('content')
@@ -37,7 +37,7 @@
                                 	<div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Model</label>
                                         <div class="col-sm-6">
-                                            <select name="model_number" class="form-control">
+                                            <select name="model_number" id="model_number" class="form-control">
                                                 <option value="130">S2 C3</option>
                                                 <option value="160">S2 C4</option>
                                                 <option value="210">S2 D1</option>
@@ -50,7 +50,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Capacity</label>
                                         <div class="col-sm-6">
-                                            <input id="capacity" name="capacity" type="text" value="" onblur="changeValues()" class="form-control">
+                                            <input id="capacity" name="capacity" type="text" value="" onblur="updateModelValues('capacity')" class="form-control">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(TR)</label>
                                     </div>
@@ -70,7 +70,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Water Out (min <span id="min_chilled_water_out">0</span>)</label>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" id="chilled_water_out" name="chilled_water_out" onblur="changeValues()" value="">
+                                            <input type="text" class="form-control" id="chilled_water_out" name="chilled_water_out" onblur="updateModelValues('chilled_water_out')" value="">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(&#176;C)</label>
                                     </div>
@@ -306,7 +306,7 @@
 	                            </div>
 	                            <div class="card-block">
                                     <div class="form-group row">
-                                        <label class="col-sm-4 col-form-label">Pressure : <span id="steam_pressure_range"></span></label>
+                                        <label class="col-sm-4 col-form-label">Pressure : (<span id="steam_pressure_range"></span>)</label>
                                         <div class="col-sm-4">
                                             <input type="text" name="steam_pressure" id="steam_pressure" value="" class="form-control">
                                         </div>
@@ -335,6 +335,7 @@
 	<script type="text/javascript">
 		
 		var model_values = {!! json_encode($default_values) !!};
+		var changed_value = "";
 		// console.log(model_values.capacity);
 		$( document ).ready(function() {
 		    updateValues();
@@ -343,15 +344,19 @@
 
 		function updateValues() {
 			
+			$("#model_number").val(model_values.model_number);
 			$('#capacity').val(model_values.capacity);
 			$('#model_name').html(model_values.model_name);
 			$('#chilled_water_in').val(model_values.chilled_water_in);
 			$('#chilled_water_out').val(model_values.chilled_water_out);
 			$('#min_chilled_water_out').html(model_values.min_chilled_water_out);
-			$('#cooling_water_in_range').html(model_values.cooling_water_in_range);
+			var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
+			$('#cooling_water_in_range').html(cooling_water_in_range);
 			$('#cooling_water_in').val(model_values.cooling_water_in);
 			$('#cooling_water_flow').val(model_values.cooling_water_flow);
-			$('#cooling_water_ranges').html(model_values.cooling_water_ranges);
+			var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
+
+			$('#cooling_water_ranges').html(cooling_water_ranges);
 			// $("#glycol_none").attr('disabled', model_values.glycol_none);
 			$('#glycol_chilled_water').val(model_values.glycol_chilled_water);
 			$('#glycol_cooling_water').val(model_values.glycol_cooling_water);
@@ -362,7 +367,8 @@
 			$("#absorber_material").val(model_values.absorber_material_value);
 			$("#condenser_material").val(model_values.condenser_material_value);
 			$("#steam_pressure").val(model_values.steam_pressure);
-			$('#steam_pressure_range').html(model_values.steam_pressure_range);
+			var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
+			$('#steam_pressure_range').html(steam_pressure_range);
 			// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
 			$("#glycol_none").prop('disabled', model_values.glycol_none);
 
@@ -504,6 +510,16 @@
 			}
 		}
 
+		function getCoolingWaterRanges(cooling_water_ranges){
+			var range_values = "";
+			// console.log(cooling_water_ranges);
+			for (var i = 0; i < cooling_water_ranges.length; i+=2) {
+				range_values += "("+cooling_water_ranges[i]+" - "+cooling_water_ranges[i+1]+")<br>";
+			}
+
+			return range_values;
+		}
+
 
 		$( "#double_steam_s2" ).submit(function(event) {
 			  event.preventDefault();
@@ -519,14 +535,33 @@
 		   	
 		});
 
-		function changeValues(){
-			var form_values = $("#double_steam_s2").serialize();
+		function updateModelValues(input_type){
+
+			switch(input_type) {
+			  	case 'model_number':
+			    	model_values.model_number = $("#model_number").val();
+			    	break;
+			  	case 'capacity':
+			    	model_values.capacity = $("#capacity").val();
+			    	break;
+			    case 'chilled_water_out':
+			    	model_values.chilled_water_out = $("#chilled_water_out").val();
+			    	break;
+			  	default:
+			    	// code block
+			}
+			changed_value = input_type;
+			sendValues();
+
+		}
+
+		function sendValues(){
+			// var form_values = $("#double_steam_s2").serialize();
+			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 		   	$.ajax({
-				type: "GET",
+				type: "POST",
 				url: "{{ url('calculators/double-effect-s2/ajax-calculate') }}",
-				data: form_values,
-				processData: false,
-                contentType: false,
+				data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 				success: function(response){
 					console.log(response);
 					if(response.status == 'success'){

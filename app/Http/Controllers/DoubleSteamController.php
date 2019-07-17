@@ -33,13 +33,13 @@ class DoubleSteamController extends Controller
 
 	public function postAjaxDoubleEffectS2(Request $request){
 		$post_values = $request->all();
-		Log::info($post_values);
-		$model_number = floatval($request->model_number);
+		$model_values = $request->input('values');
 		
-		// update user values with model values
-		$model_values = $this->updateModelDatas($post_values,$model_number);
 
-		$range_calculation = $this->RANGECAL($model_number,$model_values['chilled_water_out'],$model_values['capacity']);
+		// update user values with model values
+		// $model_values = $this->updateModelDatas($post_values,$model_number);
+
+		$range_calculation = $this->RANGECAL($model_values['model_number'],$model_values['chilled_water_out'],$model_values['capacity']);
 		if($range_calculation['status']){
 			$range_values = $range_calculation['range_values'];
 			$model_values['cooling_water_ranges'] = $range_values;
@@ -205,7 +205,10 @@ class DoubleSteamController extends Controller
 	
 	public function getModelDefaultData($model_number){
 
-		return array('model_name' => "TAC S2 C3",'capacity' => 114,'chilled_water_in' => 12,'chilled_water_out' => 7,'min_chilled_water_out' => 0,'cooling_water_in' => 32,'cooling_water_flow' => 114,'cooling_water_in_range' => "25.0 - 36.0",'cooling_water_ranges' => "(87.5 - 217.4)<br>(218.2 - 234.9)",'evaporator_material_value' => 2,'evaporator_thickness' => 0.5700,'evaporator_thickness_min_range' => 0.57,'evaporator_thickness_max_range' => 1.0,'absorber_material_value' => 2,'absorber_thickness' => 0.6500,'absorber_thickness_min_range' => 0.65,'absorber_thickness_max_range' => 1,'condenser_material_value' => 2,'condenser_thickness' => 0.6500,'condenser_thickness_min_range' => 0.65,'condenser_thickness_max_range' => 1,'glycol_selected' => 1,'glycol_none' => false,'metallurgy_standard' => true,'glycol_chilled_water' => 0.0,'glycol_cooling_water' => 0.0,'steam_pressure_range' => "3.5 - 10.0",'steam_pressure' => 8.0,'fouling_factor' => "standard",'fouling_non_chilled' => 0.00001,'fouling_non_cooling' => 0.00001,'fouling_ari_chilled' => 0.00002,'fouling_ari_cooling' => 0.00005,'calculate_option' => true);
+
+
+		$cooling_water_ranges = array(87.5,217.4,218.2,234.9);
+		return array('model_number' => 130,'model_name' => "TAC S2 C3",'capacity' => 114,'chilled_water_in' => 12,'chilled_water_out' => 7,'min_chilled_water_out' => 0,'cooling_water_in' => 32,'cooling_water_flow' => 114,'cooling_water_in_min_range' =>25.0,'cooling_water_in_max_range' => 36.0,'cooling_water_ranges' => $cooling_water_ranges,'evaporator_material_value' => 2,'evaporator_thickness' => 0.5700,'evaporator_thickness_min_range' => 0.57,'evaporator_thickness_max_range' => 1.0,'absorber_material_value' => 2,'absorber_thickness' => 0.6500,'absorber_thickness_min_range' => 0.65,'absorber_thickness_max_range' => 1,'condenser_material_value' => 2,'condenser_thickness' => 0.6500,'condenser_thickness_min_range' => 0.65,'condenser_thickness_max_range' => 1,'glycol_selected' => 1,'glycol_none' => false,'metallurgy_standard' => true,'glycol_chilled_water' => 0.0,'glycol_cooling_water' => 0.0,'steam_pressure_min_range' => 3.5,'steam_pressure_max_range' => 10.0,'steam_pressure' => 8.0,'fouling_factor' => "standard",'fouling_non_chilled' => 0.00001,'fouling_non_cooling' => 0.00001,'fouling_ari_chilled' => 0.00002,'fouling_ari_cooling' => 0.00005,'calculate_option' => true);
 	}
 
 
@@ -423,19 +426,22 @@ class DoubleSteamController extends Controller
 	   
 
 	   	// Log::info("init = ".$INIT);
-	   	$range_values = "";
+	   	$range_values = array();
 	   	foreach ($FLOWMN as $key => $min) {
 	   		if(!empty($FLOWMX[$key])){
 	   			$min = round($FLOWMN[$key], 1);
 	   			$max = round($FLOWMX[$key], 1);
 
-
-	   			$range_values .= "(".$min." - ".$max.")<br>";
+	   			$range_values[] = $min;
+	   			$range_values[] = $max;
+	   			// $range_values .= "(".$min." - ".$max.")<br>";
 	   		}
 
 	   	}
 
+	   	// $range_values = array_sort($range_values);
 
+	   	// Log::info($range_values);
 	   	// for ($i=0; $i < $INIT; $i++) { 
 	   	// 	$range_values .= "(".$FMIN[$i]." - ".$FMAX[$i].")<br>";
 	   	// }
