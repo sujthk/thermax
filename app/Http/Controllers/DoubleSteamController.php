@@ -34,8 +34,8 @@ class DoubleSteamController extends Controller
 	public function postAjaxDoubleEffectS2(Request $request){
 		$post_values = $request->all();
 		$model_values = $request->input('values');
-		
-
+		$changed_value = $request->input('changed_value');
+		Log::info($changed_value);
 		// update user values with model values
 		// $model_values = $this->updateModelDatas($post_values,$model_number);
 
