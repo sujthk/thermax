@@ -35,6 +35,21 @@
     <script type="text/javascript" src="{{asset('dark-assets/assets/js/script.js')}}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
     @yield('scripts')
+     <script>
+
+        $( document ).ready(function() {
+            @if (session('status'))
+
+                swal({
+                    title: "{{session('message')}}",
+                    icon:"{{session('status')}}",
+                    timer: 2000,
+                    button:true,
+                });
+            @endif 
+        });
+    
+    </script>
 </body>
 
 </html>

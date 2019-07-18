@@ -15,11 +15,9 @@
 	            <div class="page-header-breadcrumb">
 	                <ul class="breadcrumb-title">
 	                    <li class="breadcrumb-item">
-	                        <a href="index.html">
+	                        <a href="{{ url('dashboard') }}">
 	                            <i class="icofont icofont-home"></i>
 	                        </a>
-	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Dasboard</a>
 	                    </li>
 	                    <li class="breadcrumb-item"><a href="#!">Double Steam S2</a>
 	                    </li>

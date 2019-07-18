@@ -39,6 +39,8 @@
     <link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/css/color/color-1.css')}}" id="color"/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @yield('styles')
+
+   
 </head>
 
 <body class="fix-menu dark-layout">

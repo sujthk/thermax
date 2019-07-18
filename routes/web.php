@@ -14,15 +14,32 @@
 Route::get('/', function () {
     return view('login');
 });
+Route::get('/login', function () {
+    return view('login');
+})->name('login');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+
+Route::post('/login', 'UserController@loginUser');
+Route::post('/user-send-otp', 'UserController@sendUserOtp');
+
+
+Route::group(['middleware' => ['auth','revalidate']], function(){
+
+	Route::get('/dashboard', function () {
+	    return view('dashboard');
+	});
+	Route::get('/logout', 'UserController@logoutUser');
+	
+
+	Route::get('/users', 'UserController@getUsers');
+	Route::get('/users/add', 'UserController@addUser');
+	Route::post('/users/add', 'UserController@postUser');
+	Route::get('/users/status/{user_id}/{status}', 'UserController@changeUserStatus');
+	Route::get('/users/edit/{user_id}', 'UserController@editUser');
+	Route::post('/users/edit/{user_id}', 'UserController@updateUser');
+
+	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2');
+	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
+	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
+
 });
-
-Route::get('/users', function () {
-    return view('users');
-});
-
-Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2');
-Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
-Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');

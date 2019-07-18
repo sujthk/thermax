@@ -27,6 +27,16 @@
 		<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/css/style.css')}}">
 		<!-- color .css -->
 		<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/css/color/color-1.css')}}" id="color"/>
+		<meta name="csrf-token" content="{{ csrf_token() }}" />
+		<style>
+
+
+	        .weak-password {
+	            background-color: #ce1d14;
+	            border: #AA4502 1px solid;
+	        }
+
+	    </style>
 	</head>
 
 	<body class="fix-menu">
@@ -37,7 +47,17 @@
 					<div class="col-sm-12">
 						<!-- Authentication card start -->
 						<div class="login-card card-block auth-body">
-							<form class="md-float-material" action="dashboard-analytics.html">
+							@if ($errors->any())
+							    <div class="alert alert-danger">
+							        <ul>
+							            @foreach ($errors->all() as $error)
+							                <li>{{ $error }}</li>
+							            @endforeach
+							        </ul>
+							    </div>
+							@endif
+							<form class="md-float-material" id="login_form" method="post" action="{{ url('login') }}">
+								{{ csrf_field() }}
 								<div class="text-center">
 									<img src="{{asset('assets/images/thermax-logo.png')}}" alt="logo.png">
 								</div>
@@ -49,13 +69,17 @@
 									</div>
 									<hr/>
 									<div class="input-group">
-										<input type="email" class="form-control" placeholder="Your Email Address">
-										<span class="md-line"></span>
+										<input type="email" class="form-control" name="email" id="email" required placeholder="Your Email Address">
 									</div>
 									<div class="input-group">
-										<input type="password" class="form-control" placeholder="Password">
+										<input type="password" class="form-control" name="password" id="password" required placeholder="Password">
 										<span class="md-line"></span>
 									</div>
+									<div class="input-group otp_div" style="display: none;">
+										<input type="text" class="form-control" name="otp" id="otp" placeholder="Enter Otp">
+										<span class="md-line"></span>
+									</div>
+									<div id="error-display"></div>
 									<div class="row m-t-25 text-left">
 										<div class="col-sm-6 col-xs-12">
 											<div class="checkbox-fade fade-in-primary">
@@ -73,7 +97,9 @@
 									<div class="row m-t-30">
 										<div class="col-md-12">
 											<!-- <button type="button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign in</button> -->
-											<a href="dashboard-analytics.html" class="tbtn btn-primary btn-md btn-block waves-effect text-center m-b-20"> Sign in</a>
+											<input type="submit" name="submit_value" value="Sign in" id="submit_button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20 disp">
+											<input type="button" name="resend_otp" value="Resend Otp" id="resend_otp" style="display: none;" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20 disp">
+
 										</div>
 									</div>
 									<hr/>
@@ -110,6 +136,75 @@
 		<!-- <script type="text/javascript" src="{{asset('assets/js/script.js')}}"></script> -->
 		<!---- color js --->
 		<!-- <script type="text/javascript" src="{{asset('assets/js/common-pages.js')}}"></script> -->
+
+		<script type="text/javascript">
+			var first_visit = 0;
+
+			$( "#login_form" ).submit(function(event) {
+				event.preventDefault();
+				if(first_visit == 0){
+					sendOtp();
+					$(".disp").prop('disabled', true);
+					first_visit = 1;
+				}
+				else{
+					var email = $('#email').val();
+					var password = $('#password').val();
+					var otp = $('#otp').val();
+					var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+				   	$.ajax({
+						type: "POST",
+						url: "{{ url('login') }}",
+						data: { email : email,_token: CSRF_TOKEN,password: password,otp: otp},
+						success: function(response){
+							// console.log(response);
+							if(response.status){
+								 window.location = "{!! url('/dashboard') !!}";
+							}
+							else{
+								$('#error-display').addClass('weak-password');
+								$('#error-display').html(response.msg);
+							}					
+						},
+					});
+				}
+			});
+
+			$("#resend_otp").click(function() {
+				sendOtp();
+				$(".disp").prop('disabled', true);
+			});
+
+			function sendOtp(){
+				var email = $('#email').val();
+				var password = $('#password').val();
+				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+			   	$.ajax({
+					type: "POST",
+					url: "{{ url('user-send-otp') }}",
+					data: { email : email,_token: CSRF_TOKEN,password: password},
+					success: function(response){
+						// console.log(response);
+						$(".disp").prop('disabled', false);
+						if(response.status){
+							$(".otp_div").show();
+							$('#error-display').removeClass();
+							$('#error-display').html("");
+							$("#otp").prop('required', true);
+							$("#resend_otp").show();
+						}
+						else{
+							first_visit = 0;
+							$('#error-display').addClass('weak-password');
+							$('#error-display').html(response.msg);
+						}					
+					},
+				});
+			}
+
+
+		</script>
+
 	</body>
 
 </html>

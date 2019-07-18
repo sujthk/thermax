@@ -45,7 +45,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="#!">
+                                <a href="{{ url('logout') }}">
                                     <i class="ti-layout-sidebar-left"></i> Logout
                                 </a>
                             </li>

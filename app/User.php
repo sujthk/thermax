@@ -26,4 +26,20 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+
+    public function getLastLoggedInAttribute($value)
+    {
+        if(empty($value))
+            return "New User";
+        else
+            return date('d-m-Y h:i A', strtotime($value));
+    }
+
+    public function getUserTypeAttribute($value)
+    {
+
+        return str_replace("_"," ",$value);
+    }
 }
