@@ -48,7 +48,7 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Capacity</label>
                                         <div class="col-sm-6">
-                                            <input id="capacity" name="capacity" type="text" value="" onblur="updateModelValues('capacity')" class="form-control">
+                                            <input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(TR)</label>
                                     </div>
@@ -61,14 +61,14 @@
                                 	<div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Water In</label>
                                         <div class="col-sm-6">
-                                            <input type="text" id="chilled_water_in" name="chilled_water_in" value="" class="form-control">
+                                            <input type="text" id="chilled_water_in" name="chilled_water_in" onchange="updateModelValues('chilledwaterin')" value="" class="form-control">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(&#176;C)</label>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Water Out (min <span id="min_chilled_water_out">0</span>)</label>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" id="chilled_water_out" name="chilled_water_out" onblur="updateModelValues('chilled_water_out')" value="">
+                                            <input type="text" class="form-control" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilledwaterout')" value="">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(&#176;C)</label>
                                     </div>
@@ -542,14 +542,19 @@
 			  	case 'capacity':
 			    	model_values.capacity = $("#capacity").val();
 			    	break;
-			    case 'chilled_water_out':
+			    case 'chilledwaterin':
+			    	model_values.chilled_water_in = $("#chilled_water_in").val();
+			    	break;	
+			    case 'chilledwaterout':
 			    	model_values.chilled_water_out = $("#chilled_water_out").val();
 			    	break;
 			  	default:
 			    	// code block
 			}
 			changed_value = input_type;
+
 			sendValues();
+			
 
 		}
 
@@ -561,8 +566,7 @@
 				url: "{{ url('calculators/double-effect-s2/ajax-calculate') }}",
 				data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 				success: function(response){
-					console.log(response);
-					if(response.status == 'success'){
+					if(response.status){
 						$("#calculate_button").prop('disabled', false);
 						model_values = response.model_values;
 						updateValues();
