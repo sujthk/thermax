@@ -511,6 +511,10 @@
 		function getCoolingWaterRanges(cooling_water_ranges){
 			var range_values = "";
 			// console.log(cooling_water_ranges);
+			if(!$.isArray(cooling_water_ranges)){
+				var cooling_water_ranges = cooling_water_ranges.split(",");
+			}
+			
 			for (var i = 0; i < cooling_water_ranges.length; i+=2) {
 				range_values += "("+cooling_water_ranges[i]+" - "+cooling_water_ranges[i+1]+")<br>";
 			}

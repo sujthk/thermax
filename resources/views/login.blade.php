@@ -69,14 +69,14 @@
 									</div>
 									<hr/>
 									<div class="input-group">
-										<input type="email" class="form-control" name="email" id="email" required placeholder="Your Email Address">
+										<input type="email" class="form-control" name="email" id="email" value="sujith.k@gmail.com" required placeholder="Your Email Address">
 									</div>
 									<div class="input-group">
-										<input type="password" class="form-control" name="password" id="password" required placeholder="Password">
+										<input type="password" class="form-control" name="password" id="password" value="admin@123" required placeholder="Password">
 										<span class="md-line"></span>
 									</div>
 									<div class="input-group otp_div" style="display: none;">
-										<input type="text" class="form-control" name="otp" id="otp" placeholder="Enter Otp">
+										<input type="text" class="form-control" name="otp" id="otp" value="12345" placeholder="Enter Otp">
 										<span class="md-line"></span>
 									</div>
 									<div id="error-display"></div>

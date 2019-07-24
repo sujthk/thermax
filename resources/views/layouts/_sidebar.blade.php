@@ -26,6 +26,18 @@
                         <span data-i18n="nav.widget.main"> Users</span>
                     </a>
                 </li>
+                <li class="nav-item single-item">
+                    <a href="{{ url('/default/calculators') }}">
+                        <i class="ti-user"></i>
+                        <span data-i18n="nav.widget.main"> Default Values Calculators</span>
+                    </a>
+                </li>
+                <li class="nav-item single-item">
+                    <a href="{{ url('/tube-metallurgy/calculators') }}">
+                        <i class="ti-user"></i>
+                        <span data-i18n="nav.widget.main"> Metallurgy Calculators</span>
+                    </a>
+                </li>
                 <li class="nav-item ">
                     <a href="#!">
                         <i class="ti-home"></i>

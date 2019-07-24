@@ -42,4 +42,13 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
 
+
+	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators');
+	Route::get('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@editCalculator');
+	Route::post('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@updateCalculator');
+
+	Route::get('/tube-metallurgy/calculators', 'DefaultCalculatorController@getMetallurgyCalculators');
+	Route::get('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@editMetallurgyCalculator');
+	Route::post('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@updateMetallurgyCalculator');
+
 });
