@@ -10,6 +10,7 @@ class DoubleSteamController extends Controller
 {
     
 	private $model_values;
+	private $default_model_values;
 	private $model_code = "D_S2";
 
     public function getDoubleEffectS2(){
@@ -46,6 +47,13 @@ class DoubleSteamController extends Controller
 		// $model_values = $this->updateModelDatas($post_values,$model_number);
 		$this->model_values = $model_values;
 
+		$chiller_default_datas = ChillerDefaultValue::where('code',$this->model_code)->where('model',$this->model_values['model_number'])->first();
+		// return $chiller_default_datas;
+		$default_values = $chiller_default_datas->default_values;
+		$this->default_model_values = json_decode($default_values,true);
+
+
+		// Log::info($this->model_values);
 
 		$attribute_validator = $this->validateChillerAttribute($changed_value);
 
@@ -72,7 +80,7 @@ class DoubleSteamController extends Controller
 				$this->model_values['capacity'] = $capacity;
 				$range_calculation = $this->RANGECAL();
 				if(!$range_calculation['status']){
-					return response()->json(['status'=>false,'msg'=>$range_calculation['msg']]);
+					return array('status'=>false,'msg'=>$range_calculation['msg']);
 				}
 				break;
 
@@ -109,8 +117,14 @@ class DoubleSteamController extends Controller
 
 				$chilled_water_out_validation = $this->chilledWaterValidating();
 				if(!$chilled_water_out_validation['status']){
-					return response()->json(['status'=>false,'msg'=>$chilled_water_out_validation['msg']]);
+					return array('status'=>false,'msg'=>$chilled_water_out_validation['msg']);
 				}
+
+				$range_calculation = $this->RANGECAL();
+				if(!$range_calculation['status']){
+					return array('status'=>false,'msg'=>$range_calculation['msg']);
+				}
+
 				break;	
 		    
 		    case "EVAPORATORTUBETYPE":
@@ -122,10 +136,76 @@ class DoubleSteamController extends Controller
                     }
                 }
                 break;
+
+            case "GLYCOLTYPECHANGED":
+            	if(floatval($this->model_values['glycol_selected']) == 1){
+            		$this->model_values['glycol_chilled_water'] = 0;
+            		$this->model_values['glycol_cooling_water'] = 0;
+
+            		$metallurgy_validator = $this->metallurgyValidating();
+            		if(!$metallurgy_validator['status'])
+            			return array('status'=>false,'msg'=>$metallurgy_validator['msg']);
+
+            	}
+            	else{
+            		if (floatval($this->model_values['chilled_water_out']) < 3.499)     //06/11/2017
+	                {
+	                    if (floatval($this->model_values['chilled_water_out']) < 1.99)     // Verify
+	                    {
+	                        $this->model_values['glycol_chilled_water'] = 10;
+	                        $this->model_values['glycol_min_chilled_water'] = 10;
+
+	                    }
+	                    else
+	                    {
+	                        $this->model_values['glycol_chilled_water'] = 7.5;
+	                        $this->model_values['glycol_min_chilled_water'] = 7.5;
+	                    }
+	                    $this->model_values['metallurgy_standard'] = true;                    
+	                    $this->onChangeMetallurgyOption();
+	                }
+            	}
+                
+                break;  
+            case "GLYCOLCHILLEDWATER":
+            	if (($this->model_values['glycol_chilled_water'] > $this->model_values['glycol_max_chilled_water'] || $this->model_values['glycol_chilled_water'] < $this->model_values['glycol_min_chilled_water']))
+            	{
+            	    if ($this->model_values['glycol_min_chilled_water'] == 10)
+            	    {
+            	        return array('status' => false,'msg' => "Min glycol chilled water is 10");
+            	    }
+            	    else if ($this->model_values['glycol_min_chilled_water'] == 7.5)
+            	    {
+            	        return array('status' => false,'msg' => "Min glycol chilled water is 7.5");
+            	    }
+            	    else
+            	    {
+            	        return array('status' => false,'msg' => "Min glycol chilled water is 0");
+            	    }
+            	}
+            break;
+           	case "GLYCOLCOOLINGWATER":
+           		if (($this->model_values['glycol_cooling_water'] > $this->model_values['glycol_max_cooling_water']))
+           		{
+           		    return array('status' => false,'msg' => "Glycol Cooling water temperature is high");
+           		}
+           	break;
 		}
 
 
 		return array('status' => true,'msg' => "process run successfully");
+
+	}
+
+	public function onChangeMetallurgyOption(){
+		if($this->model_values['metallurgy_standard']){
+			$this->model_values['evaporator_material_value'] = $this->default_model_values['evaporator_material_value'];
+			$this->model_values['evaporator_thickness'] = $this->default_model_values['evaporator_thickness'];
+			$this->model_values['absorber_material_value'] = $this->default_model_values['absorber_material_value'];
+			$this->model_values['absorber_thickness'] = $this->default_model_values['absorber_thickness'];
+			$this->model_values['condenser_material_value'] = $this->default_model_values['condenser_material_value'];
+			$this->model_values['condenser_thickness'] = $this->default_model_values['condenser_thickness'];
+		}
 
 	}
 
@@ -179,7 +259,6 @@ class DoubleSteamController extends Controller
 	                $this->model_values['evaporator_thickness_min_range'] = 0.6;
 	                $this->model_values['evaporator_thickness_max_range'] = 1.0;
 	            }
-		        
 		    	break;
 
 		}
@@ -229,118 +308,49 @@ class DoubleSteamController extends Controller
 		}
 		else{
 			$this->model_values['glycol_none'] = false;
-			$this->model_values['glycol_selected'] = 2;
-
+			// $this->model_values['glycol_selected'] = 2;
 		}
 
-		$glycol_change = $this->getGlycolChangeValue($this->model_values['glycol_selected']);
-		if(!$glycol_change['status']){
-			return response()->json(['status'=>false,'msg'=>$glycol_change['msg']]);
-		}
+		$glycol_validator = $this->validateChillerAttribute('GLYCOLTYPECHANGED');
+        if(!$glycol_validator['status'])
+        	return array('status'=>false,'msg'=>$glycol_validator['msg']);
 
+
+        $metallurgy_validator = $this->metallurgyValidating();
+        if(!$metallurgy_validator['status'])
+        	return array('status'=>false,'msg'=>$metallurgy_validator['msg']);
+		
+
+		return  array('status' => true,'msg' => "process run successfully");
+	}
+
+	public function metallurgyValidating(){
 		if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
 		{
 			$this->model_values['metallurgy_standard'] = false;
 			$this->model_values['evaporator_material_value'] = 3;
 			$this->model_values['evaporator_thickness'] = 0.8;
-
 			$this->chillerAttributesChanged("EVAPORATORTUBETYPE");
 
-		 }
+		}
 		else
 		{
 		    $this->model_values['metallurgy_standard'] = true;
 		}
 
-		return  array('status' => true,'msg' => "process run successfully");
-	}
+		$evaporator_validator = $this->validateChillerAttribute('EVAPORATORTUBETYPE');
+		if(!$evaporator_validator['status'])
+			return array('status'=>false,'msg'=>$evaporator_validator['msg']);
 
-
-	public function getGlycolChangeValue($glycol_type){
-		switch ($glycol_type)
-		{
-		    
-		    case 1:
-	            $this->model_values['glycol_selected'] = 1;
-	            $this->model_values['glycol_chilled_water'] = 0;
-	            $this->model_values['glycol_cooling_water'] = 0;
-		        $evaporator_validator = $this->validateChillerAttribute('EVAPORATORTUBETYPE');
-		        if(!$evaporator_validator['status'])
-		        	return $evaporator_validator;
-		    break;
-
-
-
-		}
-
+		$this->onChangeMetallurgyOption();
 
 		return  array('status' => true,'msg' => "process run successfully");
-
-	}
-
-	public function getEvaporatorOptions($model_number){
-		$eva_options = array();
-		$model_number = floatval($model_number);
-
-		if($model_number < 750){
-			$eva_options[] = array('name' => 'CuNi (90:10,95:5) Finned','value' => '1');
-			$eva_options[] = array('name' => 'Cu Finned','value' => '2');
-		}
-		else{
-			$eva_options[] = array('name' => 'CuNi (90:10,95:5) Mini Finned','value' => '1');
-			$eva_options[] = array('name' => 'Cu Mini Finned','value' => '2');
-		}
-
-		$eva_options[] = array('name' => 'SS Finned','value' => '3');
-		$eva_options[] = array('name' => 'SS Mini Finned','value' => '4');
-		$eva_options[] = array('name' => 'Titanium Plain','value' => '5');
-
-		return $eva_options;
-
-	}
-
-	public function getAbsorberOptions(){
-		$abs_options = array();
-
-		$abs_options[] = array('name' => 'CuNi (90:10,95:5) Mini Finned','value' => '1');
-		$abs_options[] = array('name' => 'Cu Mini Finned','value' => '2');
-		$abs_options[] = array('name' => 'SS Plain ERW','value' => '5');
-		$abs_options[] = array('name' => 'SS Mini finned','value' => '6');
-		$abs_options[] = array('name' => 'Titanium Plain','value' => '7');
-
-		return $abs_options;
-
-	}
-
-	public function getCondenserOptions(){
-		$con_options = array();
-
-		$con_options[] = array('name' => 'CuNi (90:10,95:5) Mini Finned','value' => '1');
-		$con_options[] = array('name' => 'Cu Mini Finned','value' => '2');
-		$con_options[] = array('name' => 'SS Plain ERW','value' => '3');
-		$con_options[] = array('name' => 'SS Mini finned','value' => '4');
-		$con_options[] = array('name' => 'Titanium Plain','value' => '5');
-
-		return $con_options;
-
 	}
 
 
-	public function getChillerData()
-	{
 
-	    return array('TCWA' => '32','AT13' => '101','LE' => '2.072','TNEV' => '304','TNAA' => '276','TNC' => '140','AEVA' => '31.0','AABS' => '28.2','ACON' => '14.3','ALTG' => '12.7','AHTG' => '10.9','ALTHE' => '13.806','AHTHE' => '10.6384','ADHE' => '2.57','AHR' => '3.73','MODEL1' => '100','KEVA' => '2790.72','KABS' => '1525.39387','SFACTOR' => '0.891','KCON' => '4200','ULTHE' => '450','ULTG' => '1850','ODE' => '0.016','ODA' => '0.016','ODC' => '0.016','AEVAH' => '15.5','AEVAL' => '15.5','AABSH' => '14.1','AABSL' => '14.1','UHTHE' => '1400','UDHE' => '400','UHR' => '700','UHTG' => '1750','IDE' => '0.01486','IDA' => '0.0145','IDC' => '0.0145','PNB' => '150','PODA' => '168.3','THPA' => '7.11');
 
-	}
 	
-	public function getModelDefaultData($model_number){
-
-
-
-		$cooling_water_ranges = array(87.5,217.4,218.2,234.9);
-		return array('model_number' => 130,'model_name' => "TAC S2 C3",'capacity' => 114,'chilled_water_in' => 12,'chilled_water_out' => 7,'min_chilled_water_out' => 0,'cooling_water_in' => 32,'cooling_water_flow' => 114,'cooling_water_in_min_range' =>25.0,'cooling_water_in_max_range' => 36.0,'cooling_water_ranges' => $cooling_water_ranges,'evaporator_material_value' => 2,'evaporator_thickness' => 0.5700,'evaporator_thickness_min_range' => 0.57,'evaporator_thickness_max_range' => 1.0,'absorber_material_value' => 2,'absorber_thickness' => 0.6500,'absorber_thickness_min_range' => 0.65,'absorber_thickness_max_range' => 1,'condenser_material_value' => 2,'condenser_thickness' => 0.6500,'condenser_thickness_min_range' => 0.65,'condenser_thickness_max_range' => 1,'glycol_selected' => 1,'glycol_none' => false,'metallurgy_standard' => true,'glycol_chilled_water' => 0.0,'glycol_cooling_water' => 0.0,'steam_pressure_min_range' => 3.5,'steam_pressure_max_range' => 10.0,'steam_pressure' => 8.0,'fouling_factor' => "standard",'fouling_non_chilled' => 0.00001,'fouling_non_cooling' => 0.00001,'fouling_ari_chilled' => 0.00002,'fouling_ari_cooling' => 0.00005,'calculate_option' => true);
-	}
-
 	public function RANGECAL()
 	{
 	    $FMIN1 = 0; 
@@ -573,6 +583,63 @@ class DoubleSteamController extends Controller
 
         return $GCWMIN1;
     }
+
+
+    
+	public function getEvaporatorOptions($model_number){
+		$eva_options = array();
+		$model_number = floatval($model_number);
+
+		if($model_number < 750){
+			$eva_options[] = array('name' => 'CuNi (90:10,95:5) Finned','value' => '1');
+			$eva_options[] = array('name' => 'Cu Finned','value' => '2');
+		}
+		else{
+			$eva_options[] = array('name' => 'CuNi (90:10,95:5) Mini Finned','value' => '1');
+			$eva_options[] = array('name' => 'Cu Mini Finned','value' => '2');
+		}
+
+		$eva_options[] = array('name' => 'SS Finned','value' => '3');
+		$eva_options[] = array('name' => 'SS Mini Finned','value' => '4');
+		$eva_options[] = array('name' => 'Titanium Plain','value' => '5');
+
+		return $eva_options;
+
+	}
+
+	public function getAbsorberOptions(){
+		$abs_options = array();
+
+		$abs_options[] = array('name' => 'CuNi (90:10,95:5) Mini Finned','value' => '1');
+		$abs_options[] = array('name' => 'Cu Mini Finned','value' => '2');
+		$abs_options[] = array('name' => 'SS Plain ERW','value' => '5');
+		$abs_options[] = array('name' => 'SS Mini finned','value' => '6');
+		$abs_options[] = array('name' => 'Titanium Plain','value' => '7');
+
+		return $abs_options;
+
+	}
+
+	public function getCondenserOptions(){
+		$con_options = array();
+
+		$con_options[] = array('name' => 'CuNi (90:10,95:5) Mini Finned','value' => '1');
+		$con_options[] = array('name' => 'Cu Mini Finned','value' => '2');
+		$con_options[] = array('name' => 'SS Plain ERW','value' => '3');
+		$con_options[] = array('name' => 'SS Mini finned','value' => '4');
+		$con_options[] = array('name' => 'Titanium Plain','value' => '5');
+
+		return $con_options;
+
+	}
+
+
+	public function getChillerData()
+	{
+
+	    return array('TCWA' => '32','AT13' => '101','LE' => '2.072','TNEV' => '304','TNAA' => '276','TNC' => '140','AEVA' => '31.0','AABS' => '28.2','ACON' => '14.3','ALTG' => '12.7','AHTG' => '10.9','ALTHE' => '13.806','AHTHE' => '10.6384','ADHE' => '2.57','AHR' => '3.73','MODEL1' => '100','KEVA' => '2790.72','KABS' => '1525.39387','SFACTOR' => '0.891','KCON' => '4200','ULTHE' => '450','ULTG' => '1850','ODE' => '0.016','ODA' => '0.016','ODC' => '0.016','AEVAH' => '15.5','AEVAL' => '15.5','AABSH' => '14.1','AABSL' => '14.1','UHTHE' => '1400','UDHE' => '400','UHR' => '700','UHTG' => '1750','IDE' => '0.01486','IDA' => '0.0145','IDC' => '0.0145','PNB' => '150','PODA' => '168.3','THPA' => '7.11');
+
+	}
 
 	
 }

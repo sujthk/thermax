@@ -3,6 +3,14 @@
 @section('styles')	
 	<!-- Data Table Css -->
 	<meta name="csrf-token" content="{{ csrf_token() }}" />
+	<style type="text/css">
+		.emsg{
+		    color: red;
+		}
+		.hidden {
+		     visibility:hidden;
+		}
+	</style>
 @endsection
 
 @section('content')
@@ -48,7 +56,8 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Capacity</label>
                                         <div class="col-sm-6">
-                                            <input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
+                                            <input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control number-validate">
+                                            <p><span class="emsg hidden">Please Enter a Valid Capacity</span></p>
                                         </div>
                                         <label class="col-sm-2 col-form-label">(TR)</label>
                                     </div>
@@ -270,13 +279,13 @@
 	                                        </div>
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="glycol" id="2" value="ethylene">
+	                                                <input type="radio" name="glycol" id="glycol_ethylene" value="2">
 	                                                <i class="helper"></i>Ethylene
 	                                            </label>
 	                                        </div>
 	                                        <div class="radio radio-inline">
 	                                            <label>
-	                                                <input type="radio" name="glycol" id="3" value="propylene">
+	                                                <input type="radio" name="glycol" id="glycol_propylene" value="3">
 	                                                <i class="helper"></i>Propylene
 	                                            </label>
 	                                        </div>
@@ -285,13 +294,13 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Chilled Water </label>
                                         <div class="col-sm-6">
-                                            <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" onblur="changeValues()" value="" class="form-control">
+                                            <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" onchange="updateModelValues('glycolchilledwater')" value="" class="form-control">
                                         </div>
                                     </div> 
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Cooling Water </label>
                                         <div class="col-sm-6">
-                                            <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="" class="form-control">
+                                            <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="" onchange="updateModelValues('glycolcoolingwater')" class="form-control">
                                         </div>
                                     </div>   	
 	                            </div>
@@ -334,10 +343,23 @@
 		
 		var model_values = {!! json_encode($default_values) !!};
 		var changed_value = "";
-		// console.log(model_values.capacity);
+		// console.log(model_values);
 		$( document ).ready(function() {
 		    updateValues();
 		    // swal("Hello world!");
+		    var positive_decimal=/^(0|[1-9]\d*)(\.\d+)?$/;
+		    var negative_decimal=/^-?(0|[1-9]\d*)(\.\d+)?$/;
+	        $('.number-validate').on('keypress keydown keyup',function(){
+                if (!$(this).val().match(negative_decimal)) {
+                  // there is a mismatch, hence show the error message
+                     $('.emsg').removeClass('hidden');
+                     $('.emsg').show();
+                 }
+               	else{
+                    // else, do not display message
+                    $('.emsg').addClass('hidden');
+                }
+            });
 		});
 
 		function updateValues() {
@@ -368,7 +390,11 @@
 			var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
 			$('#steam_pressure_range').html(steam_pressure_range);
 			// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
-			$("#glycol_none").prop('disabled', model_values.glycol_none);
+			if(model_values.glycol_none == 'true')
+				$("#glycol_none").prop('disabled', true);
+			else
+				$("#glycol_none").prop('disabled', false);
+
 
 			foulingFactor(model_values.fouling_factor);
 
@@ -537,6 +563,12 @@
 		   	
 		});
 
+		$('input[type=radio][name=glycol]').change(function() {
+		    // alert(this.value);
+		    model_values.glycol_selected = this.value;
+		    updateModelValues('glycoltypechanged');
+		});
+
 		function updateModelValues(input_type){
 
 			switch(input_type) {
@@ -552,6 +584,16 @@
 			    case 'chilledwaterout':
 			    	model_values.chilled_water_out = $("#chilled_water_out").val();
 			    	break;
+			    case 'glycoltypechanged':
+			    	
+			    	break;	
+			    case 'glycolchilledwater':
+			    	model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
+			    	break;
+			    case 'glycolcoolingwater':
+			    	model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
+			    	break;			
+
 			  	default:
 			    	// code block
 			}
@@ -571,6 +613,7 @@
 				data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 				success: function(response){
 					if(response.status){
+						console.log(response.model_values);
 						$("#calculate_button").prop('disabled', false);
 						model_values = response.model_values;
 						updateValues();
