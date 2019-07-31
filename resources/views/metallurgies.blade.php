@@ -12,7 +12,7 @@
 	    <div class="page-wrapper">
 	        <div class="page-header">
 	            <div class="page-header-title">
-	                <h4>Metallurgy Calculators</h4>
+	                <h4>Metallurgies</h4>
 	            </div>
 	            <div class="page-header-breadcrumb">
 	                <ul class="breadcrumb-title">
@@ -21,7 +21,7 @@
 	                            <i class="icofont icofont-home"></i>
 	                        </a>
 	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Metallurgy  Calculators</a>
+	                    <li class="breadcrumb-item"><a href="#!">Metallurgies</a>
 	                    </li>
 	                </ul>
 	            </div>
@@ -42,8 +42,8 @@
 	                    <div class="card">
 	                        <div class="card-header">
 	                        	<div class="">
-		                            <h5>Calculators</h5>
-		                            <a href="{{ url('tube-metallurgy/calculators/add') }}" class="btn btn-sm btn-primary">New Metallurgy  Calculator +</a>
+		                            <h5>Metallurgies</h5>
+		                            <a href="{{ url('metallurgies/add') }}" class="btn btn-sm btn-primary">New Metallurgy +</a>
                             	</div>
 	                        </div>
 	                        <div class="card-block">
@@ -52,25 +52,27 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th>Name</th>
-	                                            <th>Model</th>
-	                                            <th style="width: 8%">Evaporator</th>
-	                                            <th style="width: 8%">Absorber</th>
-	                                            <th style="width: 8%">Condenser</th>
+	                                            <th>Display Name</th>
+	                                            <th>Default Thickness</th>
+	                                            <th>Min Thickness</th>
+	                                            <th>Max Thickness</th>
+	                                            <th>Eva Min Velocity</th>
+	                                            <th>Eva Max Velocity</th>
+	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
-	                                    	@foreach ($metallurgy_calculators as $metallurgy_calculator) 
+	                                    	@foreach ($metallurgies as $metallurgy) 
 	                                    		<tr>
-	                                    		    <td>{{ $metallurgy_calculator->name }}</td>
-	                                    		    <td>{{ $metallurgy_calculator->model }}</td> 
+	                                    		    <td>{{ $metallurgy->name }}</td>
+	                                    		    <td>{{ $metallurgy->display_name }}</td>
+	                                    		    <td>{{ $metallurgy->default_thickness }}</td>
+	                                    		    <td>{{ $metallurgy->min_thickness }}</td>	
+	                                    		    <td>{{ $metallurgy->max_thickness }}</td>
+	                                    		    <td>{{ $metallurgy->eva_min_velocity }}</td>
+	                                    		    <td>{{ $metallurgy->eva_max_velocity }}</td>
 		                                            <td>
-		                                                <a href="{{ url('tube-metallurgy/calculators/edit',[$metallurgy_calculator->id,'eva']) }}" class="btn btn-primary btn-sm">Edit</a>
-		                                            </td> 
-		                                            <td>
-		                                                <a href="{{ url('tube-metallurgy/calculators/edit',[$metallurgy_calculator->id,'abs']) }}" class="btn btn-primary btn-sm">Edit</a>
-		                                            </td> 
-		                                            <td>
-		                                                <a href="{{ url('tube-metallurgy/calculators/edit',[$metallurgy_calculator->id,'con']) }}" class="btn btn-primary btn-sm">Edit</a>
+		                                                <a href="{{ url('metallurgies/edit',[$metallurgy->id]) }}" class="btn btn-primary btn-sm">Edit</a>
 		                                            </td> 
 	                                    		</tr>
 	                                    	@endforeach

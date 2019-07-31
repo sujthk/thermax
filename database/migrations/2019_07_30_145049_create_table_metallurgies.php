@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateChillerMetallurgyOptionsTable extends Migration
+class CreateTableMetallurgies extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateChillerMetallurgyOptionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('chiller_metallurgy_options', function (Blueprint $table) {
+        Schema::create('metallurgies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('code');
-            $table->string('model');
+            $table->string('default_thickness');
+            $table->string('min_thickness');
+            $table->string('max_thickness');
+            $table->string('min_velocity');
+            $table->string('max_velocity');
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateChillerMetallurgyOptionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('chiller_metallurgy_options');
+        Schema::dropIfExists('metallurgies');
     }
 }

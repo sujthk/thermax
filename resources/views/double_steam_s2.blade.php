@@ -56,8 +56,8 @@
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Capacity</label>
                                         <div class="col-sm-6">
-                                            <input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control number-validate">
-                                            <p><span class="emsg hidden">Please Enter a Valid Capacity</span></p>
+                                            <input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
+                                            <p><span class="emsg hidden" id="capacity-error">Please Enter a Valid Capacity</span></p>
                                         </div>
                                         <label class="col-sm-2 col-form-label">(TR)</label>
                                     </div>
@@ -121,7 +121,7 @@
 	                                	<div class="col-sm-3">
 	                                	    <select name="evaporator_material" id="evaporator_material" class="form-control metallurgy_standard">
 	                                	    	@foreach($evaporator_options as $evaporator_option)
-	                                	    		<option value="{{ $evaporator_option['value'] }}">{{ $evaporator_option['name'] }}</option>
+	                                	    		<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
 	                                	    </select>
 	                                	</div>
@@ -139,7 +139,7 @@
 	                                	<div class="col-sm-3">
 	                                	    <select name="absorber_material" id="absorber_material" class="form-control metallurgy_standard">
 	                                	        @foreach($absorber_options as $absorber_option)
-	                                	    		<option value="{{ $absorber_option['value'] }}">{{ $absorber_option['name'] }}</option>
+	                                	    		<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
 	                                	    </select>
 	                                	</div>
@@ -157,7 +157,7 @@
 	                                	<div class="col-sm-3">
 	                                	    <select name="condenser_material" id="condenser_material" class="form-control metallurgy_standard">
 	                                	        @foreach($condenser_options as $condenser_option)
-	                                	    		<option value="{{ $condenser_option['value'] }}">{{ $condenser_option['name'] }}</option>
+	                                	    		<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
 	                                	    </select>
 	                                	</div>
@@ -180,14 +180,14 @@
                                 	<div class="form-group row">
                                         <label class="col-sm-3 col-form-label">Water In (<span id="cooling_water_in_range" ></span>)</label>
                                         <div class="col-sm-6">
-                                            <input type="text" value="" name="cooling_water_in" id="cooling_water_in" class="form-control">
+                                            <input type="text" value="" onchange="updateModelValues('coolingwaterin')" name="cooling_water_in" id="cooling_water_in" class="form-control">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(&#176;C)</label>
                                     </div>
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label">Water Flow</label>
                                         <div class="col-sm-6">
-                                            <input type="text" name="cooling_water_flow" id="cooling_water_flow" value="" class="form-control">
+                                            <input type="text" name="cooling_water_flow" onchange="updateModelValues('coolingwaterflow')" id="cooling_water_flow" value="" class="form-control">
                                         </div>
                                         <label class="col-sm-2 col-form-label">(m&#179;/hr)</label>
                                     </div>
@@ -342,13 +342,16 @@
 	<script type="text/javascript">
 		
 		var model_values = {!! json_encode($default_values) !!};
+		var evaporator_options = {!! json_encode($evaporator_options) !!};
+		var absorber_options = {!! json_encode($absorber_options) !!};
+		var condenser_options = {!! json_encode($condenser_options) !!};
 		var changed_value = "";
-		// console.log(model_values);
+		console.log(model_values);
 		$( document ).ready(function() {
 		    updateValues();
 		    // swal("Hello world!");
-		    var positive_decimal=/^(0|[1-9]\d*)(\.\d+)?$/;
-		    var negative_decimal=/^-?(0|[1-9]\d*)(\.\d+)?$/;
+		    updateEvaporatorOptions(1);
+		    
 	        $('.number-validate').on('keypress keydown keyup',function(){
                 if (!$(this).val().match(negative_decimal)) {
                   // there is a mismatch, hence show the error message
@@ -361,6 +364,42 @@
                 }
             });
 		});
+
+		function inputValidation(value,validation_type,input_name){
+
+			var positive_decimal=/^(0|[1-9]\d*)(\.\d+)?$/;
+		    var negative_decimal=/^-?(0|[1-9]\d*)(\.\d+)?$/;
+
+			if(validation_type == "positive_decimals"){
+				if (!value.match(positive_decimal)) {
+                  // there is a mismatch, hence show the error message
+                     $('#'+input_name).removeClass('hidden');
+                     $('#'+input_name).show();
+                 }
+               	else{
+                    // else, do not display message
+                    $('#'+input_name).addClass('hidden');
+                    return true;
+                }
+			}
+
+			if(validation_type == "decimals"){
+				if (!value.match(negative_decimal)) {
+                  // there is a mismatch, hence show the error message
+                     $('.emsg').removeClass('hidden');
+                     $('.emsg').show();
+                 }
+               	else{
+                    // else, do not display message
+                    $('.emsg').addClass('hidden');
+                    return true;
+                }
+			}
+
+
+			return false;
+		}
+
 
 		function updateValues() {
 			
@@ -390,7 +429,7 @@
 			var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
 			$('#steam_pressure_range').html(steam_pressure_range);
 			// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
-			if(model_values.glycol_none == 'true')
+			if(model_values.glycol_none === 'true')
 				$("#glycol_none").prop('disabled', true);
 			else
 				$("#glycol_none").prop('disabled', false);
@@ -548,6 +587,17 @@
 			return range_values;
 		}
 
+		function updateEvaporatorOptions(value){
+			$('#evaporator_material').empty();
+			var $el = $("#evaporator_material");
+			$el.empty(); // remove old options
+			$.each(evaporator_options, function(key,value) {
+				console.log(value);
+			  // $el.append($("<option></option>")
+			  //    .attr("value", value).text(key));
+			});
+		}
+
 
 		$( "#double_steam_s2" ).submit(function(event) {
 			  event.preventDefault();
@@ -570,36 +620,51 @@
 		});
 
 		function updateModelValues(input_type){
-
+			var validate = false;
 			switch(input_type) {
 			  	case 'model_number':
 			    	model_values.model_number = $("#model_number").val();
 			    	break;
 			  	case 'capacity':
-			    	model_values.capacity = $("#capacity").val();
+			  		var capacity = $("#capacity").val();
+			    	model_values.capacity = capacity;
+			    	validate = inputValidation(capacity,"positive_decimals","capacity-error");
 			    	break;
 			    case 'chilledwaterin':
 			    	model_values.chilled_water_in = $("#chilled_water_in").val();
+			    	validate = true;
 			    	break;	
 			    case 'chilledwaterout':
 			    	model_values.chilled_water_out = $("#chilled_water_out").val();
+			    	validate = true;
 			    	break;
 			    case 'glycoltypechanged':
-			    	
+			    	validate = true;
 			    	break;	
 			    case 'glycolchilledwater':
 			    	model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
+			    	validate = true;
 			    	break;
 			    case 'glycolcoolingwater':
 			    	model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
-			    	break;			
+			    	validate = true;
+			    	break;
+			    case 'coolingwaterin':
+			    	model_values.cooling_water_in = $("#cooling_water_in").val();
+			    	validate = true;
+			    	break;
+			    case 'coolingwaterflow':
+			    	model_values.cooling_water_flow = $("#cooling_water_flow").val();
+			    	validate = true;
+			    	break;					
 
 			  	default:
 			    	// code block
 			}
 			changed_value = input_type;
 
-			sendValues();
+			if(validate)
+				sendValues();
 			
 
 		}

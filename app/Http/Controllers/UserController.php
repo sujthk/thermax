@@ -108,7 +108,7 @@ class UserController extends Controller
     		return response()->json(['status'=>false,'msg'=>'Account Deactivated Contact Admin']);
 
     	$otp = rand(100000,999999);
-        // $otp = 12345;
+        $otp = 12345;
 
     	$user = User::find($user->id);
     	$user->otp = $otp;

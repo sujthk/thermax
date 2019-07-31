@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\ChillerDefaultValue;
+use App\ChillerOption;
 use App\ChillerMetallurgyOption;
+use App\Metallurgy;
 use Log;
 class DefaultCalculatorController extends Controller
 {
@@ -63,52 +65,66 @@ class DefaultCalculatorController extends Controller
 
     public function editMetallurgyCalculator($chiller_metallurgy_id,$tube_type){
     	$metallurgy_calculator = ChillerMetallurgyOption::find($chiller_metallurgy_id);
-    	
-        if($tube_type == 'eva'){
-    	   $metallurgy_values = json_decode($metallurgy_calculator->evaporator_options,true);
-        }
-        elseif ($tube_type == 'abs') {
-            $metallurgy_values = json_decode($metallurgy_calculator->absorber_options,true);
-        }
-        else{
-            $metallurgy_values = json_decode($metallurgy_calculator->condenser_options,true);
-        }
+
+        $metallurgies = Metallurgy::all();
+    	$metallurgy_values = ChillerOption::where('chiller_metallurgy_option_id',$chiller_metallurgy_id)->where('type',$tube_type)->get();
 
         // return $metallurgy_values;
     	return view('metallurgy_calculator_edit')
     						->with('metallurgy_calculator',$metallurgy_calculator)
-    						->with('metallurgy_values',$metallurgy_values)
+                            ->with('metallurgy_values',$metallurgy_values)
+    						->with('metallurgies',$metallurgies)
                             ->with('tube_type',$tube_type);
+    }
+
+    public function addMetallurgyCalculator(){
+
+        return view('metallurgy_calculator_add');
+    }
+
+    public function postMetallurgyCalculator(Request $request){
+        $this->validate($request, [
+            'name' => 'required',
+            'code' => 'required',
+            'model' => 'required|numeric',
+
+        ]);
+
+        $chiller_metallurgy_option = new ChillerMetallurgyOption;
+        $chiller_metallurgy_option->name = $request->name;
+        $chiller_metallurgy_option->code = $request->code;
+        $chiller_metallurgy_option->model = $request->model;
+        $chiller_metallurgy_option->save();
+        
+
+        return redirect('tube-metallurgy/calculators')->with('message','Metallurgy Calculator Added')
+                        ->with('status','success');
     }
 
     public function updateMetallurgyCalculator(Request $request,$chiller_metallurgy_id,$tube_type){
         // return $request->all();
         $this->validate($request, [
-            'labels' => 'required',
-            'values' => 'required'
+            'metallurgy' => 'required'
         ]);
 
-        $values = $request->values;
+        $deletedRows = ChillerOption::where('chiller_metallurgy_option_id', $chiller_metallurgy_id)->where('type',$tube_type)->delete();
+
+        if ($request->has('metallurgy')){
+
+            foreach ($request->metallurgy as $metallurgy) {
+
+                $metallurgy_option = new ChillerOption;
+                $metallurgy_option->chiller_metallurgy_option_id = $chiller_metallurgy_id;
+                $metallurgy_option->metallurgy_id = $metallurgy['metallurgy_id'];
+                $metallurgy_option->value = $metallurgy['value'];
+                $metallurgy_option->type = $tube_type;
+                $metallurgy_option->save();
+
+            }
+        }
 
         
-        $options = array();
-        foreach ($request->labels as $key => $label) {
-            $options[] = array('name' => $label,'value' => $values[$key]);
-        }
-
-        $chiller_metallurgy_option = ChillerMetallurgyOption::find($chiller_metallurgy_id);
-        if($tube_type == 'eva'){
-           $chiller_metallurgy_option->evaporator_options = json_encode($options);
-        }
-        elseif ($tube_type == 'abs') {
-            $chiller_metallurgy_option->absorber_options = json_encode($options);
-        }
-        else{
-            $chiller_metallurgy_option->condenser_options = json_encode($options);
-        }
-
-        $chiller_metallurgy_option->save();
-
+        
         return redirect('tube-metallurgy/calculators')->with('message','Metallurgy Options Updated')
                         ->with('status','success');
     }

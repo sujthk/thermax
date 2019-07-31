@@ -21,11 +21,13 @@ class DoubleSteamController extends Controller
     	$default_values = $chiller_default_datas->default_values;
     	$default_values = json_decode($default_values,true);
 
-    	$chiller_metallurgy_options = ChillerMetallurgyOption::where('code',$this->model_code)->where('model',130)->first();
+    	$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('model',130)->first();
+
+    	$chiller_options = $chiller_metallurgy_options->chillerOptions;
     	
-    	$evaporator_options = json_decode($chiller_metallurgy_options->evaporator_options,true);
-    	$absorber_options = json_decode($chiller_metallurgy_options->absorber_options,true);
-    	$condenser_options = json_decode($chiller_metallurgy_options->condenser_options,true);
+    	$evaporator_options = $chiller_options->where('type', 'eva');
+    	$absorber_options = $chiller_options->where('type', 'abs');
+    	$condenser_options = $chiller_options->where('type', 'con');
 
     	// return $evaporator_options;
 		return view('double_steam_s2')->with('default_values',$default_values)
@@ -190,6 +192,37 @@ class DoubleSteamController extends Controller
            		    return array('status' => false,'msg' => "Glycol Cooling water temperature is high");
            		}
            	break;
+           	case "COOLINGWATERIN":
+           		if (!(($this->model_values['cooling_water_in'] >= $this->model_values['cooling_water_in_min_range']) && ($this->model_values['cooling_water_in'] <= $this->model_values['cooling_water_in_max_range'])))
+           		{
+           		    return array('status' => false,'msg' => "Cooling Water is not in range");
+           		}
+           	break;
+           	case "COOLINGWATERFLOW":
+           		$range_calculation = $this->RANGECAL();
+           		if(!$range_calculation['status']){
+           			return array('status'=>false,'msg'=>$range_calculation['msg']);
+           		}
+           		if(!is_array($this->model_values['cooling_water_ranges'])){
+           			$this->model_values['cooling_water_ranges'] = explode(",", $this->model_values['cooling_water_ranges']);
+           		}
+           		$cooling_water_ranges = $this->model_values['cooling_water_ranges'];
+           		$cooling_water_flow = $this->model_values['cooling_water_flow'];
+           		$range_validate = false;
+           		for ($i=0; $i < count($cooling_water_ranges); $i+=2) { 
+           			$min_range = $cooling_water_ranges[$i];
+           			$max_range = $cooling_water_ranges[$i+1];
+
+           			if(($cooling_water_flow > $min_range) && ($cooling_water_flow < $max_range)){
+           				$range_validate = true;
+           				break;
+           			}
+
+           		}
+           		if(!$range_validate){
+           			return array('status' => false,'msg' => "Cooling Water flow is not in range");
+           		}
+           	break;
 		}
 
 
@@ -303,11 +336,11 @@ class DoubleSteamController extends Controller
 
 	public function chilledWaterValidating(){
 		if($this->model_values['chilled_water_out'] < 1){
-			$this->model_values['glycol_none'] = true;
+			$this->model_values['glycol_none'] = 'true';
 			$this->model_values['glycol_selected'] = 2;
 		}
 		else{
-			$this->model_values['glycol_none'] = false;
+			$this->model_values['glycol_none'] = 'false';
 			// $this->model_values['glycol_selected'] = 2;
 		}
 
@@ -325,6 +358,7 @@ class DoubleSteamController extends Controller
 	}
 
 	public function metallurgyValidating(){
+		// Log::info("metallurgy = ".print_r($this->model_values,true));
 		if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
 		{
 			$this->model_values['metallurgy_standard'] = false;
