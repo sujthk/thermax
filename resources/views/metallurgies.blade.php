@@ -56,8 +56,6 @@
 	                                            <th>Default Thickness</th>
 	                                            <th>Min Thickness</th>
 	                                            <th>Max Thickness</th>
-	                                            <th>Eva Min Velocity</th>
-	                                            <th>Eva Max Velocity</th>
 	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
@@ -69,10 +67,9 @@
 	                                    		    <td>{{ $metallurgy->default_thickness }}</td>
 	                                    		    <td>{{ $metallurgy->min_thickness }}</td>	
 	                                    		    <td>{{ $metallurgy->max_thickness }}</td>
-	                                    		    <td>{{ $metallurgy->eva_min_velocity }}</td>
-	                                    		    <td>{{ $metallurgy->eva_max_velocity }}</td>
 		                                            <td>
 		                                                <a href="{{ url('metallurgies/edit',[$metallurgy->id]) }}" class="btn btn-primary btn-sm">Edit</a>
+		                                                <a href="{{ url('metallurgies/delete',[$metallurgy->id]) }}" class="btn btn-danger btn-sm">Delete</a>
 		                                            </td> 
 	                                    		</tr>
 	                                    	@endforeach

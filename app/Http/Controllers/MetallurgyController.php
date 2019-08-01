@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Metallurgy;
-
+use App\ChillerOption;
 class MetallurgyController extends Controller
 {
     public function getMetallurgies(){
@@ -92,6 +92,15 @@ class MetallurgyController extends Controller
 		$metallurgy->save();
 
 		return redirect('metallurgies')->with('message','Metallurgy Updated')
+                        ->with('status','success');
+    }
+
+    public function deleteMetallurgy($metallurgy_id){
+        $deletedRows = ChillerOption::where('metallurgy_id', $metallurgy_id)->delete();
+
+        $metallurgy = Metallurgy::destroy($metallurgy_id);
+
+        return redirect('metallurgies')->with('message','Metallurgy Deleted')
                         ->with('status','success');
     }
 }

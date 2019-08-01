@@ -17,7 +17,8 @@ class CreateChillerDefaultValuesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('code');
-            $table->string('model');
+            $table->string('min_model');
+            $table->string('max_model');
             $table->json('default_values');
             $table->timestamps();
         });

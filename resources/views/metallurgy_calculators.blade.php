@@ -52,17 +52,20 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th>Name</th>
-	                                            <th>Model</th>
+	                                            <th>Min Model</th>
+	                                            <th>Max Model</th>
 	                                            <th style="width: 8%">Evaporator</th>
 	                                            <th style="width: 8%">Absorber</th>
 	                                            <th style="width: 8%">Condenser</th>
+	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
 	                                    	@foreach ($metallurgy_calculators as $metallurgy_calculator) 
 	                                    		<tr>
 	                                    		    <td>{{ $metallurgy_calculator->name }}</td>
-	                                    		    <td>{{ $metallurgy_calculator->model }}</td> 
+	                                    		    <td>{{ $metallurgy_calculator->min_model }}</td> 
+	                                    		    <td>{{ $metallurgy_calculator->max_model }}</td> 
 		                                            <td>
 		                                                <a href="{{ url('tube-metallurgy/calculators/edit',[$metallurgy_calculator->id,'eva']) }}" class="btn btn-primary btn-sm">Edit</a>
 		                                            </td> 
@@ -71,6 +74,9 @@
 		                                            </td> 
 		                                            <td>
 		                                                <a href="{{ url('tube-metallurgy/calculators/edit',[$metallurgy_calculator->id,'con']) }}" class="btn btn-primary btn-sm">Edit</a>
+		                                            </td> 
+		                                            <td>
+		                                                <a href="{{ url('tube-metallurgy/calculators/delete',[$metallurgy_calculator->id]) }}" class="btn btn-danger btn-sm">Delete</a>
 		                                            </td> 
 	                                    		</tr>
 	                                    	@endforeach

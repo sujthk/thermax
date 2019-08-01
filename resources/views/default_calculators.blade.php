@@ -51,7 +51,8 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th>Name</th>
-	                                            <th>Model</th>
+	                                            <th>Min Model</th>
+	                                            <th>Max Model</th>
 	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
@@ -59,7 +60,8 @@
 	                                    	@foreach ($default_calculators as $default_calculator) 
 	                                    		<tr>
 	                                    		    <td>{{ $default_calculator->name }}</td>
-	                                    		    <td>{{ $default_calculator->model }}</td> 
+	                                    		    <td>{{ $default_calculator->min_model }}</td> 
+	                                    		    <td>{{ $default_calculator->max_model }}</td> 
 		                                            <td>
 		                                                <a href="{{ url('default/calculators/edit',[$default_calculator->id]) }}" class="btn btn-primary btn-sm">Edit</a>
 		                                            </td> 

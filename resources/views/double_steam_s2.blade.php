@@ -119,7 +119,7 @@
 	                                		<label class=" col-form-label float-right">Evaporator</label>
 	                                	</div>
 	                                	<div class="col-sm-3">
-	                                	    <select name="evaporator_material" id="evaporator_material" class="form-control metallurgy_standard">
+	                                	    <select name="evaporator_material" id="evaporator_material" onchange="changeEvaValue(this.value);" class="form-control metallurgy_standard">
 	                                	    	@foreach($evaporator_options as $evaporator_option)
 	                                	    		<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
@@ -137,7 +137,7 @@
 	                                		<label class=" col-form-label float-right">Absorber</label>
 	                                	</div>
 	                                	<div class="col-sm-3">
-	                                	    <select name="absorber_material" id="absorber_material" class="form-control metallurgy_standard">
+	                                	    <select name="absorber_material" id="absorber_material" onchange="changeAbsValue(this.value);" class="form-control metallurgy_standard">
 	                                	        @foreach($absorber_options as $absorber_option)
 	                                	    		<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
@@ -155,7 +155,7 @@
 	                                		<label class=" col-form-label float-right">Condenser</label>
 	                                	</div>
 	                                	<div class="col-sm-3">
-	                                	    <select name="condenser_material" id="condenser_material" class="form-control metallurgy_standard">
+	                                	    <select name="condenser_material" id="condenser_material" onchange="changeConValue(this.value);" class="form-control metallurgy_standard">
 	                                	        @foreach($condenser_options as $condenser_option)
 	                                	    		<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
@@ -345,12 +345,16 @@
 		var evaporator_options = {!! json_encode($evaporator_options) !!};
 		var absorber_options = {!! json_encode($absorber_options) !!};
 		var condenser_options = {!! json_encode($condenser_options) !!};
+		var chiller_metallurgy_options = {!! json_encode($chiller_metallurgy_options) !!};
 		var changed_value = "";
 		console.log(model_values);
 		$( document ).ready(function() {
-		    updateValues();
 		    // swal("Hello world!");
-		    updateEvaporatorOptions(1);
+		    model_values.evaporator_thickness_change = true;
+		    updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,model_values.evaporator_thickness_change);
+		    updateAbsorberOptions(chiller_metallurgy_options.abs_default_value);
+		    updateCondenserOptions(chiller_metallurgy_options.con_default_value);
+		    updateValues();
 		    
 	        $('.number-validate').on('keypress keydown keyup',function(){
                 if (!$(this).val().match(negative_decimal)) {
@@ -402,6 +406,10 @@
 
 
 		function updateValues() {
+
+			updateEvaporatorOptions(model_values.evaporator_material_value,model_values.evaporator_thickness_change);
+			updateAbsorberOptions(model_values.absorber_material_value);
+			updateCondenserOptions(model_values.condenser_material_value);
 			
 			$("#model_number").val(model_values.model_number);
 			$('#capacity').val(model_values.capacity);
@@ -463,7 +471,7 @@
 
 			}else{
 				$("#tube_metallurgy_non_standard").prop('checked', true);
-				$("#tube_metallurgy_standard").prop('disabled', true);
+				// $("#tube_metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard").prop('disabled', false);
 		    	var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
 				$("#evaporator_range").html(evaporator_range);
@@ -587,15 +595,58 @@
 			return range_values;
 		}
 
-		function updateEvaporatorOptions(value){
+		function updateEvaporatorOptions(value,thickness_change){
 			$('#evaporator_material').empty();
 			var $el = $("#evaporator_material");
 			$el.empty(); // remove old options
-			$.each(evaporator_options, function(key,value) {
-				console.log(value);
-			  // $el.append($("<option></option>")
-			  //    .attr("value", value).text(key));
+			$.each(evaporator_options, function(key,option) {
+				// console.log(option);
+			  	$el.append($("<option></option>").attr("value", option.value).text(option.metallurgy.display_name));
+			  	if(value == option.value){
+			  		model_values.evaporator_material_value = value;
+					
+					model_values.evaporator_thickness_min_range = option.metallurgy.min_thickness;
+					model_values.evaporator_thickness_max_range = option.metallurgy.max_thickness;
+
+					if(thickness_change){
+						model_values.evaporator_thickness = option.metallurgy.default_thickness;
+					}
+			  	}
 			});
+			
+		}
+
+		function updateAbsorberOptions(value){
+			$('#absorber_material').empty();
+			var $el = $("#absorber_material");
+			$el.empty(); // remove old options
+			$.each(absorber_options, function(key,option) {
+				// console.log(option);
+			  	$el.append($("<option></option>").attr("value", option.value).text(option.metallurgy.display_name));
+			  	if(value == option.value){
+			  		model_values.absorber_material_value = value;
+					model_values.absorber_thickness = option.metallurgy.default_thickness;
+					model_values.absorber_thickness_min_range = option.metallurgy.min_thickness;
+					model_values.absorber_thickness_max_range = option.metallurgy.max_thickness;
+			  	}
+			});
+			
+		}
+
+		function updateCondenserOptions(value){
+			$('#condenser_material').empty();
+			var $el = $("#condenser_material");
+			$el.empty(); // remove old options
+			$.each(condenser_options, function(key,option) {
+			  	$el.append($("<option></option>").attr("value", option.value).text(option.metallurgy.display_name));
+			  	if(value == option.value){
+			  		model_values.condenser_material_value = value;
+					model_values.condenser_thickness = option.metallurgy.default_thickness;
+					model_values.condenser_thickness_min_range = option.metallurgy.min_thickness;
+					model_values.condenser_thickness_max_range = option.metallurgy.max_thickness;
+			  	}
+			});
+			
 		}
 
 
@@ -617,6 +668,21 @@
 		    // alert(this.value);
 		    model_values.glycol_selected = this.value;
 		    updateModelValues('glycoltypechanged');
+		});
+
+		$('input[type=radio][name=tube_metallurgy]').change(function() {
+		    // alert(this.value);
+		    if(this.value == 'non_standard'){
+		    	model_values.metallurgy_standard = false;
+		    }
+		    else{
+		    	model_values.metallurgy_standard = true;
+		    	updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,true);
+		    	updateAbsorberOptions(chiller_metallurgy_options.abs_default_value);
+		    	updateCondenserOptions(chiller_metallurgy_options.con_default_value);
+		    	updateValues();
+		    }
+		    
 		});
 
 		function updateModelValues(input_type){
@@ -669,6 +735,32 @@
 
 		}
 
+		function changeEvaValue(eva_value)
+		{
+		    // updateEvaporatorOptions(eva_value);
+		    model_values.evaporator_material_value = eva_value;
+		    model_values.evaporator_thickness_change = true;
+		    changed_value = "EVAPORATORTUBETYPE";
+		    sendValues();
+
+		}
+
+		function changeAbsValue(abs_value)
+		{
+			// updateAbsorberOptions(abs_value);
+		    model_values.absorber_material_value = abs_value;
+		    changed_value = "ABSORBERTUBETYPE";
+		    sendValues();
+
+		}
+
+		function changeConValue(con_value){
+			// updateCondenserOptions(con_value)
+			model_values.condenser_material_value = con_value;
+		    changed_value = "CONDENSERTUBETYPE";
+		    sendValues();
+		}
+
 		function sendValues(){
 			// var form_values = $("#double_steam_s2").serialize();
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -678,10 +770,13 @@
 				data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 				success: function(response){
 					if(response.status){
-						console.log(response.model_values);
+						
 						$("#calculate_button").prop('disabled', false);
 						model_values = response.model_values;
+						model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
+						model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
 						updateValues();
+						console.log(model_values);
 					}
 					else{
 						$("#calculate_button").prop('disabled', true);
@@ -690,6 +785,20 @@
 					}					
 				},
 			});
+		}
+
+		function getBoolean(value){
+		   switch(value){
+		        case true:
+		        case "true":
+		        case 1:
+		        case "1":
+		        case "on":
+		        case "yes":
+		            return true;
+		        default: 
+		            return false;
+		    }
 		}
 
 	</script>

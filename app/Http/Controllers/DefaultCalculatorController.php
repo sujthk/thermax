@@ -12,7 +12,7 @@ class DefaultCalculatorController extends Controller
 {
     public function getCalculators(){
 
-    	$default_calculators = ChillerDefaultValue::select('id','name','model')->get();
+    	$default_calculators = ChillerDefaultValue::get();
 
 
     	return view('default_calculators')->with('default_calculators',$default_calculators);
@@ -57,7 +57,7 @@ class DefaultCalculatorController extends Controller
 
     public function getMetallurgyCalculators(){
 
-    	$metallurgy_calculators = ChillerMetallurgyOption::select('id','name','model')->get();
+    	$metallurgy_calculators = ChillerMetallurgyOption::get();
 
 
     	return view('metallurgy_calculators')->with('metallurgy_calculators',$metallurgy_calculators);
@@ -86,14 +86,16 @@ class DefaultCalculatorController extends Controller
         $this->validate($request, [
             'name' => 'required',
             'code' => 'required',
-            'model' => 'required|numeric',
+            'min_model' => 'required|numeric',
+            'max_model' => 'required|numeric',
 
         ]);
 
         $chiller_metallurgy_option = new ChillerMetallurgyOption;
         $chiller_metallurgy_option->name = $request->name;
         $chiller_metallurgy_option->code = $request->code;
-        $chiller_metallurgy_option->model = $request->model;
+        $chiller_metallurgy_option->min_model = $request->min_model;
+        $chiller_metallurgy_option->max_model = $request->max_model;
         $chiller_metallurgy_option->save();
         
 
@@ -104,10 +106,24 @@ class DefaultCalculatorController extends Controller
     public function updateMetallurgyCalculator(Request $request,$chiller_metallurgy_id,$tube_type){
         // return $request->all();
         $this->validate($request, [
-            'metallurgy' => 'required'
+            'metallurgy' => 'required',
+            'default_value' => 'required|numeric',
         ]);
 
         $deletedRows = ChillerOption::where('chiller_metallurgy_option_id', $chiller_metallurgy_id)->where('type',$tube_type)->delete();
+        $metallurgy_calculator = ChillerMetallurgyOption::find($chiller_metallurgy_id);
+
+        if($tube_type == 'eva'){
+            $metallurgy_calculator->eva_default_value = $request->default_value;
+        }
+        elseif($tube_type == 'abs'){
+            $metallurgy_calculator->abs_default_value = $request->default_value;
+        }
+        else{
+            $metallurgy_calculator->con_default_value = $request->default_value;
+        }
+
+        $metallurgy_calculator->save();
 
         if ($request->has('metallurgy')){
 
@@ -126,6 +142,17 @@ class DefaultCalculatorController extends Controller
         
         
         return redirect('tube-metallurgy/calculators')->with('message','Metallurgy Options Updated')
+                        ->with('status','success');
+    }
+
+    public function deleteMetallurgyCalculator($chiller_metallurgy_id){
+
+        $deletedRows = ChillerOption::where('chiller_metallurgy_option_id', $chiller_metallurgy_id)->delete();
+
+        $metallurgy_calculator = ChillerMetallurgyOption::destroy($chiller_metallurgy_id);
+
+        
+        return redirect('tube-metallurgy/calculators')->with('message','Metallurgy Options Deleted')
                         ->with('status','success');
     }
 

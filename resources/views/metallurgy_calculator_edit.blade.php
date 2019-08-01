@@ -28,7 +28,7 @@
 	        </div>
 	        <div class="page-body">
 	            <div class="row">
-	                <div class="col-sm-6">
+	                <div class="col-sm-8">
 	                    <!-- Zero config.table start -->
 	                    @if ($errors->any())
 	                        <div class="alert alert-danger">
@@ -55,13 +55,29 @@
 		                        	    </div>
 		                        	</div>
 		                        	<div class="form-group row">    
-		                        	    <label class="col-sm-4 col-form-label">Model</label>
+		                        	    <label class="col-sm-4 col-form-label">Min Model</label>
 		                        	    <div class="col-sm-6">
-		                        	        <input id="model" name="model" type="number" readonly value="{{ $metallurgy_calculator->model }}" required class="form-control">
+		                        	        <input id="min_model" name="min_model" type="number" readonly value="{{ $metallurgy_calculator->min_model }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
-	                        		
-	                            	
+		                        	<div class="form-group row">    
+		                        	    <label class="col-sm-4 col-form-label">Max Model</label>
+		                        	    <div class="col-sm-6">
+		                        	        <input id="max_model" name="max_model" type="number" readonly value="{{ $metallurgy_calculator->max_model }}" required class="form-control">
+		                        	    </div>
+		                        	</div>
+		                        	<div class="form-group row">    
+		                        	    <label class="col-sm-4 col-form-label">Default Value</label>
+		                        	    <div class="col-sm-6">
+		                        	    	@if($tube_type == 'eva')
+				                            	<input id="default_value" name="default_value" type="number" value="{{ $metallurgy_calculator->eva_default_value }}" required class="form-control">
+				                            @elseif($tube_type == 'abs')	
+				                            	<input id="default_value" name="default_value" type="number" value="{{ $metallurgy_calculator->abs_default_value }}" required class="form-control">
+				                            @else
+				                            	<input id="default_value" name="default_value" type="number" value="{{ $metallurgy_calculator->con_default_value }}" required class="form-control">
+				                            @endif
+		                        	    </div>
+		                        	</div>
 		                        	<div class="form-group row">
                                         <label class="col-sm-4 col-form-label">Metallurgy</label>
                                         <div class="col-sm-6">
@@ -72,7 +88,6 @@
                                         		    @else
                                         		   		<option value="{{ $metallurgy->id }}">{{ $metallurgy->name }}</option>  
                                         		    @endif
-                                            		
                                             	@endforeach
                                             </select>
                                         </div>
@@ -104,7 +119,7 @@
 			 									<tr>
 			 										<td><input  class='form-control' type='hidden' name='metallurgy[{{ $i }}][metallurgy_id]' id='old_metallurgy-{{ $i }}' value='{{ $metallurgy_value->metallurgy_id }}'/>
 			 											<input  class='form-control' type='text' name='metallurgy[{{ $i }}][metallurgy_text]' id='metallurgy_text-{{ $i }}' value='{{ $metallurgy_value->metallurgy->name }}' required readonly/></td>
-			 										<td ><input type='text' class='form-control' name='metallurgy[{{ $i }}][value]' value='{{ $metallurgy_value->value }}' required id='value-{{ $i }}'></td>
+			 										<td ><input type='number' class='form-control' name='metallurgy[{{ $i }}][value]' value='{{ $metallurgy_value->value }}' required id='value-{{ $i }}'></td>
 			 										<td><a class='btn btn-default remove' ><i class='icofont icofont-minus' style='color:red'></i></a></td>
 			 									</tr>
 			 									@php ($i++)	
@@ -141,10 +156,10 @@
 
 		});	
 
-	    var count = 1;
+	    var count = {!! $i !!};
 		function add_unit(metallurgy_val,metallurgy_text) {	
 			if(metallurgy_val != '') {
-				var row="<tr><td><input  class='form-control' type='hidden' name='metallurgy["+count+"][metallurgy_id]' id='metallurgy_id-"+count+"' value='"+metallurgy_val+"' required /><input  class='form-control' type='text' name='metallurgy["+count+"][metallurgy_text]' id='metallurgy_text-"+count+"' value='"+metallurgy_text+"' required readonly/></td><td ><input type='text' class='form-control' name='metallurgy["+count+"][value]' required id='value-"+count+"'></td><td><a class='btn btn-default remove' ><i class='icofont icofont-minus' style='color:red'></i></a></td></tr>";
+				var row="<tr><td><input  class='form-control' type='hidden' name='metallurgy["+count+"][metallurgy_id]' id='metallurgy_id-"+count+"' value='"+metallurgy_val+"' required /><input  class='form-control' type='text' name='metallurgy["+count+"][metallurgy_text]' id='metallurgy_text-"+count+"' value='"+metallurgy_text+"' required readonly/></td><td ><input type='number' class='form-control' name='metallurgy["+count+"][value]' required id='value-"+count+"'></td><td><a class='btn btn-default remove' ><i class='icofont icofont-minus' style='color:red'></i></a></td></tr>";
 				$("#unit").append(row);
 				count++;
 				document.getElementById('count').value=count;

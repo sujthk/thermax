@@ -74,9 +74,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-		                        	    <label class="col-sm-3 col-form-label">Model</label>
+		                        	    <label class="col-sm-3 col-form-label">Min Model</label>
 		                        	    <div class="col-sm-6">
-		                        	        <input id="model" name="model" type="number" value="{{ old('model') }}" required class="form-control">
+		                        	        <input id="min_model" name="min_model" type="number" value="{{ old('min_model') }}" required class="form-control">
+		                        	    </div>
+		                        	</div>
+		                        	<div class="form-group row">
+		                        	    <label class="col-sm-3 col-form-label">Max Model</label>
+		                        	    <div class="col-sm-6">
+		                        	        <input id="max_model" name="max_model" type="number" value="{{ old('max_model') }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
         		                    <div class="form-group row">

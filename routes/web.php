@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/metallurgies/add', 'MetallurgyController@postMetallurgy');
 	Route::get('/metallurgies/edit/{metallurgy_id}', 'MetallurgyController@editMetallurgy');
 	Route::post('/metallurgies/edit/{metallurgy_id}', 'MetallurgyController@updateMetallurgy');
+	Route::get('/metallurgies/delete/{metallurgy_id}', 'MetallurgyController@deleteMetallurgy');
 
 	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
@@ -58,5 +59,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@postMetallurgyCalculator');
 	Route::get('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@editMetallurgyCalculator');
 	Route::post('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@updateMetallurgyCalculator');
+	Route::get('/tube-metallurgy/calculators/delete/{chiller_metallurgy_id}', 'DefaultCalculatorController@deleteMetallurgyCalculator');
 
 });
