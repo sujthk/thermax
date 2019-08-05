@@ -48,6 +48,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
+	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
+	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
 
 
 	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators');
