@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\VamBaseController;
 use Illuminate\Http\Request;
 use App\ChillerDefaultValue;
 use App\ChillerMetallurgyOption;
@@ -70,7 +71,6 @@ class DoubleSteamController extends Controller
 
 		$this->model_values = $model_values;
 
-
 		// Log::info($this->model_values);
 		$validate_attributes = array('CAPACITY','CHILLED_WATER_IN','CHILLED_WATER_OUT','EVAPORATOR_TUBE_TYPE','GLYCOL_TYPE_CHANGED','GLYCOL_CHILLED_WATER','GLYCOL_COOLING_WATER','COOLING_WATER_IN','COOLING_WATER_FLOW','EVAPORATOR_THICKNESS','ABSORBER_THICKNESS','CONDENSER_THICKNESS','FOULING_CHILLED_VALUE','FOULING_COOLING_VALUE','STEAM_PRESSURE');	
 		
@@ -81,11 +81,21 @@ class DoubleSteamController extends Controller
 				return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'input_target'=>strtolower($validate_attribute)]);
 		}									
 
+		$this->model_values = $model_values;
+		// Log::info($this->model_values);
+		$this->castToBoolean();
 		$this->updateInputs();
+        $this->WATERPROP();
+
+		// $vam_base = new VamBaseController();
+		// $CHGLY_VIS12 = $vam_base->EG_VISCOSITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']) / 1000;
+  //       $CHGLY_TCON12 = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']);
 
 
+  //       Log::info($CHGLY_VIS12);
+  //       Log::info($CHGLY_TCON12);
 		// Log::info("metallurgy updated = ".print_r($this->model_values,true));
-		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$this->model_values]);
+		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$this->calculation_values]);
 	}
 
 	public function postResetDoubleEffectS2(Request $request){
@@ -111,7 +121,40 @@ class DoubleSteamController extends Controller
 
 	}
 
+	public function castToBoolean(){
+			$this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
+			$this->model_values['evaporator_thickness_change'] = $this->getBoolean($this->model_values['evaporator_thickness_change']);
+		    $this->model_values['absorber_thickness_change'] = $this->getBoolean($this->model_values['absorber_thickness_change']);
+		    $this->model_values['condenser_thickness_change'] = $this->getBoolean($this->model_values['condenser_thickness_change']);
+		    $this->model_values['fouling_chilled_water_checked'] = $this->getBoolean($this->model_values['fouling_chilled_water_checked']);
+		    $this->model_values['fouling_cooling_water_checked'] = $this->getBoolean($this->model_values['fouling_cooling_water_checked']);
+		    $this->model_values['fouling_chilled_water_disabled'] = $this->getBoolean($this->model_values['fouling_chilled_water_disabled']);
+		    $this->model_values['fouling_cooling_water_disabled'] = $this->getBoolean($this->model_values['fouling_cooling_water_disabled']);
+		    $this->model_values['fouling_chilled_water_value_disabled'] = $this->getBoolean($this->model_values['fouling_chilled_water_value_disabled']);
+		    $this->model_values['fouling_cooling_water_value_disabled'] = $this->getBoolean($this->model_values['fouling_cooling_water_value_disabled']);
+	}
+
+	public function getBoolean($value){
+		
+	   	if($value == "false"){
+	   		return false;
+	   	}
+	   	else if($value == "true"){
+	   		return true;
+	   	}
+	   	else{
+	   		return $value;
+	   	}
+	}
+
+
+
 	public function updateInputs(){
+
+		$chiller_data = $this->getChillerData();
+		$this->calculation_values = $chiller_data;
+
+
 		$this->calculation_values['MODEL'] = $this->model_values['model_number'];
 		$this->calculation_values['TON'] = $this->model_values['capacity'];
 		$this->calculation_values['TUU'] = $this->model_values['fouling_factor'];
@@ -150,7 +193,10 @@ class DoubleSteamController extends Controller
 		$this->calculation_values['GCW'] = $this->model_values['cooling_water_flow']; 
 		$this->calculation_values['PST1'] = $this->model_values['steam_pressure']; 
 
-	
+
+		$this->DATA();
+
+		$this->THICKNESS();
 	}
 
 	private function DATA()
@@ -177,134 +223,247 @@ class DoubleSteamController extends Controller
         $this->calculation_values['AHR'] = $this->calculation_values['AHR'] * 1.1;
         $this->calculation_values['KCON'] = 3000 * 1.4;
 
-        $this->calculation_values['KCON']ULTHE = 450; 
-        $this->calculation_values['KCON']UHTHE = 1400; $this->calculation_values['KCON']UDHE = 400; $this->calculation_values['KCON']UHR = 700;      //UHTG = 1750;
+        $this->calculation_values['ULTHE'] = 450; 
+        $this->calculation_values['UHTHE'] = 1400; 
+        $this->calculation_values['UDHE'] = 400; 
+        $this->calculation_values['UHR'] = 700;      //UHTG = 1750;
 
-        if (MODEL < 1200)
+        if ($this->calculation_values['MODEL'] < 1200)
         {
-            ULTG = 1850; UHTG = 1750;
+            $this->calculation_values['ULTG'] = 1850;
+            $this->calculation_values['UHTG'] = 1750;
         }
         else
         {
-            ULTG = 1790; UHTG = 1625;
+            $this->calculation_values['ULTG'] = 1790; 
+            $this->calculation_values['UHTG'] = 1625;
         }
 
-        if (MODEL < 1200)
+        if ($this->calculation_values['MODEL'] < 1200)
         {
-            ODE = 0.016;
-            ODA = 0.016;
+            $this->calculation_values['ODE'] = 0.016;
+            $this->calculation_values['ODA'] = 0.016;
 
-            if (MODEL > 950)
+            if ($this->calculation_values['MODEL'] > 950)
             {
-                ODC = 0.019;
+                $this->calculation_values['ODC'] = 0.019;
             }
             else
             {
-                ODC = 0.016;
+                $this->calculation_values['ODC'] = 0.016;
             }
         }
         else
         {
-            ODE = 0.019;
-            ODA = 0.019;
-            ODC = 0.019;
+            $this->calculation_values['ODE'] = 0.019;
+            $this->calculation_values['ODA'] = 0.019;
+            $this->calculation_values['ODC'] = 0.019;
         }
         /******** DETERMINATION OF KEVA FOR NON STD.SELECTION*****/
-        if (MODEL < 750)
+        if ($this->calculation_values['MODEL'] < 750)
         {
-            KEVA1 = 1 / ((1 / KEVA) - (0.57 / 340000.0));
+            $this->calculation_values['KEVA1'] = 1 / ((1 / $this->calculation_values['KEVA']) - (0.57 / 340000.0));
         }
         else
         {
-            KEVA1 = 1 / ((1 / KEVA) - (0.65 / 340000.0));
+            $this->calculation_values['KEVA1'] = 1 / ((1 / $this->calculation_values['KEVA']) - (0.65 / 340000.0));
         }
-        if (TU2 == 2)
-            KEVA = 1 / ((1 / KEVA1) + (TU3 / 340000.0));
-        if (TU2 == 1)
-            KEVA = 1 / ((1 / KEVA1) + (TU3 / 37000.0));
-        if (TU2 == 4)
-            KEVA = (1 / ((1 / KEVA1) + (TU3 / 21000.0))) * 0.93;
-        if (TU2 == 3)
-            KEVA = 1 / ((1 / KEVA1) + (TU3 / 21000.0)) * 0.93;              //Changed to KEVA1 from 1600 on 06/11/2017 as tube metallurgy is changed
-        if (TU2 == 5)
-            KEVA = 1 / ((1 / 1600.0) + (TU3 / 15000.0));
+        if ($this->calculation_values['TU2'] == 2)
+            $this->calculation_values['KEVA'] = 1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 340000.0));
+        if ($this->calculation_values['TU2'] == 1)
+            $this->calculation_values['KEVA'] = 1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 37000.0));
+        if ($this->calculation_values['TU2'] == 4)
+            $this->calculation_values['KEVA'] = (1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 21000.0))) * 0.93;
+        if ($this->calculation_values['TU2'] == 3)
+            $this->calculation_values['KEVA'] = 1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 21000.0)) * 0.93;              //Changed to KEVA1 from 1600 on 06/11/2017 as tube metallurgy is changed
+        if ($this->calculation_values['TU2'] == 5)
+            $this->calculation_values['KEVA'] = 1 / ((1 / 1600.0) + ($this->calculation_values['TU3'] / 15000.0));
         /********* VARIATION OF KABS WITH CON METALLURGY ****/
-        if (TU2 == 6 || TU2 == 7 || TU2 == 8)
+        if ($this->calculation_values['TU2'] == 6 || $this->calculation_values['TU2'] == 7 || $this->calculation_values['TU2'] == 8)
         {
-            if (TV5 == 1)
-                KM5 = 1;
-            else if (TV5 == 2)
-                KM5 = 1;
-            else if (TV5 == 3)
-                KM5 = 1;
-            else if (TV5 == 4)
-                KM5 = 1;
-            else if (TV5 == 5)
-                KM5 = 1;
+            if ($this->calculation_values['TV5'] == 1)
+                $this->calculation_values['KM5'] = 1;
+            else if ($this->calculation_values['TV5'] == 2)
+                $this->calculation_values['KM5'] = 1;
+            else if ($this->calculation_values['TV5'] == 3)
+                $this->calculation_values['KM5'] = 1;
+            else if ($this->calculation_values['TV5'] == 4)
+                $this->calculation_values['KM5'] = 1;
+            else if ($this->calculation_values['TV5'] == 5)
+                $this->calculation_values['KM5'] = 1;
             else
-                KM5 = 1;
+                $this->calculation_values['KM5'] = 1;
         }
         else
-            KM5 = 1;
+            $this->calculation_values['KM5'] = 1;
         /********* DETERMINATION OF KABS FOR NONSTD. SELECTION****/
-        KABS1 = 1 / ((1 / KABS) - (0.65 / 340000));
-        if (TU5 == 1)
+        $this->calculation_values['KABS1'] = 1 / ((1 / $this->calculation_values['KABS']) - (0.65 / 340000));
+        if ($this->calculation_values['TU5'] == 1)
         {
-            KABS = 1 / ((1 / KABS1) + (TU6 / 37000));
+            $this->calculation_values['KABS'] = 1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 37000));
         }
         else
         {
-            if (TU5 == 2)
-                KABS = 1 / ((1 / KABS1) + (TU6 / 340000));
-            if (TU5 == 6)
-                KABS = (1 / ((1 / KABS1) + (TU6 / 21000))) * 0.93;
+            if ($this->calculation_values['TU5'] == 2)
+                $this->calculation_values['KABS'] = 1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 340000));
+            if ($this->calculation_values['TU5'] == 6)
+                $this->calculation_values['KABS'] = (1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 21000))) * 0.93;
             else
             {
-                KABS1 = 1240;
-                if (TU5 == 3)
-                    KABS = 1 / ((1 / KABS1) + (TU6 / 37000));
-                if (TU5 == 4)
-                    KABS = 1 / ((1 / KABS1) + (TU6 / 340000));
-                if (TU5 == 5)
-                    KABS = 1 / ((1 / KABS1) + (TU6 / 21000));
-                if (TU5 == 7)
-                    KABS = 1 / ((1 / KABS1) + (TU6 / 15000));
+                $this->calculation_values['KABS1'] = 1240;
+                if ($this->calculation_values['TU5'] == 3)
+                    $this->calculation_values['KABS'] = 1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 37000));
+                if ($this->calculation_values['TU5'] == 4)
+                    $this->calculation_values['KABS'] = 1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 340000));
+                if ($this->calculation_values['TU5'] == 5)
+                    $this->calculation_values['KABS'] = 1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 21000));
+                if ($this->calculation_values['TU5'] == 7)
+                    $this->calculation_values['KABS'] = 1 / ((1 / $this->calculation_values['KABS1']) + ($this->calculation_values['TU6'] / 15000));
             }
         }
-        KABS = KABS * KM5;
+        $this->calculation_values['KABS'] = $this->calculation_values['KABS'] * $this->calculation_values['KM5'];
 
 
         /********** DETERMINATION OF KCON IN NONSTD. SELECTION*******/
-        KCON1 = 1 / ((1 / KCON) - (0.65 / 340000));         //Changed from 0.57 to 0.65 on 06/11/2017
+        $this->calculation_values['KCON1'] = 1 / ((1 / $this->calculation_values['KCON']) - (0.65 / 340000));         //Changed from 0.57 to 0.65 on 06/11/2017
 
-        if (TV5 == 1)
+        if ($this->calculation_values['TV5'] == 1)
         {
             //KCON1 = 4000;
-            KCON = 1 / ((1 / KCON1) + (TV6 / 37000));
+            $this->calculation_values['KCON'] = 1 / ((1 / $this->calculation_values['KCON1']) + ($this->calculation_values['TV6'] / 37000));
         }
-        else if (TV5 == 2 )
-            KCON = 1 / ((1 / KCON1) + (TV6 / 340000));
-        else if (TV5 == 4)
-            KCON = 1 / ((1 / KCON1) + (TV6 / 21000)) * 0.95;        
+        else if ($this->calculation_values['TV5'] == 2 )
+            $this->calculation_values['KCON'] = 1 / ((1 / $this->calculation_values['KCON1']) + ($this->calculation_values['TV6'] / 340000));
+        else if ($this->calculation_values['TV5'] == 4)
+            $this->calculation_values['KCON'] = 1 / ((1 / $this->calculation_values['KCON1']) + ($this->calculation_values['TV6'] / 21000)) * 0.95;        
         else
         {
-            KCON1 = 3000;
-            if (TV5 == 3)
-                KCON = 1 / ((1 / KCON1) + (TV6 / 21000));                
-            if (TV5 == 5)
-                KCON = 1 / ((1 / KCON1) + (TV6 / 15000));
+            $this->calculation_values['KCON1'] = 3000;
+            if ($this->calculation_values['TV5'] == 3)
+                $this->calculation_values['KCON'] = 1 / ((1 / $this->calculation_values['KCON1']) + ($this->calculation_values['TV6'] / 21000));                
+            if ($this->calculation_values['TV5'] == 5)
+                $this->calculation_values['KCON'] = 1 / ((1 / $this->calculation_values['KCON1']) + ($this->calculation_values['TV6'] / 15000));
         }           
 
 
-        AEVAH = AEVA / 2;
-        AEVAL = AEVA / 2;
-        AABSH = AABS / 2;
-        AABSL = AABS / 2;
+        $this->calculation_values['AEVAH'] = $this->calculation_values['AEVA'] / 2;
+        $this->calculation_values['AEVAL'] = $this->calculation_values['AEVA'] / 2;
+        $this->calculation_values['AABSH'] = $this->calculation_values['AABS'] / 2;
+        $this->calculation_values['AABSL'] = $this->calculation_values['AABS'] / 2;
+    }
+
+    private function THICKNESS()
+    {
+        $this->calculation_values['THE'] = "";
+        $this->calculation_values['THA'] = 0; 
+        $this->calculation_values['THC'] = 0;
+
+        /********** EVA THICKNESS *********/
+        if ($this->calculation_values['TU3'] == 0.0)
+        {
+            if ($this->calculation_values['MODEL'] < 750)
+                $this->calculation_values['THE'] = 0.57;
+            else
+                $this->calculation_values['THE'] = 0.65;
+        }
+        else
+        {
+            $this->calculation_values['THE'] = $this->calculation_values['TU3'];
+        }
+
+        /********** ABS THICKNESS *********/
+        if ($this->calculation_values['TU6'] == 0.0)
+        {
+            $this->calculation_values['THA'] = 0.65;
+        }
+        else
+        {
+            $this->calculation_values['THA'] = $this->calculation_values['TU6'];
+        }
+
+        /********** COND THICKNESS *********/
+        if ($this->calculation_values['TV6'] == 0.0)
+        {
+            $this->calculation_values['THC'] = .65;
+        }
+        else
+        {
+            $this->calculation_values['THC'] = $this->calculation_values['TV6'];
+        }
+
+
+        if ($this->calculation_values['MODEL'] < 750)
+        { 
+            if($this->calculation_values['TU2'] == 4)
+                $this->calculation_values['IDE'] = $this->calculation_values['ODE'] - ((2.0 * ($this->calculation_values['THE'] + 0.1)) / 1000.0);
+            else
+                $this->calculation_values['IDE'] = $this->calculation_values['ODE'] - ((2.0 * $this->calculation_values['THE']) / 1000.0);
+
+            if ($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6)
+                $this->calculation_values['IDA'] = $this->calculation_values['ODA'] - ((2.0 * ($this->calculation_values['THA'] + 0.1)) / 1000.0);
+            else
+                $this->calculation_values['IDA'] = $this->calculation_values['ODA'] - ((2.0 * $this->calculation_values['THA']) / 1000.0);
+
+            if ($this->calculation_values['TV5'] == 1 || $this->calculation_values['TV5'] == 2 || $this->calculation_values['TV5'] == 0 || $this->calculation_values['TV5'] == 4)
+                $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * ($this->calculation_values['THC'] + 0.1)) / 1000.0);                
+            else                
+                $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * $this->calculation_values['THC']) / 1000.0);
+            
+        }
+        else
+        {
+            if ($this->calculation_values['TU2'] < 2.1 || $this->calculation_values['TU2']==4)
+                $this->calculation_values['IDE'] = $this->calculation_values['ODE'] - ((2.0 * ($this->calculation_values['THE'] + 0.1)) / 1000.0);
+            else
+                $this->calculation_values['IDE'] = $this->calculation_values['ODE'] - ((2.0 * $this->calculation_values['THE']) / 1000.0);
+
+            if ($this->calculation_values['TU5'] < 2.1|| $this->calculation_values['TU5'] == 6)
+                $this->calculation_values['IDA'] = $this->calculation_values['ODA'] - ((2.0 * ($this->calculation_values['THA'] + 0.1)) / 1000.0);
+            else
+                $this->calculation_values['IDA'] = $this->calculation_values['ODA'] - ((2.0 * $this->calculation_values['THA']) / 1000.0);
+
+            if ($this->calculation_values['TV5'] == 1 || $this->calculation_values['TV5'] == 2 || $this->calculation_values['TV5'] == 0 || $this->calculation_values['TV5'] == 4)
+                $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * ($this->calculation_values['THC'] + 0.1)) / 1000.0);
+            else
+                $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * $this->calculation_values['THC']) / 1000.0);
+
+
+        }
     }
 
 
+    public function WATERPROP(){
 
-	
+        $vam_base = new VamBaseController();
+        
+        if (intval($this->calculation_values['GL']) == 2)
+        {
+            $this->calculation_values['CHGLY_VIS12'] = $vam_base->EG_VISCOSITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']) / 1000;
+            $this->calculation_values['CHGLY_TCON12'] = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']);
+            $this->calculation_values['CHGLY_ROW12'] = $vam_base->EG_ROW($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']);
+            $this->calculation_values['CHGLY_SPHT12'] = $vam_base->EG_SPHT($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']) * 1000;
+
+            $this->calculation_values['COGLY_VISH1'] = $vam_base->EG_VISCOSITY($this->calculation_values['TCW11'], $this->calculation_values['COGLY']) / 1000;
+            $this->calculation_values['COGLY_TCONH1'] = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCW11'], $this->calculation_values['COGLY']);
+            $this->calculation_values['COGLY_ROWH1'] = $vam_base->EG_ROW($this->calculation_values['TCW11'], $this->calculation_values['COGLY']);
+            $this->calculation_values['COGLY_SPHT1'] = $vam_base->EG_SPHT($this->calculation_values['TCW11'], $this->calculation_values['COGLY']) * 1000;
+        }
+        else
+        {
+            $this->calculation_values['CHGLY_VIS12'] = $vam_base->PG_VISCOSITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']) / 1000;
+            $this->calculation_values['CHGLY_TCON12'] = $vam_base->PG_THERMAL_CONDUCTIVITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']);
+            $this->calculation_values['CHGLY_ROW12'] = $vam_base->PG_ROW($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']);
+            $this->calculation_values['CHGLY_SPHT12'] = $vam_base->PG_SPHT($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']) * 1000;
+
+            $this->calculation_values['COGLY_VISH1'] = $vam_base->PG_VISCOSITY($this->calculation_values['TCW11'], $this->calculation_values['COGLY']) / 1000;
+            $this->calculation_values['COGLY_TCONH1'] = $vam_base->PG_THERMAL_CONDUCTIVITY($this->calculation_values['TCW11'], $this->calculation_values['COGLY']);
+            $this->calculation_values['COGLY_ROWH1'] = $vam_base->PG_ROW($this->calculation_values['TCW11'], $this->calculation_values['COGLY']);
+            $this->calculation_values['COGLY_SPHT1'] = $vam_base->PG_SPHT($this->calculation_values['TCW11'], $this->calculation_values['COGLY']) * 1000;
+        }
+        $this->calculation_values['GCHW'] = $this->calculation_values['TON'] * 3024 / (($this->calculation_values['TCHW11'] - $this->calculation_values['TCHW12']) * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] / 4187);
+    }
+
+
 
 
 	public function validateChillerAttribute($attribute){
@@ -605,7 +764,61 @@ class DoubleSteamController extends Controller
 		return  array('status' => true,'msg' => "process run successfully");
 	}
 
+    public function VELOCITY(){
+        $chiller_data = $this->getChillerData();
 
+
+        $IDA = floatval($chiller_data['IDA']);
+        $TNAA = floatval($chiller_data['TNAA']);
+
+
+
+
+        $GCW = floatval($this->calculation_values['GCW']);
+        $model_number = $this->calculation_values['MODEL'];
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        // $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$this->model_values['evaporator_material_value'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->model_values['absorber_material_value'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->model_values['condenser_material_value'])->first();
+
+        $VAMIN = $absorber_option->metallurgy->abs_min_velocity;          
+        $VAMAX = $absorber_option->metallurgy->abs_max_velocity;
+        $VCMIN = $condenser_option->metallurgy->con_min_velocity;
+        $VCMAX = $condenser_option->metallurgy->con_max_velocity;
+
+
+        $VELEVA = 0;
+
+        $TAP = 0;
+        do
+        {
+            $TAP = $TAP + 1;
+            $VA = $GCW / (((3600 * 3.141593 * $IDA * $IDA) / 4.0) * ($TNAA / $TAP));
+        } while ($VA < $VAMAX);
+
+        if ($VA > ($VAMAX + 0.01) && $TAP != 1)
+        {
+            $TAP = $TAP - 1;
+            $VA = $GCW / (((3600 * 3.141593 * $IDA * $IDA) / 4.0) * ($TNAA / $TAP));
+        }
+        if ($TAP == 1)           //PARAFLOW
+        {
+            $GCWAH = 0.5 * $GCW;
+            $GCWAL = 0.5 * $GCW;
+        }
+        else                //SERIES FLOW
+        {
+            $GCWAH = $GCW;
+            $GCWAL = $GCW;
+        }
+
+
+    }
 
 	
 	
@@ -621,7 +834,7 @@ class DoubleSteamController extends Controller
 	    $capacity = $this->model_values['capacity'];
 
 	    $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
-	    // Log::info($GCWMIN1);
+	    Log::info("Range");
 	    $chiller_data = $this->getChillerData();
 
 	    $IDC = floatval($chiller_data['IDC']);
@@ -632,9 +845,28 @@ class DoubleSteamController extends Controller
 	    $THPA = floatval($chiller_data['THPA']);
 
 	    // Log::info($IDC);
-	    // Log::info("TNAA".$TNAA);
+        Log::info("IDC".$IDC);
+        Log::info("IDA".$IDA);
+	    Log::info("TNC".$TNC);
+    
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        // $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$this->model_values['evaporator_material_value'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->model_values['absorber_material_value'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->model_values['condenser_material_value'])->first();
 
 	    $TCP = 1;
+        $VAMIN = $absorber_option->metallurgy->abs_min_velocity;          
+        $VAMAX = $absorber_option->metallurgy->abs_max_velocity;
+        $VCMIN = $condenser_option->metallurgy->con_min_velocity;
+        $VCMAX = $condenser_option->metallurgy->con_max_velocity;
+        // Log::info($absorber_option->id);
+        // Log::info($VAMIN);
+
 
 	    if ($model_number < 1200)
 	    {
@@ -659,11 +891,15 @@ class DoubleSteamController extends Controller
 	        $VCMAX = 2.78;
 	    }
 
+        Log::info("vamin".$VAMIN);
+        Log::info("vamax".$VAMAX);
+        Log::info("vcmin".$VCMIN);
+        Log::info("vcamx".$VCMAX);
+
 	    $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;		//min required flow in condenser
 	    $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / $TCP;
 
-	    // Log::info($GCWMIN);
-	    // Log::info($GCWCMAX);
+	    
 
 	    if ($GCWMIN > $GCWMIN1)
 	        $GCWMIN2 = $GCWMIN;
@@ -709,6 +945,11 @@ class DoubleSteamController extends Controller
 	        }
 	    }
 
+        Log::info($GCWMIN);
+        Log::info($GCWCMAX);
+
+
+
 	    // PR_DROP_DATA();
 	    $PIDA = ($PODA - (2 * $THPA)) / 1000;
 	    $APA = 3.141593 * $PIDA * $PIDA / 4;
@@ -735,6 +976,9 @@ class DoubleSteamController extends Controller
 	    //{
 	    //    $FMAX1 = GCWCMAX;
 	    //}
+
+        Log::info($FMIN1);
+        Log::info($FMAX1);
 
 	    if ($FMIN1 < $FMAX1)
 	    {
@@ -898,6 +1142,214 @@ class DoubleSteamController extends Controller
 	    return array('TCWA' => '32','AT13' => '101','LE' => '2.072','TNEV' => '304','TNAA' => '276','TNC' => '140','AEVA' => '31.0','AABS' => '28.2','ACON' => '14.3','ALTG' => '12.7','AHTG' => '10.9','ALTHE' => '13.806','AHTHE' => '10.6384','ADHE' => '2.57','AHR' => '3.73','MODEL1' => '100','KEVA' => '2790.72','KABS' => '1525.39387','SFACTOR' => '0.891','KCON' => '4200','ULTHE' => '450','ULTG' => '1850','ODE' => '0.016','ODA' => '0.016','ODC' => '0.016','AEVAH' => '15.5','AEVAL' => '15.5','AABSH' => '14.1','AABSL' => '14.1','UHTHE' => '1400','UDHE' => '400','UHR' => '700','UHTG' => '1750','IDE' => '0.01486','IDA' => '0.0145','IDC' => '0.0145','PNB' => '150','PODA' => '168.3','THPA' => '7.11');
 
 	}
+
+    // public function PR_DROP_DATA()
+    // {
+    //     if ($this->model_values['model_number'] == 130 || $this->model_values['model_number'] == 160 || $this->model_values['model_number'] == 210 || $this->model_values['model_number'] == 250)
+    //     {
+    //         //CHILLED WATER
+    //         $PNB1 = 125; $PODE1 = 141.3; $THPE1 = 6.55;
+    //         $PNB2 = 100; $PODE2 = 114.3; $THPE2 = 6.02;
+
+    //         $SL1 = 0.49; $SL8 = 0.49;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 0.82; $SL7 = 0.82;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.348; $SL6 = 0.123;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.204; $SL5 = 0.204;     //ST LENGTH AT INLET & OUTLET OF HEADER
+    //         $FT1 = 0.016; $FT2 = 0.017;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 1.525;
+
+    //         //COOLING WATER
+    //         $PNB = 150; $PODA = 168.3; $THPA = 7.11;   //LINE SIZE AT INLET & OUTLET
+
+    //         $PSL1 = 0.660 + 0.568;              //STRAIGHT LENGTH OF PIPE @ Inlet, Outlet & btw Abs 
+    //         $PSL2 = 0.481;                //STRAIGHT LENGTH OF PIPE @ Outlet Of Con      
+    //         $FT = 0.015;
+
+    //         $SHA = 1.946;
+           
+    //     }
+    //     if ($this->model_values['model_number'] == 310 || $this->model_values['model_number'] == 350 || $this->model_values['model_number'] == 410)
+    //     {
+    //         //EVA 
+    //         $PNB1 = 150; $PODE1 = 168.3; $THPE1 = 7.11;
+    //         $PNB2 = 125; $PODE2 = 141.3; $THPE2 = 6.55;
+
+    //         $SL1 = 0.41; $SL8 = 0.41;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 0.98; $SL7 = 0.98;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.26; $SL6 = 0.16;       //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.216; $SL5 = 0.216;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.015; $FT2 = 0.016;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 1.53;
+
+    //         //COW 
+    //         $PNB = 200; $PODA = 219.1; $THPA = 8.18;
+
+    //         $PSL1 = 0.582 + 0.6010; $PSL2 = 0.566;
+    //         $FT = 0.014;
+
+    //         $SHA = 2.073;
+            
+    //     }
+    //     if ($this->model_values['model_number'] == 470 || $this->model_values['model_number'] == 530 || $this->model_values['model_number'] == 580)
+    //     {
+    //         //EVA 
+    //         $PNB1 = 200; $PODE1 = 219.1; $THPE1 = 8.18;
+    //         $PNB2 = 150; $PODE2 = 168.3; $THPE2 = 7.11;
+
+    //         $SL1 = 0.42; $SL8 = 0.42;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.06; $SL7 = 1.06;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.321; $SL6 = 0.171;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.277; $SL5 = 0.277;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.014; $FT2 = 0.015;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 1.807;
+
+    //         //COW 
+    //         $PNB = 250; $PODA = 273.0; $THPA = 9.27;
+
+    //         $PSL1 = 0.555 + 0.616; $PSL2 = 0.5650;
+    //         $FT = 0.014;
+
+    //         $SHA = 2.356;                
+    //     }
+    //     if ($this->model_values['model_number'] == 630 || $this->model_values['model_number'] == 710)
+    //     {
+    //         //EVA 
+    //         $PNB1 = 200; $PODE1 = 219.1; $THPE1 = 8.18;
+    //         $PNB2 = 150; $PODE2 = 168.3; $THPE2 = 7.11;
+
+    //         $SL1 = 0.43; $SL8 = 0.43;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.14; $SL7 = 1.14;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.321; $SL6 = 0.171;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.277; $SL5 = 0.277;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.014; $FT2 = 0.015;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 1.911;
+
+    //         //COW 
+    //         $PNB = 300; $PODA = 323.6; $THPA = 10.31;
+
+    //         $PSL1 = 0.529 + 0.6880; $PSL2 = 0.665;
+    //         $FT = 0.013;
+
+    //         $SHA = 2.582;
+
+    //     }
+    //     if ($this->model_values['model_number'] == 760 || $this->model_values['model_number'] == 810 || $this->model_values['model_number'] == 900)
+    //     {
+    //         //EVA PIPE DIA
+    //         $PNB1 = 250; $PODE1 = 273.0; $THPE1 = 9.27;
+    //         $PNB2 = 200; $PODE2 = 219.1; $THPE2 = 8.18;
+
+    //         $SL1 = 0.53; $SL8 = 0.53;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.14; $SL7 = 1.14;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.395; $SL6 = 0.195;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.247; $SL5 = 0.247;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.014; $FT2 = 0.014;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 2.106;
+
+    //         //COW 
+    //         $PNB = 350; $PODA = 355.6; $THPA = 11.13;
+
+    //         $PSL1 = 0.684 + 0.7; $PSL2 = 0.694;
+    //         $FT = 0.013;
+
+    //         $SHA = 2.804;
+    //     }
+    //     if ($this->model_values['model_number'] == 1010 || $this->model_values['model_number'] == 1130)
+    //     {
+    //         //EVA 
+    //         $PNB1 = 250; $PODE1 = 273.0; $THPE1 = 9.27;
+    //         $PNB2 = 200; $PODE2 = 219.1; $THPE2 = 8.18;
+
+    //         $SL1 = 0.53; $SL8 = 0.53;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.14; $SL7 = 1.14;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.395; $SL6 = 0.395;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.247; $SL5 = 0.247;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.014; $FT2 = 0.014;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 2.106;
+
+    //         //COW 
+    //         $PNB = 350; $PODA = 355.6; $THPA = 11.13;
+
+    //         $PSL1 = 0.552 + 0.705; $PSL2 = 0.694;
+    //         $FT = 0.013;
+
+    //         $SHA = 2.789;
+    //     }
+    //     if ($this->model_values['model_number'] == 1260 || $this->model_values['model_number'] == 1380) //F
+    //     {
+    //         //EVA 
+    //         $PNB1 = 300; $PODE1 = 323.6; $THPE1 = 10.31;
+    //         $PNB2 = 250; $PODE2 = 273; $THPE2 = 9.27;
+
+    //         $SL1 = 0.55; $SL8 = 0.55;       //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.32; $SL7 = 1.32;       //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.51; $SL6 = 0.334;      //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.336; $SL5 = 0.336;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.013; $FT2 = 0.014;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 2.487;
+
+    //         //COW
+    //         $PNB = 400; $PODA = 406.4; $THPA = 12.7;
+
+    //         $PSL1 = 0.794 + 1.0320; $PSL2 = 0.879;
+    //         $FT = 0.013;
+
+    //         $SHA = 2.144;
+    //     }
+
+    //     if ($this->model_values['model_number'] == 1560 || $this->model_values['model_number'] == 1690 || $this->model_values['model_number'] == 1890 || $this->model_values['model_number'] == 2130)
+    //     {
+    //         //EVA        
+    //         $PNB1 = 350; $PODE1 = 355.6; $THPE1 = 11.13;
+    //         $PNB2 = 300; $PODE2 = 323.6; $THPE2 = 10.31;
+
+    //         $SL1 = 0.624; $SL8 = 0.624;     //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.576; $SL7 = 1.576;     //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.571; $SL6 = 0.265;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.445; $SL5 = 0.445;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.013; $FT2 = 0.013;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 2.65;
+
+    //         //COW 
+    //         $PNB = 450; $PODA = 457.2; $THPA = 14.27;
+
+    //         $PSL1 = 0.868 + 1.167; $PSL2 = 0.859;
+    //         $FT = 0.012;
+
+    //         $SHA = 2.229;
+    //     }
+    //     if ($this->model_values['model_number'] == 2270 || $this->model_values['model_number'] == 2560)
+    //     {
+    //         //EVA        
+    //         $PNB1 = 400; $PODE1 = 406.4; $THPE1 = 12.7;
+    //         $PNB2 = 300; $PODE2 = 323.6; $THPE2 = 10.31;
+
+    //         $SL1 = 0.724; $SL8 = 0.724;     //ST LENGTH AT INLET & OUTLET
+    //         $SL2 = 1.576; $SL7 = 1.576;     //ST LENGTH BETWEEN BRANCHING
+    //         $SL3 = 0.545; $SL6 = 0.339;     //ST LENGTH OF BRANCH AT INLET & OUTLET
+    //         $SL4 = 0.468; $SL5 = 0.468;     //ST LENGTH AT INLET & OUTLET OF HAEDER
+    //         $FT1 = 0.013; $FT2 = 0.013;     //FRIC FACTOR AT TURBULENCE
+
+    //         $SHE = 2.75;
+
+    //         //COW 
+    //         $PNB = 500; $PODA = 508; $THPA = 15.08;
+
+    //         $PSL1 = 0.980 + 1.325; $PSL2 = 0.8670;
+    //         $FT = 0.012;
+
+    //         $SHA = 3.176;
+    //     }
+    // }
+    
 
 
 	// public function processAttribChanged(){

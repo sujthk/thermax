@@ -871,6 +871,7 @@
 		$("#double_steam_s2").submit(function(event) {
 		  	event.preventDefault();
 	  		var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+	  		console.log(model_values);
 	  	   	$.ajax({
 	  			type: "POST",
 	  			url: "{{ url('calculators/double-effect-s2/submit-calculate') }}",
@@ -878,6 +879,8 @@
 	  			success: function(response){
 	  				if(response.status){
 	  					console.log(response.model_values);
+	  					console.log(response.CHGLY_VIS12);
+	  					console.log(response.CHGLY_TCON12);
 	  					
 	  					
 	  				}
