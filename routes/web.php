@@ -27,36 +27,36 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
 	Route::get('/dashboard', function () {
 	    return view('dashboard');
-	});
+	})->name('dashboard');
 	Route::get('/logout', 'UserController@logoutUser');
 	
 
-	Route::get('/users', 'UserController@getUsers');
+	Route::get('/users', 'UserController@getUsers')->name('users');
 	Route::get('/users/add', 'UserController@addUser');
 	Route::post('/users/add', 'UserController@postUser');
 	Route::get('/users/status/{user_id}/{status}', 'UserController@changeUserStatus');
 	Route::get('/users/edit/{user_id}', 'UserController@editUser');
 	Route::post('/users/edit/{user_id}', 'UserController@updateUser');
 
-	Route::get('/metallurgies', 'MetallurgyController@getMetallurgies');
+	Route::get('/metallurgies', 'MetallurgyController@getMetallurgies')->name('metallurgies');
 	Route::get('/metallurgies/add', 'MetallurgyController@addMetallurgy');
 	Route::post('/metallurgies/add', 'MetallurgyController@postMetallurgy');
 	Route::get('/metallurgies/edit/{metallurgy_id}', 'MetallurgyController@editMetallurgy');
 	Route::post('/metallurgies/edit/{metallurgy_id}', 'MetallurgyController@updateMetallurgy');
 	Route::get('/metallurgies/delete/{metallurgy_id}', 'MetallurgyController@deleteMetallurgy');
 
-	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2');
+	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2')->name('calculators/double-effect-s2');
 	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
 
 
-	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators');
+	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');
 	Route::get('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@editCalculator');
 	Route::post('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@updateCalculator');
 
-	Route::get('/tube-metallurgy/calculators', 'DefaultCalculatorController@getMetallurgyCalculators');
+	Route::get('/tube-metallurgy/calculators', 'DefaultCalculatorController@getMetallurgyCalculators')->name('tube-metallurgy/calculators');
 	Route::get('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@addMetallurgyCalculator');
 	Route::post('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@postMetallurgyCalculator');
 	Route::get('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@editMetallurgyCalculator');

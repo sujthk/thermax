@@ -28,7 +28,7 @@
 	        </div>
 	        <div class="page-body">
 	            <div class="row">
-	                <div class="col-sm-6">
+	                <div class="col-sm-8">
 	                    <!-- Zero config.table start -->
 	                    @if ($errors->any())
 	                        <div class="alert alert-danger">

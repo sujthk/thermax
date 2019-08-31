@@ -14,44 +14,44 @@
                     <i class="ti-line-dashed"></i>
                     <span>Navigation</span>
                 </li>
-                <li class="nav-item single-item has-class">
+                <li class="nav-item single-item {{ Nav::isRoute('dashboard','has-class') }}">
                     <a href="{{ url('/dashboard') }}">
                         <i class="ti-home"></i>
                         <span data-i18n="nav.widget.main"> Dashboard</span>
                     </a>
                 </li>
-                <li class="nav-item single-item">
+                <li class="nav-item single-item {{ Nav::isRoute('users','has-class') }}">
                     <a href="{{ url('/users') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Users</span>
                     </a>
                 </li>
-                <li class="nav-item single-item">
+                <li class="nav-item single-item {{ Nav::isRoute('metallurgies','has-class') }}">
                     <a href="{{ url('/metallurgies') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Metallurgies</span>
                     </a>
                 </li>
                 
-                <li class="nav-item single-item">
+                <li class="nav-item single-item {{ Nav::isRoute('tube-metallurgy/calculators','has-class') }}">
                     <a href="{{ url('/tube-metallurgy/calculators') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Metallurgy Calculators</span>
                     </a>
                 </li>
-                <li class="nav-item single-item">
+                <li class="nav-item single-item {{ Nav::isRoute('default/calculators','has-class') }}" >
                     <a href="{{ url('/default/calculators') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Default Values Calculators</span>
                     </a>
                 </li>
-                <li class="nav-item ">
+                <li class="nav-item {{ Nav::hasSegment('calculators',[1],'has-class') }}">
                     <a href="#!">
                         <i class="ti-home"></i>
                         <span data-i18n="nav.dash.main">Calculators</span>
                     </a>
                     <ul class="tree-1 ">
-                        <li>
+                        <li class="{{ Nav::isRoute('calculators/double-effect-s2','has-class') }}">
                             <a href="{{ url('/calculators/double-effect-s2') }}" data-i18n="nav.dash.default"> Double Effect Steam S2 </a></li>
                         <li>
                     </ul>
