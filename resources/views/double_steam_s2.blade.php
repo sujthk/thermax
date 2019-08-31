@@ -784,17 +784,18 @@
 			    	break;					
 			    case 'evaporator_tube_type':
 			    	model_values.evaporator_material_value = $("#evaporator_material").val();
-		    		model_values.evaporator_thickness_change = true;
+			    	updateEvaporatorOptions(model_values.evaporator_material_value,true);
+		    		// model_values.evaporator_thickness_change = true;
 			    	validate = true;
 			    	break;					
 			    case 'absorber_tube_type':
 			    	model_values.absorber_material_value = $("#absorber_material").val();
-		    		updateValues();
+		    		updateAbsorberOptions(model_values.absorber_material_value,true);
 			    	validate = true;
 			    	break;	
 			    case 'condenser_tube_type':
 			    	model_values.condenser_material_value = $("#condenser_material").val();
-		    		updateValues();
+		    		updateCondenserOptions(model_values.condenser_material_value,true);
 			    	validate = true;
 			    	break;
 			    case 'evaporator_thickness':

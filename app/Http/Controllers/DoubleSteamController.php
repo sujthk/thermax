@@ -53,7 +53,8 @@ class DoubleSteamController extends Controller
 		// update user values with model values
 
 		$this->model_values = $model_values;
-
+        $this->castToBoolean();
+        // Log::info($this->model_values);
 
 
 		$attribute_validator = $this->validateChillerAttribute($changed_value);
@@ -82,8 +83,8 @@ class DoubleSteamController extends Controller
 		}									
 
 		$this->model_values = $model_values;
-		// Log::info($this->model_values);
 		$this->castToBoolean();
+
 		$this->updateInputs();
         $this->WATERPROP();
 
@@ -162,12 +163,24 @@ class DoubleSteamController extends Controller
 		$this->calculation_values['FFCOW1'] = $this->model_values['fouling_cooling_water_value'];
 		
 		if($this->model_values['metallurgy_standard']){
-			$this->calculation_values['TU2'] = 0.0; 
-			$this->calculation_values['TU3'] = 0.0; 
-			$this->calculation_values['TU5'] = 0.0; 
-			$this->calculation_values['TU6'] = 0.0; 
-			$this->calculation_values['TV5'] = 0.0; 
-			$this->calculation_values['TV6'] = 0.0; 
+
+            $chiller_metallurgy_option = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<',$this->model_values['model_number'])->where('max_model','>',$this->model_values['model_number'])->first();
+
+            $chiller_options = $chiller_metallurgy_option->chillerOptions;                            
+
+            $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$chiller_metallurgy_option->eva_default_value)->first();
+            $absorber_option = $chiller_options->where('type', 'abs')->where('value',$chiller_metallurgy_option->abs_default_value)->first();
+            $condenser_option = $chiller_options->where('type', 'con')->where('value',$chiller_metallurgy_option->con_default_value)->first();
+                         
+
+
+			$this->calculation_values['TU2'] = $chiller_metallurgy_option->eva_default_value; 
+			$this->calculation_values['TU3'] = $evaporator_option->metallurgy->default_thickness;
+			$this->calculation_values['TU5'] = $chiller_metallurgy_option->abs_default_value;
+			$this->calculation_values['TU6'] = $absorber_option->metallurgy->default_thickness;
+			$this->calculation_values['TV5'] = $chiller_metallurgy_option->con_default_value; 
+			$this->calculation_values['TV6'] = $condenser_option->metallurgy->default_thickness;
 			$this->calculation_values['FFCHW'] = 0.0; 
 			$this->calculation_values['FFCOW'] = 0.0;
 		}
@@ -361,10 +374,13 @@ class DoubleSteamController extends Controller
         /********** EVA THICKNESS *********/
         if ($this->calculation_values['TU3'] == 0.0)
         {
-            if ($this->calculation_values['MODEL'] < 750)
-                $this->calculation_values['THE'] = 0.57;
-            else
-                $this->calculation_values['THE'] = 0.65;
+            // if ($this->calculation_values['MODEL'] < 750)
+            //     $this->calculation_values['THE'] = 0.57;
+            // else
+            //     $this->calculation_values['THE'] = 0.65;
+
+            $evaporator_material = $this->getMetallurgyValues('eva');
+            $this->calculation_values['THE'] = $evaporator_material->default_thickness;
         }
         else
         {
@@ -374,7 +390,9 @@ class DoubleSteamController extends Controller
         /********** ABS THICKNESS *********/
         if ($this->calculation_values['TU6'] == 0.0)
         {
-            $this->calculation_values['THA'] = 0.65;
+            // $this->calculation_values['THA'] = 0.65;
+            $evaporator_material = $this->getMetallurgyValues('abs');
+            $this->calculation_values['THA'] = $evaporator_material->default_thickness;
         }
         else
         {
@@ -384,7 +402,9 @@ class DoubleSteamController extends Controller
         /********** COND THICKNESS *********/
         if ($this->calculation_values['TV6'] == 0.0)
         {
-            $this->calculation_values['THC'] = .65;
+            // $this->calculation_values['THC'] = .65;
+            $evaporator_material = $this->getMetallurgyValues('con');
+            $this->calculation_values['THC'] = $evaporator_material->default_thickness;
         }
         else
         {
@@ -540,8 +560,23 @@ class DoubleSteamController extends Controller
                     	$this->model_values['evaporator_thickness_change'] = false;
                     }
                 }
+                $range_calculation = $this->RANGECAL();
+                if(!$range_calculation['status']){
+                    return array('status'=>false,'msg'=>$range_calculation['msg']);
+                }
                 break;
-
+            case "ABSORBER_TUBE_TYPE":
+                $range_calculation = $this->RANGECAL();
+                if(!$range_calculation['status']){
+                    return array('status'=>false,'msg'=>$range_calculation['msg']);
+                }
+                break; 
+            case "CONDENSER_TUBE_TYPE":
+                $range_calculation = $this->RANGECAL();
+                if(!$range_calculation['status']){
+                    return array('status'=>false,'msg'=>$range_calculation['msg']);
+                }
+                break;        
             case "GLYCOL_TYPE_CHANGED":
             	if(floatval($this->model_values['glycol_selected']) == 1){
             		$this->model_values['glycol_chilled_water'] = 0;
@@ -629,28 +664,40 @@ class DoubleSteamController extends Controller
            	case "EVAPORATOR_THICKNESS":
            		$this->model_values['evaporator_thickness_change'] = false;
            		if(($this->model_values['evaporator_thickness'] >= $this->model_values['evaporator_thickness_min_range']) && ($this->model_values['evaporator_thickness'] <= $this->model_values['evaporator_thickness_max_range'])){
+                    $range_calculation = $this->RANGECAL();
+                    if(!$range_calculation['status']){
+                        return array('status'=>false,'msg'=>$range_calculation['msg']);
+                    }
        				break;
        			}
        			else{
-       				return array('status' => false,'msg' => "Evaporator Thicknes is out of range");
+       				return array('status' => false,'msg' => "Evaporator Thickness is out of range");
        			}
            	break;
            	case "ABSORBER_THICKNESS":
            		$this->model_values['absorber_thickness_change'] = false;
            		if(($this->model_values['absorber_thickness'] >= $this->model_values['absorber_thickness_min_range']) && ($this->model_values['absorber_thickness'] <= $this->model_values['absorber_thickness_max_range'])){
+                    $range_calculation = $this->RANGECAL();
+                    if(!$range_calculation['status']){
+                        return array('status'=>false,'msg'=>$range_calculation['msg']);
+                    }
        				break;
        			}
        			else{
-       				return array('status' => false,'msg' => "Absorber Thicknes is out of range");
+       				return array('status' => false,'msg' => "Absorber Thickness is out of range");
        			}
            	break;
            	case "CONDENSER_THICKNESS":
            		$this->model_values['condenser_thickness_change'] = false;
            		if(($this->model_values['condenser_thickness'] >= $this->model_values['condenser_thickness_min_range']) && ($this->model_values['condenser_thickness'] <= $this->model_values['condenser_thickness_max_range'])){
+                    $range_calculation = $this->RANGECAL();
+                    if(!$range_calculation['status']){
+                        return array('status'=>false,'msg'=>$range_calculation['msg']);
+                    }
        				break;
        			}
        			else{
-       				return array('status' => false,'msg' => "Condenser Thicknes is out of range");
+       				return array('status' => false,'msg' => "Condenser Thickness is out of range");
        			}
            	break;
            	case "FOULING_CHILLED_VALUE":
@@ -834,20 +881,27 @@ class DoubleSteamController extends Controller
 	    $capacity = $this->model_values['capacity'];
 
 	    $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
-	    Log::info("Range");
-	    $chiller_data = $this->getChillerData();
+	    // Log::info("Range");
 
-	    $IDC = floatval($chiller_data['IDC']);
-	    $IDA = floatval($chiller_data['IDA']);
-	    $TNC = floatval($chiller_data['TNC']);
-	    $TNAA = floatval($chiller_data['TNAA']);
-	    $PODA = floatval($chiller_data['PODA']);
-	    $THPA = floatval($chiller_data['THPA']);
+        $this->updateInputs();
+        // Log::info("calculation = ".print_r($this->calculation_values,true));
+
+	    // $chiller_data = $this->getChillerData();
+
+	    $IDC = floatval($this->calculation_values['IDC']);
+	    $IDA = floatval($this->calculation_values['IDA']);
+	    $TNC = floatval($this->calculation_values['TNC']);
+	    $TNAA = floatval($this->calculation_values['TNAA']);
+	    $PODA = floatval($this->calculation_values['PODA']);
+	    $THPA = floatval($this->calculation_values['THPA']);
 
 	    // Log::info($IDC);
-        Log::info("IDC".$IDC);
-        Log::info("IDA".$IDA);
-	    Log::info("TNC".$TNC);
+     //    Log::info("IDC=".$IDC);
+     //    Log::info("IDA=".$IDA);
+	    // Log::info("TNC=".$TNC);
+     //    Log::info("TNAA=".$TNAA);
+     //    Log::info("PODA=".$PODA);
+     //    Log::info("THPA=".$THPA);
     
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
@@ -868,33 +922,33 @@ class DoubleSteamController extends Controller
         // Log::info($VAMIN);
 
 
-	    if ($model_number < 1200)
-	    {
-	        $VAMIN = 1.33;			//Velocity limit reduced to accomodate more range of cow flow
-	        $VAMAX = 2.65;
-	        if ($model_number > 950)
-	        {
-	            $VCMIN = 1.0;
-	            $VCMAX = 2.78;
-	        }
-	        else
-	        {
-	            $VCMIN = 1.0;			
-	            $VCMAX = 2.65;
-	        }                
-	    }
-	    else
-	    {
-	        $VAMIN = 1.39;
-	        $VAMAX = 2.78;
-	        $VCMIN = 1.00;
-	        $VCMAX = 2.78;
-	    }
+	    // if ($model_number < 1200)
+	    // {
+	    //     $VAMIN = 1.33;			//Velocity limit reduced to accomodate more range of cow flow
+	    //     $VAMAX = 2.65;
+	    //     if ($model_number > 950)
+	    //     {
+	    //         $VCMIN = 1.0;
+	    //         $VCMAX = 2.78;
+	    //     }
+	    //     else
+	    //     {
+	    //         $VCMIN = 1.0;			
+	    //         $VCMAX = 2.65;
+	    //     }                
+	    // }
+	    // else
+	    // {
+	    //     $VAMIN = 1.39;
+	    //     $VAMAX = 2.78;
+	    //     $VCMIN = 1.00;
+	    //     $VCMAX = 2.78;
+	    // }
 
-        Log::info("vamin".$VAMIN);
-        Log::info("vamax".$VAMAX);
-        Log::info("vcmin".$VCMIN);
-        Log::info("vcamx".$VCMAX);
+        // Log::info("vamin=".$VAMIN);
+        // Log::info("vamax=".$VAMAX);
+        // Log::info("vcmin=".$VCMIN);
+        // Log::info("vcamx=".$VCMAX);
 
 	    $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;		//min required flow in condenser
 	    $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / $TCP;
@@ -945,9 +999,6 @@ class DoubleSteamController extends Controller
 	        }
 	    }
 
-        Log::info($GCWMIN);
-        Log::info($GCWCMAX);
-
 
 
 	    // PR_DROP_DATA();
@@ -977,8 +1028,6 @@ class DoubleSteamController extends Controller
 	    //    $FMAX1 = GCWCMAX;
 	    //}
 
-        Log::info($FMIN1);
-        Log::info($FMAX1);
 
 	    if ($FMIN1 < $FMAX1)
 	    {
@@ -1084,6 +1133,28 @@ class DoubleSteamController extends Controller
         }
 
         return $GCWMIN1;
+    }
+
+
+    public function getMetallurgyValues($type){
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<',$this->model_values['model_number'])->where('max_model','>',$this->model_values['model_number'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        if($type = 'eva'){
+            $option = $chiller_options->where('type', 'eva')->where('value',$this->model_values['evaporator_material_value'])->first();
+        }
+        elseif ($type = 'abs') {
+            $option = $chiller_options->where('type', 'abs')->where('value',$this->model_values['absorber_material_value'])->first();
+        }
+        else{
+            $option = $chiller_options->where('type', 'con')->where('value',$this->model_values['condenser_material_value'])->first();
+        }
+        
+
+        $metallurgy = $option->metallurgy;
+        return $metallurgy;
     }
 
 
