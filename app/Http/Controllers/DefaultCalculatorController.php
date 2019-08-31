@@ -40,13 +40,15 @@ class DefaultCalculatorController extends Controller
     	$this->validate($request, [
 		    'default_values' => 'required',
 		    'name' => 'required',
-		    'model' => 'required'
+		    'min_model' => 'required',
+            'max_model' => 'required'
 		]);
 
 
     	$chiller_default_value = ChillerDefaultValue::find($chiller_default_id);
         $chiller_default_value->name = $request->name;
-        $chiller_default_value->model = $request->model;
+        $chiller_default_value->max_model = $request->max_model;
+        $chiller_default_value->min_model = $request->min_model;
         $chiller_default_value->default_values = json_encode($request->default_values);
         $chiller_default_value->save();
 
