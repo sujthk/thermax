@@ -737,4 +737,70 @@ class VamBaseController extends Controller
 	}
 
 
+	public function PIPE_ID($NB)
+    {
+    	$NB = floatval($NB);
+    	$POD = 0;
+    	$PTK = 0;
+    	$FT = 0;
+
+        switch ($NB)
+        {
+            case 25:
+                $POD = 33.4; $PTK = 3.38;
+                break;
+            case 32:
+                $POD = 42.2; $PTK = 3.56;
+                break;
+            case 40:
+                $POD = 48.3; $PTK = 3.68;
+                break;
+            case 50:
+                $POD = 60.3; $PTK = 3.91; $FT = 0.019;
+                break;
+            case 65:
+                $POD = 73.0; $PTK = 5.16;$FT = 0.018;
+                break;
+            case 80:
+                $POD = 88.9; $PTK = 5.49;$FT = 0.018;
+                break;
+            case 100:
+                $POD = 114.3; $PTK = 6.02;$FT = 0.017;
+                break;
+            case 125:
+                $POD = 141.3; $PTK = 6.55;$FT = 0.016;
+                break;
+            case 150:
+                $POD = 168.3; $PTK = 7.11;$FT = 0.015;
+                break;
+            case 200:
+                $POD = 219.1; $PTK = 8.18;$FT = 0.014;
+                break;
+            case 250:
+                $POD = 273.0; $PTK = 9.27;$FT = 0.014;
+                break;
+            case 300:
+                $POD = 323.6; $PTK = 10.31;$FT = 0.013;
+                break;
+            case 350:
+                $POD = 355.6; $PTK = 11.13;$FT = 0.013;
+                break;
+            case 400:
+                $POD = 406.4; $PTK = 12.70;$FT = 0.013;
+                break;
+            case 450:
+                $POD = 457.2; $PTK = 14.27;$FT = 0.012;
+                break;
+            case 500:
+                $POD = 508.0; $PTK = 15.08;$FT = 0.012;
+                break;
+                        
+        }
+        $PID = $POD - 2 * ($PTK);
+        $PID = $PID / 1000;
+
+        return array('PID' => $PID,'FT' => $FT);
+    }
+
+
 }

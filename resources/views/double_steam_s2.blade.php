@@ -872,25 +872,20 @@
 		$("#double_steam_s2").submit(function(event) {
 		  	event.preventDefault();
 	  		var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-	  		console.log(model_values);
+	  		// console.log(model_values);
 	  	   	$.ajax({
 	  			type: "POST",
 	  			url: "{{ url('calculators/double-effect-s2/submit-calculate') }}",
 	  			data: { values : model_values,_token: CSRF_TOKEN},
 	  			success: function(response){
 	  				if(response.status){
-	  					console.log(response.model_values);
-	  					console.log(response.CHGLY_VIS12);
-	  					console.log(response.CHGLY_TCON12);
-	  					
-	  					
+	  					console.log(response.calculation_values);
+
+	  				  					
 	  				}
 	  				else{
-	  					// $("#calculate_button").prop('disabled', true);
-	  					// alert(response.msg);
-	  					swal(response.msg, "", "error").then((value) => {
-						  	$('#'+response.input_target).focus();
-						});
+	  					$("#calculate_button").prop('disabled', true);
+	  					swal(response.msg, "", "error");
 	  					
 	  				}					
 	  			},
