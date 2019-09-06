@@ -550,12 +550,14 @@
 	        if($(this).is(":checked")) {
 	        	model_values.fouling_chilled_water_checked = true;
 	        	model_values.fouling_chilled_water_value_disabled = false;
+	        	model_values.fouling_chilled_water_value = model_values.fouling_non_chilled;
 	           $("#fouling_chilled_value").val(model_values.fouling_non_chilled);
 	           $("#fouling_chilled_value").prop('disabled', false);
 	        }
 	        else{
 	        	model_values.fouling_chilled_water_checked = false;
 	        	model_values.fouling_chilled_water_value_disabled = true;
+	        	model_values.fouling_chilled_water_value = "";
 	        	$("#fouling_chilled_value").val("");
 	        	$("#fouling_chilled_value").prop('disabled', true);
 	        }
@@ -566,12 +568,14 @@
 	        if($(this).is(":checked")) {
 	        	model_values.fouling_cooling_water_checked = true;
 	        	model_values.fouling_cooling_water_value_disabled = false;
-	           $("#fouling_cooling_value").val(model_values.fouling_non_chilled);
+	        	model_values.fouling_cooling_water_value = model_values.fouling_non_cooling;
+	           $("#fouling_cooling_value").val(model_values.fouling_non_cooling);
 	           $("#fouling_cooling_value").prop('disabled', false);
 	        }
 	        else{
 	        	model_values.fouling_cooling_water_checked = false;
 	        	model_values.fouling_cooling_water_value_disabled = true;
+	        	model_values.fouling_cooling_water_value = "";
 	        	$("#fouling_cooling_value").val("");
 	        	$("#fouling_cooling_value").prop('disabled', true);
 	        }
@@ -610,6 +614,15 @@
 			} else if (value == 'non_standard'){
 				model_values.fouling_chilled_water_disabled = false;
 		    	model_values.fouling_cooling_water_disabled = false;
+		    	// model_values.fouling_chilled_water_value = "";
+		    	// model_values.fouling_cooling_water_value = "";
+		    	if(!model_values.fouling_chilled_water_checked){
+		    		model_values.fouling_chilled_water_value = "";
+		    	}
+
+		    	if(!model_values.fouling_cooling_water_checked){
+		    		model_values.fouling_cooling_water_value = "";
+		    	}
 
 		    	$("#fouling_factor_non_standard").prop('checked', true);
 		  		$("#fouling_chilled_water").prop('disabled', model_values.fouling_chilled_water_disabled);

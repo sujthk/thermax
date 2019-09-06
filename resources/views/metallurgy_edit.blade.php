@@ -42,7 +42,7 @@
 	                    <div class="card">
 	                        <div class="card-header">
 	                        	<div class="">
-		                            <h5>Add Metallurgy</h5>
+		                            <h5>Update Metallurgy</h5>
                             	</div>
 	                        </div>
 	                        <form id="add_user" method="post" action="{{ url('metallurgies/edit',[$metallurgy->id]) }}" enctype="multipart/form-data">

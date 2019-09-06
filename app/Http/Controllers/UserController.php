@@ -11,6 +11,7 @@ use Validator;
 use Hash;
 use Mail;
 use DB;
+use Log;
 class UserController extends Controller
 {
     public function getUsers(){
@@ -177,5 +178,7 @@ class UserController extends Controller
     	Auth::logout();
     	return redirect('/');
     }
+
+
 
 }
