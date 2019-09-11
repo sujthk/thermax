@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\ChillerDefaultValue;
 use App\ChillerOption;
 use App\ChillerMetallurgyOption;
+use App\ChillerCalculationValue;
 use App\Metallurgy;
 use Log;
 class DefaultCalculatorController extends Controller
@@ -156,6 +157,52 @@ class DefaultCalculatorController extends Controller
         
         return redirect('tube-metallurgy/calculators')->with('message','Metallurgy Options Deleted')
                         ->with('status','success');
+    }
+
+
+    public function getChillerCalculations(){
+
+        $chiller_calculation_values = ChillerCalculationValue::get();
+
+
+        return view('chiller_calculation_values')->with('chiller_calculation_values',$chiller_calculation_values);
+    }
+
+    public function editCalculatorValue($chiller_calculation_value_id){
+        $chiller_calculation_value = ChillerCalculationValue::find($chiller_calculation_value_id);
+
+        // return $default_calculator;
+
+        $calculation_values = json_decode($chiller_calculation_value->calculation_values,true);
+        $calculation_value_keys = array_keys($calculation_values);
+        // return $default_values;
+
+        return view('calculator_values_edit')
+                            ->with('calculation_value_keys',$calculation_value_keys)
+                            ->with('calculation_values',$calculation_values)
+                            ->with('chiller_calculation_value',$chiller_calculation_value);
+    }
+
+    public function updateCalculatorValue(Request $request,$chiller_calculation_value_id){
+        // return $request->all();
+
+
+        $this->validate($request, [
+            'calculation_values' => 'required',
+            'name' => 'required',
+            'min_model' => 'required'
+        ]);
+
+
+        $chiller_calculation_value = ChillerCalculationValue::find($chiller_calculation_value_id);
+        $chiller_calculation_value->name = $request->name;
+        $chiller_calculation_value->min_model = $request->min_model;
+        $chiller_calculation_value->calculation_values = json_encode($request->calculation_values);
+        $chiller_calculation_value->save();
+
+        return redirect('chiller/calculation-values')->with('message','Chiller Calculation Value Updated')
+                        ->with('status','success');
+
     }
 
 }

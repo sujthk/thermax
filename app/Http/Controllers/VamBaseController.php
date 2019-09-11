@@ -1079,5 +1079,12 @@ class VamBaseController extends Controller
         return $ROWH;
     }
 
+    public function STEAM_PRESSURE($TS)
+    {
+        $PPS = (1.53825 * pow(10, -8) * pow($TS, 4)) - (2.00451 * pow(10, -6) * pow($TS, 3)) + (2.2331 * pow(10, -4) * pow($TS, 2)) - (9.19642 * pow(10, -3) * $TS) + 0.188369;
+        $PS = $PPS - 1.03323;      //IN kg/cm2 .g
+        return $PS;
+    }
+
 
 }
