@@ -7,6 +7,7 @@ use App\ChillerDefaultValue;
 use App\ChillerOption;
 use App\ChillerMetallurgyOption;
 use App\ChillerCalculationValue;
+use App\NotesAndError;
 use App\Metallurgy;
 use Log;
 class DefaultCalculatorController extends Controller
@@ -204,5 +205,63 @@ class DefaultCalculatorController extends Controller
                         ->with('status','success');
 
     }
+
+    public function getErrorNotes(){
+
+        $notes_errors = NotesAndError::get();
+
+
+        return view('notes_errors')->with('notes_errors',$notes_errors);
+    }
+
+    public function postErrorNote(Request $request){
+        // return $request->all();
+
+
+        $this->validate($request, [
+            'note_name' => 'required',
+            'note_value' => 'required'
+        ]);
+
+
+        $notes_error = new NotesAndError;
+        $notes_error->name = $request->note_name;
+        $notes_error->value = $request->note_value;
+        $notes_error->save();
+
+        return redirect('error-notes')->with('message','Notes Added')
+                        ->with('status','success');
+
+    }
+
+    public function updateErrorNote(Request $request,$error_notes_id){
+        // return $request->all();
+
+        $this->validate($request, [
+            'note_name' => 'required',
+            'note_value' => 'required'
+        ]);
+
+
+        $notes_error = NotesAndError::find($error_notes_id);
+        $notes_error->name = $request->note_name;
+        $notes_error->value = $request->note_value;
+        $notes_error->save();
+
+        return redirect('error-notes')->with('message','Notes Updated')
+                        ->with('status','success');
+
+    }
+
+    public function DeleteErrorNote($error_notes_id){
+
+
+        $notes_error = NotesAndError::destroy($error_notes_id);
+
+        return redirect('error-notes')->with('message','Notes Deleted')
+                        ->with('status','success');
+
+    }
+
 
 }

@@ -51,6 +51,12 @@
                         <span data-i18n="nav.widget.main"> Calculation Values</span>
                     </a>
                 </li>
+                <li class="nav-item single-item {{ Nav::isRoute('error-notes','has-class') }}" >
+                    <a href="{{ url('/error-notes') }}">
+                        <i class="ti-user"></i>
+                        <span data-i18n="nav.widget.main"> Notes</span>
+                    </a>
+                </li>
                 <li class="nav-item {{ Nav::hasSegment('calculators',[1],'has-class') }}">
                     <a href="#!">
                         <i class="ti-home"></i>
