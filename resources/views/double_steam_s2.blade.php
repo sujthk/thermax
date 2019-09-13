@@ -8,30 +8,68 @@
 		    color: red;
 		}
 		.hidden {
-		     visibility:hidden;
+		    display: none;
 		}
 		.border-red{
 			border-color: #bc291a !important;
 		}
-		
+
+		.max-calculator .form-control, .max-calculator select.form-control{
+			height: 26px !important;
+    		padding: 3px .5rem;
+		}
+		.max-calculator{
+			background: #fff;
+		}
+
+		.max-calculator .card-header{
+			margin-bottom: 5px;
+			padding: 8px;
+		}
+		.max-calculator .card-header h5{
+			font-size: 15px;
+			font-weight: 700;
+		}
+		.modal-scrol{
+			overflow-y: scroll;
+			max-height: 180px;
+		}
+		.contact-submit{
+			margin-bottom: 10px;
+			cursor: pointer;
+		}
+
+		.model-two input::placeholder{
+				color: #fff;
+		}
+
+		.summary-head{
+			padding: 2rem 0 0 0;
+		}
+		.model-two h5.modal-title{
+			color: #fff;
+		}
+		.model-one h5.modal-title{
+			color: #fff;
+		}
 	</style>
 @endsection
 
 @section('content')
 	<div class="main-body">
-	    <div class="page-wrapper">
+	    <div class="page-wrapper max-calculator">
 	        <div class="page-header">
-	            <div class="page-header-title">
+            <div class="page-header-title">
 	                <h4>Double Steam S2</h4>
 	            </div>
 	            <div class="page-header-breadcrumb">
-	                <ul class="breadcrumb-title">
-	                    <li class="breadcrumb-item">
+                <ul class="breadcrumb-title">
+                    <li class="breadcrumb-item">
 	                        <a href="{{ url('dashboard') }}">
 	                            <i class="icofont icofont-home"></i>
 	                        </a>
 	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Double Steam S2</a>
+	                    <li class=""><a href="#!">Double Steam S2</a>
 	                    </li>
 	                </ul>
 	            </div>
@@ -42,11 +80,13 @@
                 	<div class="row">	
 	                    <div class="col-md-6">
 	                        <!-- Basic Form Inputs card start -->
-	                        <div class="card">
-	                            <div class="card-block">
-                                	<div class="form-group row">
-                                        <label class="col-lg-2 col-form-label">Model</label>
-                                        <div class="col-lg-6">
+	                        <div class="">
+	                            <div class="modl-title">
+                                	<div class="row">
+                                		<div class="col-lg-4">
+                                        <label>Model</label>
+                                    </div>
+                                        <div class="col-lg-5">
                                             <select name="model_number" id="model_number" class="form-control">
                                                 <option value="130">S2 C3</option>
                                                 <option value="160">S2 C4</option>
@@ -55,55 +95,65 @@
                                                 <option value="310">S2 D3</option>
                                             </select>
                                         </div>
-                                        <label class="col-lg-2 col-form-label" id="model_name"></label>
+                                        <div class="col-lg-3">
+                                        <label id="model_name"></label>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-lg-2 col-form-label">Capacity</label>
-                                        <div class="col-lg-6">
+                                   
+                                    	<div class="col-lg-4">
+                                        <label>Capacity</label></div>
+                                        <div class="col-lg-5">
                                             <input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
                                            
                                             <span class="messages emsg hidden" id="capacity_error"><p class="text-danger error">Please Enter a Valid Capacity</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(TR)</label>
+                                        <div class="col-lg-3">
+                                        <label>(TR)</label>
+                                    </div>
                                     </div>
 	                                
 	                            </div>
 	                            <div class="card-header">
 	                                <h5>Chilled Water</h5>
 	                            </div>
-	                            <div class="card-block">
-                                	<div class="form-group row">
-                                        <label class="col-lg-4 col-form-label">Water In</label>
-                                        <div class="col-lg-6">
+	                            <div class="">
+                                	<div class="row">
+                                		<div class="col-lg-4">
+                                        <label>Water In</label>
+                                    </div>
+                                        <div class="col-lg-5">
                                             <input type="text" id="chilled_water_in" name="chilled_water_in" onchange="updateModelValues('chilled_water_in')" value="" class="form-control">
 
                                              <span class="messages emsg hidden" id="chilled_water_in_error"><p class="text-danger error">Please Enter a Valid Chilled Water In</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(&#176;C)</label>
+                                        <div class="col-lg-3">
+                                        <label>(&#176;C)</label>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-lg-4 col-form-label">Water Out (min <span id="min_chilled_water_out">0</span>)</label>
-                                        <div class="col-lg-6">
+                                    </div>
+                                    <div class="row">
+                                    	<div class="col-lg-4">
+                                        <label>Water Out (min <span id="min_chilled_water_out">0</span>)</label>
+                                    </div>
+                                        <div class="col-lg-5">
                                             <input type="text" class="form-control" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="">
 
                                             <span class="messages emsg hidden" id="chilled_water_out_error"><p class="text-danger error">Please Enter a Valid Chilled Water Out</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(&#176;C)</label>
+                                        <div class="col-lg-3">
+                                       		 <label>(&#176;C)</label>
+                                   		 </div>
                                     </div>
 	                                
 	                            </div>
 	                        </div>    
 	                    </div> 
 	                    <div class="col-md-6">
-	                        <div class="card">
+	                        <div class="">
 	                            <div class="card-header">
 	                                <h5>Tube Metallurgy</h5>
 	                            </div>
-	                            <div class="card-block">
-                                	<div class="form-group row">
-                                		<label class="col-md-4 col-form-label"></label>
-                                		<div class="form-radio">
-
+	                            <div class="">
+                                	<div class="row">                                		
+                                		<div class="form-radio col-12">
 	                                        <div class="radio radio-inline">
 	                                            <label>
 	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
@@ -116,114 +166,112 @@
 	                                                <i class="helper"></i>Non Standard
 	                                            </label>
 	                                        </div>
-	                                    </div>    
+	                                    </div>   
+                                    <div class="col-md-6">                                      
+                                        <label>Material</label>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-md-2 col-form-label"></label>
-                                        <label class="col-md-3 col-form-label">Material</label>
-                                        <label class="col-md-3 col-form-label">Thickness (mm)</label>
+                                     <div class="col-md-6">      
+                                        <label>Thickness (mm)</label>
                                     </div>
-	                                <div class="form-group row">
-	                                	<div class="col-lg-2">
-	                                		<label class=" col-form-label">Evaporator</label>
+                                    </div>
+	                                <div class="row">
+	                                	<div class="col-lg-4">
+	                                		<label class="">Evaporator</label>
 	                                	</div>
-	                                	<div class="col-lg-3">
+	                                	<div class="col-lg-4">
 	                                	    <select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
 	                                	    	@foreach($evaporator_options as $evaporator_option)
 	                                	    		<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
 	                                	    </select>
 	                                	</div>
-	                                	<div class="col-lg-3">
+	                                	<div class="col-lg-4">
                                             <input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard">
 
                                             <span class="messages emsg hidden" id="evaporator_thickness_error"><p class="text-danger error">Please Enter a Valid Evaporator Thickness</p></span>
                                         </div>
-                                        <div class="col-md-4">
-                                        	<span class="metallurgy_standard_span" id="evaporator_range"></span>
-                                        </div>	
-	                            	</div> 
-	                            	<div class="form-group row">
-	                                	<div class="col-lg-2">
+                                        
+	                                	<div class="col-lg-4">
 	                                		<label class=" col-form-label">Absorber</label>
 	                                	</div>
-	                                	<div class="col-lg-3">
+	                                	<div class="col-lg-4">
 	                                	    <select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
 	                                	        @foreach($absorber_options as $absorber_option)
 	                                	    		<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
 	                                	    </select>
 	                                	</div>
-	                                	<div class="col-lg-3">
+	                                	<div class="col-lg-4">
                                             <input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard">
 
                                             <span class="messages emsg hidden" id="absorber_thickness_error"><p class="text-danger error">Please Enter a Valid Absorber Thickness</p></span>
                                         </div>
-                                        <div class="col-md-4">
-                                        	<span class="metallurgy_standard_span" id="absorber_range"></span>
-                                        </div>
-	                            	</div> 
-	                            	<div class="form-group row">
-	                                	<div class="col-lg-2">
+                                      
+	                                	<div class="col-lg-4">
 	                                		<label class=" col-form-label">Condenser</label>
 	                                	</div>
-	                                	<div class="col-lg-3">
+	                                	<div class="col-lg-4">
 	                                	    <select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
 	                                	        @foreach($condenser_options as $condenser_option)
 	                                	    		<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
 	                                	    	@endforeach
 	                                	    </select>
 	                                	</div>
-	                                	<div class="col-lg-3">
+	                                	<div class="col-lg-4">
                                             <input type="text" name="condenser_thickness" id="condenser_thickness"  onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard">
                                             <span class="messages emsg hidden" id="condenser_thickness_error"><p class="text-danger error">Please Enter a Valid Condenser Thickness</p></span>
                                         </div>
-                                        <div class="col-md-4">
-                                        	<span class="metallurgy_standard_span" id="condenser_range"></span>
-                                        </div>
+                                      
 	                            	</div>    	
 	                            </div>
 	                        </div>    
 	                    </div>
 	                    <div class="col-md-6">
-	                        <div class="card">
+	                        <div class="">
 	                            <div class="card-header">
 	                                <h5>Cooling Water</h5>
 	                            </div>
-	                            <div class="card-block">
-                                	<div class="form-group row">
-                                        <label class="col-lg-3 col-form-label">Water In (<span id="cooling_water_in_range" ></span>)</label>
-                                        <div class="col-lg-6">
+	                            <div class="">
+                                	<div class="row">
+                                		<div class="col-lg-4">
+                                        <label>Water In (<span id="cooling_water_in_range" ></span>)</label>
+                                    </div>
+                                        <div class="col-lg-5">
                                             <input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control">
 
                                             <span class="messages emsg hidden" id="cooling_water_in_error"><p class="text-danger error">Please Enter a Valid Cooling Water In</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(&#176;C)</label>
+                                        <div class="col-lg-3">
+                                        <label>(&#176;C)</label>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-lg-3 col-form-label">Water Flow</label>
-                                        <div class="col-lg-6">
+                                    </div>
+                                    <div class="row">
+                                    	<div class="col-lg-4">
+                                        <label>Water Flow</label>
+                                    </div>
+                                        <div class="col-lg-5">
                                             <input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control">
 
                                             <span class="messages emsg hidden" id="cooling_water_flow_error"><p class="text-danger error">Please Enter a Valid Cooling Water Flow</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(m&#179;/hr)</label>
+                                        <div class="col-lg-3">
+                                        <label>(m&#179;/hr)</label>
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-sm-12 col-form-label">Available Range(s) : <span id="cooling_water_ranges"></span></label>
+                                    </div>
+                                    <div class="row">
+                                        <label class="col-sm-12">Available Range(s) : <span id="cooling_water_ranges"></span></label>
                                     </div>
 	                            </div>
 	                        </div>    
 	                    </div>
 	                    <div class="col-md-6">
-	                        <div class="card">
+	                        <div class="">
 	                            <div class="card-header">
 	                                <h5>Fouling Factor</h5>
 	                            </div>
-	                            <div class="card-block">
-                                	<div class="form-group row">
-                                		<label class="col-md-4 col-form-label"></label>
-                                		<div class="form-radio">
+	                            <div class="">
+                                	<div class="row">                                		
+                                		<div class="form-radio col-12">
 	                                        <div class="radio radio-inline">
 	                                            <label>
 	                                                <input type="radio" name="fouling_factor" id="fouling_factor_standard" value="standard" checked="checked">
@@ -244,14 +292,13 @@
 	                                        </div>
 	                                    </div>    
                                     </div>
-                                    <div class="form-group row">
-                                    	<label class="col-lg-2 col-form-label"></label>
-                                    	<div class="checkbox-fade fade-in-primary">
+                                    <div class="row">                                    	
+                                    	<div class="col-lg-4 checkbox-fade fade-in-primary">
                                             <label>
                                                 <input type="checkbox" class="fouling_standard" name="fouling_chilled_water" id="fouling_chilled_water" value="">
                                                 <span class="cr">
                                     				<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-                                    			</span><span>Chilled Water</span><br><span style="padding-left: 35px;" id="fouling_chilled_min" ></span>
+                                    			</span><span>Chilled Water</span><br><span id="fouling_chilled_min" ></span>
                                             </label>
                                         </div>
 
@@ -260,16 +307,17 @@
 
                                             <span class="messages emsg hidden" id="fouling_chilled_value_error"><p class="text-danger error">Please Enter a Valid Fouling Chilled Water</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(m&#179;hr &#176;C/kcal)</label>
+                                        <div class="col-lg-4">
+                                        <label>(m&#179;hr &#176;C/kcal)</label>
                                     </div> 
-                                    <div class="form-group row">
-                                    	<label class="col-lg-2 col-form-label"></label>
-                                    	<div class="checkbox-fade fade-in-primary">
+                                </div>
+                                    <div class="row">                                    	
+                                    	<div class="col-lg-4 checkbox-fade fade-in-primary">
                                             <label>
                                                 <input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="">
                                                 <span class="cr">
                                     				<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-                                    			</span><span>Cooling Water</span><br><span style="padding-left: 35px;" id="fouling_cooling_min" ></span>
+                                    			</span><span>Cooling Water</span><br><span id="fouling_cooling_min" ></span>
                                             </label>
                                         </div>
 
@@ -278,20 +326,21 @@
 
                                             <span class="messages emsg hidden" id="fouling_cooling_value_error"><p class="text-danger error">Please Enter a Valid Fouling Cooling Water</p></span>
                                         </div>
-                                        <label class="col-lg-2 col-form-label">(m&#179;hr &#176;C/kcal)</label>
+                                        <div class="col-lg-4">
+                                        <label>(m&#179;hr &#176;C/kcal)</label>
+                                    </div>
                                     </div>   	
 	                            </div>
 	                        </div>    
 	                    </div>
 	                    <div class="col-md-6">
-	                        <div class="card">
+	                        <div class="">
 	                            <div class="card-header">
 	                                <h5>Glycol Content % (By Vol)</h5>
 	                            </div>
-	                            <div class="card-block">
-                                	<div class="form-group row">
-                                		<label class="col-md-2 col-form-label"></label>
-                                		<div class="form-radio">
+	                            <div class="">
+                                	<div class="row">                                		
+                                		<div class="col-12 form-radio">
 
 	                                        <div class="radio radio-inline">
 	                                            <label>
@@ -313,17 +362,21 @@
 	                                        </div>
 	                                    </div>    
                                     </div>
-                                    <div class="form-group row">
-                                        <label class="col-lg-2 col-form-label">Chilled Water </label>
-                                        <div class="col-md-6">
+                                    <div class="row">
+                                    	<div class="col-lg-4">
+                                        <label>Chilled Water </label>
+                                    </div>
+                                        <div class="col-md-5">
                                             <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
 
                                             <span class="messages emsg hidden" id="glycol_chilled_water_error"><p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p></span>
                                         </div>
                                     </div> 
-                                    <div class="form-group row">
-                                        <label class="col-lg-2 col-form-label">Cooling Water </label>
-                                        <div class="col-md-6">
+                                    <div class="row">
+                                    	<div class="col-lg-4">
+                                        <label>Cooling Water </label>
+                                    </div>
+                                        <div class="col-md-5">
                                             <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
 
                                              <span class="messages emsg hidden" id="glycol_cooling_water_error"><p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p></span>
@@ -333,28 +386,31 @@
 	                        </div>    
 	                    </div>
 	                    <div class="col-md-6">
-	                        <div class="card">
+	                        <div class="">
 	                            <div class="card-header">
 	                                <h5>Steam</h5>
 	                            </div>
-	                            <div class="card-block">
-                                    <div class="form-group row">
-                                        <label class="col-lg-4 col-form-label">Pressure : (<span id="steam_pressure_range"></span>)</label>
+	                            <div class="">
+                                    <div class="row">
+                                    	<div class="col-lg-4">
+                                        <label>Pressure : (<span id="steam_pressure_range"></span>)</label>
+                                    </div>
                                         <div class="col-lg-4">
                                             <input type="text" name="steam_pressure" id="steam_pressure" onchange="updateModelValues('steam_pressure')" value="" class="form-control">
 
                                             <span class="messages emsg hidden" id="steam_pressure_error"><p class="text-danger error">Please Enter a Valid Steam Pressure</p></span>
                                         </div>
-                                        <label class="col-lg-4 col-form-label">(kg/cm<sup>2</sup>(g))</label>
+                                        <div class="col-lg-4">
+                                        <label>(kg/cm<sup>2</sup>(g))</label>
+                                    </div>
                                     </div>   	
 	                            </div>
 	                        </div>    
 	                    </div>
 		                <div class="col-sm-12">    
-		                    <div class="form-group row">
-	                            <label class="col-md-5"></label>
-	                            <div class="col-md-7">
-	                                <input type="submit" name="submit_value" value="Calculate" id="calculate_button" class="btn btn-primary m-b-0">
+		                    <div class="row">		                    	
+	                            <div class="col-md-12 text-center">
+	                                <input type="submit" name="submit_value" value="Calculate" id="calculate_button" class="btn btn-primary m-b-0" data-toggle="modal" data-target="#exampleModalLong">
 	                                <input type="button" name="reset" id="reset" value="Reset" class="btn btn-primary m-b-0">
 	                            </div>
 	                        </div>
@@ -364,9 +420,480 @@
             </div>
 	    </div>
 	</div>
+
+
+
+<!-- Modal one -->
+<div class="modal fade model-one" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle"> Notes </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div class="modal-scrol">
+        <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</p>
+         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</p>
+         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</p>
+         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</p>
+         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua.</p>
+    </div>
+
+ <!--  <div class="table-responsive">
+    <table class="table table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Client : A</th>
+      <th scope="col">Version : 5.1.2.0</th>     
+    </tr>
+     <tr>
+      <th scope="col">Enquiry : no</th>
+      <th scope="col">Date : 9/12/2019, 57.45pm</th>     
+    </tr>
+     <tr>
+      <th scope="col">Project : A</th>
+      <th scope="col">Model : TAC S2 S3</th>     
+    </tr>
+  </thead>  
+</table>
+</div>
+
+    <div class="table-responsive">
+                <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Sr.</th>
+      <th scope="col">Description</th>
+      <th scope="col">Unit</th>
+       <th scope="col"> Cooling Mode</th>      
+    </tr>
+
+     <tr>
+      <th scope="col"></th>
+      <th scope="col"> Capacity(+/-3%)</th>
+      <th scope="col"> TR </th>
+       <th scope="col"> 114.0</th>      
+    </tr>
+    
+
+
+  </thead>
+  <tbody>
+
+  	 <tr>
+      <th scope="col"> A  </th>
+      <th scope="col"> Chilled Water Circuit</th>
+      <th scope="col"> </th>
+       <th scope="col"> </th>      
+    </tr>
+    <tr>
+     <td> 1 </td>
+      <td> Chilled water flow</td>
+     <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     <td> 2 </td>
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+      <td> 3 </td>
+      <td> Chilled water outlet temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+      <td> 4 </td> 
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+	  <td> 5 </td>
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+	  <td> 6 </td>
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+ <tr>
+      <th scope="col"> B  </th>
+      <th scope="col"> Chilled Water Circuit</th>
+      <th scope="col"> </th>
+       <th scope="col"> </th>      
+    </tr>
+    <tr>
+     <td> 1 </td>
+      <td> Chilled water flow</td>
+     <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     <td> 2 </td>
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+      <td> 3 </td>
+      <td> Chilled water outlet temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+      <td> 4 </td> 
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+	  <td> 5 </td>
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+	  <td> 6 </td>
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+ <tr>
+      <th scope="col"> C </th>
+      <th scope="col"> Chilled Water Circuit</th>
+      <th scope="col"> </th>
+       <th scope="col"> </th>      
+    </tr>
+    <tr>
+     <td> 1 </td>
+      <td> Chilled water flow</td>
+     <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     <td> 2 </td>
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+      <td> 3 </td>
+      <td> Chilled water outlet temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+      <td> 4 </td> 
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+	  <td> 5 </td>
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+	  <td> 6 </td>
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+
+ <tr>
+      <th scope="col"> D  </th>
+      <th scope="col"> Chilled Water Circuit</th>
+      <th scope="col"> </th>
+       <th scope="col"> </th>      
+    </tr>
+    <tr>
+     <td> 1 </td>
+      <td> Chilled water flow</td>
+     <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     <td> 2 </td>
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+      <td> 3 </td>
+      <td> Chilled water outlet temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+      <td> 4 </td> 
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+	  <td> 5 </td>
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+	  <td> 6 </td>
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+
+ <tr>
+      <th scope="col"> E  </th>
+      <th scope="col"> Chilled Water Circuit</th>
+      <th scope="col"> </th>
+       <th scope="col"> </th>      
+    </tr>
+    <tr>
+     <td> 1 </td>
+      <td> Chilled water flow</td>
+     <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     <td> 2 </td>
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+      <td> 3 </td>
+      <td> Chilled water outlet temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+      <td> 4 </td> 
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+	  <td> 5 </td>
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+	  <td> 6 </td>
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+
+ <tr>
+      <th scope="col"> F  </th>
+      <th scope="col"> Chilled Water Circuit</th>
+      <th scope="col"> </th>
+       <th scope="col"> </th>      
+    </tr>
+    <tr>
+     <td> 1 </td>
+      <td> Chilled water flow</td>
+     <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     <td> 2 </td>
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+      <td> 3 </td>
+      <td> Chilled water outlet temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+      <td> 4 </td> 
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+	  <td> 5 </td>
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+	  <td> 6 </td>
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+
+  </tbody>
+</table>
+</div> -->
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary ok-snd" data-toggle="modal" data-target="#exampleModalLong1"> ok </button>       
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade model-two" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle1"> Optimal Design </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+      	<div class="row">
+      		<div class="col-md-8">
+      			<div class="row">
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="name" placeholder="Customer" name="name">
+                    </div>
+                     <div class="col-md-12">
+                        <input type="text" class="form-control" id="name" placeholder="Project" name="name">
+                    </div>
+                   
+                    <div class="col-md-12">
+                        <input type="text" class="form-control" id="phone" placeholder="Enquiry Number" name="phone">
+                    </div>
+                    <div class="col-md-12">
+                        <input type="date" class="form-control" id="" placeholder="Date" name="">
+                    </div>
+                </div>
+            </div>
+                   <div class="col-md-4">
+                   	<div class="row">
+                    <div class="col-12">
+                       <a href="#"> <button type="submit" id="" class="contact-submit"> Show Report </button></a>
+                    </div>
+                     <div class="col-12">
+                        <button type="submit" id="" class="contact-submit"> Export to Word </button>
+                    </div>
+                     <div class="col-12">
+                        <button type="submit" id="" class="contact-submit"> Export to Pdf </button>
+                    </div>
+                     <div class="col-12">
+                        <button type="submit" id="" class="contact-submit"> Cancel </button>
+                    </div>
+                </div>
+                </div>
+                </div>
+
+<div class="summary-head">
+<h4> Summary : </h4>
+</div>
+<div class="table-responsive">
+                <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Item</th>
+      <th scope="col">Unit</th>
+      <th scope="col">Value</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+     
+      <td> Capacity</td>
+      <td> TR</td>
+      <td> 114.0 </td>
+    </tr>
+    <tr>
+     
+      <td> Chilled water flow</td>
+      <td> m<sup>3 </sup>/hr</td>
+      <td> 68.8</td>
+    </tr>
+    <tr>
+     
+      <td> Chilled water outtel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 7.0 </td>
+    </tr>
+<tr>
+     
+      <td> Chilled water intel temperature</td>
+      <td> <sup> 0 </sup> C</td>
+      <td> 12.0 </td>
+    </tr>
+<tr>     
+      <td> Evaporate passes</td>
+      <td> </td>
+      <td> 1+1 </td>
+    </tr>
+<tr>     
+      <td> Chilled water circuit pressure loss </td>
+      <td> mLC</td>
+      <td> 1.2 </td>
+    </tr>
+
+
+
+  </tbody>
+</table>
+</div>
+
+
+
+
+
+
+    </div>
+      </div>      
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
 @endsection
 	
 @section('scripts')	
+<script>
+$(document).ready(function(){
+  $(".ok-snd").click(function(){  
+    $("#exampleModalLong").modal("hide");
+  });
+ 
+});
+
+</script>
+
+
 	<script type="text/javascript">
 		
 		var model_values = {!! json_encode($default_values) !!};
@@ -966,3 +1493,14 @@
 	</script>
 
 @endsection
+
+
+
+
+
+
+
+
+
+
+
