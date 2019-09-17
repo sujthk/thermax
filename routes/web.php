@@ -17,7 +17,9 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('login');
 })->name('login');
-
+Route::get('/report', function () {
+    return view('report');
+});
 
 Route::post('/login', 'UserController@loginUser');
 Route::post('/user-send-otp', 'UserController@sendUserOtp');
@@ -50,6 +52,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
+	Route::post('/calculators/double-effect-s2/show-report', 'DoubleSteamController@postShowReport');
 
 
 	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');

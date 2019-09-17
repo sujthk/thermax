@@ -52,6 +52,13 @@
 		.model-one h5.modal-title{
 			color: #fff;
 		}
+		.model-open{
+			overflow: hidden;
+		}
+		.modal{
+			overflow-x: hidden;
+			overflow-y: scroll;
+		}
 	</style>
 @endsection
 
@@ -410,7 +417,7 @@
 		                <div class="col-sm-12">    
 		                    <div class="row">		                    	
 	                            <div class="col-md-12 text-center">
-	                                <input type="submit" name="submit_value" value="Calculate" id="calculate_button" class="btn btn-primary m-b-0" data-toggle="modal" data-target="#exampleModalLong">
+	                                <input type="submit" name="submit_value" value="Calculate" id="calculate_button" class="btn btn-primary m-b-0" >
 	                                <input type="button" name="reset" id="reset" value="Reset" class="btn btn-primary m-b-0">
 	                            </div>
 	                        </div>
@@ -425,454 +432,154 @@
 
 <!-- Modal one -->
 <div class="modal fade model-one" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle"> Notes </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      	<div class="modal-scrol">
-        <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.</p>
-         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.</p>
-         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.</p>
-         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.</p>
-         <p> Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.</p>
-    </div>
-
- <!--  <div class="table-responsive">
-    <table class="table table-bordered">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Client : A</th>
-      <th scope="col">Version : 5.1.2.0</th>     
-    </tr>
-     <tr>
-      <th scope="col">Enquiry : no</th>
-      <th scope="col">Date : 9/12/2019, 57.45pm</th>     
-    </tr>
-     <tr>
-      <th scope="col">Project : A</th>
-      <th scope="col">Model : TAC S2 S3</th>     
-    </tr>
-  </thead>  
-</table>
+  	<div class="modal-dialog modal-dialog-centered" role="document">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<h5 class="modal-title" id="exampleModalLongTitle"> Notes </h5>
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          			<span aria-hidden="true">&times;</span>
+        		</button>
+      		</div>
+      		<div class="modal-body">
+      			<div id="notes_div" class="modal-scrol">
+        			         
+    			</div>
+      		</div>
+      		<div class="modal-footer">
+        		<button type="button" class="btn btn-secondary ok-snd" data-toggle="modal" data-target="#exampleModalLong1"> ok </button>       
+      		</div>
+    	</div>
+  	</div>
 </div>
 
-    <div class="table-responsive">
-                <table class="table table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Sr.</th>
-      <th scope="col">Description</th>
-      <th scope="col">Unit</th>
-       <th scope="col"> Cooling Mode</th>      
-    </tr>
-
-     <tr>
-      <th scope="col"></th>
-      <th scope="col"> Capacity(+/-3%)</th>
-      <th scope="col"> TR </th>
-       <th scope="col"> 114.0</th>      
-    </tr>
-    
-
-
-  </thead>
-  <tbody>
-
-  	 <tr>
-      <th scope="col"> A  </th>
-      <th scope="col"> Chilled Water Circuit</th>
-      <th scope="col"> </th>
-       <th scope="col"> </th>      
-    </tr>
-    <tr>
-     <td> 1 </td>
-      <td> Chilled water flow</td>
-     <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     <td> 2 </td>
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-      <td> 3 </td>
-      <td> Chilled water outlet temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-      <td> 4 </td> 
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-	  <td> 5 </td>
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-	  <td> 6 </td>
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
- <tr>
-      <th scope="col"> B  </th>
-      <th scope="col"> Chilled Water Circuit</th>
-      <th scope="col"> </th>
-       <th scope="col"> </th>      
-    </tr>
-    <tr>
-     <td> 1 </td>
-      <td> Chilled water flow</td>
-     <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     <td> 2 </td>
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-      <td> 3 </td>
-      <td> Chilled water outlet temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-      <td> 4 </td> 
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-	  <td> 5 </td>
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-	  <td> 6 </td>
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
- <tr>
-      <th scope="col"> C </th>
-      <th scope="col"> Chilled Water Circuit</th>
-      <th scope="col"> </th>
-       <th scope="col"> </th>      
-    </tr>
-    <tr>
-     <td> 1 </td>
-      <td> Chilled water flow</td>
-     <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     <td> 2 </td>
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-      <td> 3 </td>
-      <td> Chilled water outlet temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-      <td> 4 </td> 
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-	  <td> 5 </td>
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-	  <td> 6 </td>
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
-
- <tr>
-      <th scope="col"> D  </th>
-      <th scope="col"> Chilled Water Circuit</th>
-      <th scope="col"> </th>
-       <th scope="col"> </th>      
-    </tr>
-    <tr>
-     <td> 1 </td>
-      <td> Chilled water flow</td>
-     <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     <td> 2 </td>
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-      <td> 3 </td>
-      <td> Chilled water outlet temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-      <td> 4 </td> 
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-	  <td> 5 </td>
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-	  <td> 6 </td>
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
-
- <tr>
-      <th scope="col"> E  </th>
-      <th scope="col"> Chilled Water Circuit</th>
-      <th scope="col"> </th>
-       <th scope="col"> </th>      
-    </tr>
-    <tr>
-     <td> 1 </td>
-      <td> Chilled water flow</td>
-     <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     <td> 2 </td>
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-      <td> 3 </td>
-      <td> Chilled water outlet temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-      <td> 4 </td> 
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-	  <td> 5 </td>
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-	  <td> 6 </td>
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
-
- <tr>
-      <th scope="col"> F  </th>
-      <th scope="col"> Chilled Water Circuit</th>
-      <th scope="col"> </th>
-       <th scope="col"> </th>      
-    </tr>
-    <tr>
-     <td> 1 </td>
-      <td> Chilled water flow</td>
-     <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     <td> 2 </td>
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-      <td> 3 </td>
-      <td> Chilled water outlet temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-      <td> 4 </td> 
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-	  <td> 5 </td>
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-	  <td> 6 </td>
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
-
-  </tbody>
-</table>
-</div> -->
-
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary ok-snd" data-toggle="modal" data-target="#exampleModalLong1"> ok </button>       
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- Modal -->
 <div class="modal fade model-two" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle1"> Optimal Design </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-      	<div class="row">
-      		<div class="col-md-8">
+  	<div class="modal-dialog modal-dialog-centered" role="document">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<h5 class="modal-title" id="exampleModalLongTitle1"><span id="result_span"></span> Design</h5>
+        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          			<span aria-hidden="true">&times;</span>
+        		</button>
+      		</div>
+      		<div class="modal-body">
       			<div class="row">
-                    <div class="col-md-12">
-                        <input type="text" class="form-control" id="name" placeholder="Customer" name="name">
-                    </div>
-                     <div class="col-md-12">
-                        <input type="text" class="form-control" id="name" placeholder="Project" name="name">
-                    </div>
-                   
-                    <div class="col-md-12">
-                        <input type="text" class="form-control" id="phone" placeholder="Enquiry Number" name="phone">
-                    </div>
-                    <div class="col-md-12">
-                        <input type="date" class="form-control" id="" placeholder="Date" name="">
-                    </div>
-                </div>
-            </div>
-                   <div class="col-md-4">
-                   	<div class="row">
-                    <div class="col-12">
-                       <a href="#"> <button type="submit" id="" class="contact-submit"> Show Report </button></a>
-                    </div>
-                     <div class="col-12">
-                        <button type="submit" id="" class="contact-submit"> Export to Word </button>
-                    </div>
-                     <div class="col-12">
-                        <button type="submit" id="" class="contact-submit"> Export to Pdf </button>
-                    </div>
-                     <div class="col-12">
-                        <button type="submit" id="" class="contact-submit"> Cancel </button>
-                    </div>
-                </div>
-                </div>
+      				<form id="report_form" method="post" enctype="multipart/form-data">
+			      		<div class="col-md-8">
+			      			<div class="row">
+			                    <div class="col-md-12">
+			                        <input type="text" class="form-control" required id="customer_name" placeholder="Customer" name="customer_name">
+			                    </div>
+			                     <div class="col-md-12">
+			                        <input type="text" class="form-control" required id="project" placeholder="Project" name="project">
+			                    </div>
+			                   
+			                    <div class="col-md-12">
+			                        <input type="text" class="form-control" required id="phone" placeholder="Enquiry Number" name="phone">
+			                    </div>
+			                </div>
+			            </div>
+	                   	<div class="col-md-4">
+	                   		<div class="row">
+			                    <div class="col-12">
+			                       <input type="button" name="show_report" id="show_report" value="Show Report"  class="contact-submit">
+			                    </div>
+			                     <div class="col-12">
+			                        <input type="submit" name="submit" id="" value="Export to Word" class="contact-submit"> 
+			                    </div>
+			                     <div class="col-12">
+			                        <input type="submit" name="submit" id="" value="Export to Pdf" class="contact-submit">
+			                    </div>
+	                		</div>
+	                	</div>
+                	</form>
                 </div>
 
-<div class="summary-head">
-<h4> Summary : </h4>
-</div>
-<div class="table-responsive">
-                <table class="table table-bordered">
-  <thead>
-    <tr>
-      <th scope="col">Item</th>
-      <th scope="col">Unit</th>
-      <th scope="col">Value</th>
-      
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-     
-      <td> Capacity</td>
-      <td> TR</td>
-      <td> 114.0 </td>
-    </tr>
-    <tr>
-     
-      <td> Chilled water flow</td>
-      <td> m<sup>3 </sup>/hr</td>
-      <td> 68.8</td>
-    </tr>
-    <tr>
-     
-      <td> Chilled water outtel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 7.0 </td>
-    </tr>
-<tr>
-     
-      <td> Chilled water intel temperature</td>
-      <td> <sup> 0 </sup> C</td>
-      <td> 12.0 </td>
-    </tr>
-<tr>     
-      <td> Evaporate passes</td>
-      <td> </td>
-      <td> 1+1 </td>
-    </tr>
-<tr>     
-      <td> Chilled water circuit pressure loss </td>
-      <td> mLC</td>
-      <td> 1.2 </td>
-    </tr>
-
-
-
-  </tbody>
-</table>
-</div>
-
-
-
-
-
-
+				<div class="summary-head">
+					<h4> Summary : </h4>
+				</div>
+				<div class="table-responsive">
+                	<table class="table table-bordered">
+  						<thead>
+    						<tr>
+								<th scope="col">Item</th>
+								<th scope="col">Unit</th>
+								<th scope="col">Value</th>  
+    						</tr>
+  						</thead>
+  						<tbody>
+    						<tr>    
+								<td> Capacity</td>
+								<td> TR</td>
+								<td><span id="capacity_span"></span> </td>
+    						</tr>
+							<tr>   
+								<td> Chilled water flow</td>
+								<td> m<sup>3 </sup>/hr</td>
+								<td> <span id="chilled_water_flow_span"></span></td>
+						    </tr>
+						    <tr>   
+								<td> Chilled water inlet temperature</td>
+								<td> <sup> 0 </sup> C</td>
+								<td> <span id="chilled_inlet_span"></span> </td>
+							</tr>
+							<tr>    
+								<td> Chilled water outlet temperature</td>
+								<td> <sup> 0 </sup> C</td>
+								<td> <span id="chilled_outlet_span"></span> </td>
+							</tr>
+							<tr>     
+								<td> Evaporate passes</td>
+								<td> </td>
+								<td> <span id="evaporator_pass"></span> </td>
+    						</tr>
+							<tr>     
+								<td> Chilled water circuit pressure loss </td>
+								<td> mLC</td>
+								<td> <span id="chilled_pressure_loss_span"></span> </td>
+    						</tr>
+    						<tr>     
+								<td> Cooling water flow </td>
+								<td> m<sup>3 </sup>/hr</td>
+								<td> <span id="cooling_water_flow_span"></span> </td>
+    						</tr>
+    						<tr>     
+								<td> Cooling water inlet temperature </td>
+								<td> <sup> 0 </sup> C</td>
+								<td> <span id="cooling_water_inlet_span"></span></td>
+    						</tr>
+    						<tr>     
+								<td> Cooling water outlet temperature </td>
+								<td> <sup> 0 </sup> C</td>
+								<td> <span id="cooling_water_outlet_span"></span></td>
+    						</tr>
+    						<tr>     
+								<td> Absorber / Condenser Passes </td>
+								<td> </td>
+								<td> <span id="absorber_pass"></span> </td>
+    						</tr>
+    						<tr>     
+								<td> Cooling water circuit pressure loss </td>
+								<td> mLC</td>
+								<td> <span id="cooling_pressure_loss_span"></span> </td>
+    						</tr>
+    						<tr>     
+								<td> Steam pressure </td>
+								<td> kg/cm<sup> 2 </sup>(g)</td>
+								<td> <span id="steam_pressure_span"></span> </td>
+    						</tr>
+    						<tr>     
+								<td> Steam consumption </td>
+								<td> kg/hr</td>
+								<td> <span id="steam_consumption_span"></span> </td>
+    						</tr>
+  						</tbody>
+					</table>
+				</div>
+    		</div>
+      	</div>      
     </div>
-      </div>      
-    </div>
-  </div>
 </div>
 
 
@@ -883,12 +590,31 @@
 @endsection
 	
 @section('scripts')	
+
 <script>
 $(document).ready(function(){
-  $(".ok-snd").click(function(){  
-    $("#exampleModalLong").modal("hide");
-  });
- 
+	
+
+  	$(".ok-snd").click(function(){ 
+  		$("#exampleModalLong").modal('hide'); 
+  		$("body").addClass("model-open");
+  		$('#exampleModalLong1').modal({
+  			backdrop: 'static',
+  			keyboard: false
+  		});
+
+	});
+   $('#exampleModalLong, #exampleModalLong1').on('hide.bs.modal',function(e){
+        $('body').css('padding-right','0');
+    });
+
+ //   $("#show_report").click(function(){ 
+ //  		var wi = window.open();
+ //  		var html = $('#exampleModalLong2').html();
+ //  		$(wi.document.body).html(html);
+
+	// });
+
 });
 
 </script>
@@ -902,7 +628,7 @@ $(document).ready(function(){
 		var condenser_options = {!! json_encode($condenser_options) !!};
 		var chiller_metallurgy_options = {!! json_encode($chiller_metallurgy_options) !!};
 		var changed_value = "";
-		console.log(model_values);
+		var calculation_values;
 		$( document ).ready(function() {
 		    // swal("Hello world!");
 		    
@@ -1420,18 +1146,58 @@ $(document).ready(function(){
 	  			success: function(response){
 	  				if(response.status){
 	  					console.log(response.calculation_values);
+	  					calculation_values = response.calculation_values;
+	  					if(calculation_values.Result == "FAILED"){
+	  						swal(calculation_values.Notes, "", "error");
+	  					}
+	  					else{
+	  						var notes = calculation_values.notes;
+	  						$( "#notes_div" ).html("");
+	  						for (var i = 0; i < notes.length; i++) {
+	  							$( "#notes_div" ).append("<p>"+notes[i]+"</p>");
+	  						}
 
+	  						$('#customer_name').val("");
+	  						$('#project').val("");
+	  						$('#phone').val("");
+
+	  						$('#capacity_span').html(calculation_values.TON);
+	  						$('#chilled_water_flow_span').html(calculation_values.ChilledWaterFlow);
+	  						$('#chilled_inlet_span').html(calculation_values.TCHW11);
+	  						$('#chilled_outlet_span').html(calculation_values.TCHW12);
+	  						$('#evaporator_pass').html(calculation_values.EvaporatorPasses);
+	  						$('#chilled_wa').html(calculation_values.EvaporatorPasses);
+	  						$('#evaporator_pass').html(calculation_values.EvaporatorPasses);
+	  						$('#chilled_pressure_loss_span').html(calculation_values.ChilledFrictionLoss);
+	  						$('#cooling_water_flow_span').html(calculation_values.GCW);
+	  						$('#cooling_water_inlet_span').html(calculation_values.TCW11);
+	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature);
+
+	  						var absorber_condenser_pass = calculation_values.AbsorberPasses+"/"+calculation_values.CondenserPasses
+	  						$('#absorber_pass').html(absorber_condenser_pass);
+	  						$('#cooling_pressure_loss_span').html(calculation_values.CoolingFrictionLoss);
+	  						$('#steam_pressure_span').html(calculation_values.PST1);
+	  						$('#steam_consumption_span').html(calculation_values.SteamConsumption);
+	  						$('#result_span').html(calculation_values.Result);
+
+
+	  						// $('#exampleModalLong').modal('show');
+	  						$('#exampleModalLong').modal({
+	  							backdrop: 'static',
+	  							keyboard: false
+	  						});
+	  					}
 	  				  					
 	  				}
 	  				else{
 	  					$("#calculate_button").prop('disabled', true);
 	  					swal(response.msg, "", "error");
 	  					
-	  				}					
+	  				}	
+	  								
 	  			},
 	  		});
 		});
-
 
 		$( "#reset" ).click(function() {
 			
@@ -1453,6 +1219,7 @@ $(document).ready(function(){
 						console.log(model_values);
 						loadDefaultValues();
 						$('#capacity').focus();
+						$("#calculate_button").prop('disabled', false);
 						
 					}
 					else{
@@ -1460,6 +1227,31 @@ $(document).ready(function(){
 					}					
 				},
 			});
+		   	
+		});
+
+		$( "#show_report" ).click(function() {
+			var name = $('#customer_name').val();
+			var project = $('#project').val();
+			var phone = $('#phone').val();
+
+			if(name == '' || project == '' || phone == ''){
+				
+				alert("Enter the details");
+			}
+			else{
+				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+			   	$.ajax({
+					type: "POST",
+					url: "{{ url('calculators/double-effect-s2/show-report') }}",
+					data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone},
+					success: function(response){
+						// console.log(response);	
+						var wi = window.open();
+						$(wi.document.body).html(response.report);					
+					},
+				});
+			}
 		   	
 		});
 
