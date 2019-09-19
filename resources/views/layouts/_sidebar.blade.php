@@ -57,6 +57,12 @@
                         <span data-i18n="nav.widget.main"> Notes</span>
                     </a>
                 </li>
+                <li class="nav-item single-item {{ Nav::isRoute('unit-sets','has-class') }}" >
+                    <a href="{{ url('/unit-sets') }}">
+                        <i class="ti-user"></i>
+                        <span data-i18n="nav.widget.main"> Unit Sets</span>
+                    </a>
+                </li>
                 <li class="nav-item {{ Nav::hasSegment('calculators',[1],'has-class') }}">
                     <a href="#!">
                         <i class="ti-home"></i>

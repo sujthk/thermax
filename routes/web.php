@@ -24,7 +24,9 @@ Route::get('/report', function () {
 Route::post('/login', 'UserController@loginUser');
 Route::post('/user-send-otp', 'UserController@sendUserOtp');
 
+Route::get('/word', 'UserController@getword');
 
+Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
 Route::group(['middleware' => ['auth','revalidate']], function(){
 
 	Route::get('/dashboard', function () {
@@ -53,6 +55,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/show-report', 'DoubleSteamController@postShowReport');
+	Route::post('/calculators/double-effect-s2/save-report', 'DoubleSteamController@postSaveReport');
+	
 
 
 	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');
@@ -75,5 +79,12 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@editMetallurgyCalculator');
 	Route::post('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@updateMetallurgyCalculator');
 	Route::get('/tube-metallurgy/calculators/delete/{chiller_metallurgy_id}', 'DefaultCalculatorController@deleteMetallurgyCalculator');
+
+
+	Route::get('/unit-sets', 'UnitsetController@getUnitsets')->name('unit-sets');
+	Route::get('/unit-sets/add', 'UnitsetController@addUnitset');
+	Route::post('/unit-sets/add', 'UnitsetController@postUnitset');
+	Route::get('/unit-sets/edit/{unit_set_id}', 'UnitsetController@editUnitset');
+	Route::post('/unit-sets/edit/{unit_set_id}', 'UnitsetController@updateUnitset');
 
 });

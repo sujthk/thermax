@@ -114,7 +114,7 @@
                                             <span class="messages emsg hidden" id="capacity_error"><p class="text-danger error">Please Enter a Valid Capacity</p></span>
                                         </div>
                                         <div class="col-lg-3">
-                                        <label>(TR)</label>
+                                        <label>({{ $units_data[$unit_set->CapacityUnit] }})</label>
                                     </div>
                                     </div>
 	                                
@@ -133,7 +133,7 @@
                                              <span class="messages emsg hidden" id="chilled_water_in_error"><p class="text-danger error">Please Enter a Valid Chilled Water In</p></span>
                                         </div>
                                         <div class="col-lg-3">
-                                        <label>(&#176;C)</label>
+                                        <label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
                                     </div>
                                     </div>
                                     <div class="row">
@@ -146,7 +146,7 @@
                                             <span class="messages emsg hidden" id="chilled_water_out_error"><p class="text-danger error">Please Enter a Valid Chilled Water Out</p></span>
                                         </div>
                                         <div class="col-lg-3">
-                                       		 <label>(&#176;C)</label>
+                                       		 <label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
                                    		 </div>
                                     </div>
 	                                
@@ -178,7 +178,7 @@
                                         <label>Material</label>
                                     </div>
                                      <div class="col-md-6">      
-                                        <label>Thickness (mm)</label>
+                                        <label>Thickness ({{ $units_data[$unit_set->LengthUnit] }})</label>
                                     </div>
                                     </div>
 	                                <div class="row">
@@ -196,6 +196,7 @@
                                             <input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard">
 
                                             <span class="messages emsg hidden" id="evaporator_thickness_error"><p class="text-danger error">Please Enter a Valid Evaporator Thickness</p></span>
+                                            <span class="metallurgy_standard_span" id="evaporator_range"></span>
                                         </div>
                                         
 	                                	<div class="col-lg-4">
@@ -212,6 +213,7 @@
                                             <input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard">
 
                                             <span class="messages emsg hidden" id="absorber_thickness_error"><p class="text-danger error">Please Enter a Valid Absorber Thickness</p></span>
+                                            <span class="metallurgy_standard_span" id="absorber_range"></span>
                                         </div>
                                       
 	                                	<div class="col-lg-4">
@@ -227,6 +229,7 @@
 	                                	<div class="col-lg-4">
                                             <input type="text" name="condenser_thickness" id="condenser_thickness"  onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard">
                                             <span class="messages emsg hidden" id="condenser_thickness_error"><p class="text-danger error">Please Enter a Valid Condenser Thickness</p></span>
+                                             <span class="metallurgy_standard_span" id="condenser_range"></span>
                                         </div>
                                       
 	                            	</div>    	
@@ -249,7 +252,7 @@
                                             <span class="messages emsg hidden" id="cooling_water_in_error"><p class="text-danger error">Please Enter a Valid Cooling Water In</p></span>
                                         </div>
                                         <div class="col-lg-3">
-                                        <label>(&#176;C)</label>
+                                        <label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
                                     </div>
                                     </div>
                                     <div class="row">
@@ -262,7 +265,7 @@
                                             <span class="messages emsg hidden" id="cooling_water_flow_error"><p class="text-danger error">Please Enter a Valid Cooling Water Flow</p></span>
                                         </div>
                                         <div class="col-lg-3">
-                                        <label>(m&#179;/hr)</label>
+                                        <label>({{ $units_data[$unit_set->FlowRateUnit] }})</label>
                                     </div>
                                     </div>
                                     <div class="row">
@@ -315,7 +318,7 @@
                                             <span class="messages emsg hidden" id="fouling_chilled_value_error"><p class="text-danger error">Please Enter a Valid Fouling Chilled Water</p></span>
                                         </div>
                                         <div class="col-lg-4">
-                                        <label>(m&#179;hr &#176;C/kcal)</label>
+                                        <label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
                                     </div> 
                                 </div>
                                     <div class="row">                                    	
@@ -334,7 +337,7 @@
                                             <span class="messages emsg hidden" id="fouling_cooling_value_error"><p class="text-danger error">Please Enter a Valid Fouling Cooling Water</p></span>
                                         </div>
                                         <div class="col-lg-4">
-                                        <label>(m&#179;hr &#176;C/kcal)</label>
+                                        <label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
                                     </div>
                                     </div>   	
 	                            </div>
@@ -408,7 +411,7 @@
                                             <span class="messages emsg hidden" id="steam_pressure_error"><p class="text-danger error">Please Enter a Valid Steam Pressure</p></span>
                                         </div>
                                         <div class="col-lg-4">
-                                        <label>(kg/cm<sup>2</sup>(g))</label>
+                                        <label>({{ $units_data[$unit_set->PressureUnit] }})</label>
                                     </div>
                                     </div>   	
 	                            </div>
@@ -486,10 +489,10 @@
 			                       <input type="button" name="show_report" id="show_report" value="Show Report"  class="contact-submit">
 			                    </div>
 			                     <div class="col-12">
-			                        <input type="submit" name="submit" id="" value="Export to Word" class="contact-submit"> 
+			                        <input type="button" name="submit" id="save_word" value="Export to Word" class="contact-submit save_report"> 
 			                    </div>
 			                     <div class="col-12">
-			                        <input type="submit" name="submit" id="" value="Export to Pdf" class="contact-submit">
+			                        <input type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">
 			                    </div>
 	                		</div>
 	                	</div>
@@ -511,22 +514,22 @@
   						<tbody>
     						<tr>    
 								<td> Capacity</td>
-								<td> TR</td>
+								<td> {{ $units_data[$unit_set->CapacityUnit] }}</td>
 								<td><span id="capacity_span"></span> </td>
     						</tr>
 							<tr>   
 								<td> Chilled water flow</td>
-								<td> m<sup>3 </sup>/hr</td>
+								<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 								<td> <span id="chilled_water_flow_span"></span></td>
 						    </tr>
 						    <tr>   
 								<td> Chilled water inlet temperature</td>
-								<td> <sup> 0 </sup> C</td>
+								<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 								<td> <span id="chilled_inlet_span"></span> </td>
 							</tr>
 							<tr>    
 								<td> Chilled water outlet temperature</td>
-								<td> <sup> 0 </sup> C</td>
+								<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 								<td> <span id="chilled_outlet_span"></span> </td>
 							</tr>
 							<tr>     
@@ -541,17 +544,17 @@
     						</tr>
     						<tr>     
 								<td> Cooling water flow </td>
-								<td> m<sup>3 </sup>/hr</td>
+								<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 								<td> <span id="cooling_water_flow_span"></span> </td>
     						</tr>
     						<tr>     
 								<td> Cooling water inlet temperature </td>
-								<td> <sup> 0 </sup> C</td>
+								<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 								<td> <span id="cooling_water_inlet_span"></span></td>
     						</tr>
     						<tr>     
 								<td> Cooling water outlet temperature </td>
-								<td> <sup> 0 </sup> C</td>
+								<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 								<td> <span id="cooling_water_outlet_span"></span></td>
     						</tr>
     						<tr>     
@@ -566,7 +569,7 @@
     						</tr>
     						<tr>     
 								<td> Steam pressure </td>
-								<td> kg/cm<sup> 2 </sup>(g)</td>
+								<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
 								<td> <span id="steam_pressure_span"></span> </td>
     						</tr>
     						<tr>     
@@ -615,6 +618,8 @@ $(document).ready(function(){
 
 	// });
 
+
+
 });
 
 </script>
@@ -629,10 +634,13 @@ $(document).ready(function(){
 		var chiller_metallurgy_options = {!! json_encode($chiller_metallurgy_options) !!};
 		var changed_value = "";
 		var calculation_values;
+		var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
 		$( document ).ready(function() {
 		    // swal("Hello world!");
 		    
 		    loadDefaultValues();
+
+		    sendValues();
 		});
 
 
@@ -935,11 +943,22 @@ $(document).ready(function(){
 			  	if(value == option.value){
 			  		model_values.evaporator_material_value = value;
 					
-					model_values.evaporator_thickness_min_range = option.metallurgy.min_thickness;
-					model_values.evaporator_thickness_max_range = option.metallurgy.max_thickness;
+					
 
 					if(thickness_change){
-						model_values.evaporator_thickness = option.metallurgy.default_thickness;
+
+						if(metallurgy_unit != 'Millimeter'){
+							model_values.evaporator_thickness_min_range = (option.metallurgy.min_thickness * 0.0393700787).toFixed(4);
+							model_values.evaporator_thickness_max_range = (option.metallurgy.max_thickness * 0.0393700787).toFixed(4);
+							model_values.evaporator_thickness = (option.metallurgy.default_thickness * 0.0393700787).toFixed(4);
+						}
+						else{
+							model_values.evaporator_thickness_min_range = option.metallurgy.min_thickness;
+							model_values.evaporator_thickness_max_range = option.metallurgy.max_thickness;
+							model_values.evaporator_thickness = option.metallurgy.default_thickness;
+						}
+
+						
 					}
 			  	}
 			});
@@ -955,11 +974,22 @@ $(document).ready(function(){
 			  	$el.append($("<option></option>").attr("value", option.value).text(option.metallurgy.display_name));
 			  	if(value == option.value){
 			  		model_values.absorber_material_value = value;
-					model_values.absorber_thickness_min_range = option.metallurgy.min_thickness;
-					model_values.absorber_thickness_max_range = option.metallurgy.max_thickness;
+					
 
 					if(thickness_change){
-						model_values.absorber_thickness = option.metallurgy.default_thickness;
+
+						if(metallurgy_unit != 'Millimeter'){
+							model_values.absorber_thickness_min_range = (option.metallurgy.min_thickness * 0.0393700787).toFixed(4);
+							model_values.absorber_thickness_max_range = (option.metallurgy.max_thickness * 0.0393700787).toFixed(4);
+							model_values.absorber_thickness = (option.metallurgy.default_thickness * 0.0393700787).toFixed(4);
+						}
+						else{
+							model_values.absorber_thickness_min_range = option.metallurgy.min_thickness;
+							model_values.absorber_thickness_max_range = option.metallurgy.max_thickness;
+							model_values.absorber_thickness = option.metallurgy.default_thickness;
+						}
+
+						
 					}
 			  	}
 			});
@@ -975,11 +1005,20 @@ $(document).ready(function(){
 			  	if(value == option.value){
 			  		model_values.condenser_material_value = value;
 
-					model_values.condenser_thickness_min_range = option.metallurgy.min_thickness;
-					model_values.condenser_thickness_max_range = option.metallurgy.max_thickness;
+					
 
 					if(thickness_change){
-						model_values.condenser_thickness = option.metallurgy.default_thickness;
+						if(metallurgy_unit != 'Millimeter'){
+							model_values.condenser_thickness_min_range = (option.metallurgy.min_thickness * 0.0393700787).toFixed(4);
+							model_values.condenser_thickness_max_range = (option.metallurgy.max_thickness * 0.0393700787).toFixed(4);
+							model_values.condenser_thickness = (option.metallurgy.default_thickness * 0.0393700787).toFixed(4);
+						}
+						else{
+							model_values.condenser_thickness_min_range = option.metallurgy.min_thickness;
+							model_values.condenser_thickness_max_range = option.metallurgy.max_thickness;
+							model_values.condenser_thickness = option.metallurgy.default_thickness;
+						}
+						
 					}
 			  	}
 			});
@@ -1254,6 +1293,35 @@ $(document).ready(function(){
 			}
 		   	
 		});
+
+
+		$( ".save_report" ).click(function() {
+			var name = $('#customer_name').val();
+			var project = $('#project').val();
+			var phone = $('#phone').val();
+			var report_type = this.id;
+			
+			if(name == '' || project == '' || phone == ''){
+				
+				alert("Enter the details");
+			}
+			else{
+				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+		   	   	$.ajax({
+		   			type: "POST",
+		   			url: "{{ url('calculators/double-effect-s2/save-report') }}",
+		   			data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone,report_type: report_type},
+		   			success: function(response){
+		   				console.log(response);	
+		   				window.open(response.redirect_url, '_blank');
+		   								
+		   			},
+		   		});
+			}
+		   	
+		});
+
+
 
 		function castToBoolean(){
 			model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);

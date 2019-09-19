@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\VamBaseController;
+use App\Http\Controllers\UnitConversionController;
 use Illuminate\Http\Request;
 use App\ChillerDefaultValue;
 use App\ChillerMetallurgyOption;
 use App\ChillerCalculationValue;
+use App\UserReport;
 use App\NotesAndError;
+use App\UnitSet;
+use Exception;
 use Log;
 class DoubleSteamController extends Controller
 {
@@ -38,7 +43,8 @@ class DoubleSteamController extends Controller
     	$default_values = $chiller_default_datas->default_values;
     	$default_values = json_decode($default_values,true);
 
-    	$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+    	$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
+                                        ->where('code',$this->model_code)
     									->where('min_model','<',130)->where('max_model','>',130)->first();
 
     	$chiller_options = $chiller_metallurgy_options->chillerOptions;
@@ -47,10 +53,21 @@ class DoubleSteamController extends Controller
     	$absorber_options = $chiller_options->where('type', 'abs');
     	$condenser_options = $chiller_options->where('type', 'con');
 
-        // Log::info($this->notes['ABSO_COND_PASSES']);
+        Log::info($evaporator_options);
+
+        $unit_set = UnitSet::find(3);
+
+        $units_data = $this->getUnitsData();
+
+        // $unit_conversions = new UnitConversionController;
+
+        // $converted_values = $unit_conversions->formUnitConversion($default_values);
+        // Log::info($converted_values);
 
     	// return $evaporator_options;
 		return view('double_steam_s2')->with('default_values',$default_values)
+                                        ->with('unit_set',$unit_set)
+                                        ->with('units_data',$units_data)
 										->with('evaporator_options',$evaporator_options)
 										->with('absorber_options',$absorber_options)
 										->with('condenser_options',$condenser_options)
@@ -65,8 +82,15 @@ class DoubleSteamController extends Controller
 
 		$model_values = $request->input('values');
 		$changed_value = $request->input('changed_value');
-		Log::info($changed_value);
+		// Log::info($changed_value);
 		// update user values with model values
+
+        $unit_conversions = new UnitConversionController;
+        if(!empty($changed_value)){
+
+            $model_values = $unit_conversions->calculationUnitConversion($model_values);
+        }
+       
 
 		$this->model_values = $model_values;
         $this->castToBoolean();
@@ -78,15 +102,24 @@ class DoubleSteamController extends Controller
 		if(!$attribute_validator['status'])
 			return response()->json(['status'=>false,'msg'=>$attribute_validator['msg']]);
 
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+
+
+        Log::info("converted".print_r($converted_values,true));
 		// Log::info("metallurgy updated = ".print_r($this->model_values,true));
-		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$this->model_values]);
+		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
 	}
 
 	public function postDoubleEffectS2(Request $request){
 
 		$model_values = $request->input('values');
 
-		$this->model_values = $model_values;
+
+        $unit_conversions = new UnitConversionController;
+
+        $converted_values = $unit_conversions->calculationUnitConversion($model_values);
+
+		$this->model_values = $converted_values;
         $this->castToBoolean();
 
 		// Log::info($this->model_values);
@@ -99,7 +132,7 @@ class DoubleSteamController extends Controller
 				return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'input_target'=>strtolower($validate_attribute)]);
 		}									
 
-		$this->model_values = $model_values;
+		$this->model_values = $converted_values;
 		$this->castToBoolean();
 
 		$this->updateInputs();
@@ -119,7 +152,7 @@ class DoubleSteamController extends Controller
         // Log::info(print_r($this->calculation_values,true));
 
         if(!$velocity_status['status'])
-            return response()->json(['status'=>false,'msg'=>$velocity_status['msg'],'calculation_values'=>$this->calculation_values]);
+            return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
         try {
@@ -148,7 +181,11 @@ class DoubleSteamController extends Controller
   //       Log::info($CHGLY_VIS12);
   //       Log::info($CHGLY_TCON12);
 		// Log::info("metallurgy updated = ".print_r($this->model_values,true));
-		return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
+
+
+        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values);
+
+		return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
 	}
 
 	public function postResetDoubleEffectS2(Request $request){
@@ -199,6 +236,135 @@ class DoubleSteamController extends Controller
         return response()->json(['report'=>$view]);
 
         
+    }
+
+    public function postSaveReport(Request $request){
+        $calculation_values = $request->input('calculation_values');
+        $name = $request->input('name',"");
+        $project = $request->input('project',"");
+        $phone = $request->input('phone',"");
+        $report_type = $request->input('report_type',"save_pdf");
+
+        $user = Auth::user();
+
+        $user_report = new UserReport;
+        $user_report->user_id = $user->id;
+        $user_report->name = $name;
+        $user_report->project = $project;
+        $user_report->phone = $phone;
+        $user_report->calculation_values = json_encode($calculation_values);
+        $user_report->save();
+
+        $redirect_url = route('download.report', ['user_report_id' => $user_report->id,'type' => $report_type]);
+        
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','redirect_url'=>$redirect_url]);
+        
+    }
+
+    public function downloadReport($user_report_id,$type){
+
+        $user_report = UserReport::find($user_report_id);
+        if(!$user_report){
+            return response()->json(['status'=>false,'msg'=>'Invalid Report']);
+        }
+
+        $word_download = $this->wordFormat($user_report_id);
+
+        return response()->download(storage_path('helloWorld.docx'));
+    }
+
+
+    public function wordFormat($user_report_id){
+        $user_report = UserReport::find($user_report_id);
+
+        $calculation_values = json_decode($user_report->calculation_values,true);
+        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+
+        $section = $phpWord->addSection();
+
+
+        $description = "Technical Specification : Vapour Absorption Chiller";
+        $section->addImage("http://itsolutionstuff.com/frontTheme/images/logo.png");
+        $section->addText($description);
+
+
+        $table_style = new \PhpOffice\PhpWord\Style\Table;
+        $table_style->setBorderColor('cccccc');
+        $table_style->setBorderSize(1);
+        $table_style->setUnit(\PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT);
+        $table_style->setWidth(100 * 50);
+
+        $header = array('size' => 12, 'bold' => true);
+        $header_table = $section->addTable($table_style);
+        $header_table->addRow();
+        $header_table->addCell(1750)->addText(htmlspecialchars("Client"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->name),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("Version"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("5.1.2.0"),$header);
+
+        $header_table->addRow();
+        $header_table->addCell(1750)->addText(htmlspecialchars("Enquiry"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->phone),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("Date"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($date),$header);
+
+        $header_table->addRow();
+        $header_table->addCell(1750)->addText(htmlspecialchars("Project"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->project),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("Model"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($calculation_values['ModelName']),$header);
+
+        $section->addTextBreak(1);
+
+        $description_table = $section->addTable($table_style);
+        $description_table->addRow();
+        $description_table->addCell(1750)->addText(htmlspecialchars("Sr."),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("Description"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("Unit"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $description_table->addRow();
+        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("Capacity(+/-3%)"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("TR"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars($calculation_values['TON']),$header);
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("A"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("CHILLED WATER CIRCUIT"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water flow"));
+        $chilled_table->addCell(1750)->addText(
+                            '"kg '
+                                . 'm" '
+                                . htmlspecialchars("<sup>2</sup>"),
+                            1
+                        );
+        // $cell = $chilled_table->addCell(1750);
+        // $cell->addText("one ");
+        // $cell->addText(htmlspecialchars("3"), array('superScript' => true));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($calculation_values['ChilledWaterFlow']));
+
+
+
+
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objWriter->save(storage_path('helloWorld.docx'));
+        } catch (Exception $e) {
+        }
+
     }
 
 	public function castToBoolean(){
@@ -294,6 +460,12 @@ class DoubleSteamController extends Controller
 		$this->calculation_values['GCW'] = $this->model_values['cooling_water_flow']; 
         $this->calculation_values['PST1'] = $this->model_values['steam_pressure']; 
 		$this->calculation_values['isStandard'] = $this->model_values['metallurgy_standard']; 
+
+
+
+        // Standard Calculation Values
+        $this->calculation_values['CoolingWaterOutTemperature'] = 0;
+        $this->calculation_values['ChilledWaterFlow'] = 0;
 
 
 		$this->DATA();
@@ -1308,6 +1480,7 @@ class DoubleSteamController extends Controller
 
     public function CALCULATIONS(){
         $this->calculation_values['CW'] = 0;
+        $this->calculation_values['HHType'] = "Standard";
 
         if ($this->calculation_values['TON'] < ($this->calculation_values['MODEL'] * 0.5))
         {
@@ -3837,6 +4010,13 @@ class DoubleSteamController extends Controller
     {
 
         return array('VEMIN1' => '0.9','TEPMAX' => '4','m_maxCHWWorkPressure' => 8,'m_maxCOWWorkPressure' => 8,'m_maxHWWorkPressure' => 8,'m_maxSteamWorkPressure' => 10.5,'m_maxSteamDesignPressure' => 10,'m_DesignPressure' => 10.5,'m_maxHWDesignPressure' =>8,'m_dCondensateDrainPressure' =>1,'m_dMinCondensateDrainTemperature' =>80,'m_dMaxCondensateDrainTemperature' =>100);
+
+    }
+
+    public function getUnitsData()
+    {
+
+        return array('Centigrade' => "°C",'Fahrenheit' => "°F",'Millimeter' => "mm",'Inch' => "in",'Kilogram' => "kg",'Ton' => "ton",'Pound' => "lbs",'KgPerCmSq' => "kg/cm²",'KgPerCmSqGauge' =>"kg/cm²(g)",'Bar' =>"bar",'BarGauge' =>"bar(g)",'mLC' =>"mLC",'mWC' => "mWC",'mmWC' => "mmWC",'ftLC' => "ftLC",'ftWC' => "ftWC",'psi' => "psi",'psig' => "psi(g)",'kiloPascal' => "kPa",'kiloPascalGauge' => "kPa(g)",'CubicMeter' =>"m³",'CubicFeet' =>"cu.ft.",'SquareMeter' =>"m²",'SquareFeet' =>"sq.ft.",'TR' => "TR",'kW' => "kW",'CubicMeterPerHr' => "m³/hr",'CubicFeetPerHour' => "cu.ft./hr",'GallonPerMin' => "gallon/min",'KilogramsPerHr' => "kg/hr",'PoundsPerHour' => "lb/hr",'NCubicMeterPerHr' => "Nm³/hr",'NCubicFeetPerHour' =>"Ncu.ft./hr",'SquareMeterKperkW' =>"m² K/kW",'SquareMeterHrCperKcal' =>"m² hr °C/kcal",'SquareFeetHrFperBTU' =>"ft² Hr °F/BTU",'kCPerHour' => "kcal/Hr",'KWatt' => "kW",'MBTUPerHour' => "MBH",'kCPerKilogram' => "kcal/kg",'BTUPerPound' => "BTU/lb",'kJPerKilogram' => "kJ/kg",'kCPerNcubicmetre' => "kcal/Nm³",'BTUPerNcubicfeet' => "BTU/Ncu.ft",'kJPerNcubicmetre' =>"kJ/Nm³",'KgPerCmSqGauge' =>"kg/cm²(g)",'psiGauge' =>"psi(g)",'kiloPascalGauge' =>"kPa(g)",'DN' =>"DN",'NB' =>"NPS",'kcalperkgdegC' =>"kcal/kg°C",'kJouleperkgdegC' =>"kJ/kg°C",'BTUperpounddegF' =>"BTU/lb°F");
 
     }
 

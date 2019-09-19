@@ -12,6 +12,7 @@ use Hash;
 use Mail;
 use DB;
 use Log;
+use Exception;
 class UserController extends Controller
 {
     public function getUsers(){
@@ -180,5 +181,79 @@ class UserController extends Controller
     }
 
 
+    public function getword(){
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+
+        $section = $phpWord->addSection();
+
+
+        $description = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+        quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+        cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+        proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
+
+
+        $section->addImage("http://itsolutionstuff.com/frontTheme/images/logo.png");
+        $section->addText($description);
+
+
+        $table_style = new \PhpOffice\PhpWord\Style\Table;
+        $table_style->setBorderColor('cccccc');
+        $table_style->setBorderSize(1);
+        $table_style->setUnit(\PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT);
+        $table_style->setWidth(100 * 50);
+
+        $header = array('size' => 16, 'bold' => true);
+        $table = $section->addTable($table_style);
+        $table->addRow();
+        $table->addCell(1750)->addText(htmlspecialchars("Client"),$header);
+        $table->addCell(1750)->addText(htmlspecialchars("Name"),$header);
+        $table->addCell(1750)->addText(htmlspecialchars("Version"),$header);
+        $table->addCell(1750)->addText(htmlspecialchars("123"),$header);
+
+        $table->addRow();
+        $table->addCell(1750)->addText(htmlspecialchars("Enquiry"),$header);
+        $table->addCell(1750)->addText(htmlspecialchars("12345"),$header);
+        $table->addCell(1750)->addText(htmlspecialchars("Date"),$header);
+        $table->addCell(1750)->addText(htmlspecialchars("123"),$header);
+
+
+
+
+        // $section->addText(htmlspecialchars('Fancy table'), $header);
+        // $styleTable = array('borderColor' => '006699');
+        // $styleFirstRow = array('borderBottomColor' => '0000FF', 'bgColor' => '66BBFF');
+        // $styleCell = array('valign' => 'center');
+        // $styleCellBTLR = array('valign' => 'center', 'textDirection' => \PhpOffice\PhpWord\Style\Cell::TEXT_DIR_BTLR);
+        // $fontStyle = array('bold' => true, 'align' => 'center');
+        // $phpWord->addTableStyle('Fancy Table', $styleTable, $styleFirstRow);
+        // $table = $section->addTable('Fancy Table');
+        // $table->addRow(900);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('Client'), $fontStyle);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('Name'), $fontStyle);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('Version'), $fontStyle);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('123'), $fontStyle);
+
+        // $table->addRow(900);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('Enquiry'), $fontStyle);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('12345'), $fontStyle);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('Date'), $fontStyle);
+        // $table->addCell(2000, $styleCell)->addText(htmlspecialchars('17-09-2019'), $fontStyle);
+
+
+
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objWriter->save(storage_path('helloWorld.docx'));
+        } catch (Exception $e) {
+        }
+
+
+        return response()->download(storage_path('helloWorld.docx'));
+    }
 
 }

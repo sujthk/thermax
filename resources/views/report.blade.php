@@ -319,10 +319,10 @@
 										<td> {{ $calculation_values['SteamDrainDiameter'] }} </td>
 									</tr>
 									<tr>     
-										<td> 6 </td>
+										<td> 7 </td>
 										<td> Design Pressure </td>
 										<td> kg/cm<sup> 2 </sup> (g)</td>
-										<td> ------- </td>
+										<td> {{ $calculation_values['m_DesignPressure'] }} </td>
 									</tr>
 									<tr>
 										<th scope="col"> D  </th>
@@ -438,29 +438,31 @@
 										<td> </td>
 										<td> {{ $condenser_name }} </td>
 									</tr>
-									<tr>
-										<td> 4 </td> 
-										<td> Evaporator tube thickness</td>
-										<td> mm</td>
-										<td> {{ $calculation_values['TU3'] }}</td>
-									</tr>
-									<tr>     
-										<td> 5 </td>
-										<td> Absorber tube thickness</td>
-										<td> mm</td>
-										<td> {{ $calculation_values['TU6'] }} </td>
-									</tr>
-									<tr>     
-										<td> 6 </td>
-										<td> Condenser tube thickness </td>
-										<td> mm</td>
-										<td> {{ $calculation_values['TV6'] }} </td>
-									</tr>
+									@if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true')
+										<tr>
+											<td> 4 </td> 
+											<td> Evaporator tube thickness</td>
+											<td> mm</td>
+											<td> {{ $calculation_values['TU3'] }}</td>
+										</tr>
+										<tr>     
+											<td> 5 </td>
+											<td> Absorber tube thickness</td>
+											<td> mm</td>
+											<td> {{ $calculation_values['TU6'] }} </td>
+										</tr>
+										<tr>     
+											<td> 6 </td>
+											<td> Condenser tube thickness </td>
+											<td> mm</td>
+											<td> {{ $calculation_values['TV6'] }} </td>
+										</tr>
+									@endif	
 									<tr>
 										<th scope="col"> G </th>
 										<th scope="col"> Low Temperature Heat exchanger Type</th>
 										<th scope="col"> </th>
-										<th scope="col">-------- </th>      
+										<th scope="col">{{ $calculation_values['HHType'] }} </th>      
 									</tr>				
 								</tbody>
 
@@ -503,73 +505,6 @@
 		<!---- color js --->
 		<!-- <script type="text/javascript" src="{{asset('assets/js/common-pages.js')}}"></script> -->
 
-		<script type="text/javascript">
-			var first_visit = 0;
-
-			$( "#login_form" ).submit(function(event) {
-				event.preventDefault();
-				if(first_visit == 0){
-					sendOtp();
-					$(".disp").prop('disabled', true);
-					first_visit = 1;
-				}
-				else{
-					var email = $('#email').val();
-					var password = $('#password').val();
-					var otp = $('#otp').val();
-					var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-				   	$.ajax({
-						type: "POST",
-						url: "{{ url('login') }}",
-						data: { email : email,_token: CSRF_TOKEN,password: password,otp: otp},
-						success: function(response){
-							// console.log(response);
-							if(response.status){
-								 window.location = "{!! url('/dashboard') !!}";
-							}
-							else{
-								$('#error-display').addClass('weak-password');
-								$('#error-display').html(response.msg);
-							}					
-						},
-					});
-				}
-			});
-
-			$("#resend_otp").click(function() {
-				sendOtp();
-				$(".disp").prop('disabled', true);
-			});
-
-			function sendOtp(){
-				var email = $('#email').val();
-				var password = $('#password').val();
-				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-			   	$.ajax({
-					type: "POST",
-					url: "{{ url('user-send-otp') }}",
-					data: { email : email,_token: CSRF_TOKEN,password: password},
-					success: function(response){
-						// console.log(response);
-						$(".disp").prop('disabled', false);
-						if(response.status){
-							$(".otp_div").show();
-							$('#error-display').removeClass();
-							$('#error-display').html("");
-							$("#otp").prop('required', true);
-							$("#resend_otp").show();
-						}
-						else{
-							first_visit = 0;
-							$('#error-display').addClass('weak-password');
-							$('#error-display').html(response.msg);
-						}					
-					},
-				});
-			}
-
-
-		</script>
 
 	</body>
 
