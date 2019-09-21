@@ -10,7 +10,7 @@
 	    <div class="page-wrapper">
 	        <div class="page-header">
 	            <div class="page-header-title">
-	                <h4>Add Unit Set</h4>
+	                <h4>Update Unit Set</h4>
 	            </div>
 	            <div class="page-header-breadcrumb">
 	                <ul class="breadcrumb-title">
@@ -21,7 +21,7 @@
 	                    </li>
 	                    <li class="breadcrumb-item"><a href="{{ url('unit-sets') }}">Unit Sets</a>
 	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Add Unit Set</a>
+	                    <li class="breadcrumb-item"><a href="#!">Update Unit Set</a>
 	                    </li>
 	                </ul>
 	            </div>
@@ -42,16 +42,16 @@
 	                    <div class="card">
 	                        <div class="card-header">
 	                        	<div class="">
-		                            <h5>Add Unit Set</h5>
+		                            <h5>Update Unit Set</h5>
                             	</div>
 	                        </div>
-	                        <form id="add_unit_set" method="post" action="{{ url('unit-sets/add') }}" enctype="multipart/form-data">
+	                        <form id="add_unit_set" method="post" action="{{ url('unit-sets/edit',[$unit_set->id]) }}" enctype="multipart/form-data">
                 				{{ csrf_field() }}
 		                        <div class="card-block">
 		                        	<div class="form-group row">
 		                        	    <label class="col-sm-4 col-form-label">Name</label>
 		                        	    <div class="col-sm-6">
-		                        	        <input id="name" name="name" type="text" value="{{ old('name') }}" required class="form-control">
+		                        	        <input id="name" name="name" type="text" value="{{ $unit_set->name }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
 		                        	<div class="form-group row">
@@ -322,5 +322,37 @@
 @endsection
 	
 @section('scripts')	
+	<script type="text/javascript">
+		$( document ).ready(function() {
+		    // swal("Hello world!");
+		    
+		    var unit_set = {!! json_encode($unit_set) !!};
+
+		    $("#TemperatureUnit").val(unit_set.TemperatureUnit);
+		    $("#LengthUnit").val(unit_set.LengthUnit);
+		    $("#WeightUnit").val(unit_set.WeightUnit);
+		    $("#PressureUnit").val(unit_set.PressureUnit);
+		    $("#PressureDropUnit").val(unit_set.PressureDropUnit);
+		    $("#FurnacePressureDropUnit").val(unit_set.FurnacePressureDropUnit);
+		    $("#WorkPressureUnit").val(unit_set.WorkPressureUnit);
+		    $("#AreaUnit").val(unit_set.AreaUnit);
+		    $("#VolumeUnit").val(unit_set.VolumeUnit);
+		    $("#FlowRateUnit").val(unit_set.FlowRateUnit);
+		    $("#NozzleDiameterUnit").val(unit_set.NozzleDiameterUnit);
+		    $("#CapacityUnit").val(unit_set.CapacityUnit);
+		    $("#FoulingFactorUnit").val(unit_set.FoulingFactorUnit);
+		    $("#SteamConsumptionUnit").val(unit_set.SteamConsumptionUnit);
+		    $("#ExhaustGasFlowUnit").val(unit_set.ExhaustGasFlowUnit);
+		    $("#FuelConsumptionOilUnit").val(unit_set.FuelConsumptionOilUnit);
+		    $("#FuelConsumptionGasUnit").val(unit_set.FuelConsumptionGasUnit);
+		    $("#HeatUnit").val(unit_set.HeatUnit);
+		    $("#CalorificValueGasUnit").val(unit_set.CalorificValueGasUnit);
+		    $("#CalorificValueOilUnit").val(unit_set.CalorificValueOilUnit);
+		    $("#AllWorkPrHWUnit").val(unit_set.AllWorkPrHWUnit);
+		    $("#HeatCapacityUnit").val(unit_set.HeatCapacityUnit);
+
+		    // sendValues();
+		});
+	</script>
 	
 @endsection

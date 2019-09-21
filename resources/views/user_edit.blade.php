@@ -112,6 +112,16 @@
                                             </select>
                                         </div>
 		                        	</div>
+		                        	<div class="form-group row">
+		                        	    <label class="col-sm-2 col-form-label">Unit Set</label>
+		                        	    <div class="col-sm-6">
+                                            <select name="unit_set_id" id="unit_set_id" required class="form-control">
+                                                @foreach ($unit_sets as $unit_set)
+                                                	<option {{ $user->unit_set_id == $unit_set->id ? 'selected' : '' }} value="{{ $unit_set->id }}">{{ $unit_set->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+		                        	</div>
         		                    <div class="form-group row">
         	                            <label class="col-sm-5"></label>
         	                            <div class="col-sm-7">

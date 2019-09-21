@@ -7,6 +7,7 @@ use App\Mail\SendUserOtp;
 use Illuminate\Http\Request;
 use App\User;
 use App\UserTracking;
+use App\UnitSet;
 use Validator;	
 use Hash;
 use Mail;
@@ -25,7 +26,9 @@ class UserController extends Controller
 
     public function addUser(){
 
-    	return view('user_add');
+        $unit_sets = UnitSet::select('name','id')->get();
+
+    	return view('user_add')->with('unit_sets',$unit_sets);
     }
 
     public function postUser(Request $request){
@@ -33,7 +36,8 @@ class UserController extends Controller
 		    'name' => 'required',
             'email' => 'required|unique:users,email',
 		    'password' => 'required',
-		    'user_type' => 'required',
+            'user_type' => 'required',
+		    'unit_set_id' => 'required',
 		]);
 
 
@@ -44,7 +48,8 @@ class UserController extends Controller
 		$user->name = $request->name;
 		$user->email = $request->email;
 		$user->password = $hashed_password;
-		$user->user_type = $request->user_type;
+        $user->user_type = $request->user_type;
+		$user->unit_set_id = $request->unit_set_id;
 		$user->status = 1;
 		$user->save();
 
@@ -55,7 +60,9 @@ class UserController extends Controller
     public function editUser($user_id){
     	$user = User::find($user_id);
 
-    	return view('user_edit')->with('user',$user);
+        $unit_sets = UnitSet::select('name','id')->get();
+
+    	return view('user_edit')->with('user',$user)->with('unit_sets',$unit_sets);
     }
 
     public function updateUser(Request $request,$user_id){
@@ -63,6 +70,7 @@ class UserController extends Controller
 		    'user_type' => 'required',
 		    'name' => 'required',
 		    'email' => 'required|unique:users,email,'.$user_id,
+            'unit_set_id' => 'required',
 		]);
 
 
@@ -70,6 +78,7 @@ class UserController extends Controller
     	$user->name = $request->name;
 		$user->email = $request->email;
 		$user->user_type = $request->user_type;
+        $user->unit_set_id = $request->unit_set_id;
 
 		if ($request->has('password')) {
 		    $hashed_password = Hash::make($request->password);

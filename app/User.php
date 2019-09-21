@@ -42,4 +42,9 @@ class User extends Authenticatable
 
         return str_replace("_"," ",$value);
     }
+
+    public function unitSet()
+    {
+        return $this->belongsTo('App\UnitSet');
+    }
 }

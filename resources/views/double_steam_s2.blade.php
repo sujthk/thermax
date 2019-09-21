@@ -539,7 +539,7 @@
     						</tr>
 							<tr>     
 								<td> Chilled water circuit pressure loss </td>
-								<td> mLC</td>
+								<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 								<td> <span id="chilled_pressure_loss_span"></span> </td>
     						</tr>
     						<tr>     
@@ -564,7 +564,7 @@
     						</tr>
     						<tr>     
 								<td> Cooling water circuit pressure loss </td>
-								<td> mLC</td>
+								<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 								<td> <span id="cooling_pressure_loss_span"></span> </td>
     						</tr>
     						<tr>     
@@ -574,7 +574,7 @@
     						</tr>
     						<tr>     
 								<td> Steam consumption </td>
-								<td> kg/hr</td>
+								<td> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
 								<td> <span id="steam_consumption_span"></span> </td>
     						</tr>
   						</tbody>
@@ -640,7 +640,7 @@ $(document).ready(function(){
 		    
 		    loadDefaultValues();
 
-		    sendValues();
+		    // sendValues();
 		});
 
 

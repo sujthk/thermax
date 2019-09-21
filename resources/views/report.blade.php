@@ -106,7 +106,7 @@
 								<tr>
 									<th scope="col"></th>
 									<th scope="col"> Capacity(+/-3%)</th>
-									<th scope="col"> TR </th>
+									<th scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </th>
 									<th scope="col"> {{ $calculation_values['TON'] }}</th>      
 								</tr>
 								<tr>
@@ -123,19 +123,19 @@
 									<tr>
 										<td> 1 </td>
 										<td> Chilled water flow</td>
-										<td> m<sup>3 </sup>/hr</td>
+										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 										<td> {{ $calculation_values['ChilledWaterFlow'] }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
 										<td> Chilled water inlet temperature</td>
-										<td> <sup> 0 </sup> C</td>
+										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td> {{ $calculation_values['TCHW11'] }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td> 
 										<td> Chilled water outlet temperature</td>
-										<td> <sup> 0 </sup> C</td>
+										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td> {{ $calculation_values['TCHW12'] }} </td>
 									</tr>
 									<tr>     
@@ -147,13 +147,13 @@
 									<tr>     
 										<td> 5 </td>
 										<td> Chilled water circuit pressure loss </td>
-										<td> mLC</td>
+										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td> {{ $calculation_values['ChilledFrictionLoss'] }} </td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
 										<td> Chilled water Connection diameter </td>
-										<td> DN</td>
+										<td> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td> {{ $calculation_values['ChilledConnectionDiameter'] }} </td>
 									</tr>
 									<tr>     
@@ -177,7 +177,7 @@
 									<tr>     
 										<td> 9 </td>
 										<td> Chilled water fouling factor </td>
-										<td> m<sup>2 </sup>/hr<sup>o </sup><br>C/kcal</td>
+										<td> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
 										@if($calculation_values['TUU'] == "standard")
 											<td> {{ $calculation_values['TUU'] }} </td>
 										@else
@@ -187,7 +187,7 @@
 									<tr>     
 										<td> 10 </td>
 										<td> Maximum working pressure </td>
-										<td> kg/cm<sup>2</sup>(g)</td>
+										<td> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
 										<td>  {{ $calculation_values['m_maxCHWWorkPressure'] }}</td>
 									</tr>
 									<tr>
@@ -199,19 +199,19 @@
 									<tr>
 										<td> 1 </td>
 										<td> Cooling water flow</td>
-										<td> m<sup>3 </sup>/hr</td>
+										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 										<td> {{ $calculation_values['GCW'] }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
 										<td> Cooling water inlet temperature</td>
-										<td> <sup> 0 </sup> C</td>
+										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td> {{ $calculation_values['TCW11'] }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
 										<td> Cooling water outlet temperature</td>
-										<td> <sup> 0 </sup> C</td>
+										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td> {{ $calculation_values['CoolingWaterOutTemperature'] }}</td>
 									</tr>
 									<tr>
@@ -223,7 +223,7 @@
 									<tr>     
 										<td> 5 </td>
 										<td> Cooling water Bypass Flow</td>
-										<td>m<sup>3 </sup>/hr </td>
+										<td>{{ $units_data[$unit_set->FlowRateUnit] }} </td>
 										@if(empty($calculation_values['BypassFlow']))
 											<td> - </td>
 										@else
@@ -233,13 +233,13 @@
 									<tr>     
 										<td> 6 </td>
 										<td> Cooling water circuit pressure loss </td>
-										<td> mLC</td>
+										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td> {{ $calculation_values['CoolingFrictionLoss'] }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
 										<td> Cooling water Connection diameter </td>
-										<td> DN</td>
+										<td> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td> {{ $calculation_values['CoolingConnectionDiameter'] }} </td>
 									</tr>
 									<tr>     
@@ -263,7 +263,7 @@
 									<tr>     
 										<td> 10 </td>
 										<td> Cooling water fouling factor </td>
-										<td> m<sup>2 </sup>/hr<sup>o </sup><br>C/kcal</td>
+										<td> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
 										@if($calculation_values['TUU'] == "standard")
 											<td> {{ $calculation_values['TUU'] }} </td>
 										@else
@@ -273,7 +273,7 @@
 									<tr>     
 										<td> 11 </td>
 										<td> Maximum working pressure </td>
-										<td> kg/cm<sup>2</sup>(g)</td>
+										<td> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
 										<td> {{ $calculation_values['m_maxCOWWorkPressure'] }} </td>
 									</tr>
 									<tr>
@@ -285,43 +285,43 @@
 									<tr>
 										<td> 1 </td>
 										<td> Steam pressure</td>
-										<td> kg/cm<sup>2 </sup>(g)</td>
+										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
 										<td> {{ $calculation_values['PST1'] }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
 										<td> Steam Consumption(+/-3%)</td>
-										<td> kg/hr</td>
+										<td> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
 										<td> {{ $calculation_values['SteamConsumption'] }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
 										<td> Condensate drain temperature</td>
-										<td> <sup> 0 </sup> C</td>
+										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td> {{ $calculation_values['m_dMinCondensateDrainTemperature'] }} - {{ $calculation_values['m_dMaxCondensateDrainTemperature'] }} </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
 										<td> Condensate drain pressure</td>
-										<td> kg/cm<sup> 2 </sup> (g)</td>
+										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
 										<td> {{ $calculation_values['m_dCondensateDrainPressure'] }} </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
 										<td> Connection - Inlet diameter</td>
-										<td> DN</td>
+										<td> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td> {{ $calculation_values['SteamConnectionDiameter'] }}</td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
 										<td> Connection - Drain diameter </td>
-										<td> DN</td>
+										<td> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td> {{ $calculation_values['SteamDrainDiameter'] }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
 										<td> Design Pressure </td>
-										<td> kg/cm<sup> 2 </sup> (g)</td>
+										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
 										<td> {{ $calculation_values['m_DesignPressure'] }} </td>
 									</tr>
 									<tr>
@@ -345,19 +345,19 @@
 									<tr>
 										<td> 3 </td>
 										<td> Absorbent pump rating</td>
-										<td> kW (A)</td>
+										<td> {{ $units_data[$unit_set->HeatUnit] }} (A)</td>
 										<td> {{ $calculation_values['AbsorbentPumpMotorKW'] }}( {{$calculation_values['AbsorbentPumpMotorAmp']}}) </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
 										<td> Refrigerant pump rating</td>
-										<td> kW (A)</td>
+										<td> {{ $units_data[$unit_set->HeatUnit] }} (A)</td>
 										<td> {{ $calculation_values['RefrigerantPumpMotorKW']}}({{$calculation_values['RefrigerantPumpMotorAmp']}}) </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
 										<td> Vacuum pump rating</td>
-										<td> kW (A)</td>
+										<td> {{ $units_data[$unit_set->HeatUnit] }} (A)</td>
 										<td> {{ $calculation_values['PurgePumpMotorKW']}}({{$calculation_values['PurgePumpMotorAmp']}}) </td>
 									</tr>
 									<tr>
@@ -369,49 +369,49 @@
 									<tr>
 										<td> 1 </td>
 										<td> Length</td>
-										<td> mm</td>
+										<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td> {{ $calculation_values['Length'] }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
 										<td> width</td>
-										<td> mm</td>
+										<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td> {{ $calculation_values['Width'] }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
 										<td> Height</td>
-										<td> mm</td>
+										<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td> {{ $calculation_values['Height'] }} </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
 										<td> Operating weight</td>
-										<td> ton</td>
+										<td> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td> {{ $calculation_values['OperatingWeight'] }}</td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
 										<td> Shipping weight</td>
-										<td> ton</td>
+										<td> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td> {{ $calculation_values['MaxShippingWeight'] }} </td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
 										<td> Flooded weight </td>
-										<td> ton</td>
+										<td> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td> {{ $calculation_values['FloodedWeight'] }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
 										<td> Dry weight </td>
-										<td> ton</td>
+										<td> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td> {{ $calculation_values['DryWeight'] }} </td>
 									</tr>
 									<tr>     
 										<td> 8 </td>
 										<td> Tube cleaning space (any one side length-wise) </td>
-										<td> mm</td>
+										<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td> {{ $calculation_values['ClearanceForTubeRemoval'] }} </td>
 									</tr>
 									<tr>
@@ -442,19 +442,19 @@
 										<tr>
 											<td> 4 </td> 
 											<td> Evaporator tube thickness</td>
-											<td> mm</td>
+											<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 											<td> {{ $calculation_values['TU3'] }}</td>
 										</tr>
 										<tr>     
 											<td> 5 </td>
 											<td> Absorber tube thickness</td>
-											<td> mm</td>
+											<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 											<td> {{ $calculation_values['TU6'] }} </td>
 										</tr>
 										<tr>     
 											<td> 6 </td>
 											<td> Condenser tube thickness </td>
-											<td> mm</td>
+											<td> {{ $units_data[$unit_set->LengthUnit] }}</td>
 											<td> {{ $calculation_values['TV6'] }} </td>
 										</tr>
 									@endif	

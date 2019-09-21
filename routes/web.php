@@ -27,6 +27,7 @@ Route::post('/user-send-otp', 'UserController@sendUserOtp');
 Route::get('/word', 'UserController@getword');
 
 Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
+
 Route::group(['middleware' => ['auth','revalidate']], function(){
 
 	Route::get('/dashboard', function () {

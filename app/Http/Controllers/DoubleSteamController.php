@@ -53,19 +53,23 @@ class DoubleSteamController extends Controller
     	$absorber_options = $chiller_options->where('type', 'abs');
     	$condenser_options = $chiller_options->where('type', 'con');
 
-        Log::info($evaporator_options);
+        // Log::info($default_values);
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
 
-        $unit_set = UnitSet::find(3);
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0 );
+
+        $default_values = collect($default_values)->union($standard_values);
 
         $units_data = $this->getUnitsData();
 
-        // $unit_conversions = new UnitConversionController;
-
-        // $converted_values = $unit_conversions->formUnitConversion($default_values);
-        // Log::info($converted_values);
+        $unit_conversions = new UnitConversionController;
+        // Log::info($default_values);
+        $converted_values = $unit_conversions->formUnitConversion($default_values);
+        
 
     	// return $evaporator_options;
-		return view('double_steam_s2')->with('default_values',$default_values)
+		return view('double_steam_s2')->with('default_values',$converted_values)
                                         ->with('unit_set',$unit_set)
                                         ->with('units_data',$units_data)
 										->with('evaporator_options',$evaporator_options)
@@ -105,7 +109,7 @@ class DoubleSteamController extends Controller
         $converted_values = $unit_conversions->formUnitConversion($this->model_values);
 
 
-        Log::info("converted".print_r($converted_values,true));
+        // Log::info("converted".print_r($converted_values,true));
 		// Log::info("metallurgy updated = ".print_r($this->model_values,true));
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
 	}
@@ -231,8 +235,13 @@ class DoubleSteamController extends Controller
         $absorber_name = $absorber_option->metallurgy->display_name;
         $condenser_name = $condenser_option->metallurgy->display_name;
 
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
 
-        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name])->render();
+        $units_data = $this->getUnitsData();
+
+
+        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data])->render();
         return response()->json(['report'=>$view]);
 
         
