@@ -10,31 +10,10 @@
 		  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 		  <![endif]-->
 		<!-- Meta -->
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
-		<!-- Favicon icon -->
-		
-		<link rel="icon" href="{{asset('assets/images/thermax-logo.png')}}" type="image/x-icon">
-		<!-- Google font-->
-		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
-		<!-- Required Fremwork -->
-		<link rel="stylesheet" type="text/css" href="{{asset('bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
-		<!-- themify-icons line icon -->
-		<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/icon/themify-icons/themify-icons.css')}}">
-		<!-- ico font -->
-		<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/icon/icofont/css/icofont.css')}}">
-		<!-- Style.css -->
-		<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/css/style.css')}}">
-		<!-- color .css -->
-		<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/css/color/color-1.css')}}" id="color"/>
-		<meta name="csrf-token" content="{{ csrf_token() }}" />
+
 		<style>
 
 
-	        .weak-password {
-	            background-color: #ce1d14;
-	            border: #AA4502 1px solid;
-	        }
 	        .report-table .table>thead>tr>th{
 	        	background: #676767;
 	        	color: #fff;
@@ -96,24 +75,25 @@
 		      			<div class="table-responsive">
 		      				<table class="table table-bordered report-top">
 		      			  		<thead>
-								<tr>
-									<th scope="col">Sr.</th>
-									<th scope="col">Description</th>
-									<th scope="col">Unit</th>
-									<th scope="col"> Cooling Mode</th>      
-								</tr>
-
-								<tr>
-									<th scope="col"></th>
-									<th scope="col"> Capacity(+/-3%)</th>
-									<th scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </th>
-									<th scope="col"> {{ $calculation_values['TON'] }}</th>      
-								</tr>
-								<tr>
-									<td colspan="3"></td>
-								</tr>
+								
 		      			  		</thead>
 			      			  	<tbody>
+			      			  		<tr>
+			      			  			<th scope="col">Sr.</th>
+			      			  			<th scope="col">Description</th>
+			      			  			<th scope="col">Unit</th>
+			      			  			<th scope="col"> Cooling Mode</th>      
+			      			  		</tr>
+
+			      			  		<tr>
+			      			  			<th scope="col"></th>
+			      			  			<th scope="col"> Capacity(+/-3%)</th>
+			      			  			<th scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </th>
+			      			  			<th scope="col"> {{ $calculation_values['TON'] }}</th>      
+			      			  		</tr>
+			      			  		<tr>
+			      			  			<td colspan="3"></td>
+			      			  		</tr>
 									<tr>
 										<th scope="col"> A  </th>
 										<th scope="col"> Chilled Water Circuit</th>
@@ -486,20 +466,7 @@
 		<!-- Warning Section Starts -->
 		<!-- Warning Section Ends -->
 		<!-- Required Jquery -->
-		<script type="text/javascript" src="{{asset('bower_components/jquery/dist/jquery.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/jquery-ui/jquery-ui.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/tether/dist/js/tether.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/bootstrap/dist/js/bootstrap.min.js')}}"></script>
-		<!-- jquery slimscroll js -->
-		<script type="text/javascript" src="{{asset('bower_components/jquery-slimscroll/jquery.slimscroll.js')}}"></script>
-		<!-- modernizr js -->
-		<script type="text/javascript" src="{{asset('bower_components/modernizr/modernizr.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/modernizr/feature-detects/css-scrollbars.js')}}"></script>
-		<!-- i18next.min.js -->
-		<script type="text/javascript" src="{{asset('bower_components/i18next/i18next.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/i18next-xhr-backend/i18nextXHRBackend.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.min.js')}}"></script>
-		<script type="text/javascript" src="{{asset('bower_components/jquery-i18next/jquery-i18next.min.js')}}"></script>
+
 		<!-- Custom js -->
 		<!-- <script type="text/javascript" src="{{asset('assets/js/script.js')}}"></script> -->
 		<!---- color js --->

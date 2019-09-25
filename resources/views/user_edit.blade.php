@@ -98,7 +98,7 @@
 		                        	<div class="form-group row">
 		                        	    <label class="col-sm-2 col-form-label">New Password</label>
 		                        	    <div class="col-sm-6">
-		                        	        <input id="password" name="password" type="text" value="{{ old('password') }}" onKeyUp="checkPasswordStrength();" class="form-control">
+		                        	        <input id="password" name="password" type="text" value="" onKeyUp="checkPasswordStrength();" class="form-control">
 		                        	        <div id="password-strength-status"></div>
 		                        	    </div>
 		                        	</div>

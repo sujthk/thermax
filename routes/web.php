@@ -24,7 +24,7 @@ Route::get('/report', function () {
 Route::post('/login', 'UserController@loginUser');
 Route::post('/user-send-otp', 'UserController@sendUserOtp');
 
-Route::get('/word', 'UserController@getword');
+Route::get('/data', 'DoubleSteamController@getChillerData');
 
 Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
 

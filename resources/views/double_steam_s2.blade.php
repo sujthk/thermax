@@ -462,7 +462,7 @@
     	<div class="modal-content">
       		<div class="modal-header">
         		<h5 class="modal-title" id="exampleModalLongTitle1"><span id="result_span"></span> Design</h5>
-        		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        		<button type="button" id="model2" class="close" data-dismiss="modal" aria-label="Close">
           			<span aria-hidden="true">&times;</span>
         		</button>
       		</div>
@@ -1207,16 +1207,16 @@ $(document).ready(function(){
 	  						$('#evaporator_pass').html(calculation_values.EvaporatorPasses);
 	  						$('#chilled_wa').html(calculation_values.EvaporatorPasses);
 	  						$('#evaporator_pass').html(calculation_values.EvaporatorPasses);
-	  						$('#chilled_pressure_loss_span').html(calculation_values.ChilledFrictionLoss);
+	  						$('#chilled_pressure_loss_span').html((calculation_values.ChilledFrictionLoss).toFixed(2));
 	  						$('#cooling_water_flow_span').html(calculation_values.GCW);
 	  						$('#cooling_water_inlet_span').html(calculation_values.TCW11);
 	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature);
 
 	  						var absorber_condenser_pass = calculation_values.AbsorberPasses+"/"+calculation_values.CondenserPasses
 	  						$('#absorber_pass').html(absorber_condenser_pass);
-	  						$('#cooling_pressure_loss_span').html(calculation_values.CoolingFrictionLoss);
+	  						$('#cooling_pressure_loss_span').html((calculation_values.CoolingFrictionLoss).toFixed(2));
 	  						$('#steam_pressure_span').html(calculation_values.PST1);
-	  						$('#steam_consumption_span').html(calculation_values.SteamConsumption);
+	  						$('#steam_consumption_span').html((calculation_values.SteamConsumption).toFixed(2));
 	  						$('#result_span').html(calculation_values.Result);
 
 
@@ -1286,6 +1286,8 @@ $(document).ready(function(){
 					data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone},
 					success: function(response){
 						// console.log(response);	
+						// $("#exampleModalLong1").modal('toggle');
+						// $("#model2").click()
 						var wi = window.open();
 						$(wi.document.body).html(response.report);					
 					},
@@ -1312,6 +1314,7 @@ $(document).ready(function(){
 		   			url: "{{ url('calculators/double-effect-s2/save-report') }}",
 		   			data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone,report_type: report_type},
 		   			success: function(response){
+		   				$("#exampleModalLong1").modal('toggle');
 		   				console.log(response);	
 		   				window.open(response.redirect_url, '_blank');
 		   								

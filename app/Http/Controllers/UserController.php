@@ -73,6 +73,7 @@ class UserController extends Controller
             'unit_set_id' => 'required',
 		]);
 
+        // Log::info($request->all());
 
     	$user = User::find($user_id);
     	$user->name = $request->name;
@@ -80,7 +81,7 @@ class UserController extends Controller
 		$user->user_type = $request->user_type;
         $user->unit_set_id = $request->unit_set_id;
 
-		if ($request->has('password')) {
+		if ($request->has('password') && !empty($request->password)) {
 		    $hashed_password = Hash::make($request->password);
 		    $user->password = $hashed_password;
 		}
