@@ -67,6 +67,11 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/chiller/calculation-values', 'DefaultCalculatorController@getChillerCalculations')->name('chiller/calculation-values');
 	Route::get('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@editCalculatorValue');
 	Route::post('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@updateCalculatorValue');
+	Route::get('importExport', 'DefaultCalculatorController@importExport');
+	Route::post('importExcel', 'DefaultCalculatorController@importExcel');
+
+	Route::get('/calculation-keys', 'DefaultCalculatorController@getCalculationKeys')->name('/calculation-keys');
+	Route::post('/calculation-keys/add', 'DefaultCalculatorController@postCalculationKey');
 
 	Route::get('/error-notes', 'DefaultCalculatorController@getErrorNotes')->name('error-notes');
 	Route::post('/error-notes/edit/{error_notes_id}', 'DefaultCalculatorController@updateErrorNote');

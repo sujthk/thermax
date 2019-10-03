@@ -12,7 +12,7 @@
 	    <div class="page-wrapper">
 	        <div class="page-header">
 	            <div class="page-header-title">
-	                <h4>Chiller Calculation Values</h4>
+	                <h4>Calculator Keys</h4>
 	            </div>
 	            <div class="page-header-breadcrumb">
 	                <ul class="breadcrumb-title">
@@ -21,7 +21,7 @@
 	                            <i class="icofont icofont-home"></i>
 	                        </a>
 	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Chiller Calculation Values</a>
+	                    <li class="breadcrumb-item"><a href="#!">Calculator Keys</a>
 	                    </li>
 	                </ul>
 	            </div>
@@ -40,18 +40,10 @@
 	                        </div>
 	                    @endif
 	                    <div class="card">
-	                        <div class="card-header">
+	                    	  <div class="card-header">
 	                        	<div class="">
-		                            <h5>Calculators</h5>
-		                            <div class="card-body">
-							            <form action="{{url('importExcel')}}" method="POST" enctype="multipart/form-data">
-							                {{ csrf_field() }}
-							                <input type="file" name="file" class="form-control" required="">
-							                <br>
-							                <button class="btn btn-success" type="submit">Import User Data</button>
-							                <a class="btn btn-warning" href="{{url('importExport')}}">Export User Data</a>
-							            </form>
-							        </div>
+		                            <h5>Add Calculator Key</h5>
+		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#calculator_key">New Calculator Key +</button>
                             	</div>
 	                        </div>
 	                        <div class="card-block">
@@ -59,20 +51,23 @@
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
 	                                    <thead>
 	                                        <tr>
+	                                        	<!-- <th>S.No</th> -->
 	                                            <th>Name</th>
-	                                            <th>Model</th>
-	                                            <th style="width: 8%">Action</th>
+	                                           <!--  <th style="width: 8%">Action</th> -->
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
-	                                    	@foreach ($chiller_calculation_values as $chiller_calculation_value) 
+	                                    	@php ($i=1)
+	                                    	@foreach ($calculator_keys as $calculator_key) 
 	                                    		<tr>
-	                                    		    <td>{{ $chiller_calculation_value->name }}</td>
-	                                    		    <td>{{ $chiller_calculation_value->min_model }}</td> 
-		                                            <td>
-		                                                <a href="{{ url('chiller/calculation-values/edit',[$chiller_calculation_value->id]) }}" class="btn btn-primary btn-sm">Edit</a>
-		                                            </td> 
+	                                    			<!-- <td>{{ $i }}</td> -->
+	                                    		    <td>{{ $calculator_key->name }}</td>
+	                                    		   
+		                                           <!--  <td>
+		                                                <a href="#" class="btn btn-primary btn-sm">Delete</a>
+		                                            </td>  -->
 	                                    		</tr>
+	                                    		@php($i++)
 	                                    	@endforeach
 	                                    </tbody>	
 	                                </table>
@@ -84,6 +79,35 @@
 	                    <!-- Language - Comma Decimal Place table end -->
 	                </div>
 	            </div>
+	        </div>
+	    </div>
+	</div>
+	<div class="modal fade" id="calculator_key" tabindex="-1">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h5 class="modal-title">Add Calculator Keys</h5>
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	            <form id="add_note" method="post" action="{{ url('/calculation-keys/add') }}" enctype="multipart/form-data">
+	            	<div class="modal-body p-b-0">
+	                
+	                	{{ csrf_field() }}
+	                    <div class="row">
+	                        <div class="col-sm-12">
+	                            <div class="input-group">
+	                                <label class="col-form-label">Name</label> 
+	                                <input type="text" class="form-control" name="name" required placeholder="Name">
+	                            </div>
+	                        </div>
+	                    </div>                      
+		            </div>
+		            <div class="modal-footer">
+		                <button type="submit" class="btn btn-primary">Add</button>
+		            </div>
+	            </form>
 	        </div>
 	    </div>
 	</div>
