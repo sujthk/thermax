@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\SendUserOtp;
 use Illuminate\Http\Request;
@@ -176,6 +176,63 @@ class UserController extends Controller
 
 		return response()->json(['status'=>false,'msg'=>'Invalid Credentials']);
     }
+     public function updateUserProfile(Request $request,$user_id){
+        $this->validate($request, [
+            'user_type' => 'required',
+            'name' => 'required',
+            'email' => 'required|unique:users,email,'.$user_id,
+            'unit_set_id' => 'required',
+        ]);
+
+        // Log::info($request->all());
+
+        $user = User::find($user_id);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->user_type = $request->user_type;
+        $user->unit_set_id = $request->unit_set_id;
+        $user->save();
+
+        return redirect('profile')->with('message','Profile Updated')
+                        ->with('status','success');
+
+    }
+
+
+    public function getProfile()
+    {
+        $user_id=Auth::user()->id;
+        $user =User::where('id',$user_id)->first();
+
+         $unit_sets = UnitSet::select('name','id')->get();
+        return view('user_profile')->with('user',$user)->with('unit_sets',$unit_sets);
+    }
+    public function postPasswordChange(Request $request)
+    {
+        //dd($request->input());
+        $this->validate($request, [
+            'old_password' => 'required',
+        ]); 
+
+        $user_id=Auth::user()->id;
+        $user =User::where('id',$user_id)->first();
+
+        if (!Hash::check($request->old_password, $user->password))
+            {
+                $errors = ['message' => 'Your Old Password Not Matching.'];
+                return redirect()->back()->with('message','Your Old Password Not Matching.')
+                        ->with('status','error');
+            }
+            else
+            {
+                //return $request->password;
+                $password = Hash::make($request->password);
+                $user->password =  $password;
+                $user->save();
+                return Redirect::back()->with('message','Updated')
+                ->with('status','success');
+            }
+        }
 
     public function logoutUser(){
     	$user = Auth::user();

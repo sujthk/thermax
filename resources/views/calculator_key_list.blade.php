@@ -51,21 +51,60 @@
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
 	                                    <thead>
 	                                        <tr>
-	                                        	<!-- <th>S.No</th> -->
+	                                        	<th>S.No</th>
 	                                            <th>Name</th>
-	                                           <!--  <th style="width: 8%">Action</th> -->
+	                                            <th style="width: 8%">Keys</th>
+	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
 	                                    	@php ($i=1)
 	                                    	@foreach ($calculator_keys as $calculator_key) 
 	                                    		<tr>
-	                                    			<!-- <td>{{ $i }}</td> -->
+	                                    			<td>{{ $i }}</td>
 	                                    		    <td>{{ $calculator_key->name }}</td>
+	                                    		    <td style="width: 8%">{{ $calculator_key->keys }}</td>
 	                                    		   
-		                                           <!--  <td>
-		                                                <a href="#" class="btn btn-primary btn-sm">Delete</a>
-		                                            </td>  -->
+		                                            <td>
+		                                                <a href="#" data-toggle="modal" data-target="#calculator_key{{$calculator_key->id}}" class="btn btn-primary btn-sm">Edit</a>
+	
+		                                            </td> 
+								 	<div class="modal fade" id="calculator_key{{$calculator_key->id}}" tabindex="-1">
+									    <div class="modal-dialog" role="document">
+									        <div class="modal-content">
+									            <div class="modal-header">
+									                <h5 class="modal-title">Edit Calculator Keys</h5>
+									                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									                    <span aria-hidden="true">&times;</span>
+									                </button>
+									            </div>
+									            <form id="add_note" method="post" action="{{ url('/calculation-key/edit',[$calculator_key->id]) }}" enctype="multipart/form-data">
+									            	<div class="modal-body p-b-0">
+									                	{{ csrf_field() }}
+									                    <div class="row">
+									                        <div class="col-sm-12">
+									                            <div class="input-group">
+									                                <label class="col-form-label">Name</label> 
+									                                <input type="text" class="form-control" name="name" readonly="" placeholder="Name" value="{{$calculator_key->name}}" >
+									                            </div>
+									                             <div class="input-group">
+	                                <label class="col-form-label">Code</label> 
+	                                <input type="text" class="form-control" name="code" readonly placeholder="Code" value="{{$calculator_key->code}}">
+	                            </div>
+									                            <div class="input-group">
+									                                <label class="col-form-label">Keys</label> 
+									                               <textarea class="form-control" name="keys" required  rows="15">{{$calculator_key->keys}}</textarea>
+									                            </div>
+									                        </div>
+									                    </div>                      
+										            </div>
+										            <div class="modal-footer">
+										                <button type="submit" class="btn btn-primary">Edit</button>
+										            </div>
+									            </form>
+									        </div>
+									    </div>
+									</div>
 	                                    		</tr>
 	                                    		@php($i++)
 	                                    	@endforeach
@@ -100,6 +139,14 @@
 	                            <div class="input-group">
 	                                <label class="col-form-label">Name</label> 
 	                                <input type="text" class="form-control" name="name" required placeholder="Name">
+	                            </div>
+	                              <div class="input-group">
+	                                <label class="col-form-label">Code</label> 
+	                                <input type="text" class="form-control" name="code" required placeholder="Code">
+	                            </div>
+	                            <div class="input-group">
+	                                <label class="col-form-label">Keys</label> 
+	                               <textarea class="form-control" name="keys" required ></textarea>
 	                            </div>
 	                        </div>
 	                    </div>                      

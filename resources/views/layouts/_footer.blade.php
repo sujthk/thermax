@@ -31,9 +31,12 @@
     <script type="text/javascript" src="{{asset('bower_components/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.min.js')}}"></script>
     <script type="text/javascript" src="{{asset('bower_components/jquery-i18next/jquery-i18next.min.js')}}"></script>
     <!-- Custom js -->
+
     
     <script type="text/javascript" src="{{asset('dark-assets/assets/js/script.js')}}"></script>
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="{{asset('assets/pages/user-profile.js')}}"></script>
+    
     @yield('scripts')
      <script>
 

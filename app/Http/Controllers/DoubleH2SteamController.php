@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\VamBaseController;
 use App\Http\Controllers\UnitConversionController;
-use Illuminate\Http\Request;
 use App\ChillerDefaultValue;
 use App\ChillerMetallurgyOption;
 use App\ChillerCalculationValue;
@@ -15,12 +15,12 @@ use App\UnitSet;
 use Exception;
 use Log;
 use PDF;
-class DoubleSteamController extends Controller
+class DoubleH2SteamController extends Controller
 {
-    
+   
 	private $model_values;
 	private $default_model_values;
-	private $model_code = "D_S2";
+	private $model_code = "D_H2";
 	private $calculation_values;
     private $notes;
 
@@ -35,7 +35,7 @@ class DoubleSteamController extends Controller
         $this->notes = $combined;
     }
 
-    public function getDoubleEffectS2(){
+    public function getDoubleEffectH2(){
 
         $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',130)->first();
         
@@ -75,7 +75,7 @@ class DoubleSteamController extends Controller
         
 
     	// return $evaporator_options;
-		return view('double_steam_s2')->with('default_values',$converted_values)
+		return view('double_effect_h2_series')->with('default_values',$converted_values)
                                         ->with('unit_set',$unit_set)
                                         ->with('units_data',$units_data)
 										->with('evaporator_options',$evaporator_options)
@@ -84,11 +84,11 @@ class DoubleSteamController extends Controller
 										->with('chiller_metallurgy_options',$chiller_metallurgy_options);
 	}
 
-	public function calculateDoubleEffectS2(Request $request){
+	public function calculateDoubleEffectH2(Request $request){
 		return $request->all();
 	}
 
-	public function postAjaxDoubleEffectS2(Request $request){
+	public function postAjaxDoubleEffectH2(Request $request){
 
 		$model_values = $request->input('values');
 		$changed_value = $request->input('changed_value');
@@ -120,7 +120,7 @@ class DoubleSteamController extends Controller
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
 	}
 
-	public function postDoubleEffectS2(Request $request){
+	public function postDoubleEffectH2(Request $request){
 
 		$model_values = $request->input('values');
 
@@ -198,7 +198,7 @@ class DoubleSteamController extends Controller
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
 	}
 
-	public function postResetDoubleEffectS2(Request $request){
+	public function postResetDoubleEffectH2(Request $request){
 		$model_number = $request->input('model_number');
         log::info($model_number);
 
@@ -237,7 +237,7 @@ class DoubleSteamController extends Controller
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
 
 	}
-    public function modulNumberDoubleEffectS2(){
+    public function modulNumberDoubleEffectH2(){
         $model_values = $this->model_values;
 
         $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_values['model_number'])->first();
@@ -5872,8 +5872,4 @@ class DoubleSteamController extends Controller
 
 
 	// }
-
-
-
-	
 }

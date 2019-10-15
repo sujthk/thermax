@@ -16,6 +16,7 @@ class CreateCalculationKeysTable extends Migration
         Schema::create('calculation_keys', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
+            $table->longText('keys');
             $table->timestamps();
         });
     }

@@ -40,7 +40,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a href="user-profile.html">
+                                <a href="{{ url('profile') }}">
                                     <i class="ti-user"></i> Profile
                                 </a>
                             </li>

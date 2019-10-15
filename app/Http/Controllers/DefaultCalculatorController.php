@@ -166,9 +166,9 @@ class DefaultCalculatorController extends Controller
     public function getChillerCalculations(){
 
         $chiller_calculation_values = ChillerCalculationValue::get();
+        $calculator_keys = CalculationKey::orderBy('created_at', 'desc')->get();
 
-
-        return view('chiller_calculation_values')->with('chiller_calculation_values',$chiller_calculation_values);
+        return view('chiller_calculation_values')->with('chiller_calculation_values',$chiller_calculation_values)->with('calculator_keys',$calculator_keys);
     }
 
     public function editCalculatorValue($chiller_calculation_value_id){
@@ -225,7 +225,6 @@ class DefaultCalculatorController extends Controller
             'note_value' => 'required'
         ]);
 
-
         $notes_error = new NotesAndError;
         $notes_error->name = $request->note_name;
         $notes_error->value = $request->note_value;
@@ -264,46 +263,70 @@ class DefaultCalculatorController extends Controller
                         ->with('status','success');
 
     }
-    public function importExport()
+    public function importExport(Request $request)
     {
-
+        //return $request->all();
         //$data = Item::get()->toArray();
-        $chiller_calculation_values = ChillerCalculationValue::all();
+        $chiller_calculation_values = ChillerCalculationValue::where('code',$request->code)->get();
         //$data=[];
         //return $chiller_calculation_values;
         
         // Define the Excel spreadsheet headers
-        $key_datas1 = CalculationKey::get();
-        $key_datas = array_pluck($key_datas1, 'name');
-       
+        $key_datas1 = CalculationKey::where('code',$request->code)->first();
+        $key_datas =explode(",",$key_datas1->keys);
+        //$key_datas = array_pluck($key_datas1, 'name');
+       //return $key_datas1;
         //$data2 = ['id','name','code','min_model']; 
        //$data[] = array_merge($data2,$key_datas);
+        if(count($chiller_calculation_values))
+        {
+                       
+            foreach ($chiller_calculation_values as $chiller_calculation_value) {
+                $data1 =[];
+                $data1['id'] = $chiller_calculation_value->id;
+                $data1['name'] = $chiller_calculation_value->name;
+                $data1['code'] = $chiller_calculation_value->code;
+                $data1['min_model'] = $chiller_calculation_value->min_model;
 
-        foreach ($chiller_calculation_values as $chiller_calculation_value) {
-            $data1 =[];
-            $data1['id'] = $chiller_calculation_value->id;
-            $data1['name'] = $chiller_calculation_value->name;
-            $data1['code'] = $chiller_calculation_value->code;
-            $data1['min_model'] = $chiller_calculation_value->min_model;
+                $calculation_values = json_decode($chiller_calculation_value->calculation_values,true);
 
-            $calculation_values = json_decode($chiller_calculation_value->calculation_values,true);
-
-            foreach ($key_datas as $key => $key_data) {
-                if(isset($calculation_values[$key_data]))
-                    $data1[$key_data] = $calculation_values[$key_data];
-                else
-                    $data1[$key_data] = 0;
+                foreach ($key_datas as $key => $key_data) {
+                    if(isset($calculation_values[$key_data]))
+                        $data1[$key_data] = $calculation_values[$key_data];
+                    else
+                        $data1[$key_data] = 0;
+                }
+               $data[] = $data1;
             }
-           $data[] = $data1;
-        }
 
-        //return $data;
-        return Excel::create('chiller_calculation', function($excel) use ($data) {
-            $excel->sheet('mySheet', function($sheet) use ($data)
-            {
-                $sheet->fromArray($data);
-            });
-        })->download('xlsx');
+            //return $data;
+            return Excel::create('chiller_calculation', function($excel) use ($data) {
+                $excel->sheet('mySheet', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download('xlsx');
+        }   
+        else
+        {
+             
+            $data1 = array('id','name','code','min_model');
+            $data[] =array_merge($data1,$key_datas);
+
+            return Excel::create('chiller_calculation', function($excel) use ($data) {
+                $excel->sheet('mySheet', function($sheet) use ($data)
+                {
+                    $sheet->fromArray($data);
+                });
+            })->download('xlsx');
+
+            // return redirect('chiller/calculation-values')->with('message','Chiller Calculation Value Empty')
+            //             ->with('status','error');
+ 
+        }
+       
+           
+
     }
     public function importExcel(Request $request)
     {
@@ -316,22 +339,40 @@ class DefaultCalculatorController extends Controller
             })->get();
             $data = collect($data)->toArray();
             $titles = "";
-            $key_datas = CalculationKey::pluck('name')->toArray();
-            //return $key_datas1;
+
+            if(!empty($data) && count($data)){
+            $key_datas1 = CalculationKey::where('code',$data[0]['code'])->first();
+            $key_datas =explode(",",$key_datas1->keys);
+            }
+            //return  $key_datas;
             if(!empty($data) && count($data)){
                 foreach ($data as $value) {
                    $data1=[];
                     foreach ($key_datas as $key_data) {
-                        if($value[strtolower($key_data)])
+                        //if($value[strtolower($key_data)])
                             $data1[$key_data] = $value[strtolower($key_data)];
                     }
-                   
-                    $chiller_calculation_value = ChillerCalculationValue::find($value['id']);
-                    $chiller_calculation_value->name = $value['name'];
-                    $chiller_calculation_value->min_model = $value['min_model'];
-                    $chiller_calculation_value->calculation_values = json_encode($data1);
-                    //return $chiller_calculation_value;
-                    $chiller_calculation_value->save();
+                    
+                    $chiller_calculation_value = ChillerCalculationValue::where('code',$value['code'])->where('min_model',$value['min_model'])->first();
+                    if($chiller_calculation_value)
+                    {
+                        $chiller_calculation_value->name = $value['name'];
+                        $chiller_calculation_value->code = $value['code'];
+                        $chiller_calculation_value->min_model = $value['min_model'];
+                        $chiller_calculation_value->calculation_values = json_encode($data1);
+                        //return $chiller_calculation_value;
+                        $chiller_calculation_value->save();
+                    }
+                    else
+                    {
+                        $chiller_calculation_value =new ChillerCalculationValue;
+                        $chiller_calculation_value->name = $value['name'];
+                        $chiller_calculation_value->code = $value['code'];
+                        $chiller_calculation_value->min_model = $value['min_model'];
+                        $chiller_calculation_value->calculation_values = json_encode($data1);
+                        //return $chiller_calculation_value;
+                        $chiller_calculation_value->save();
+                    }
                     
                 }
                 return redirect('chiller/calculation-values')->with('message','Chiller Calculation Value Updated')
@@ -348,22 +389,44 @@ class DefaultCalculatorController extends Controller
     }
     public function getCalculationKeys(){
 
-        $calculator_keys = CalculationKey::get();
+        $calculator_keys = CalculationKey::orderBy('created_at', 'desc')->get();
 
         return view('calculator_key_list')->with('calculator_keys',$calculator_keys);
     }
     public function postCalculationKey(Request $request){
 
         $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
+            'keys'=> 'required',
+            'code'=>'required'
         ]);
 
 
         $calculator_key = new CalculationKey;
         $calculator_key->name = $request->name;
+        $calculator_key->code = $request->code;
+        $calculator_key->keys = $request->keys;
         $calculator_key->save();
 
         return redirect('calculation-keys')->with('message','Calculator Key Added')
+                        ->with('status','success');
+
+    }
+     public function editCalculationKey(Request $request,$id){
+
+        $this->validate($request, [
+            'name' => 'required',
+            'keys'=> 'required',
+            'code'=>'required'
+        ]);
+
+        $calculator_key = CalculationKey::find($id);
+        $calculator_key->name = $request->name;
+        $calculator_key->code = $request->code;
+        $calculator_key->keys = $request->keys;
+        $calculator_key->save();
+
+        return redirect('calculation-keys')->with('message','Calculator Key Updated')
                         ->with('status','success');
 
     }

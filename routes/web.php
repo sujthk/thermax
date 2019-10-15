@@ -43,6 +43,10 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/users/edit/{user_id}', 'UserController@editUser');
 	Route::post('/users/edit/{user_id}', 'UserController@updateUser');
 
+	Route::get('/profile', 'UserController@getProfile');
+	Route::post('/user_profile/edit/{user_id}', 'UserController@updateUserProfile');
+	Route::post('/password_change', 'UserController@postPasswordChange');
+
 	Route::get('/metallurgies', 'MetallurgyController@getMetallurgies')->name('metallurgies');
 	Route::get('/metallurgies/add', 'MetallurgyController@addMetallurgy');
 	Route::post('/metallurgies/add', 'MetallurgyController@postMetallurgy');
@@ -50,14 +54,27 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/metallurgies/edit/{metallurgy_id}', 'MetallurgyController@updateMetallurgy');
 	Route::get('/metallurgies/delete/{metallurgy_id}', 'MetallurgyController@deleteMetallurgy');
 
+	/*Double Effect S2 Serires*/
 	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2')->name('calculators/double-effect-s2');
 	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
+	//report
 	Route::post('/calculators/double-effect-s2/show-report', 'DoubleSteamController@postShowReport');
 	Route::post('/calculators/double-effect-s2/save-report', 'DoubleSteamController@postSaveReport');
-	
+	/*End Double Effect S2 Serires*/
+
+	/*Double Effect H2 Serires*/
+	Route::get('/calculators/double-effect-h2', 'DoubleH2SteamController@getDoubleEffectH2')->name('calculators/double-effect-h2');
+	Route::post('/calculators/double-effect-h2', 'DoubleH2SteamController@calculateDoubleEffectS2');
+	Route::post('/calculators/double-effect-h2/ajax-calculate', 'DoubleH2SteamController@postAjaxDoubleEffectS2');
+	Route::post('/calculators/double-effect-h2/submit-calculate', 'DoubleH2SteamController@postDoubleEffectS2');
+	Route::post('/calculators/double-effect-h2/reset-calculate', 'DoubleH2SteamController@postResetDoubleEffectS2');
+	//report
+	Route::post('/calculators/double-effect-h2/show-report', 'DoubleH2SteamController@postShowReport');
+	Route::post('/calculators/double-effect-h2/save-report', 'DoubleH2SteamController@postSaveReport');
+	/*End Double Effect H2 Serires*/
 
 
 	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');
@@ -67,12 +84,12 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/chiller/calculation-values', 'DefaultCalculatorController@getChillerCalculations')->name('chiller/calculation-values');
 	Route::get('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@editCalculatorValue');
 	Route::post('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@updateCalculatorValue');
-	Route::get('importExport', 'DefaultCalculatorController@importExport');
+	Route::post('importExport', 'DefaultCalculatorController@importExport');
 	Route::post('importExcel', 'DefaultCalculatorController@importExcel');
 
 	Route::get('/calculation-keys', 'DefaultCalculatorController@getCalculationKeys')->name('/calculation-keys');
 	Route::post('/calculation-keys/add', 'DefaultCalculatorController@postCalculationKey');
-
+	Route::post('/calculation-key/edit/{id}', 'DefaultCalculatorController@editCalculationKey');
 	Route::get('/error-notes', 'DefaultCalculatorController@getErrorNotes')->name('error-notes');
 	Route::post('/error-notes/edit/{error_notes_id}', 'DefaultCalculatorController@updateErrorNote');
 	Route::post('/error-notes/add', 'DefaultCalculatorController@postErrorNote');

@@ -67,7 +67,7 @@
  	<div class="page-wrapper max-calculator">
  		<div class="page-header">
  			<div class="page-header-title">
- 				<h4>Double Steam S2</h4>
+ 				<h4>Double Effect H2 Series</h4>
  			</div>
  			<div class="page-header-breadcrumb">
  				<ul class="breadcrumb-title">
@@ -76,7 +76,7 @@
  							<i class="icofont icofont-home"></i>
  						</a>
  					</li>
- 					<li class=""><a href="#!">Double Steam S2</a>
+ 					<li class=""><a href="#!">Double Effect H2 Series</a>
  					</li>
  				</ul>
  			</div>
@@ -1343,6 +1343,38 @@
 			}
 
 		});
+		function updateModelNumber(){
+			
+			model_values.model_number = $("#model_number").val();
+			getModelName(model_values.model_number);
+			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+			$.ajax({
+				type: "POST",
+				url: "{{ url('calculators/double-effect-s2/model-number-calculate') }}",
+				data: { model_number : model_values.model_number,model_values : model_values,_token: CSRF_TOKEN},
+				success: function(response){
+					if(response.status){
+						
+						$('.emsg').addClass('hidden');
+						model_values = response.model_values;
+						evaporator_options = response.evaporator_options;
+						absorber_options = response.absorber_options;
+						condenser_options = response.condenser_options;
+						chiller_metallurgy_options = response.chiller_metallurgy_options;
+						castToBoolean();
+						console.log(model_values);
+						loadDefaultValues();
+						$('#capacity').focus();
+						$("#calculate_button").prop('disabled', false);
+						
+					}
+					else{
+						swal("Sorry Something Went Wrong", "", "error");
+					}					
+				},
+			});
+		}
+
 
 
 		function castToBoolean(){
@@ -1372,6 +1404,90 @@
 			}
 		}
 
+		function getModelName(model_number){
+
+			switch(model_number){
+				case '130':
+				model_values.model_name = 'TAC S2 C3';
+				break;
+				case '160':
+				model_values.model_name = 'TAC S2 C4';
+				break;
+				case '210':
+				model_values.model_name = 'TAC S2 D1';
+				break;
+				case '250':
+				model_values.model_name = 'TAC S2 D2';
+				break;
+				case '310':
+				model_values.model_name = 'TAC S2 D3';
+				break;
+				case '350':
+				model_values.model_name = 'TAC S2 D4';
+				break;
+				case '410':
+				model_values.model_name = 'TAC S2 E1';
+				break;
+				case '470':
+				model_values.model_name = 'TAC S2 E2';
+				break;
+				case '530':
+				model_values.model_name = 'TAC S2 E3';
+				break;
+				case '580':
+				model_values.model_name = 'TAC S2 E4';
+				break;
+				case '630':
+				model_values.model_name = 'TAC S2 E5';
+				break;
+				case '710':
+				model_values.model_name = 'TAC S2 E6';
+				break;
+				case '760':
+				model_values.model_name = 'TAC S2 F1';
+				break;
+				case '810':
+				model_values.model_name = 'TAC S2 F2';
+				break;
+				case '900':
+				model_values.model_name = 'TAC S2 F3';
+				break;
+				case '1010':
+				model_values.model_name = 'TAC S2 G1';
+				break;
+				case '1130':
+				model_values.model_name = 'TAC S2 G2';
+				break;
+				case '1260':
+				model_values.model_name = 'TAC S2 G3';
+				break;
+				case '1380':
+				model_values.model_name = 'TAC S2 G4';
+				break;
+				case '1560':
+				model_values.model_name = 'TAC S2 G5';
+				break;
+				case '1690':
+				model_values.model_name = 'TAC S2 G6';
+				break;
+				case '1890':
+				model_values.model_name = 'TAC S2 H1';
+				break;
+				case '2130':
+				model_values.model_name = 'TAC S2 H2';
+				break;
+				case '2270':
+				model_values.model_name = 'TAC S2 J1';
+				break;
+				case '2560':
+				model_values.model_name = 'TAC S2 J2';
+				break;
+		
+				default: 
+				//return false;
+ 										
+			}
+		}
 
 	</script>
 
