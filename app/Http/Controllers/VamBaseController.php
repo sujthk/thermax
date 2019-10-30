@@ -799,7 +799,7 @@ class VamBaseController extends Controller
         $PID = $POD - 2 * ($PTK);
         $PID = $PID / 1000;
 
-        return array('PID' => $PID,'FT' => $FT);
+        return array('PID' => $PID,'FT' => $FT,'PODA'=>$POD,'THPA'=>$PTK);
     }
 
     public function LIBR_PRESSURE($T, $X)

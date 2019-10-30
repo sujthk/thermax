@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\UserTracking;
 use App\UnitSet;
+use App\Region;
 use Validator;	
 use Hash;
 use Mail;
@@ -27,8 +28,8 @@ class UserController extends Controller
     public function addUser(){
 
         $unit_sets = UnitSet::select('name','id')->get();
-
-    	return view('user_add')->with('unit_sets',$unit_sets);
+        $regions = Region::orderBy('created_at', 'desc')->get();
+    	return view('user_add')->with('unit_sets',$unit_sets)->with('regions',$regions);
     }
 
     public function postUser(Request $request){
@@ -38,6 +39,7 @@ class UserController extends Controller
 		    'password' => 'required',
             'user_type' => 'required',
 		    'unit_set_id' => 'required',
+            'region_type' => 'required',
 		]);
 
 
@@ -50,6 +52,11 @@ class UserController extends Controller
 		$user->password = $hashed_password;
         $user->user_type = $request->user_type;
 		$user->unit_set_id = $request->unit_set_id;
+        $user->region_type = $request->region_type;
+
+        if($request->region_type == 2)
+            $user->region_id = $request->region_id;
+        
 		$user->status = 1;
 		$user->save();
 
@@ -61,8 +68,8 @@ class UserController extends Controller
     	$user = User::find($user_id);
 
         $unit_sets = UnitSet::select('name','id')->get();
-
-    	return view('user_edit')->with('user',$user)->with('unit_sets',$unit_sets);
+         $regions = Region::orderBy('created_at', 'desc')->get();
+    	return view('user_edit')->with('user',$user)->with('unit_sets',$unit_sets)->with('regions',$regions);
     }
 
     public function updateUser(Request $request,$user_id){
@@ -71,6 +78,7 @@ class UserController extends Controller
 		    'name' => 'required',
 		    'email' => 'required|unique:users,email,'.$user_id,
             'unit_set_id' => 'required',
+            'region_type' => 'required',
 		]);
 
         // Log::info($request->all());
@@ -80,6 +88,12 @@ class UserController extends Controller
 		$user->email = $request->email;
 		$user->user_type = $request->user_type;
         $user->unit_set_id = $request->unit_set_id;
+        $user->region_type = $request->region_type;
+
+        if($request->region_type == 2)
+            $user->region_id = $request->region_id;
+        else
+            $user->region_id = NULL;
 
 		if ($request->has('password') && !empty($request->password)) {
 		    $hashed_password = Hash::make($request->password);

@@ -67,7 +67,7 @@
 		      			    		</tr>
 		  			     			<tr>
 		      			      			<th scope="col">Project : {{ $project }}</th>
-		      			      			<th scope="col">Model : {{ $calculation_values['ModelName'] }}</th>     
+		      			      			<th scope="col">Model : {{ $calculation_values['model_name'] }}</th>     
 		      			    		</tr>
 		      			  		</thead>  
 		      				</table>

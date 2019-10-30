@@ -1117,6 +1117,8 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['AEVAL'] = $this->calculation_values['AEVA'] / 2;
         $this->calculation_values['AABSH'] = $this->calculation_values['AABS'] / 2;
         $this->calculation_values['AABSL'] = $this->calculation_values['AABS'] / 2;
+
+
     }
 
     private function THICKNESS()
@@ -1268,8 +1270,8 @@ class DoubleH2SteamController extends Controller
 		switch (strtoupper($attribute))
 		{
             case "MODEL_NUMBER":
-                $this->modulNumberDoubleEffectS2();
-                log::info($this->modulNumberDoubleEffectS2());
+                $this->modulNumberDoubleEffectH2();
+                log::info($this->modulNumberDoubleEffectH2());
                 
                 $range_calculation = $this->RANGECAL();
                 log::info($range_calculation);
@@ -1541,9 +1543,6 @@ class DoubleH2SteamController extends Controller
 		}
 
 	}
-
-
-	
 
 
 	public function chilledWaterValidating(){
@@ -2054,6 +2053,7 @@ class DoubleH2SteamController extends Controller
             //    CW = 2;
             //}
         }
+        
         $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TP']));
         $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
 

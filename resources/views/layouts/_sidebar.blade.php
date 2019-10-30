@@ -39,12 +39,12 @@
                         <span data-i18n="nav.widget.main"> Metallurgy Calculators</span>
                     </a>
                 </li>
-                <li class="nav-item single-item {{ Nav::isRoute('default/calculators','has-class') }}" >
+             <!--    <li class="nav-item single-item {{ Nav::isRoute('default/calculators','has-class') }}" >
                     <a href="{{ url('/default/calculators') }}">
                       <i class="ti-stats-up"></i>
                         <span data-i18n="nav.widget.main"> Default Values Calculators</span>
                     </a>
-                </li>
+                </li> -->
                 <li class="nav-item single-item {{ Nav::isRoute('chiller/calculation-values','has-class') }}" >
                     <a href="{{ url('/chiller/calculation-values') }}">
                        <i class="ti-pulse"></i>
@@ -67,6 +67,12 @@
                     <a href="{{ url('/unit-sets') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Unit Sets</span>
+                    </a>
+                </li>
+                <li class="nav-item single-item {{ Nav::isRoute('region','has-class') }}" >
+                    <a href="{{ url('/region') }}">
+                        <i class="ti-user"></i>
+                        <span data-i18n="nav.widget.main">Region</span>
                     </a>
                 </li>
                 <li class="nav-item {{ Nav::hasSegment('calculators',[1],'has-class') }}">

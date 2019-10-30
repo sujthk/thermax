@@ -46,7 +46,11 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/profile', 'UserController@getProfile');
 	Route::post('/user_profile/edit/{user_id}', 'UserController@updateUserProfile');
 	Route::post('/password_change', 'UserController@postPasswordChange');
-
+	/*Regions*/
+	Route::get('/region', 'RegionController@getRegion')->name('region');
+	Route::post('/region/add', 'RegionController@postRegion');
+	Route::post('/region/edit/{id}', 'RegionController@editRegion');
+	/*End Region*/
 	Route::get('/metallurgies', 'MetallurgyController@getMetallurgies')->name('metallurgies');
 	Route::get('/metallurgies/add', 'MetallurgyController@addMetallurgy');
 	Route::post('/metallurgies/add', 'MetallurgyController@postMetallurgy');
@@ -58,6 +62,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2')->name('calculators/double-effect-s2');
 	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
+	Route::post('/calculators/double-effect-s2/ajax-calculate-region', 'DoubleSteamController@postAjaxDoubleEffectS2Region');
+
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
 	//report

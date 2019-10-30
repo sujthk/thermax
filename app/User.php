@@ -47,4 +47,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\UnitSet');
     }
+    public function region()
+    {
+        return $this->belongsTo('App\Region');
+    }
 }

@@ -84,27 +84,27 @@
                 				{{ csrf_field() }}
 		                        <div class="card-block">
 		                        	<div class="form-group row">
-		                        	    <label class="col-sm-2 col-form-label">Name</label>
-		                        	    <div class="col-sm-6">
+		                        	    <label class="col-sm-3 col-form-label">Name</label>
+		                        	    <div class="col-sm-8">
 		                        	        <input id="name" name="name" type="text" value="{{ $user->name }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
 		                        	<div class="form-group row">
-		                        	    <label class="col-sm-2 col-form-label">Email</label>
-		                        	    <div class="col-sm-6">
+		                        	    <label class="col-sm-3 col-form-label">Email</label>
+		                        	    <div class="col-sm-8">
 		                        	        <input id="email" name="email" type="email" value="{{ $user->email }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
 		                        	<div class="form-group row">
-		                        	    <label class="col-sm-2 col-form-label">New Password</label>
-		                        	    <div class="col-sm-6">
+		                        	    <label class="col-sm-3 col-form-label">New Password</label>
+		                        	    <div class="col-sm-8">
 		                        	        <input id="password" name="password" type="text" value="" onKeyUp="checkPasswordStrength();" class="form-control">
 		                        	        <div id="password-strength-status"></div>
 		                        	    </div>
 		                        	</div>
 		                        	<div class="form-group row">
-		                        	    <label class="col-sm-2 col-form-label">User Type</label>
-		                        	    <div class="col-sm-6">
+		                        	    <label class="col-sm-3 col-form-label">User Type</label>
+		                        	    <div class="col-sm-8">
                                             <select name="user_type" id="user_type" required class="form-control">
                                                 <option {{ $user->user_type == 'ADMIN' ? 'selected' : '' }} value="ADMIN">ADMIN</option>
                                                 <option {{ $user->user_type == 'THERMAX_USER' ? 'selected' : '' }} value="THERMAX_USER">Thermax User</option>
@@ -113,8 +113,8 @@
                                         </div>
 		                        	</div>
 		                        	<div class="form-group row">
-		                        	    <label class="col-sm-2 col-form-label">Unit Set</label>
-		                        	    <div class="col-sm-6">
+		                        	    <label class="col-sm-3 col-form-label">Unit Set</label>
+		                        	    <div class="col-sm-8">
                                             <select name="unit_set_id" id="unit_set_id" required class="form-control">
                                                 @foreach ($unit_sets as $unit_set)
                                                 	<option {{ $user->unit_set_id == $unit_set->id ? 'selected' : '' }} value="{{ $unit_set->id }}">{{ $unit_set->name }}</option>
@@ -122,6 +122,42 @@
                                             </select>
                                         </div>
 		                        	</div>
+		                        		<div class="form-group row">
+		                        	    <label class="col-sm-3 col-form-label">Region Type</label>
+		                        	    <div class="col-sm-8">
+                                            <select name="region_type" id="region_type" required class="form-control">
+                                            	<option value="">-- Region Type --</option>
+                                                <option  value="1" {{ $user->region_type == 1 ? 'selected' : '' }} >Domestic</option>
+                                                <option  value="2" {{ $user->region_type == 2 ? 'selected' : '' }}>Export Type</option>
+                                                <option  value="3" {{ $user->region_type == 3 ? 'selected' : '' }}>Both</option>
+                                            </select>
+                                        </div>
+		                        	</div>
+		                        	@if($user->region_type == 2)
+		                        	<div class="form-group row region">
+		                        	    <label class="col-sm-3 col-form-label">Regions</label>
+		                        	    <div class="col-sm-8">
+                                            <select name="region_id" id="region_ids" required class="form-control">
+                                            	<option value="">-- Regions --</option>
+                                            	@foreach ($regions as $region)
+                                                <option  {{ $user->region_id == $region->id ? 'selected' : '' }} value="{{$region->id}}">{{$region->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+		                        	</div>
+		                        	@else
+		                        	<div class="form-group row region" style="display: none;">
+		                        	    <label class="col-sm-3 col-form-label">Regions</label>
+		                        	    <div class="col-sm-8">
+                                            <select name="region_id" id="region_ids" required class="form-control">
+                                            	
+                                            	@foreach ($regions as $region)
+                                                <option  value="{{$region->id}}">{{$region->name}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+		                        	</div>
+		                        	@endif
         		                    <div class="form-group row">
         	                            <label class="col-sm-5"></label>
         	                            <div class="col-sm-7">
@@ -177,5 +213,22 @@
 		    $("#submit_button").prop('disabled', status);
 		}
 	</script>
+<script>
+ 
+$(document).ready(function() {
 
+	$("#region_type").click(function () {
+		var region_value = $('#region_type').val();
+		if(region_value == 2)
+		{
+			$(".region").show();
+		}
+		else
+		{
+			$(".region").hide();
+		}
+		
+	});
+});
+</script>
 @endsection

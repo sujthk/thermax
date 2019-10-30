@@ -95,31 +95,31 @@
  									</div>
  									<div class="col-lg-5">
  										<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')" >
- 											<option  value="130">S2 C3</option>
- 											<option value="160">S2 C4</option>
- 											<option value="210">S2 D1</option>
- 											<option value="250">S2 D2</option>
- 											<option value="310">S2 D3</option>
- 											<option value="350">S2 D4</option>
- 											<option value="410">S2 E1</option>
- 											<option value="470">S2 E2</option>
- 											<option value="530">S2 E3</option>
- 											<option value="580">S2 E4</option>
- 											<option value="630">S2 E5</option>
- 											<option value="710">S2 E6</option>
- 											<option value="760">S2 F1</option>
- 											<option value="810">S2 F2</option>
- 											<option value="900">S2 F3</option>
- 											<option value="1010">S2 G1</option>
- 											<option value="1130">S2 G2</option>
- 											<option value="1260">S2 G3</option>
- 											<option value="1380">S2 G4</option>
- 											<option value="1560">S2 G5</option>
- 											<option value="1690">S2 G6</option>
- 											<option value="1890">S2 H1</option>
- 											<option value="2130">S2 H2</option>
- 											<option value="2270">S2 J1</option>
- 											<option value="2560">S2 J2</option>
+ 											<option  value="130">H2 C3</option>
+ 											<option value="160">H2 C4</option>
+ 											<option value="210">H2 D1</option>
+ 											<option value="250">H2 D2</option>
+ 											<option value="310">H2 D3</option>
+ 											<option value="350">H2 D4</option>
+ 											<option value="410">H2 E1</option>
+ 											<option value="470">H2 E2</option>
+ 											<option value="530">H2 E3</option>
+ 											<option value="580">H2 E4</option>
+ 											<option value="630">H2 E5</option>
+ 											<option value="710">H2 E6</option>
+ 											<option value="760">H2 F1</option>
+ 											<option value="810">H2 F2</option>
+ 											<option value="900">H2 F3</option>
+ 											<option value="1010">H2 G1</option>
+ 											<option value="1130">H2 G2</option>
+ 											<option value="1260">H2 G3</option>
+ 											<option value="1380">H2 G4</option>
+ 											<option value="1560">H2 G5</option>
+ 											<option value="1690">H2 G6</option>
+ 											<option value="1890">H2 H1</option>
+ 											<option value="2130">H2 H2</option>
+ 											<option value="2270">H2 J1</option>
+ 											<option value="2560">H2 J2</option>
  										</select>
  									</div>
  									<div class="col-lg-3">
@@ -418,22 +418,48 @@
  						<div class="col-md-6">
  							<div class="">
  								<div class="card-header">
- 									<h5>Steam</h5>
+ 									<h5>Hot Water</h5>
  								</div>
  								<div class="">
  									<div class="row">
+ 										<div class="col-lg-5">
+ 											<label>Water In (155.0 - 185.0) : (<span id="steam_pressure_range"></span>)</label>
+ 										</div>
  										<div class="col-lg-4">
- 											<label>Pressure : (<span id="steam_pressure_range"></span>)</label>
+ 											<input type="text" name="hot_water_in" id="hot_water_in" onchange="updateModelValues('hot_water_in')" value="" class="form-control">
+
+ 											<span class="messages emsg hidden" id="hot_water_in_error"><p class="text-danger error">Please Enter a Valid Steam Pressure</p></span>
+ 										</div>
+ 										<div class="col-lg-3">
+ 											<label>({{ $units_data[$unit_set->PressureUnit] }})</label>
+ 										</div>
+ 									</div> 
+ 									<div class="row">
+ 										<div class="col-lg-5">
+ 											<label>Water Out (min 150) : (<span id="steam_pressure_range"></span>)</label>
+ 										</div>
+ 										<div class="col-lg-4">
+ 											<input type="text" name="hot_water_out" id="hot_water_out" onchange="updateModelValues('hot_water_out')" value="" class="form-control">
+
+ 											<span class="messages emsg hidden" id="hot_water_out_error"><p class="text-danger error">Please Enter a Valid Steam Pressure</p></span>
+ 										</div>
+ 										<div class="col-lg-3">
+ 											<label>({{ $units_data[$unit_set->PressureUnit] }})</label>
+ 										</div>
+ 									</div>   	
+ 									<div class="row">
+ 										<div class="col-lg-5">
+ 											<label>Maximum Working Pressure in Hot Water : (<span id="steam_pressure_range"></span>)</label>
  										</div>
  										<div class="col-lg-4">
  											<input type="text" name="steam_pressure" id="steam_pressure" onchange="updateModelValues('steam_pressure')" value="" class="form-control">
 
  											<span class="messages emsg hidden" id="steam_pressure_error"><p class="text-danger error">Please Enter a Valid Steam Pressure</p></span>
  										</div>
- 										<div class="col-lg-4">
+ 										<div class="col-lg-3">
  											<label>({{ $units_data[$unit_set->PressureUnit] }})</label>
  										</div>
- 									</div>   	
+ 									</div>   	  	
  								</div>
  							</div>    
  						</div>
@@ -1343,38 +1369,6 @@
 			}
 
 		});
-		function updateModelNumber(){
-			
-			model_values.model_number = $("#model_number").val();
-			getModelName(model_values.model_number);
-			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-			$.ajax({
-				type: "POST",
-				url: "{{ url('calculators/double-effect-s2/model-number-calculate') }}",
-				data: { model_number : model_values.model_number,model_values : model_values,_token: CSRF_TOKEN},
-				success: function(response){
-					if(response.status){
-						
-						$('.emsg').addClass('hidden');
-						model_values = response.model_values;
-						evaporator_options = response.evaporator_options;
-						absorber_options = response.absorber_options;
-						condenser_options = response.condenser_options;
-						chiller_metallurgy_options = response.chiller_metallurgy_options;
-						castToBoolean();
-						console.log(model_values);
-						loadDefaultValues();
-						$('#capacity').focus();
-						$("#calculate_button").prop('disabled', false);
-						
-					}
-					else{
-						swal("Sorry Something Went Wrong", "", "error");
-					}					
-				},
-			});
-		}
-
 
 
 		function castToBoolean(){
@@ -1403,92 +1397,6 @@
 				return false;
 			}
 		}
-
-		function getModelName(model_number){
-
-			switch(model_number){
-				case '130':
-				model_values.model_name = 'TAC S2 C3';
-				break;
-				case '160':
-				model_values.model_name = 'TAC S2 C4';
-				break;
-				case '210':
-				model_values.model_name = 'TAC S2 D1';
-				break;
-				case '250':
-				model_values.model_name = 'TAC S2 D2';
-				break;
-				case '310':
-				model_values.model_name = 'TAC S2 D3';
-				break;
-				case '350':
-				model_values.model_name = 'TAC S2 D4';
-				break;
-				case '410':
-				model_values.model_name = 'TAC S2 E1';
-				break;
-				case '470':
-				model_values.model_name = 'TAC S2 E2';
-				break;
-				case '530':
-				model_values.model_name = 'TAC S2 E3';
-				break;
-				case '580':
-				model_values.model_name = 'TAC S2 E4';
-				break;
-				case '630':
-				model_values.model_name = 'TAC S2 E5';
-				break;
-				case '710':
-				model_values.model_name = 'TAC S2 E6';
-				break;
-				case '760':
-				model_values.model_name = 'TAC S2 F1';
-				break;
-				case '810':
-				model_values.model_name = 'TAC S2 F2';
-				break;
-				case '900':
-				model_values.model_name = 'TAC S2 F3';
-				break;
-				case '1010':
-				model_values.model_name = 'TAC S2 G1';
-				break;
-				case '1130':
-				model_values.model_name = 'TAC S2 G2';
-				break;
-				case '1260':
-				model_values.model_name = 'TAC S2 G3';
-				break;
-				case '1380':
-				model_values.model_name = 'TAC S2 G4';
-				break;
-				case '1560':
-				model_values.model_name = 'TAC S2 G5';
-				break;
-				case '1690':
-				model_values.model_name = 'TAC S2 G6';
-				break;
-				case '1890':
-				model_values.model_name = 'TAC S2 H1';
-				break;
-				case '2130':
-				model_values.model_name = 'TAC S2 H2';
-				break;
-				case '2270':
-				model_values.model_name = 'TAC S2 J1';
-				break;
-				case '2560':
-				model_values.model_name = 'TAC S2 J2';
-				break;
-		
-				default: 
-				//return false;
- 										
-			}
-		}
-
 	</script>
 
 	@endsection
