@@ -5,7 +5,7 @@
             <a class="mobile-menu" id="mobile-collapse" href="#!">
                 <i class="ti-menu"></i>
             </a>
-            <a href="index.html">
+            <a href="{{url('/dashboard')}}">
                 <h6 class="mega-menu-title media-left" style="font-size: 1.5rem;color:#e10010;">THERMAX</h6>
             </a>
             <a class="mobile-options">
@@ -30,7 +30,7 @@
                     <li class="user-profile header-notification">
                         <a href="#!">
                             <img src="{{asset('dark-assets/assets/images/user.png')}}" alt="User-Profile-Image">
-                            <span>John Doe</span>
+                            <span>{{ Auth::guard()->user()->name }}</span>
                             <i class="ti-angle-down"></i>
                         </a>
                         <ul class="show-notification profile-notification">

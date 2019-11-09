@@ -10,6 +10,13 @@
  	.hidden {
  		display: none;
  	}
+ 	.hidden-div {
+ 		visibility:hidden;
+ 	}
+
+ 	.show-div {
+ 		visibility:visible;
+ 	}
  	.border-red{
  		border-color: #bc291a !important;
  	}
@@ -129,7 +136,7 @@
  									<div class="col-lg-4">
  										<label>Capacity</label></div>
  										<div class="col-lg-5">
- 											<input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
+ 											<input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control" >
 
  											<span class="messages emsg hidden" id="capacity_error"><p class="text-danger error">Please Enter a Valid Capacity</p></span>
  										</div>
@@ -173,7 +180,91 @@
  								</div>
  							</div>    
  						</div> 
- 						<div class="col-md-6"> <!--  new -->
+ 						  <div class="col-md-6">
+	                        <div class="">
+	                            <div class="card-header">
+	                                <h5>Tube Metallurgy</h5>
+	                            </div>
+	                            <div class="">
+                                	<div class="row">                                		
+                                		<div class="form-radio col-12">
+	                                        <div class="radio radio-inline">
+	                                            <label>
+	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
+	                                                <i class="helper"></i>Standard
+	                                            </label>
+	                                        </div>
+	                                        <div class="radio radio-inline">
+	                                            <label>
+	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_non_standard" value="non_standard">
+	                                                <i class="helper"></i>Non Standard
+	                                            </label>
+	                                        </div>
+	                                    </div>   
+                                    <div class="col-md-6">                                      
+                                        <label>Material</label>
+                                    </div>
+                                     <div class="col-md-6">      
+                                        <label>Thickness (mm)</label>
+                                    </div>
+                                    </div>
+	                                <div class="row">
+	                                	<div class="col-lg-4">
+	                                		<label class="">Evaporator</label>
+	                                	</div>
+	                                	<div class="col-lg-4">
+	                                	    <select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
+	                                	    	@foreach($evaporator_options as $evaporator_option)
+	                                	    		<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
+	                                	    	@endforeach
+	                                	    </select>
+	                                	</div>
+
+	                                	<div class="col-lg-4 range-hide">
+                                            <input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard">
+
+                                            <span class="messages emsg hidden" id="evaporator_thickness_error"><p class="text-danger error">Please Enter a Valid Evaporator Thickness</p></span>
+                                            <span class="metallurgy_standard_span" id="evaporator_range"></span>
+                                        </div>
+                                        
+	                                	<div class="col-lg-4">
+	                                		<label class=" col-form-label">Absorber</label>
+	                                	</div>
+	                                	<div class="col-lg-4">
+	                                	    <select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
+	                                	        @foreach($absorber_options as $absorber_option)
+	                                	    		<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
+	                                	    	@endforeach
+	                                	    </select>
+	                                	</div>
+	                                	<div class="col-lg-4 range-hide">
+                                            <input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard">
+
+                                            <span class="messages emsg hidden" id="absorber_thickness_error"><p class="text-danger error">Please Enter a Valid Absorber Thickness</p></span>
+                                            <span class="metallurgy_standard_span" id="absorber_range"></span>
+                                        </div>
+                                      
+	                                	<div class="col-lg-4">
+	                                		<label class=" col-form-label">Condenser</label>
+	                                	</div>
+	                                	<div class="col-lg-4">
+	                                	    <select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
+	                                	        @foreach($condenser_options as $condenser_option)
+	                                	    		<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
+	                                	    	@endforeach
+	                                	    </select>
+	                                	</div>
+	                                	<div class="col-lg-4 range-hide">
+                                            <input type="text" name="condenser_thickness" id="condenser_thickness"  onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard">
+                                            <span class="messages emsg hidden" id="condenser_thickness_error"><p class="text-danger error">Please Enter a Valid Condenser Thickness</p></span>
+                                            <span class="metallurgy_standard_span" id="condenser_range"></span>
+                                        </div>
+                                      
+	                            	</div>    	
+	                            </div>
+	                        </div>    
+	                    </div>
+ 						<!-- <div class="col-md-6"> 
  							<div class="">
  								<div class="card-header">
  									<h5>Tube Metallurgy</h5>
@@ -246,7 +337,7 @@
  										</div>
  									</div>	
 
- 									<div class="col-md-4"> <!-- end-new -->
+ 									<div class="col-md-4"> 
  										<div class="row " id="region_list" style="display: none;">
  											<div class="col-md-12">
 
@@ -286,7 +377,7 @@
  								</div>
  							</div>    
  						</div>
- 					</div>
+ 						</div> -->
 
 
  					<div class="row">
@@ -471,6 +562,46 @@
  								</div>
  							</div>    
  						</div>
+
+ 									<div class="col-md-4"> <!-- end-new -->
+ 										<div class="row " id="region_list" style="display: none;">
+ 											<div class="col-md-12">
+ 												<div class="card-header">
+ 									<h5>Region type</h5>
+ 								</div>
+ 												
+ 											</div>
+
+ 											<div class="form-radio col-12">
+ 												<div class="radio radio-inline">
+ 													<label>
+ 														<input type="radio" name="region_type" class="region_type" id="domestic" value="1" >
+ 														<i class="helper"></i> Domestic
+ 													</label>
+ 												</div>
+ 												<div class="radio radio-inline">
+ 													<label>
+ 														<input type="radio" name="region_type" id="export_type" value="2" class="region_type">
+ 														<i class="helper"></i> Export Type
+ 													</label>
+ 												</div>
+ 											</div>
+ 											<div id="regionlist">
+ 											<div class="col-md-12">
+
+ 												<label> Region </label>
+ 											</div>
+ 											<div class="col-md-12">
+ 												<select name="region" id="region" class="form-control">
+ 													@foreach($regions as $region)
+ 													<option value="{{$region->name}}">{{$region->name}}</option>
+ 													@endforeach
+
+ 												</select>
+ 											</div>
+ 										</div>
+ 										</div>
+ 									</div>
  						<div class="col-sm-12">    
  							<div class="row">		                    	
  								<div class="col-md-12 text-center">
@@ -833,8 +964,10 @@
 				$("#tube_metallurgy_standard").prop('checked', true);
 				$(".metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard_span").html("");
+				$(".range-hide").removeClass('show-div').addClass('hidden-div');
 
 			}else{
+				$(".range-hide").addClass('show-div');
 				$("#tube_metallurgy_non_standard").prop('checked', true);
 				// $("#tube_metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard").prop('disabled', false);
@@ -864,7 +997,9 @@
 			if ($(this).val() == 'standard') {
 				$(".metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard_span").html("");
+				$(".range-hide").removeClass('show-div').addClass('hidden-div');
 			} else {
+				$(".range-hide").addClass('show-div');
 				$(".metallurgy_standard").prop('disabled', false);
 				var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
 				$("#evaporator_range").html(evaporator_range);
@@ -1011,8 +1146,6 @@
 				if(value == option.value){
 					model_values.evaporator_material_value = value;
 					
-					
-
 					if(thickness_change){
 
 						if(metallurgy_unit != 'Millimeter'){
@@ -1030,7 +1163,12 @@
 					}
 				}
 			});
-			
+
+			if(model_values.chilled_water_out < 3.499 && model_values.chilled_water_out > 0.99){
+				if(model_values.glycol_chilled_water == 0 || model_values.glycol_chilled_water == null){
+					model_values.evaporator_thickness = 0.8;
+				}
+			} 			
 		}
 
 		function updateAbsorberOptions(value,thickness_change){
@@ -1403,7 +1541,7 @@
 	  	});
 
 		$( "#reset" ).click(function() {
-			
+			console.log(model_values,cooling_water_ranges);
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			$.ajax({
 				type: "POST",
@@ -1490,7 +1628,9 @@
 
 
 		function castToBoolean(){
+
 			model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
+
 			model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
 			model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
 			model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);

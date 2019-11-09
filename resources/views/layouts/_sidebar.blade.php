@@ -1,13 +1,13 @@
 <!-- Menu header end -->
     <!-- Menu aside start -->
     <div class="main-menu">
-        <div class="main-menu-header">
+       <!--  <div class="main-menu-header">
             <img class="img-40" src="{{asset('dark-assets/assets/images/user.png')}}" alt="User-Profile-Image">
             <div class="user-details">
                 <span>John Doe</span>
-                <!-- <span id="more-details">UX Designer<i class="ti-angle-down"></i></span> -->
+                <span id="more-details">UX Designer<i class="ti-angle-down"></i></span>
             </div>
-        </div>
+        </div> -->
         <div class="main-menu-content">
             <ul class="main-navigation">
                 <li class="nav-title" data-i18n="nav.category.navigation">
@@ -87,6 +87,7 @@
                         <li class="{{ Nav::isRoute('calculators/double-effect-h2','has-class') }}">
                             <a href="{{ url('/calculators/double-effect-h2') }}" data-i18n="nav.dash.default"> Double Effect H2 Steam </a>
                         </li>
+                        
                        
                     </ul>
                 </li>

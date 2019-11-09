@@ -5487,7 +5487,9 @@ body.menu-rtl .main-menu,
 body.menu-sidebar .main-menu {
 	left: 0;
 	position: fixed;
-	transition: all ease-in .3s
+	transition: all ease-in .3s;
+	height: 100% !important;
+	
 }
 body.menu-static .navbar-wrapper,
 body.menu-static .main-menu {
