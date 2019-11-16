@@ -522,7 +522,7 @@
  											<label>Chilled Water </label>
  										</div>
  										<div class="col-md-5">
- 											<input type="text" name="glycol_chilled_water" id="glycol_chilled_water" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
+ 											<input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
 
  											<span class="messages emsg hidden" id="glycol_chilled_water_error"><p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p></span>
  										</div>
@@ -532,7 +532,7 @@
  											<label>Cooling Water </label>
  										</div>
  										<div class="col-md-5">
- 											<input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
+ 											<input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
 
  											<span class="messages emsg hidden" id="glycol_cooling_water_error"><p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p></span>
  										</div>
@@ -581,8 +581,14 @@
  												</div>
  												<div class="radio radio-inline">
  													<label>
- 														<input type="radio" name="region_type" id="export_type" value="2" class="region_type">
- 														<i class="helper"></i> Export Type
+ 														<input type="radio" name="region_type" id="USA_type" value="2" class="region_type">
+ 														<i class="helper"></i> USA
+ 													</label>
+ 												</div>
+ 												<div class="radio radio-inline">
+ 													<label>
+ 														<input type="radio" name="region_type" id="Europe_type" value="3" class="region_type">
+ 														<i class="helper"></i> Europe
  													</label>
  												</div>
  											</div>
@@ -825,7 +831,7 @@
 	var calculation_values;
 	var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
 	var region_user = model_values.region_type;
-	if(region_user == 3){
+	if(region_user == 4){
 		$("#region_list").show();
 		$("#domestic").prop('checked', true);
 		$("#export_type").prop('disabled', false);
@@ -920,8 +926,8 @@
 
         	$('#cooling_water_ranges').html(cooling_water_ranges);
 			// $("#glycol_none").attr('disabled', model_values.glycol_none);
-			$('#glycol_chilled_water').val(model_values.glycol_chilled_water);
-			$('#glycol_cooling_water').val(model_values.glycol_cooling_water);
+			$('#glycol_chilled_water').val(model_values.glycol_chilled_water ?  model_values.glycol_chilled_water : 0);
+			$('#glycol_cooling_water').val(model_values.glycol_cooling_water ?  model_values.glycol_cooling_water : 0);
 			
 			$('#evaporator_thickness').val(model_values.evaporator_thickness);
 			$('#absorber_thickness').val(model_values.absorber_thickness);
@@ -969,6 +975,11 @@
 			}else{
 				$(".range-hide").addClass('show-div');
 				$("#tube_metallurgy_non_standard").prop('checked', true);
+
+				if(model_values.tube_metallurgy_standard === 'false')
+					$("#tube_metallurgy_standard").prop('disabled', true);
+				else
+					$("#tube_metallurgy_standard").prop('disabled', false);
 				// $("#tube_metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard").prop('disabled', false);
 				var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
@@ -998,7 +1009,9 @@
 				$(".metallurgy_standard").prop('disabled', true);
 				$(".metallurgy_standard_span").html("");
 				$(".range-hide").removeClass('show-div').addClass('hidden-div');
+
 			} else {
+				$("#tube_metallurgy_standard").prop('disabled', false);
 				$(".range-hide").addClass('show-div');
 				$(".metallurgy_standard").prop('disabled', false);
 				var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
@@ -1251,10 +1264,10 @@
 				foulingFactor('standard');
 			}
 			else
-			{	var country = $("#region").val();
-				if(country == 'USA'){
-					$("#regionlist").show();
-					model_values.region_name = $("#region").val();
+			{	
+				if($(this).val() == 2){
+					//$("#regionlist").show();
+					//model_values.region_name = $("#region").val();
 	 				$("#fouling_ari").html('');
 					$("#fouling_factor_ahri").html("AHRI");
 					model_values.fouling_factor ="ari";
@@ -1264,8 +1277,8 @@
 				}
 				else
 				{
-					$("#regionlist").show();
-					model_values.region_name = $("#region").val();
+					//$("#regionlist").show();
+					//model_values.region_name = $("#region").val();
 					$("#fouling_ari").html("ARI");
 					$("#fouling_factor_ahri").html('');
 					model_values.fouling_factor ="standard";
@@ -1546,7 +1559,7 @@
 			$.ajax({
 				type: "POST",
 				url: "{{ url('calculators/double-effect-s2/reset-calculate') }}",
-				data: { model_number : model_values.model_number,values : model_values,cooling_water_ranges : model_values.cooling_water_ranges,_token: CSRF_TOKEN},
+				data: { model_number : model_values.model_number,values : model_values,_token: CSRF_TOKEN},
 				success: function(response){
 					if(response.status){
 						
@@ -1557,8 +1570,17 @@
 						condenser_options = response.condenser_options;
 						chiller_metallurgy_options = response.chiller_metallurgy_options;
 						castToBoolean();
+						
+						if(model_values.region_type == 2){
+							//console.log("usa selected");
+							model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
+							model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
+						} 
 						console.log(model_values);
-						loadDefaultValues();
+						updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,model_values.evaporator_thickness_change);
+						updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,model_values.absorber_thickness_change);
+						updateCondenserOptions(chiller_metallurgy_options.con_default_value,model_values.condenser_thickness_change);
+						updateValues();
 						$('#capacity').focus();
 						$("#calculate_button").prop('disabled', false);
 						

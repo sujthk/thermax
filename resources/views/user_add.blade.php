@@ -130,16 +130,17 @@
                                             <select name="region_type" id="region_type" required class="form-control">
                                             	<option value="">-- Region Type --</option>
                                                 <option  value="1">Domestic</option>
-                                                <option value="2">Export Type</option>
-                                                <option value="3">Both</option>
+                                                <option value="2">USA</option>
+                                                <option value="3">Europe</option>
+                                                <option value="4">Both</option>
                                             </select>
                                         </div>
 		                        	</div>
-		                        	<div class="form-group row region" style="display: none;">
+		                        	<div class="form-group row region" >
 		                        	    <label class="col-sm-3 col-form-label">Regions</label>
 		                        	    <div class="col-sm-8">
-                                            <select name="region_id" id="region_id" required class="form-control">
-                                            	<option value="0">-- Regions --</option>
+                                            <select name="region_id" id="region_id" required class="form-control" >
+                                            	<option value="">-- Regions --</option>
                                             	@foreach ($regions as $region)
                                                 <option  value="{{$region->id}}">{{$region->name}}</option>
                                                 @endforeach
@@ -197,7 +198,7 @@
 		    $("#submit_button").prop('disabled', status);
 		}
 	</script>
-	<script>
+<!-- 	<script>
  
 $(document).ready(function() {
 
@@ -214,6 +215,6 @@ $(document).ready(function() {
 		
 	});
 });
-</script>
+</script> -->
 
 @endsection

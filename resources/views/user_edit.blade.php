@@ -128,12 +128,13 @@
                                             <select name="region_type" id="region_type" required class="form-control">
                                             	<option value="">-- Region Type --</option>
                                                 <option  value="1" {{ $user->region_type == 1 ? 'selected' : '' }} >Domestic</option>
-                                                <option  value="2" {{ $user->region_type == 2 ? 'selected' : '' }}>Export Type</option>
-                                                <option  value="3" {{ $user->region_type == 3 ? 'selected' : '' }}>Both</option>
+                                                 <option value="2" {{ $user->region_type == 2 ? 'selected' : '' }}>USA</option>
+                                                <option value="3" {{ $user->region_type == 3 ? 'selected' : '' }}>Europe</option>
+                                                <option  value="4" {{ $user->region_type == 4 ? 'selected' : '' }}>Both</option>
                                             </select>
                                         </div>
 		                        	</div>
-		                        	@if($user->region_type == 2)
+		                        	
 		                        	<div class="form-group row region">
 		                        	    <label class="col-sm-3 col-form-label">Regions</label>
 		                        	    <div class="col-sm-8">
@@ -145,19 +146,7 @@
                                             </select>
                                         </div>
 		                        	</div>
-		                        	@else
-		                        	<div class="form-group row region" style="display: none;">
-		                        	    <label class="col-sm-3 col-form-label">Regions</label>
-		                        	    <div class="col-sm-8">
-                                            <select name="region_id" id="region_ids" required class="form-control">
-                                            	
-                                            	@foreach ($regions as $region)
-                                                <option  value="{{$region->id}}">{{$region->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-		                        	</div>
-		                        	@endif
+		                        	
         		                    <div class="form-group row">
         	                            <label class="col-sm-5"></label>
         	                            <div class="col-sm-7">
@@ -213,7 +202,7 @@
 		    $("#submit_button").prop('disabled', status);
 		}
 	</script>
-<script>
+<!-- <script>
  
 $(document).ready(function() {
 
@@ -230,5 +219,5 @@ $(document).ready(function() {
 		
 	});
 });
-</script>
+</script> -->
 @endsection

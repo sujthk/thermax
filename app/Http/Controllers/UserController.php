@@ -54,8 +54,7 @@ class UserController extends Controller
 		$user->unit_set_id = $request->unit_set_id;
         $user->region_type = $request->region_type;
 
-        if($request->region_type == 2)
-            $user->region_id = $request->region_id;
+        $user->region_id = $request->region_id;
         
 		$user->status = 1;
 		$user->save();
@@ -89,11 +88,8 @@ class UserController extends Controller
 		$user->user_type = $request->user_type;
         $user->unit_set_id = $request->unit_set_id;
         $user->region_type = $request->region_type;
+        $user->region_id = $request->region_id;
 
-        if($request->region_type == 2)
-            $user->region_id = $request->region_id;
-        else
-            $user->region_id = NULL;
 
 		if ($request->has('password') && !empty($request->password)) {
 		    $hashed_password = Hash::make($request->password);
@@ -119,6 +115,7 @@ class UserController extends Controller
     }
 
     public function sendUserOtp(Request $request){
+
     	$email = $request->email;
     	$password = $request->password;
 

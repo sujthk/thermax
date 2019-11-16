@@ -15,7 +15,7 @@ class AddRegionToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-        $table->tinyInteger('region_type')->default(1)->comment('1 = Domestic, 2 = USA,3 = Europe,4 =Both')->after('unit_set_id'); 
+        $table->tinyInteger('region_type')->default(1)->comment('1 = Domestic, 2 = Export_type,3 =Both')->after('unit_set_id'); 
         $table->integer('region_id')->unsigned()->nullable()->after('region_type');
 
         $table->foreign('region_id')->references('id')->on('regions');

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRemoveColumnToUsersTable extends Migration
+class AddRegionToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddRemoveColumnToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-           $table->dropColumn('region_type');
+             $table->tinyInteger('region_type')->default(1)->comment('1 = Domestic, 2 = USA,3 = Europe,4 =Both')->after('unit_set_id'); 
         });
     }
 
