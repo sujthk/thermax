@@ -1254,8 +1254,73 @@
 		});
 		$('input:radio[name="region_type"]').change(function() {
 			model_values.region_type = $(this).val();
+			model_values.model_number = 130;
+			
+			sendRegionValues();
+		});
 
-			if($(this).val() == 1){
+		// $('#region').change(function() {
+
+		//     model_values.region_name = $("#region").val();
+		//     if($(this).val() == 'USA'){
+		// 		$("#regionlist").show();
+		// 		model_values.region_name = $("#region").val();
+ 	// 			$("#fouling_ari").html('');
+		// 		$("#fouling_factor_ahri").html("AHRI");
+		// 		model_values.fouling_factor ="ari";
+		// 		model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
+		// 		model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
+		// 		foulingFactor('ari');
+		// 	}
+		// 	else
+		// 	{
+		// 		//$("#regionlist").hide();
+		// 		model_values.region_name = $("#region").val();
+		// 		$("#fouling_ari").html("ARI");
+		// 		$("#fouling_factor_ahri").html('');
+		// 		model_values.fouling_factor ="standard";
+		// 		foulingFactor('standard');
+		// 	}
+		//     sendRegionValues();
+		// });
+
+		function sendRegionValues(){
+			// var form_values = $("#double_steam_s2").serialize();
+			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+			$.ajax({
+				type: "POST",
+				url: "{{ url('calculators/double-effect-s2/ajax-calculate-region') }}",
+				data: { values : model_values,_token: CSRF_TOKEN},
+				success: function(response){
+					if(response.status){
+						console.log(response.model_values);
+						$("#calculate_button").prop('disabled', false);
+						model_values = response.model_values;
+						castToBoolean();
+
+						loadDefaultValues();
+						onRegionChange();
+						
+					}
+					else{
+						$("#calculate_button").prop('disabled', true);
+						// alert(response.msg);
+						
+						swal(response.msg, "", "error").then((value) => {
+							$('#'+changed_value).focus();
+						});
+						// console.log(changed_value);
+						
+					}					
+				},
+			});
+		}
+
+
+		function onRegionChange(){
+
+
+			if(model_values.region_type == 1){
 				$("#regionlist").hide();
 				model_values.region_name ='';
 				$("#fouling_ari").html("ARI");
@@ -1265,7 +1330,7 @@
 			}
 			else
 			{	
-				if($(this).val() == 2){
+				if(model_values.region_type == 2){
 					//$("#regionlist").show();
 					//model_values.region_name = $("#region").val();
 	 				$("#fouling_ari").html('');
@@ -1285,63 +1350,6 @@
 					foulingFactor('standard');
 				}
 			}
-			sendRegionValues();
-		});
-
-		$('#region').change(function() {
-
-		    model_values.region_name = $("#region").val();
-		    if($(this).val() == 'USA'){
-				$("#regionlist").show();
-				model_values.region_name = $("#region").val();
- 				$("#fouling_ari").html('');
-				$("#fouling_factor_ahri").html("AHRI");
-				model_values.fouling_factor ="ari";
-				model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
-				model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
-				foulingFactor('ari');
-			}
-			else
-			{
-				//$("#regionlist").hide();
-				model_values.region_name = $("#region").val();
-				$("#fouling_ari").html("ARI");
-				$("#fouling_factor_ahri").html('');
-				model_values.fouling_factor ="standard";
-				foulingFactor('standard');
-			}
-		    sendRegionValues();
-		});
-
-		function sendRegionValues(){
-			// var form_values = $("#double_steam_s2").serialize();
-			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-			$.ajax({
-				type: "POST",
-				url: "{{ url('calculators/double-effect-s2/ajax-calculate-region') }}",
-				data: { values : model_values,_token: CSRF_TOKEN},
-				success: function(response){
-					if(response.status){
-						console.log(response.model_values);
-						$("#calculate_button").prop('disabled', false);
-						model_values = response.model_values;
-						castToBoolean();
-
-						updateValues();
-						
-					}
-					else{
-						$("#calculate_button").prop('disabled', true);
-						// alert(response.msg);
-						
-						swal(response.msg, "", "error").then((value) => {
-							$('#'+changed_value).focus();
-						});
-						// console.log(changed_value);
-						
-					}					
-				},
-			});
 		}
 
 		$('input[type=radio][name=tube_metallurgy]').change(function() {

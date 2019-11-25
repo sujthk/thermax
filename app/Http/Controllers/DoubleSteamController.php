@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\VamBaseController;
 use App\Http\Controllers\UnitConversionController;
@@ -145,7 +146,7 @@ class DoubleSteamController extends Controller
 
 		$model_values = $request->input('values');
         Log::info($model_values);
-       ini_set('memory_limit' ,'-1');
+        // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
         $converted_values = $unit_conversions->calculationUnitConversion($model_values);
@@ -168,11 +169,13 @@ class DoubleSteamController extends Controller
 
 		$this->updateInputs();
         // Log::info("Calculaion starts = ".print_r($this->calculation_values,true));
-        $this->WATERPROP();
+        
 
         try {
+            $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        } catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
              Log::info($e);
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
@@ -193,7 +196,8 @@ class DoubleSteamController extends Controller
             
 
             $this->loadSpecSheetData();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
              Log::info($e);
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
@@ -213,33 +217,38 @@ class DoubleSteamController extends Controller
         $chiller_form_values = $this->getFormValues($model_number);
         // log::info($model_values);
         $unit_conversions = new UnitConversionController;
-        $model_values = $unit_conversions->calculationUnitConversion($model_values);
+        // $model_values = $unit_conversions->calculationUnitConversion($model_values);
 
         $chiller_form_values['region_type'] = $model_values['region_type'];
         if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
         {
            
-            $model_values['capacity'] =  $chiller_form_values['USA_capacity'];
-            $model_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
-            $model_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
-            $model_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
-            $model_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
     
         }
-        else{
-            $model_values['capacity'] =  $chiller_form_values['capacity'];
-            $model_values['chilled_water_in'] =  $chiller_form_values['chilled_water_in'];
-            $model_values['chilled_water_out'] =  $chiller_form_values['chilled_water_out'];
-            $model_values['cooling_water_in'] =  $chiller_form_values['cooling_water_in'];
-            $model_values['cooling_water_flow'] =  $chiller_form_values['cooling_water_flow'];
-        }
+        // else{
+        //     $model_values['capacity'] =  $chiller_form_values['capacity'];
+        //     $model_values['chilled_water_in'] =  $chiller_form_values['chilled_water_in'];
+        //     $model_values['chilled_water_out'] =  $chiller_form_values['chilled_water_out'];
+        //     $model_values['cooling_water_in'] =  $chiller_form_values['cooling_water_in'];
+        //     $model_values['cooling_water_flow'] =  $chiller_form_values['cooling_water_flow'];
+        // }
 
 
 
         // update user values with model values
+        // $region_name = $model_values['region_name'];
+        
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1);
 
-        $this->model_values = $model_values;
-        $this->castToBoolean();
+
+        $default_values = collect($chiller_form_values)->union($standard_values);
+        $this->model_values = $default_values;
+        // $this->castToBoolean();
         // Log::info($this->model_values);
         $range_calculation = $this->RANGECAL();
         
@@ -570,6 +579,7 @@ class DoubleSteamController extends Controller
 		$this->calculation_values = $calculation_values;
 
         $this->calculation_values['region_type'] = $this->model_values['region_type'];
+        $this->calculation_values['model_name'] = $this->model_values['model_name'];
         // $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',(int)$this->model_values['model_number'])->first();
 
         // $calculation_values = $chiller_calculation_values->calculation_values;
@@ -1602,20 +1612,23 @@ class DoubleSteamController extends Controller
         $REH = ($this->calculation_values['VAH'] * $this->calculation_values['IDA'] * $COGLY_ROWH33) / $COGLY_VISH33;
         $REL = ($this->calculation_values['VAL'] * $this->calculation_values['IDA'] * $COGLY_ROWH33) / $COGLY_VISH33;
 
-        if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6) && $this->calculation_values['MODEL'] < 1200)
+        if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 4) && $this->calculation_values['MODEL'] < 1200)
         {
             $FH = (0.0014 + (0.137 / pow($REH, 0.32))) * 1.12;
             $FL = (0.0014 + (0.137 / pow($REL, 0.32))) * 1.12;
+            
         }
-        else if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6) && $this->calculation_values['MODEL'] > 1200)
+        else if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 4) && $this->calculation_values['MODEL'] > 1200)
         {
             $FH = (0.0014 + (0.137 / pow($REH, 0.32)));
             $FL = (0.0014 + (0.137 / pow($REL, 0.32)));
+            
         }
         else
         {
             $FH = 0.0014 + (0.125 / pow($REH, 0.32));
             $FL = 0.0014 + (0.125 / pow($REL, 0.32));
+            
         }
 
         $FA1H = 2 * $FH * $this->calculation_values['LE'] * $this->calculation_values['VAH'] * $this->calculation_values['VAH'] / (9.81 * $this->calculation_values['IDA']);
@@ -1668,6 +1681,9 @@ class DoubleSteamController extends Controller
         $FC3 = $this->calculation_values['VC'] * $this->calculation_values['VC'] / (2 * 9.81);
         $this->calculation_values['FC4'] = ($FC1 + $FC2 + $FC3);                        //FRICTION LOSS IN CONDENSER TUBES
         $FLC = $this->calculation_values['FC4'];
+
+    
+
 
         $this->calculation_values['PDA'] = $this->calculation_values['FLA'] + $this->calculation_values['SHA'] + $this->calculation_values['FC4'];  
     }
@@ -2711,6 +2727,7 @@ class DoubleSteamController extends Controller
             //    }
             //}
             
+            //$this->calculation_values['KM2'] = 4.285178;
             if ($this->calculation_values['TCHW2L'] < 7.0)
             {
                 $this->calculation_values['KM2'] = (-0.857413 * $this->calculation_values['TCHW2L'] + 6);     //INCREASED FROM 4 TO 5 FEB 2009
@@ -2718,6 +2735,9 @@ class DoubleSteamController extends Controller
             }
 
             $PS1 = $vam_base->STEAM_PRESSURE(($this->calculation_values['TSMIN'] + $this->calculation_values['KM2']));       //IN kg/cm2.g
+
+
+
             $this->calculation_values['PS'] = $PS1 + 0.5; // 0.7;
 
             $this->calculation_values['T5'] = $vam_base->LIBR_TEMP($this->calculation_values['P4'], $this->calculation_values['XDIL']);
@@ -6228,19 +6248,19 @@ class DoubleSteamController extends Controller
         $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorbent pump rating"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],1) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],1)." )" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],2)." )" ));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Refrigerant pump rating"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],1) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],1)." )" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],2)." )" ));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Vacuum pump rating"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],1) ."( ". round($calculation_values['PurgePumpMotorAmp'],1)." )" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],2) ."( ". round($calculation_values['PurgePumpMotorAmp'],2)." )" ));
 
 
         $section->addTextBreak(1);

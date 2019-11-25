@@ -2,7 +2,9 @@
 
 namespace App\Exceptions;
 
+use Log;
 use Exception;
+use FatalErrorException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -48,6 +50,11 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if (str_contains($exception, ['Maximum execution time', '30 seconds exceeded'])) {
+            return response()->json(['status'=>false,'msg'=>'Index was outside the bounds of the array']);
+        }
+
+
         return parent::render($request, $exception);
     }
 }

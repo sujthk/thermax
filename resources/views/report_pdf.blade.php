@@ -326,19 +326,19 @@
 										<td> 3 </td>
 										<td> Absorbent pump rating</td>
 										<td> kW (A)</td>
-										<td> {{ round($calculation_values['AbsorbentPumpMotorKW'],1) }}( {{ round($calculation_values['AbsorbentPumpMotorAmp'],1) }} ) </td>
+										<td> {{ round($calculation_values['AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['AbsorbentPumpMotorAmp'],2) }} ) </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
 										<td> Refrigerant pump rating</td>
 										<td> kW (A)</td>
-										<td> {{ round($calculation_values['RefrigerantPumpMotorKW'],1) }}( {{ round($calculation_values['RefrigerantPumpMotorAmp'],1) }}) </td>
+										<td> {{ round($calculation_values['RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['RefrigerantPumpMotorAmp'],2) }}) </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
 										<td> Vacuum pump rating</td>
 										<td> kW (A)</td>
-										<td> {{ round($calculation_values['PurgePumpMotorKW'],1) }}({{ round($calculation_values['PurgePumpMotorAmp'],1) }}) </td>
+										<td> {{ round($calculation_values['PurgePumpMotorKW'],2) }}({{ round($calculation_values['PurgePumpMotorAmp'],2) }}) </td>
 									</tr>
 									<tr>
 										<th scope="col"> E  </th>
