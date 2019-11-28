@@ -38,17 +38,8 @@ class DoubleH2SteamController extends Controller
 
     public function getDoubleEffectH2(){
 
-        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',130)->first();
-        
-        $calculation_values = $chiller_calculation_values->calculation_values;
-        $default_values = json_decode($calculation_values,true);
-
-
-        // $chiller_default_datas = ChillerDefaultValue::where('code',$this->model_code)
-        //                                      ->where('min_model','<',130)->where('max_model','>',130)->first();
-        
-        // $default_values = $chiller_default_datas->default_values;
-        // $default_values = json_decode($default_values,true);
+        $chiller_form_values = $this->getFormValues(130);
+        //return $chiller_form_values;
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
                                         ->where('code',$this->model_code)
@@ -60,7 +51,7 @@ class DoubleH2SteamController extends Controller
         $absorber_options = $chiller_options->where('type', 'abs');
         $condenser_options = $chiller_options->where('type', 'con');
 
-        
+        // Log::info($default_values);
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
 
@@ -74,16 +65,16 @@ class DoubleH2SteamController extends Controller
 
         $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'region_name'=>$region_name,'region_type'=>$region_type);
 
-        $default_values = collect($default_values)->union($standard_values);
+        $default_values = collect($chiller_form_values)->union($standard_values);
 
         $units_data = $this->getUnitsData();
 
         $unit_conversions = new UnitConversionController;
-         //Log::info($default_values);
+        
         $converted_values = $unit_conversions->formUnitConversion($default_values);
-        //log::info($converted_values);
+  //return $converted_values;
         $regions = Region::all();
-       
+        // return $evaporator_options;
         return view('double_effect_h2_series')->with('default_values',$converted_values)
                                         ->with('unit_set',$unit_set)
                                         ->with('units_data',$units_data)
@@ -101,7 +92,7 @@ class DoubleH2SteamController extends Controller
 
         $model_values = $request->input('values');
         $changed_value = $request->input('changed_value');
-        // Log::info($model_values);
+        //Log::info($model_values);
         // update user values with model values
 
         $unit_conversions = new UnitConversionController;
@@ -113,13 +104,15 @@ class DoubleH2SteamController extends Controller
 
         $this->model_values = $model_values;
         $this->castToBoolean();
+        // Log::info($this->model_values);
         //$this->model_values = $this->calculation_values;
         $attribute_validator = $this->validateChillerAttribute($changed_value);
-        //Log::info($model_values);
+        //Log::info($this->model_values);
         
         if(!$attribute_validator['status'])
             return response()->json(['status'=>false,'msg'=>$attribute_validator['msg']]);
 
+        // Log::info($this->model_values);
         $this->updateInputs();
         $this->loadSpecSheetData();
 
@@ -134,8 +127,8 @@ class DoubleH2SteamController extends Controller
     public function postDoubleEffectH2(Request $request){
 
         $model_values = $request->input('values');
-        //log::info($model_values);
-       ini_set('memory_limit' ,'-1');
+        //Log::info($model_values);
+        // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
         $converted_values = $unit_conversions->calculationUnitConversion($model_values);
@@ -144,7 +137,7 @@ class DoubleH2SteamController extends Controller
         $this->castToBoolean();
 
           
-        $validate_attributes = array('CAPACITY','CHILLED_WATER_IN','CHILLED_WATER_OUT','EVAPORATOR_TUBE_TYPE','GLYCOL_TYPE_CHANGED','GLYCOL_CHILLED_WATER','GLYCOL_COOLING_WATER','COOLING_WATER_IN','COOLING_WATER_FLOW','EVAPORATOR_THICKNESS','ABSORBER_THICKNESS','CONDENSER_THICKNESS','FOULING_CHILLED_VALUE','FOULING_COOLING_VALUE','STEAM_PRESSURE');  
+        $validate_attributes = array('CAPACITY','CHILLED_WATER_IN','CHILLED_WATER_OUT','EVAPORATOR_TUBE_TYPE','GLYCOL_TYPE_CHANGED','GLYCOL_CHILLED_WATER','GLYCOL_COOLING_WATER','COOLING_WATER_IN','COOLING_WATER_FLOW','EVAPORATOR_THICKNESS','ABSORBER_THICKNESS','CONDENSER_THICKNESS','FOULING_CHILLED_VALUE','FOULING_COOLING_VALUE','ALL_WORK_PR_HW','HOT_WATER_IN','HOT_WATER_OUT');  
         
         foreach ($validate_attributes as $key => $validate_attribute) {
             $attribute_validator = $this->validateChillerAttribute($validate_attribute);
@@ -157,12 +150,14 @@ class DoubleH2SteamController extends Controller
         $this->castToBoolean();
 
         $this->updateInputs();
-        $this->WATERPROP();
-
+        // Log::info("Calculaion starts = ".print_r($this->calculation_values,true));
+        
         try {
+            $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        } catch (\Exception $e) {
-             //Log::info($e);
+        } 
+        catch (\Exception $e) {
+             Log::info($e);
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
@@ -181,78 +176,53 @@ class DoubleH2SteamController extends Controller
             $this->RESULT_CALCULATE();
 
             $this->loadSpecSheetData();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
              Log::info($e);
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
 
-        // $vam_base = new VamBaseController();
-        // $CHGLY_VIS12 = $vam_base->EG_VISCOSITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']) / 1000;
-  //       $CHGLY_TCON12 = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCHW12'], $this->calculation_values['CHGLY']);
-
-
-  //       Log::info($CHGLY_VIS12);
-  //       Log::info($CHGLY_TCON12);
-        // Log::info("metallurgy updated = ".print_r($this->model_values,true));
-
-
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values);
-
+        // log::info($calculated_values);
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
     }
     public function postAjaxDoubleEffectH2Region(Request $request){
 
         $model_values = $request->input('values');
-        //log::info($model_values);
-        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_values['model_number'])->first();
 
-        $calculation_values = $chiller_calculation_values->calculation_values;
-        $default_values = json_decode($calculation_values,true);
-    
-        if($model_values['region_type'] == 2)
-        {
-            if($model_values['region_name'] == 'USA')
-            {
-                $model_values['capacity'] =  $default_values['USA_capacity'];
-                $model_values['chilled_water_in'] =  $default_values['USA_chilled_water_in'];
-                $model_values['chilled_water_out'] =  $default_values['USA_chilled_water_out'];
-                $model_values['cooling_water_in'] =  $default_values['USA_cooling_water_in'];
-                $model_values['cooling_water_flow'] =  $default_values['USA_cooling_water_flow'];
-
-            }
-            else
-            {
-                $model_values['capacity'] =  $default_values['capacity'];
-                $model_values['chilled_water_in'] =  $default_values['chilled_water_in'];
-                $model_values['chilled_water_out'] =  $default_values['chilled_water_out'];
-                $model_values['cooling_water_in'] =  $default_values['cooling_water_in'];
-                $model_values['cooling_water_flow'] =  $default_values['cooling_water_flow'];
-            }
-            
-        }
-        else
-        {
-            $model_values['capacity'] =  $default_values['capacity'];
-            $model_values['chilled_water_in'] =  $default_values['chilled_water_in'];
-            $model_values['chilled_water_out'] =  $default_values['chilled_water_out'];
-            $model_values['cooling_water_in'] =  $default_values['cooling_water_in'];
-            $model_values['cooling_water_flow'] =  $default_values['cooling_water_flow'];
-        }
-   
-        
-        // update user values with model values
-
+        $model_number =(int)$model_values['model_number'];
+        $chiller_form_values = $this->getFormValues($model_number);
+        // log::info($model_values);
         $unit_conversions = new UnitConversionController;
+        // $model_values = $unit_conversions->calculationUnitConversion($model_values);
 
-        $model_values = $unit_conversions->calculationUnitConversion($model_values);
+        $chiller_form_values['region_type'] = $model_values['region_type'];
+        if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
+        {
+           
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+    
+        }
 
-        $this->model_values = $model_values;
-        $this->castToBoolean();
+        // update user values with model values
+        // $region_name = $model_values['region_name'];
+        
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1);
+
+
+        $default_values = collect($chiller_form_values)->union($standard_values);
+        $this->model_values = $default_values;
+        // $this->castToBoolean();
         // Log::info($this->model_values);
-
+        $range_calculation = $this->RANGECAL();
+        
         $converted_values = $unit_conversions->formUnitConversion($this->model_values);
-
+        //Log::info($model_values);
         // Log::info("converted".print_r($converted_values,true));
         // Log::info("metallurgy updated = ".print_r($this->model_values,true));
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
@@ -260,59 +230,26 @@ class DoubleH2SteamController extends Controller
 
     public function postResetDoubleEffectH2(Request $request){
         $model_number =(int)$request->input('model_number');
-        $cooling_water_ranges = $request->input('cooling_water_ranges');
         $model_values = $request->input('values');
-        log::info($model_values);
-        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_number)->first();
-        
-        $calculation_values = $chiller_calculation_values->calculation_values;
-        $default_values = json_decode($calculation_values,true);
-        $default_values['cooling_water_ranges'] = $cooling_water_ranges;
 
-        if($model_values['region_type'] == 2)
+        $chiller_form_values = $this->getFormValues($model_number);
+
+        $chiller_form_values['region_type'] = $model_values['region_type'];
+        if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
         {
-            if($model_values['region_name'] == 'USA')
-            {
-                
-                $default_values['capacity'] =  $default_values['USA_capacity'];
-                $default_values['chilled_water_in'] =  $default_values['USA_chilled_water_in'];
-                $default_values['chilled_water_out'] =  $default_values['USA_chilled_water_out'];
-                $default_values['cooling_water_in'] =  $default_values['USA_cooling_water_in'];
-                $default_values['cooling_water_flow'] =  $default_values['USA_cooling_water_flow'];
-                
-                $default_values['fouling_chilled_water_value']=$model_values['fouling_chilled_water_value'];
-                $default_values['fouling_cooling_water_value']=$model_values['fouling_cooling_water_value'];
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
 
-                
-                $default_values['fou ling_ari_chilled']=$model_values['fouling_ari_chilled'];
-                $default_values['fouling_ari_cooling']=$model_values['fouling_ari_cooling'];
-                $default_values['fouling_factor']=$model_values['fouling_factor'];
-                $default_values['region_type']=$model_values['region_type'];
-                $default_values['region_name']=$model_values['region_name'];
-
-            }
+            if($chiller_form_values['region_type'] == 2)
+                $chiller_form_values['fouling_factor']="ari";
             else
-            {
+                $chiller_form_values['fouling_factor']="standard";
 
-                $default_values['fouling_ari_chilled']=$model_values['fouling_ari_chilled'];
-                $default_values['fouling_ari_cooling']=$model_values['fouling_ari_cooling'];
-                $default_values['fouling_factor']=$model_values['fouling_factor'];
-                $default_values['region_type']=$model_values['region_type'];
-                $default_values['region_name']=$model_values['region_name'];
-            }
-            
-        }
-        else
-        {
-            $default_values['region_type']=$model_values['region_type'];
-            $default_values['region_name']=$model_values['region_name'];
         }
 
-        // $chiller_default_datas = ChillerDefaultValue::where('code',$this->model_code)
-        //                                      ->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
-
-        // $default_values = $chiller_default_datas->default_values;
-        // $default_values = json_decode($default_values,true);
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
         //$queries = DB::getQueryLog();
@@ -324,94 +261,56 @@ class DoubleH2SteamController extends Controller
         $absorber_options = $chiller_options->where('type', 'abs');
         $condenser_options = $chiller_options->where('type', 'con');
 
+
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1);
+
        
 
-        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0);
+       $chiller_form_values = collect($chiller_form_values)->union($standard_values);
 
-        $default_values = collect($default_values)->union($standard_values);
+            
+        $this->model_values = $chiller_form_values;
 
+        // log::info($this->model_values);
+        $this->castToBoolean();
+        $range_calculation = $this->RANGECAL();
+        //log::info($this->model_values);
         $unit_conversions = new UnitConversionController;
-        // Log::info($default_values);
-        $converted_values = $unit_conversions->formUnitConversion($default_values);
-         log::info($converted_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        // log::info($converted_values);
 
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
 
     }
     public function modulNumberDoubleEffectH2(){
-        $model_values = $this->model_values;
-        
-        //log::info($model_values);
-        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_values['model_number'])->first();
+        // $model_values = $this->model_values;
+        $model_number =(int)$this->model_values['model_number'];
 
-        $calculation_values = $chiller_calculation_values->calculation_values;
-        $default_values = json_decode($calculation_values,true);
+        if(empty($this->model_values['metallurgy_standard'])){
+            // $this->model_values['evaporator_material_value']=$model_values['evaporator_material_value'];
+            // $this->model_values['absorber_material_value']=$model_values['absorber_material_value'];
+            // $this->model_values['condenser_material_value']=$model_values['condenser_material_value'];
 
-        if($model_values['region_name'] == 'USA')
-        {
-            $default_values['capacity'] =  $model_values['USA_capacity'];
-            $default_values['chilled_water_in'] =  $model_values['USA_chilled_water_in'];
-            $default_values['chilled_water_out'] =  $model_values['USA_chilled_water_out'];
-            $default_values['cooling_water_in'] =  $model_values['USA_cooling_water_in'];
-            $default_values['cooling_water_flow'] =  $model_values['USA_cooling_water_flow'];
-
+            $this->model_values['metallurgy_standard'] = false;
+            //Log::info("Metallurgy Standard false");
         }
-        else
-        {
-            $default_values['capacity'] =  $model_values['capacity'];
-            $default_values['chilled_water_in'] =  $model_values['chilled_water_in'];
-            $default_values['chilled_water_out'] =  $model_values['chilled_water_out'];
-            $default_values['cooling_water_in'] =  $model_values['cooling_water_in'];
-            $default_values['cooling_water_flow'] =  $model_values['cooling_water_flow'];
+        else{
+            
+            $chiller_metallurgy_options = ChillerMetallurgyOption::where('code',$this->model_code)->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+
+            $this->model_values['evaporator_material_value']=$chiller_metallurgy_options->eva_default_value;
+            $this->model_values['absorber_material_value']=$chiller_metallurgy_options->abs_default_value;
+            $this->model_values['condenser_material_value']=$chiller_metallurgy_options->con_default_value;
+
+
+            $this->model_values['evaporator_thickness_change'] = true;
+            $this->model_values['absorber_thickness_change'] = true;
+            $this->model_values['condenser_thickness_change'] = true;
+
+            //Log::info("Metallurgy Standard true");
         }
-
-        $default_values['fouling_ari_chilled']=$model_values['fouling_ari_chilled'];
-        $default_values['fouling_ari_cooling']=$model_values['fouling_ari_cooling'];
-        $default_values['fouling_factor']=$model_values['fouling_factor'];
-        $default_values['region_type']=$model_values['region_type'];
-        $default_values['region_name']=$model_values['region_name'];
-
-        $default_values['min_chilled_water_out']=$model_values['min_chilled_water_out'];
-        $default_values['cooling_water_ranges']=$model_values['cooling_water_ranges'];
-        $default_values['glycol_chilled_water']=$model_values['glycol_chilled_water'];
-        $default_values['glycol_cooling_water']=$model_values['glycol_cooling_water'];
-        $default_values['glycol_none']=$model_values['glycol_none'];
-        $default_values['glycol_selected']=$model_values['glycol_selected'];
-        
-        //$default_values['steam_pressure']=$model_values['steam_pressure'];
-        $default_values['hot_water_in'] = $this->model_values['hot_water_in']; 
-        $default_values['hot_water_out'] = $this->model_values['hot_water_out']; 
-        $default_values['all_work_pr_hw'] = $this->model_values['all_work_pr_hw']; 
-         
-        $default_values['evaporator_thickness_change']=$model_values['evaporator_thickness_change'];
-        $default_values['absorber_thickness_change']=$model_values['absorber_thickness_change'];
-        $default_values['condenser_thickness_change']=$model_values['condenser_thickness_change'];
-        $default_values['fouling_chilled_water_value']=$model_values['fouling_chilled_water_value'];
-        $default_values['fouling_cooling_water_value']=$model_values['fouling_cooling_water_value'];
-        $default_values['fouling_chilled_water_checked']=$model_values['fouling_chilled_water_checked'];
-        $default_values['fouling_cooling_water_checked']=$model_values['fouling_cooling_water_checked'];
-        $default_values['fouling_chilled_water_disabled']=$model_values['fouling_chilled_water_disabled'];
-        $default_values['fouling_cooling_water_disabled']=$model_values['fouling_cooling_water_disabled'];
-        $default_values['fouling_chilled_water_value_disabled']=$model_values['fouling_chilled_water_value_disabled'];
-        $default_values['fouling_cooling_water_value_disabled']=$model_values['fouling_cooling_water_value_disabled'];
-        
-        $default_values['evaporator_material_value']=$model_values['evaporator_material_value'];
-        $default_values['absorber_material_value']=$model_values['absorber_material_value'];
-        $default_values['condenser_material_value']=$model_values['condenser_material_value'];
-
-
-        // $default_values['region_type'] = Auth::user()->region_type;
-
-        // if( $default_values['region_type'] ==2)
-        //     $default_values['region_name']  = Auth::user()->region->name;
-        // else
-        //     $default_values['region_name']  = '';
-
-
-       return $this->model_values = $default_values;
-
     }
 
 
@@ -441,7 +340,7 @@ class DoubleH2SteamController extends Controller
 
         $units_data = $this->getUnitsData();
 
- //Log::info($calculation_values);
+        //Log::info($calculation_values);
         $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data])->render();
 
         return response()->json(['report'=>$view]);
@@ -513,512 +412,60 @@ class DoubleH2SteamController extends Controller
         $pdf = PDF::loadView('report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data]);
         return $pdf->download('s2.pdf');
 
-
-       
     }
-
-
-    public function wordFormat($user_report_id){
-        
-        $user_report = UserReport::find($user_report_id);
-
-        $unit_set = UnitSet::find($user_report->unit_set_id);
-
-        $units_data = $this->getUnitsData();
-
-
-
-        $calculation_values = json_decode($user_report->calculation_values,true);
-        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
-
-        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
-
-        $chiller_options = $chiller_metallurgy_options->chillerOptions;
-        
-        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
-        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
-        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
-
-        $evaporator_name = $evaporator_option->metallurgy->display_name;
-        $absorber_name = $absorber_option->metallurgy->display_name;
-        $condenser_name = $condenser_option->metallurgy->display_name;
-
-
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-
-
-        $section = $phpWord->addSection();
-
-
-        $description = "Technical Specification : Vapour Absorption Chiller";
-
-        $section->addImage(asset('assets/images/pic.png'));
-        $section->addText($description);
-
-
-        $table_style = new \PhpOffice\PhpWord\Style\Table;
-        $table_style->setBorderColor('cccccc');
-        $table_style->setBorderSize(1);
-        $table_style->setUnit(\PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT);
-        $table_style->setWidth(100 * 50);
-
-        $header = array('size' => 10, 'bold' => true);
-        $header_table = $section->addTable($table_style);
-        $header_table->addRow();
-        $header_table->addCell(1750)->addText(htmlspecialchars("Client"),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->name),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars("Version"),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars("5.1.2.0"),$header);
-
-        $header_table->addRow();
-        $header_table->addCell(1750)->addText(htmlspecialchars("Enquiry"),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->phone),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars("Date"),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars($date),$header);
-
-        $header_table->addRow();
-        $header_table->addCell(1750)->addText(htmlspecialchars("Project"),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->project),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars("Model"),$header);
-        $header_table->addCell(1750)->addText(htmlspecialchars($calculation_values['ModelName']),$header);
-
-        $section->addTextBreak(1);
-
-        $description_table = $section->addTable($table_style);
-        $description_table->addRow();
-        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $description_table->addCell(1750)->addText(htmlspecialchars("Description"),$header);
-        $description_table->addCell(1750)->addText(htmlspecialchars("Unit"),$header);
-        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $description_table->addRow();
-        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $description_table->addCell(1750)->addText(htmlspecialchars("Capacity(+/-3%)"),$header);
-        $description_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750)->addText(htmlspecialchars($calculation_values['TON']),$header);
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("A"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("CHILLED WATER CIRCUIT"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water flow"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->FlowRateUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['ChilledWaterFlow'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water inlet temperature"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TCHW11'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water outlet temperature"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['TCHW12'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Evaporate passes"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "No" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['EvaporatorPasses'] ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water circuit pressure loss"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->PressureDropUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['ChilledFrictionLoss'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water Connection diameter"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->NozzleDiameterUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['ChilledConnectionDiameter'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Glycol type"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "NA" ));
-        else if($calculation_values['GL'] == 2)
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Ethylene" ));
-        else
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Proplylene" ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("8."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water glycol %"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(" %"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CHGLY'],1) ));
-       
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("9."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water fouling factor"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
-        if($calculation_values['TUU'] == "standard")
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['TUU'] ));
-        else
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['FFCHW1'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("10."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Maximum working pressure"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WorkPressureUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['m_maxCHWWorkPressure']) ));
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("B"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("COOLING WATER CIRCUIT"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water flow"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FlowRateUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['GCW'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water inlet temperature"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['TCW11'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water outlet temperature"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CoolingWaterOutTemperature'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorber / Condenser passes"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "No" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['AbsorberPasses']."/".$calculation_values['CondenserPasses'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water Bypass Flow"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FlowRateUnit] ));
-        if(empty($calculation_values['BypassFlow']))
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "-" ));
-        else
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['BypassFlow'],1) ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water circuit pressure loss"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->PressureDropUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CoolingFrictionLoss'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water Connection diameter"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->NozzleDiameterUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CoolingConnectionDiameter'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("8."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Glycol type"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "NA" ));
-        else if($calculation_values['GL'] == 2)
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Ethylene" ));
-        else
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Proplylene" ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("9."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water glycol %"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "%" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['COGLY'],1) ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("10."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water fouling factor"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
-        if($calculation_values['TUU'] == "standard")
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['TUU'] ));
-        else
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['FFCOW1'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("11."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Maximum working pressure"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WorkPressureUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['m_maxCOWWorkPressure']) ));
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("C"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam Circuit"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam pressure"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['PST1'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam Consumption(+/-3%)"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->SteamConsumptionUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamConsumption'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condensate drain temperature"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(ceil($calculation_values['m_dMinCondensateDrainTemperature']) ." - ".ceil($calculation_values['m_dMaxCondensateDrainTemperature']) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condensate drain pressure"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['m_dCondensateDrainPressure'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Connection - Inlet diameter"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamConnectionDiameter'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Connection - Drain diameter"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamDrainDiameter'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Design Pressure"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['m_DesignPressure'],1)));
-
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("D"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Electrical Data"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Power supply"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['PowerSupply'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Power consumption"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kVA" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['TotalPowerConsumption'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorbent pump rating"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],1) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],1)." )" ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Refrigerant pump rating"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],1) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],1)." )" ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Vacuum pump rating"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],1) ."( ". round($calculation_values['PurgePumpMotorAmp'],1)." )" ));
-
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("E"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Physical Data"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Length"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['Length']) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Width"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['Width']) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Height"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['Height']) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Operating weight"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['OperatingWeight'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Shipping weight"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['MaxShippingWeight'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Flooded weight"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['FloodedWeight'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Dry weight"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['DryWeight'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("8."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Tube cleaning space (any one side length-wise)"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['ClearanceForTubeRemoval'],1) ));
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("F"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Tube Metallurgy"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Evaporator tube material"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($evaporator_name));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorber tube material"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($absorber_name));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condenser tube material"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($condenser_name));
-
-        if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true'){
-            $chilled_table->addRow();
-            $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars("Evaporator tube thickness"));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TU3'],1)));
-
-            $chilled_table->addRow();
-            $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorber tube thickness"));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TU6'],1)));
-
-            $chilled_table->addRow();
-            $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars("Condenser tube thickness"));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TV6'],1)));
-        }
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("G"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Heat exchanger Type"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($calculation_values['HHType']),$header);
-        
-        $section->addTextBreak(1);
-
-        foreach ($calculation_values['notes'] as $key => $note) {
-            $section->addText(($key + 1).". ".$note);
-        }
-
-        $file_name = "s2-".Auth::user()->id.".docx";
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        try {
-            $objWriter->save(storage_path($file_name));
-        } catch (Exception $e) {
-        }
-
-    }
-
+    
     public function castToBoolean(){
-            $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
-            $this->model_values['evaporator_thickness_change'] = $this->getBoolean($this->model_values['evaporator_thickness_change']);
-            $this->model_values['absorber_thickness_change'] = $this->getBoolean($this->model_values['absorber_thickness_change']);
-            $this->model_values['condenser_thickness_change'] = $this->getBoolean($this->model_values['condenser_thickness_change']);
-            $this->model_values['fouling_chilled_water_checked'] = $this->getBoolean($this->model_values['fouling_chilled_water_checked']);
-            $this->model_values['fouling_cooling_water_checked'] = $this->getBoolean($this->model_values['fouling_cooling_water_checked']);
-            $this->model_values['fouling_chilled_water_disabled'] = $this->getBoolean($this->model_values['fouling_chilled_water_disabled']);
-            $this->model_values['fouling_cooling_water_disabled'] = $this->getBoolean($this->model_values['fouling_cooling_water_disabled']);
-            $this->model_values['fouling_chilled_water_value_disabled'] = $this->getBoolean($this->model_values['fouling_chilled_water_value_disabled']);
-            $this->model_values['fouling_cooling_water_value_disabled'] = $this->getBoolean($this->model_values['fouling_cooling_water_value_disabled']);
+  
+        $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
+
+        $this->model_values['evaporator_thickness_change'] = $this->getBoolean($this->model_values['evaporator_thickness_change']);
+        $this->model_values['absorber_thickness_change'] = $this->getBoolean($this->model_values['absorber_thickness_change']);
+        $this->model_values['condenser_thickness_change'] = $this->getBoolean($this->model_values['condenser_thickness_change']);
+        $this->model_values['fouling_chilled_water_checked'] = $this->getBoolean($this->model_values['fouling_chilled_water_checked']);
+        $this->model_values['fouling_cooling_water_checked'] = $this->getBoolean($this->model_values['fouling_cooling_water_checked']);
+        $this->model_values['fouling_chilled_water_disabled'] = $this->getBoolean($this->model_values['fouling_chilled_water_disabled']);
+        $this->model_values['fouling_cooling_water_disabled'] = $this->getBoolean($this->model_values['fouling_cooling_water_disabled']);
+        $this->model_values['fouling_chilled_water_value_disabled'] = $this->getBoolean($this->model_values['fouling_chilled_water_value_disabled']);
+        $this->model_values['fouling_cooling_water_value_disabled'] = $this->getBoolean($this->model_values['fouling_cooling_water_value_disabled']);
     }
 
     public function getBoolean($value){
         
-        if($value == "false"){
-            return false;
-        }
-        else if($value == "true"){
+        // if($value == true || $value == "true" || $value == "1" || $value == 1){
+        //  return true;
+        // }
+
+        // return false;
+
+        if($value == "true" || $value == "1" || $value == 1){
             return true;
         }
         else{
-            return $value;
+            return "0";
         }
     }
 
     public function updateInputs(){
 
-        // $chiller_data = $this->getChillerData();
-  //       $this->calculation_values = $chiller_data;
-       
-        $this->calculation_values = $this->model_values;
-        //log::info($this->model_values);
+        $model_number = (int)$this->model_values['model_number'];
+        $calculation_values = $this->getCalculationValues($model_number);
+        //$this->calculation_values = $chiller_data;
+        //$this->modulNumberDoubleEffectS2();
+        $this->calculation_values = $calculation_values;
+
+        $this->calculation_values['region_type'] = $this->model_values['region_type'];
+        $this->calculation_values['model_name'] = $this->model_values['model_name'];
+        // $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',(int)$this->model_values['model_number'])->first();
+
+        // $calculation_values = $chiller_calculation_values->calculation_values;
+        // $default_values = json_decode($calculation_values,true);
+
+        // $this->calculation_values['ALTHE'] = $default_values['ALTHE'];
+        // $this->calculation_values['AHTHE'] = $default_values['AHTHE'];
+        // $this->calculation_values['AHR'] = $default_values['AHR'];
+        // $this->calculation_values['KCON'] = $default_values['KCON'];
+
+        // log::info("update inputs = ".print_r($this->calculation_values,true));
         // $constant_data = $this->getConstantData();
         // $this->calculation_values = array_merge($this->calculation_values,$constant_data);
 
@@ -1081,11 +528,13 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['TCHW11'] = $this->model_values['chilled_water_in']; 
         $this->calculation_values['TCHW12'] = $this->model_values['chilled_water_out']; 
         $this->calculation_values['GCW'] = $this->model_values['cooling_water_flow']; 
+        
         $this->calculation_values['isStandard'] = $this->model_values['metallurgy_standard']; 
 
         $this->calculation_values['hot_water_in'] = $this->model_values['hot_water_in']; 
         $this->calculation_values['hot_water_out'] = $this->model_values['hot_water_out']; 
         $this->calculation_values['all_work_pr_hw'] = $this->model_values['all_work_pr_hw']; 
+
         // Standard Calculation Values
         $this->calculation_values['CoolingWaterOutTemperature'] = 0;
         $this->calculation_values['ChilledWaterFlow'] = 0;
@@ -1129,7 +578,7 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['ULTHE'] = 450; 
         $this->calculation_values['UHTHE'] = 1400; 
         $this->calculation_values['UDHE'] = 400; 
-        //$this->calculation_values['UHR'] = 700;      //UHTG = 1750;
+        $this->calculation_values['UHR'] = 700;      //UHTG = 1750;
 
         if ($this->calculation_values['MODEL'] < 1200)
         {
@@ -1162,7 +611,6 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['ODA'] = 0.019;
             $this->calculation_values['ODC'] = 0.019;
         }
-        //$this->calculation_values['IDG'] = (19-(2*1.1))/1000;
         /******** DETERMINATION OF KEVA FOR NON STD.SELECTION*****/
         if ($this->calculation_values['MODEL'] < 750)
         {
@@ -1252,7 +700,7 @@ class DoubleH2SteamController extends Controller
                 $this->calculation_values['KCON'] = 1 / ((1 / $this->calculation_values['KCON1']) + ($this->calculation_values['TV6'] / 15000));
         } 
 
-       if($this->calculation_values['region_type'] == 2)
+       if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
        {
             $this->calculation_values['AT13'] =$this->calculation_values['AT13']-$this->calculation_values['EX_AT13'] ;
             $this->calculation_values['KEVA'] =$this->calculation_values['KEVA']*$this->calculation_values['EX_KEVA'] ;
@@ -1330,9 +778,6 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * ($this->calculation_values['THC'] + 0.1)) / 1000.0);       
         else                
             $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * $this->calculation_values['THC']) / 1000.0);
-
-
-
 
 
         // if ($this->calculation_values['MODEL'] < 750)
@@ -1485,12 +930,12 @@ class DoubleH2SteamController extends Controller
 
                         return array('status' => false,'msg' => $this->notes['NOTES_EVA_TUBETYPE']);
                     }
-                    else{
-                        $this->model_values['evaporator_thickness_change'] = false;
-                    }
+                    // else{
+                    //  $this->model_values['evaporator_thickness_change'] = false;
+                    // }
                 }
                 $range_calculation = $this->RANGECAL();
-                if(!$range_calculation['status']){
+                if(!$range_calculation['status']){          
                     return array('status'=>false,'msg'=>$range_calculation['msg']);
                 }
                 break;
@@ -1514,7 +959,6 @@ class DoubleH2SteamController extends Controller
                     $metallurgy_validator = $this->metallurgyValidating();
                     if(!$metallurgy_validator['status'])
                         return array('status'=>false,'msg'=>$metallurgy_validator['msg']);
-
                 }
                 else{
                     if (floatval($this->model_values['chilled_water_out']) < 3.499)     //06/11/2017
@@ -1661,7 +1105,8 @@ class DoubleH2SteamController extends Controller
                 if(!$range_calculation['status']){
                     return array('status'=>false,'msg'=>$range_calculation['msg']);
                 }
-               $this->model_values['PS'] = STEAM_PRESSURE($this->model_values['hot_water_in']);
+                 $vam_base = new VamBaseController();
+               $this->model_values['PS'] =$vam_base->STEAM_PRESSURE($this->model_values['hot_water_in']);
                 $this->model_values['DPS'] = $this->model_values['PS'] + 4;
                 // if (chiller.AllWorkPrHW < chiller.MaxHotWaterWorkingPressure)
                 if ($this->model_values['DPS'] < 10.5)
@@ -1692,12 +1137,9 @@ class DoubleH2SteamController extends Controller
                     return array('status' => false,'msg' => $this->notes['NOTES_HWOT_MV']);
                    
                 }
-                break;
-            
+            break;
 
         }
-
-
         return array('status' => true,'msg' => "process run successfully");
 
     }
@@ -1726,8 +1168,9 @@ class DoubleH2SteamController extends Controller
             $this->model_values['glycol_none'] = 'false';
             // $this->model_values['glycol_selected'] = 2;
         }
+        
 
-        $glycol_validator = $this->validateChillerAttribute('GLYCOLTYPECHANGED');
+        $glycol_validator = $this->validateChillerAttribute('GLYCOL_TYPE_CHANGED');
         if(!$glycol_validator['status'])
             return array('status'=>false,'msg'=>$glycol_validator['msg']);
 
@@ -1744,20 +1187,21 @@ class DoubleH2SteamController extends Controller
         // Log::info("metallurgy = ".print_r($this->model_values,true));
         if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
         {
+            $this->model_values['tube_metallurgy_standard'] = 'false';
             $this->model_values['metallurgy_standard'] = false;
             $this->model_values['evaporator_material_value'] = 3;
-            $this->model_values['evaporator_thickness'] = 0.8;
-            $this->model_values['evaporator_thickness_change'] = false;
+            // $this->model_values['evaporator_thickness'] = 0.8;
+            $this->model_values['evaporator_thickness_change'] = true;
             // $this->chillerAttributesChanged("EVAPORATORTUBETYPE");
 
         }
         else
-        {
+        {   $this->model_values['tube_metallurgy_standard'] = 'true';
             $this->model_values['metallurgy_standard'] = true;
             $this->model_values['evaporator_thickness_change'] = true;
         }
 
-        $evaporator_validator = $this->validateChillerAttribute('EVAPORATORTUBETYPE');
+        $evaporator_validator = $this->validateChillerAttribute('EVAPORATOR_TUBE_TYPE');
         if(!$evaporator_validator['status'])
             return array('status'=>false,'msg'=>$evaporator_validator['msg']);
 
@@ -1769,7 +1213,6 @@ class DoubleH2SteamController extends Controller
 
     public function VELOCITY(){
         // Log::info(print_r($this->calculation_values,true));    
-
 
         $IDA = floatval($this->calculation_values['IDA']);
         $TNAA = floatval($this->calculation_values['TNAA']);
@@ -1944,8 +1387,6 @@ class DoubleH2SteamController extends Controller
                 $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TP']));
              }
         }
-
-
         return  array('status' => true,'msg' => "chilled water velocity");
 
     }
@@ -2071,20 +1512,23 @@ class DoubleH2SteamController extends Controller
         $REH = ($this->calculation_values['VAH'] * $this->calculation_values['IDA'] * $COGLY_ROWH33) / $COGLY_VISH33;
         $REL = ($this->calculation_values['VAL'] * $this->calculation_values['IDA'] * $COGLY_ROWH33) / $COGLY_VISH33;
 
-        if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6) && $this->calculation_values['MODEL'] < 1200)
+        if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 4) && $this->calculation_values['MODEL'] < 1200)
         {
             $FH = (0.0014 + (0.137 / pow($REH, 0.32))) * 1.12;
             $FL = (0.0014 + (0.137 / pow($REL, 0.32))) * 1.12;
+            
         }
-        else if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6) && $this->calculation_values['MODEL'] > 1200)
+        else if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 4) && $this->calculation_values['MODEL'] > 1200)
         {
             $FH = (0.0014 + (0.137 / pow($REH, 0.32)));
             $FL = (0.0014 + (0.137 / pow($REL, 0.32)));
+            
         }
         else
         {
             $FH = 0.0014 + (0.125 / pow($REH, 0.32));
             $FL = 0.0014 + (0.125 / pow($REL, 0.32));
+            
         }
 
         $FA1H = 2 * $FH * $this->calculation_values['LE'] * $this->calculation_values['VAH'] * $this->calculation_values['VAH'] / (9.81 * $this->calculation_values['IDA']);
@@ -2138,6 +1582,9 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['FC4'] = ($FC1 + $FC2 + $FC3);                        //FRICTION LOSS IN CONDENSER TUBES
         $FLC = $this->calculation_values['FC4'];
 
+    
+
+
         $this->calculation_values['PDA'] = $this->calculation_values['FLA'] + $this->calculation_values['SHA'] + $this->calculation_values['FC4'];  
     }
 
@@ -2160,69 +1607,7 @@ class DoubleH2SteamController extends Controller
         }
 
 
-        if ($this->calculation_values['region_type'] !== 2)
-        {
-            if ($this->calculation_values['PST1'] < 6.01)
-            {
-                if ($this->calculation_values['MODEL'] == 130)
-                    $this->calculation_values['AHTG'] = 15.5;
-                if ($this->calculation_values['MODEL'] == 160)
-                    $this->calculation_values['AHTG'] = 17.2;
-                if ($this->calculation_values['MODEL'] == 210) 
-                    $this->calculation_values['AHTG'] = 23.1;
-                if ($this->calculation_values['MODEL'] == 250) 
-                    $this->calculation_values['AHTG'] = 25.6;
-                if ($this->calculation_values['MODEL'] == 310) 
-                    $this->calculation_values['AHTG'] = 29.1;
-                if ($this->calculation_values['MODEL'] == 350) 
-                    $this->calculation_values['AHTG'] = 31.3;
-                if ($this->calculation_values['MODEL'] == 410) 
-                    $this->calculation_values['AHTG'] = 37.4;
-                if ($this->calculation_values['MODEL'] == 470) 
-                    $this->calculation_values['AHTG'] = 46.1;
-                if ($this->calculation_values['MODEL'] == 530) 
-                    $this->calculation_values['AHTG'] = 50.3;
-                if ($this->calculation_values['MODEL'] == 580) 
-                    $this->calculation_values['AHTG'] = 54.2;
-                if ($this->calculation_values['MODEL'] == 630) 
-                    $this->calculation_values['AHTG'] = 64.0;
-                if ($this->calculation_values['MODEL'] == 710) 
-                    $this->calculation_values['AHTG'] = 67.4;
-                if ($this->calculation_values['MODEL'] == 760) 
-                    $this->calculation_values['AHTG'] = 77.3;
-                if ($this->calculation_values['MODEL'] == 810) 
-                    $this->calculation_values['AHTG'] = 84.3;
-                if ($this->calculation_values['MODEL'] == 900) 
-                    $this->calculation_values['AHTG'] = 89.8;
-                if ($this->calculation_values['MODEL'] == 1010) 
-                    $this->calculation_values['AHTG'] = 110.3;
-                if ($this->calculation_values['MODEL'] == 1130) 
-                    $this->calculation_values['AHTG'] = 117.6;
-                if ($this->calculation_values['MODEL'] == 1260) 
-                    $this->calculation_values['AHTG'] = 136.3;
-                if ($this->calculation_values['MODEL'] == 1380) 
-                    $this->calculation_values['AHTG'] = 146.1;
-                if ($this->calculation_values['MODEL'] == 1560) 
-                    $this->calculation_values['AHTG'] = 175.9;
-                if ($this->calculation_values['MODEL'] == 1690) 
-                    $this->calculation_values['AHTG'] = 186.3;
-                if ($this->calculation_values['MODEL'] == 1890) 
-                    $this->calculation_values['AHTG'] = 211.6;
-                if ($this->calculation_values['MODEL'] == 2130) 
-                    $this->calculation_values['AHTG'] = 224.2;
-                if ($this->calculation_values['MODEL'] == 2270) 
-                    $this->calculation_values['AHTG'] = 253.9;
-                if ($this->calculation_values['MODEL'] == 2560) 
-                    $this->calculation_values['AHTG'] = 269.0;
-                //if ($this->calculation_values['MODEL'] == 2600)     $this->calculation_values['AHTG'] = 259.4 * 1.2;
-                //if ($this->calculation_values['MODEL'] == 2800)     $this->calculation_values['AHTG'] = 269.4 * 1.2;
 
-                //if ($this->calculation_values['PST1'] < 5.01)
-                //{
-                //    CW = 2;
-                //}
-            }
-        }
         $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TP']));
         $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
 
@@ -2495,8 +1880,6 @@ class DoubleH2SteamController extends Controller
     public function EVAPORATOR()
     {
 
-    
-
         $this->calculation_values['i'] = 0; $this->calculation_values['q'] = 0; $this->calculation_values['r'] = 0;
         $ATCHW2H;
 
@@ -2514,7 +1897,6 @@ class DoubleH2SteamController extends Controller
         $ATCW3 = $this->calculation_values['ATCW2'] + $QCO / ($this->calculation_values['GCW'] * 1000);
         $LMTDCO = $QCO / ($this->calculation_values['KCON'] * $this->calculation_values['ACON']);
         $this->calculation_values['AT3'] = $ATCW3 + ($ATCW3 - $this->calculation_values['ATCW2']) / (exp(($ATCW3 - $this->calculation_values['ATCW2']) / $LMTDCO) - 1);
-
 
         // if (CW == 2)
         // {
@@ -2658,8 +2040,6 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['I2'] = $vam_base1->LIBR_ENTHALPY($this->calculation_values['T2'], $this->calculation_values['XDIL']);
 
 
-
-
             $this->CONDENSER();
 
             $this->calculation_values['QABSL'] = ($this->calculation_values['GCONC'] * $this->calculation_values['I8']) + ($this->calculation_values['GREFL'] * $this->calculation_values['J1L']) - ($this->calculation_values['GDILL'] * $this->calculation_values['I2L']);
@@ -2667,14 +2047,12 @@ class DoubleH2SteamController extends Controller
             $ferr2[$this->calculation_values['q']] = ($this->calculation_values['QLMTDABSL'] - $this->calculation_values['QABSL']) / $this->calculation_values['QLMTDABSL'] * 100;
             $this->calculation_values['q'] = $this->calculation_values['q'] + 1;
         }
-
         
     }
 
     public function CONDENSER()
     {
      
-
         $ferr3 = array();
         $t3 = array();
 
@@ -2725,11 +2103,6 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['GREF'] = $this->calculation_values['GREFH'] + $this->calculation_values['GREFL'];
             $this->calculation_values['T6'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XCONC']);
 
-
-          
-
-
-
             // if ($this->calculation_values['CW'] == 2)
             // {
             //     CWCONOUT();
@@ -2774,9 +2147,6 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['T9'] = $vam_base2->LIBR_TEMP($this->calculation_values['P3'], $this->calculation_values['XCONC']);
             $this->calculation_values['J9'] = $vam_base2->WATER_VAPOUR_ENTHALPY($this->calculation_values['T9'], $this->calculation_values['P3']);
             $this->calculation_values['I9'] = $vam_base2->LIBR_ENTHALPY($this->calculation_values['T9'], $this->calculation_values['XCONC']);
-
-
-
 
             $this->DHE();
             $this->LTHE();
@@ -3026,8 +2396,6 @@ class DoubleH2SteamController extends Controller
             $ferr8[$d] = ($this->calculation_values['QREFLTG'] - $this->calculation_values['QLMTDLTG']) * 100 / $this->calculation_values['QLMTDLTG'];
             $d++;
         }
-
-
     }
 
     public function LTHE()
@@ -3063,9 +2431,6 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['LMTDLTHE'] = (($this->calculation_values['T9'] - $this->calculation_values['T11']) - ($this->calculation_values['T8'] - $this->calculation_values['T2'])) / log(($this->calculation_values['T9'] - $this->calculation_values['T11']) / ($this->calculation_values['T8'] - $this->calculation_values['T2']));
             $this->calculation_values['QLMTDLTHE'] = $this->calculation_values['ULTHE'] * $this->calculation_values['ALTHE'] * $this->calculation_values['LMTDLTHE'];
             $ferr9[$h] = ($this->calculation_values['QLMTDLTHE'] - $this->calculation_values['QLIBRLTHE']) * 100 / $this->calculation_values['QLMTDLTHE'];
-
-
-
 
             $h++;
         }
@@ -3114,127 +2479,97 @@ class DoubleH2SteamController extends Controller
 
 
         }
-
-        
     }
-
 
     public function HTG()
     {
-        $ferr11 = array();
-        $ts = array();
-        $tg = 0;
+        $vam_base2 = new VamBaseController();
 
-        $ferr11[0] = 1;
-        $tg = 1;
-        $vam_base = new VamBaseController();
+        $this->calculation_values['HTEMP'] = 0;
+        $this->calculation_values['HWI'] =0 ;
 
-        while (abs($ferr11[$tg - 1]) > 0.05)
-        {
-            if ($tg == 1)
+        $this->calculation_values['QHTG']= $this->calculation_values['GMED'] * $this->calculation_values['I4'] + $this->calculation_values['GREF1'] * $this->calculation_values['J4'] - $this->calculation_values['GDIL'] * $this->calculation_values['I7'];
+        $this->calculation_values['T5'] = $vam_base2->LIBR_TEMP($this->calculation_values['P4'],$this->calculation_values['XDIL']);
+
+        $this->calculation_values['CPH2'] =$this->HT_SPHT($this->calculation_values['hot_water_in']);
+        $this->calculation_values['CPH3'] = $this->HT_SPHT($this->calculation_values['hot_water_out']);
+        $this->calculation_values['ROWH'] = $this->WATER_DENSITY($this->calculation_values['hot_water_in']);
+
+        $this->calculation_values['GHOT']  = $this->calculation_values['QHTG'] / (($this->calculation_values['CPH2'] +  $this->calculation_values['CPH3']) * 0.5 * ($this->calculation_values['hot_water_in'] - $this->calculation_values['hot_water_out']) * $this->calculation_values['ROWH']);
+
+            if ($this->calculation_values['TCHW12'] < 5)
             {
-                $ts[$tg] = $this->calculation_values['T4'] + 10;
+                $SFACTOR1 = 1.0738 - 0.0068 * $this->calculation_values['TCHW12'];
             }
-            if ($tg == 2)
+            else
             {
-                $ts[$tg] = $ts[$tg - 1] + 1;
-            }
-            if ($tg >= 3)
-            {
-                $ts[$tg] = $ts[$tg - 1] + $ferr11[$tg - 1] * ($ts[$tg - 1] - $ts[$tg - 2]) / ($ferr11[$tg - 2] - $ferr11[$tg - 1]) / 2;
-            }
-
-
-            $this->calculation_values['TS'] = $ts[$tg];
-            $this->calculation_values['TSMIN'] = $this->calculation_values['TS'];
-
-            //if (MODEL < 1200)
-            //{
-            //    if ($this->calculation_values['TCHW2L'] < 7.0)
-            //    {
-            //        $this->calculation_values['KM2'] = (-0.857413 * $this->calculation_values['TCHW2L'] + 6); // +5;        //INCREASED FROM 4 TO 5 FEB 2009
-            //        if ($this->calculation_values['PST1'] < 6.01 && $this->calculation_values['PST1'] >= 5.01)
-            //        {
-            //            $this->calculation_values['KM2'] = (-0.857413 * $this->calculation_values['TCHW2L'] + 6); // +4;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        $this->calculation_values['KM2'] = 0; // 5;
-            //        if ($this->calculation_values['PST1'] < 6.1 && $this->calculation_values['PST1'] >= 5.01)
-            //        {
-            //            $this->calculation_values['KM2'] = 0; // 4;
-            //        }
-            //    }
-            //}
-
-            //else
-            //{
-            //    if ($this->calculation_values['TCHW2L'] < 7.0)
-            //    {
-            //        $this->calculation_values['KM2'] = (-0.857413 * $this->calculation_values['TCHW2L'] + 6) + 0;// 4.5;        //INCREASED FROM 4 TO 5 FEB 2009
-            //    }
-            //    else
-            //    {
-            //        $this->calculation_values['KM2'] = 0;// 4.5;
-            //    }
-            //}
-            
-            if ($this->calculation_values['TCHW2L'] < 7.0)
-            {
-                $this->calculation_values['KM2'] = (-0.857413 * $this->calculation_values['TCHW2L'] + 6);     //INCREASED FROM 4 TO 5 FEB 2009
-
+                $SFACTOR1 = 1.0;
             }
 
-            $PS1 = $vam_base->STEAM_PRESSURE(($this->calculation_values['TSMIN'] + $this->calculation_values['KM2']));       //IN kg/cm2.g
-            $this->calculation_values['PS'] = $PS1 + 0.5; // 0.7;
+            $SFACTOR2 = 1.005; //CP DENSITY CORRECTION
 
-            $this->calculation_values['T5'] = $vam_base->LIBR_TEMP($this->calculation_values['P4'], $this->calculation_values['XDIL']);
-            $this->calculation_values['LMTDHTG'] = (($this->calculation_values['TS'] - $this->calculation_values['T5']) - ($this->calculation_values['TS'] - $this->calculation_values['T4'])) / log(($this->calculation_values['TS'] - $this->calculation_values['T5']) / ($this->calculation_values['TS'] - $this->calculation_values['T4']));
-            $this->calculation_values['QLMTDHTG'] = $this->calculation_values['UHTG'] * $this->calculation_values['AHTG'] * $this->calculation_values['LMTDHTG'];
-            $this->calculation_values['HSTEAM'] = 639.427333 + (4.7783887 * ($this->calculation_values['PST1'] + 1.0)) - (0.3413875 * ($this->calculation_values['PST1'] + 1.0) * ($this->calculation_values['PST1'] + 1.0)) + (0.009782 * ($this->calculation_values['PST1'] + 1.0) * ($this->calculation_values['PST1'] + 1.0) * ($this->calculation_values['PST1'] + 1.0));
-            $this->calculation_values['GSTEAM'] = $this->calculation_values['QLMTDHTG'] / ($this->calculation_values['HSTEAM'] - $this->calculation_values['TS']);
-            $this->HR();
-            $this->calculation_values['I14'] = ($this->calculation_values['GDIL2'] * $this->calculation_values['I20'] + $this->calculation_values['GDIL1'] * $this->calculation_values['I7']) / $this->calculation_values['GDIL'];
-            $this->calculation_values['T14'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I14']);
-            $this->calculation_values['QHTG'] = ($this->calculation_values['GMED'] * $this->calculation_values['I4']) + ($this->calculation_values['GREF1'] * $this->calculation_values['J4']) - ($this->calculation_values['GDIL'] * $this->calculation_values['I14']);
+            if ($this->calculation_values['DT'] < 14.999)
+            {
+                $SFACTOR3 = 1.0;
+            }
+            else
+            {
+                $SFACTOR3 = (0.0006667 * $this->calculation_values['DT']) + 1.01;
+            }
 
-            $ferr11[$tg] = ($this->calculation_values['QLMTDHTG'] - $this->calculation_values['QHTG']) * 100 / $this->calculation_values['QLMTDHTG'];
-            $tg++;
-        }
+            $this->calculation_values['GHOT'] = $this->calculation_values['GHOT'] * $this->calculation_values['SFACTOR'] * $SFACTOR1 * $SFACTOR2 * $SFACTOR3;
 
-        /********** SFACTOR - STEAM *******/
-        $SFACTOR1 = 0; $SFACTOR2 = 0; $SFACTOR3 = 0;
+        
+            $this->calculation_values['TGPMAX'] = 0;
 
-        if ($this->calculation_values['TCHW12'] < 5)
-        {
-            $SFACTOR1 = 1.0738 - 0.0068 * $this->calculation_values['TCHW12'];
-        }
-        else
-        {
-            $SFACTOR1 = 1.0;
-        }
+            if ($this->calculation_values['MODEL'] < 275)//RESTRICTION IN PASSES DUE TO LOWER TUBE NO IN HTG AS COMM BY DETAILING
+                $this->calculation_values['TGPMAX'] = 4;
+            else
+                $this->calculation_values['TGPMAX'] = 4;
 
-        if ($this->calculation_values['PST1'] > 5.99)
-        {
-            $SFACTOR2 = 1.0;
-        }
-        else
-        {
-            $SFACTOR2 = 1.0 + (0.0125 * (6.0 - $this->calculation_values['PST1']));
-        }
+             $this->calculation_values['TGP'] = 0;
 
-        if ($this->calculation_values['DT'] < 14.999)
-        {
-            $SFACTOR3 = 1.0;
-        }
-        else
-        {
-            $SFACTOR3 = (0.0006667 * $this->calculation_values['DT']) + 1.01;
-        }
+            do
+            {
+                $this->calculation_values['TGP'] = $this->calculation_values['TGP'] + 1;
+                $this->calculation_values['VG']  = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
 
+                if ($this->calculation_values['TGP'] > 4)
+                {
+                    $this->calculation_values['TGP'] = 4;
+                    $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
+                    break;
+                }
+            } while ($this->calculation_values['VG'] < 1.3);
 
-        $this->calculation_values['GSTEAM'] = $this->calculation_values['GSTEAM'] * $this->calculation_values['SFACTOR'] * $SFACTOR1 * $SFACTOR2 * $SFACTOR3;
+             $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 *$this->calculation_values['IDG']  * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
+
+            if ($this->calculation_values['VG'] < 1.3)
+            {
+                $this->calculation_values['HWI'] = 2;
+            }
+            if ($this->calculation_values['VG'] < 0.8)
+            {
+                $this->calculation_values['UHTG'] = $this->calculation_values['UHTG'] * (1 - ((0.8 - $this->calculation_values['VG']) * 0.5));
+            }
+            if ($this->calculation_values['VG'] < 0.4)
+            {
+                $this->calculation_values['HTEMP'] = 1;
+            }
+           $this->calculation_values['LMTDHTG'] =$this->calculation_values['QHTG']  / ($this->calculation_values['AHTG'] * $this->calculation_values['UHTG']);
+
+            $this->calculation_values['KM2'] = (0.00333 * THW1) + 0.4;
+            $this->calculation_values['LMTDHTG'] = $this->calculation_values['LMTDHTG'] / $this->calculation_values['KM2'];
+
+            $this->calculation_values['R1'] = ($this->calculation_values['T5'] - $this->calculation_values['T4']) / ($this->calculation_values['hot_water_out'] - $this->calculation_values['hot_water_in'] );
+            $this->calculation_values['S1']  = ($this->calculation_values['hot_water_out'] - $this->calculation_values['hot_water_in'] ) / ($this->calculation_values['T5'] - $this->calculation_values['hot_water_in'] );
+            $this->calculation_values['FR11']  = sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1.0) * log((1 - $this->calculation_values['S1']) / (1 - $this->calculation_values['R1'] * $this->calculation_values['S1']));
+            $this->calculation_values['FR12']  = ($this->calculation_values['R1'] - 1) * log((2 - ($this->calculation_values['S1'] * ($this->calculation_values['R1'] + 1 - sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1)))) / (2 - ($this->calculation_values['S1'] * ($this->calculation_values['R1'] + 1 + sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1)))));
+             $this->calculation_values['FR13']  = $this->calculation_values['FR11'] /  $this->calculation_values['FR12'];
+            $this->calculation_values['BETA6']  = log(($this->calculation_values['hot_water_in']  -$this->calculation_values['T4']) / ($this->calculation_values['hot_water_out'] - $this->calculation_values['T5']));
+            $this->calculation_values['LMTDGENA']  = ((($this->calculation_values['hot_water_in'] -  $this->calculation_values['T4']) - ($this->calculation_values['hot_water_out'] - $this->calculation_values['T5'])) / $this->calculation_values['BETA6']) * $this->calculation_values['FR13'];          
+
+        //PRESSURE_DROP();
 
         // PRESSURE_DROP();
 
@@ -3256,6 +2591,162 @@ class DoubleH2SteamController extends Controller
         $this->PR_DROP_CHILL();
 
         $this->PR_DROP_COW();
+        $this->PR_DROP_HW();
+    }
+    public function HT_SPHT($TH)
+    {
+        $CPHT = array();
+        if ($TH < 100.1)
+        {
+            $this->calculation_values['CPH1'] = 4.217 - 2.949 * pow(10, -3) * $TH + 7.624 * pow(10, -5) * $TH * $TH - 7.858 * pow(10, -7) * pow($TH, 3.0) + 3.181 * pow(10, -9) * pow($TH, 4.0);
+        }
+        else
+        {
+             $x0 = (int)($TH - fmod($TH, 10));
+             $x1 = x0 + 10;
+            $CPHT[] = array('x0'=>$x0,'x1'=>$x1,'0'=>4.218,'10'=>4.194,'20'=>4.182,'30'=>4.179 ,'40'=>4.179 ,'50'=>4.181 ,'60'=>4.185 ,'70'=>4.191 ,'80'=>4.198 ,'90'=>4.207 ,'100'=>4.218 ,'110'=>4.23 ,'120'=>4.244 ,'130'=>4.262 ,'140'=>4.282 ,'150'=>4.306 ,'160'=>4.334 ,'170'=>4.366 ,'180'=>4.403 ,'190'=>4.446 ,'200'=>4.494 ,'210'=>4.55 ,'220'=>4.613 ,'230'=>4.685 ,'240'=>4.769 ,'260'=>4.985,'270'=>5.134 ,'280'=>5.307 ,'290'=>5.52,'300'=>5.794 ,'310'=>6.143 ,'320'=>6.604 ,'330'=>7.241 ,'340'=>8.225);
+
+            $this->calculation_values['Y0']  = $CPHT['x0'];
+            $this->calculation_values['Y1']  = $CPHT['x1'];
+            $this->calculation_values['YY11']  = ($TH - $x1) / ($x0 - $x1) * $this->calculation_values['Y0'];
+            $this->calculation_values['YY22']  = ($TH - $x0) / ($x1 - $x0) * $this->calculation_values['Y1'];
+            $this->calculation_values['YY2']  = $this->calculation_values['YY11'] + $this->calculation_values['YY22'];
+            $this->calculation_values['CPH1'] =$this->calculation_values['YY2'] ;
+        }
+
+        $CPHT = array();
+        return ($this->calculation_values['CPH1'] / 4.187);
+    }
+    public function WATER_DENSITY($TH)
+    {
+        if ($TH < 100.1)
+        {
+            $this->calculation_values['XMU'] = (-6.325 - 0.033974 * $TH + 2.829 * pow(10, -4) * $TH * $TH - 1.8309 * pow(10, -6) * pow($TH, 3.0) + 5.5184 * pow(10, -9) * pow($TH, 4.0));
+            $this->calculation_values['MU'] = exp($this->calculation_values['XMU']);
+            $this->calculation_values['NU']  = exp(-13.232 - 0.034086 * $TH + 2.9287 * pow(10, -4) * $TH * $TH - 1.9052 * pow(10, -6) * pow($TH, 3.0) + 5.8 * pow(10, -9) * pow($TH, 4.0));
+           $this->calculation_values['ROWH1']  = $this->calculation_values['MU'] / $this->calculation_values['NU'];
+        }
+        else
+        {
+            $this->calculation_values['ROWH1'] = (1.001 * 1000 - 0.0842 * $TH - 3.72402 / 1000 * $TH * $TH + 3.65121 / 1000000 * $TH * $TH * $TH);
+        }
+        return ($this->calculation_values['ROWH1']);
+    }
+    public function WATER_VISCOSITY($TH)
+    {
+        if ($TH < 100.1)
+        {
+           $this->calculation_values['MUEH']  = (exp(-6.325 - 0.033974 * $TH + 0.0002829 * $TH * $TH - 0.0000018309 * pow($TH, 3) + 0.0000000055184 * pow($TH, 4))) * 1000;
+        }
+        else
+        {
+            $this->calculation_values['MUEH'] = 41.049 * pow($TH, -1.0813);
+        }
+        return ($this->calculation_values['MUEH'] / 1000);
+    }
+    public function PR_HW_DATA()
+    {
+        if ($this->calculation_values['GHOT'] < 0.99)
+        {
+            $this->calculation_values['PNBH'] = 25; $this->calculation_values['PODG'] = 33.4; $this->calculation_values['THH']  = 3.38;
+        }
+        else if ($this->calculation_values['GHOT'] > 0.99 && $this->calculation_values['GHOT'] < 1.99)
+        {
+            $this->calculation_values['PNBH'] = 32;  $this->calculation_values['PODG'] = 42.2; $this->calculation_values['THH'] = 3.56;
+        }
+        else if ($this->calculation_values['GHOT'] > 1.99 && $this->calculation_values['GHOT'] < 3.499)
+        {
+            $this->calculation_values['PNBH'] = 40; $this->calculation_values['PODG'] = 48.3; $this->calculation_values['THH'] = 3.68;
+        }
+        else if ($this->calculation_values['GHOT'] > 3.499 && $this->calculation_values['GHOT'] < 6.99)
+        {
+            $this->calculation_values['PNBH'] = 50; $this->calculation_values['PODG'] = 60.3; $this->calculation_values['THH'] = 3.91;
+        }
+        else if ($this->calculation_values['GHOT'] > 6.99 && $this->calculation_values['GHOT'] < 29.99)
+        {
+            $this->calculation_values['PNBH'] = 80; $this->calculation_values['PODG'] = 88.9; $this->calculation_values['THH'] = 5.49;
+        }
+        else if ($this->calculation_values['GHOT'] > 29.99 && $this->calculation_values['GHOT'] < 64.99)
+        {
+            $this->calculation_values['PNBH'] = 100; $this->calculation_values['PODG'] = 114.3; $this->calculation_values['THH'] = 6.02;
+        }
+        else if ($this->calculation_values['GHOT'] > 64.99 && $this->calculation_values['GHOT'] < 154.99)
+        {
+            $this->calculation_values['PNBH'] = 150; $this->calculation_values['PODG'] = 168.3; $this->calculation_values['THH'] = 7.11;
+        }
+        else if ($this->calculation_values['GHOT'] > 154.99 && $this->calculation_values['GHOT'] < 294.99)
+        {
+            $this->calculation_values['PNBH'] = 200; $this->calculation_values['PODG'] = 219.1; $this->calculation_values['THH'] = 8.18;
+        }
+        else if ($this->calculation_values['GHOT'] > 294.99 && $this->calculation_values['GHOT'] < 434.99)
+        {
+            $this->calculation_values['PNBH'] = 250; $this->calculation_values['PODG'] = 273; $this->calculation_values['THH'] = 9.27;
+        }
+        else if ($this->calculation_values['GHOT'] > 434.99 && $this->calculation_values['GHOT'] < 609.99)
+        {
+            $this->calculation_values['PNBH'] = 300; $this->calculation_values['PODG'] = 323.8; $this->calculation_values['THH'] = 10.31;
+        }
+        else if ($this->calculation_values['GHOT'] > 609.99 && $this->calculation_values['GHOT'] < 769.99)
+        {
+            $this->calculation_values['PNBH'] = 350; $this->calculation_values['PODG'] = 355.6; $this->calculation_values['THH'] = 11.13;
+        }
+        else if ($this->calculation_values['GHOT'] > 769.99 && $this->calculation_values['GHOT'] < 999.99)
+        {
+            $this->calculation_values['PNBH'] = 400; $this->calculation_values['PODG'] = 406.4; $this->calculation_values['THH'] = 12.7;
+        }
+        else if ($this->calculation_values['GHOT'] > 999.99 && $this->calculation_values['GHOT'] < 1269.99)
+        {
+            $this->calculation_values['PNBH'] = 450; $this->calculation_values['PODG'] = 457.2; $this->calculation_values['THH'] = 14.2;
+        }
+        else if ($this->calculation_values['GHOT'] > 1269.99 && $this->calculation_values['GHOT'] < 1589.99)
+        {
+            $this->calculation_values['PNBH'] = 500; $this->calculation_values['PODG'] = 508; $this->calculation_values['THH'] = 15.09;
+        }
+        else if ($this->calculation_values['GHOT'] > 1589.99)
+        {
+            $this->calculation_values['PNBH'] = 600; $this->calculation_values['PODG'] = 609.6; $this->calculation_values['THH'] = 17.48;
+        }
+    }
+
+    public function PR_DROP_HW()
+    {
+        $this->PR_HW_DATA();
+
+        $this->calculation_values['TMHW']  = ($this->calculation_values['hot_water_in'] + $this->calculation_values['hot_water_out']) / 2;
+        $this->calculation_values['VISG']  = $this->WATER_VISCOSITY($this->calculation_values['TMHW']);
+        $this->calculation_values['ROWH'] = $this->WATER_DENSITY($this->calculation_values['TMHW']);
+
+        $this->calculation_values['GPID']  = ($this->calculation_values['PODG'] - (2 * $this->calculation_values['THH'])) / 1000;
+        $this->calculation_values['VGP'] = $this->calculation_values['GHOT'] / (3.1415 * $this->calculation_values['GPID'] * $this->calculation_values['GPID'] / 4) / 3600;
+
+        $this->calculation_values['SLH']  = 2 * $this->calculation_values['GPID']; //NOZZLE LENGTH
+        $this->calculation_values['REH']  = ($this->calculation_values['GPID'] * $this->calculation_values['VGP'] * $this->calculation_values['ROWH']) / $this->calculation_values['VISG']; //REYNOLDS NO IN PIPE
+
+        $this->calculation_values['FFH']  = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['GPID'] * 1000)) + (5.74 / pow($this->calculation_values['REH'], 0.9))), 2); //FR FACTOR FOR LENGTH
+
+        $this->calculation_values['GL2']  = (($this->calculation_values['FFH'] * $this->calculation_values['SLH'] * 2) / $this->calculation_values['GPID']) * ($this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)); //PIPE LOSS IN LENGTH
+        $this->calculation_values['GL3']  = ($this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)); //PIPE LOSS AT ENTRY AND EXIT
+        $this->calculation_values['GLP']  = $this->calculation_values['GL2'] + $this->calculation_values['GL3']; //TOTAL FR LOSS IN PIPE
+
+       $this->calculation_values['VG']  = $this->calculation_values['GHOT'] / (((3600 * 3.142 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP'] ));
+
+        $this->calculation_values['REG']  = ($this->calculation_values['ROWH'] * $this->calculation_values['VG'] *  $this->calculation_values['IDG']) / $this->calculation_values['VISG']; //REYNOLDS NO IN TUBES
+
+        if ($this->calculation_values['HWI'] == 2)
+        {
+            $this->calculation_values['FG']  = ((1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * ((-0.1305 * $this->calculation_values['VG']) + 3.5)) * 1.12;
+        }
+        else
+        {
+            $this->calculation_values['FG'] = (1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * 1.12;
+        }
+        //double FG = 0.0014 + (0.137 / pow(REG, 0.32));     //NOV 07 - ENDCROSSED SS IN GEN
+        $this->calculation_values['FLG'] = ($this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
+        $this->calculation_values['EXLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (4 * 9.81); //EXIT LOSS
+        $this->calculation_values['ENLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (2 * 9.81); //ENTRY LOSS
+        $this->calculation_values['TFLG']  = ($this->calculation_values['FLG'] + $this->calculation_values['EXLG'] + $this->calculation_values['ENLG']) * $this->calculation_values['TGP'] ; //TOTAL FR LOSS IN TUBES
+
+        $this->calculation_values['GFL'] = $this->calculation_values['GLP'] + $this->calculation_values['TFLG']; //TOTAL FR LOSS IN HW  
     }
 
     public function HR()
@@ -3592,8 +3083,6 @@ class DoubleH2SteamController extends Controller
         }
     }
 
-    
-    
     public function RANGECAL()
     {
         $FMIN1 = 0; 
@@ -3621,14 +3110,6 @@ class DoubleH2SteamController extends Controller
         $PODA = floatval($this->calculation_values['PODA']);
         $THPA = floatval($this->calculation_values['THPA']);
 
-        // Log::info($IDC);
-     //    Log::info("IDC=".$IDC);
-     //    Log::info("IDA=".$IDA);
-        // Log::info("TNC=".$TNC);
-     //    Log::info("TNAA=".$TNAA);
-     //    Log::info("PODA=".$PODA);
-     //    Log::info("THPA=".$THPA);
-    
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
                                         ->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
@@ -3636,8 +3117,8 @@ class DoubleH2SteamController extends Controller
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
         // $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$this->model_values['evaporator_material_value'])->first();
-        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->model_values['absorber_material_value'])->first();
-        $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->model_values['condenser_material_value'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->calculation_values['TV5'])->first();
 
         $TCP = 1;
         $VAMIN = $absorber_option->metallurgy->abs_min_velocity;          
@@ -3724,8 +3205,6 @@ class DoubleH2SteamController extends Controller
                 }
             }
         }
-
-
 
         // PR_DROP_DATA();
         $PIDA = ($PODA - (2 * $THPA)) / 1000;
@@ -3859,8 +3338,6 @@ class DoubleH2SteamController extends Controller
                 $CC[4][$j] = $CC[1][$j];
             if ($CC[2][$j] >= $CC[0][$j] && $CC[2][$j] >= $CC[1][$j])
                 $CC[4][$j] = $CC[2][$j];
-
-
 
 
             $CC[5][$j] = ($CC[4][$j] - $CC[3][$j]) / $CC[4][$j] * 100.0;    //R
@@ -4119,25 +3596,49 @@ class DoubleH2SteamController extends Controller
                         }
                         else
                         {
-                            if ($this->calculation_values['PS'] > $this->calculation_values['PST1'])
+                            if (($this->calculation_values['hot_water_out'] - $this->calculation_values['T5']) < 0.0)
                             {
-                                // $this->calculation_values['Notes'] = "NOTES_FAIL_SDPRESS";
-                                $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_SPRESS'] . round(($this->calculation_values['PS'] + 0.05), 2) . " kg/sq.cm";
+                                $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_HW_OUTTEMP'];
                                 return false;
                             }
                             else
                             {
-                                if (($this->calculation_values['TCHW12'] >= 3.5 && $this->calculation_values['T1L'] < 0.5) || ($this->calculation_values['TCHW12'] < 3.5 && $this->calculation_values['T1L'] < (-3.999)))
+                                if ($this->calculation_values['LMTDHTG'] > ($this->calculation_values['LMTDGENA'] - 0.5))
                                 {
-                                    $this->calculation_values['Notes'] = $this->notes['NOTES_REF_TEMP'];
-                                    return false;
+                                    $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_HW_INOUT'];
+                                    return false; 
                                 }
                                 else
                                 {
-                                    if ($this->calculation_values['TON'] < ($this->calculation_values['MODEL1'] * 0.35))
+                                    if ($this->calculation_values['HTEMP']  == 1)
                                     {
-                                        $this->calculation_values['Notes'] = $this->notes['NOTES_CAPACITYLOW'];
-                                        return false;
+                                        $this->calculation_values['HTEMP'] = 0;
+                                        $this->calculation_values['Notes'] = $this->notes['NOTES_HW_VELO'];
+                                        return false; 
+                                    }
+                                    else
+                                    {
+                                        if ($this->calculation_values['VG'] > 3)
+                                        {
+                                            $this->calculation_values['Notes'] = $this->notes['NOTES_HW_VEL_HI'];
+                                            return false; 
+                                        }
+                                        else
+                                        {
+                                            if (($this->calculation_values['TCHW12'] >= 3.5 && $this->calculation_values['T1L'] < 0.5) || ($this->calculation_values['TCHW12'] < 3.5 && $this->calculation_values['T1L'] < (-3.999)))
+                                            {
+                                                $this->calculation_values['Notes'] = $this->notes['NOTES_REF_TEMP'];
+                                                return false;
+                                            }
+                                            else
+                                            {
+                                                if ($this->calculation_values['TON'] < ($this->calculation_values['MODEL1'] * 0.35))
+                                                {
+                                                    $this->calculation_values['Notes'] = $this->notes['NOTES_CAPACITYLOW'];
+                                                    return false;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -4707,7 +4208,7 @@ class DoubleH2SteamController extends Controller
                 // $this->calculation_values['Height'] = 2750;
                 // $this->calculation_values['ClearanceForTubeRemoval'] = 2650;
 
-               if($this->calculation_values['region_type'] == 2 )
+               if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                {
 
                 $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4735,7 +4236,7 @@ class DoubleH2SteamController extends Controller
                 // $this->calculation_values['PurgePumpMotorKW'] = 0.75;
                 // $this->calculation_values['PurgePumpMotorAmp'] = 1.8;
 
-                if($this->calculation_values['region_name'] == 'USA')
+                if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4763,7 +4264,7 @@ class DoubleH2SteamController extends Controller
                     $this->model_values['model_name'] = "TAC H2 C4";   
                 }
 
-               if($this->calculation_values['region_type'] == 2 )
+               if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                 {
 
                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4776,7 +4277,7 @@ class DoubleH2SteamController extends Controller
                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
-                if($this->calculation_values['region_name'] == 'USA')
+                if($this->calculation_values['region_type'] == 2 )
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4803,7 +4304,7 @@ class DoubleH2SteamController extends Controller
                     $this->model_values['model_name'] = "TAC H2 D1";
                 }
 
-               if($this->calculation_values['region_type'] == 2 )
+               if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                {
 
                 $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4816,7 +4317,7 @@ class DoubleH2SteamController extends Controller
                 $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
-                if($this->calculation_values['region_name'] == 'USA')
+                if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4842,7 +4343,7 @@ class DoubleH2SteamController extends Controller
                     $this->model_values['model_name'] = "TAC H2 D2";  
                 }
 
-               if($this->calculation_values['region_type'] == 2 )
+               if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                {
 
                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4855,7 +4356,7 @@ class DoubleH2SteamController extends Controller
                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
-                if($this->calculation_values['region_name'] == 'USA')
+                if($this->calculation_values['region_type'] == 2 )
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4880,7 +4381,7 @@ class DoubleH2SteamController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC H2 D3";
                 }
-                if($this->calculation_values['region_type'] == 2 )
+                if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                 {
 
                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4893,7 +4394,7 @@ class DoubleH2SteamController extends Controller
                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
-                if($this->calculation_values['region_name'] == 'USA')
+                if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4918,7 +4419,7 @@ class DoubleH2SteamController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC H2 D4";
                 }
-                if($this->calculation_values['region_type'] == 2 )
+                if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                 {
 
                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4931,7 +4432,7 @@ class DoubleH2SteamController extends Controller
                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
-                if($this->calculation_values['region_name'] == 'USA')
+                if($this->calculation_values['region_type'] == 2 )
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4957,7 +4458,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 E1";
                         
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -4970,7 +4471,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                   if($this->calculation_values['region_name'] == 'USA')
+                   if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4998,7 +4499,7 @@ class DoubleH2SteamController extends Controller
                         
                         $this->model_values['model_name'] = "TAC H2 E2";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5013,7 +4514,7 @@ class DoubleH2SteamController extends Controller
 
                   
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5040,7 +4541,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 E3";
                         
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5053,7 +4554,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5077,7 +4578,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 E4";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5090,7 +4591,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5115,7 +4616,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 E5";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5129,7 +4630,7 @@ class DoubleH2SteamController extends Controller
                     }
 
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5155,7 +4656,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 E6";
                     
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5169,7 +4670,7 @@ class DoubleH2SteamController extends Controller
                     }
 
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5196,7 +4697,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 F1";
                         
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5210,7 +4711,7 @@ class DoubleH2SteamController extends Controller
                     }
 
                   
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5235,7 +4736,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 F2"; 
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5250,7 +4751,7 @@ class DoubleH2SteamController extends Controller
 
                    
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5276,7 +4777,7 @@ class DoubleH2SteamController extends Controller
                        
                         $this->model_values['model_name'] = "TAC H2 F3";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5289,7 +4790,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5318,7 +4819,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 G1";
                         
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5332,7 +4833,7 @@ class DoubleH2SteamController extends Controller
                     }
 
                   
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5357,7 +4858,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 G2";
                         
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5370,7 +4871,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5397,7 +4898,7 @@ class DoubleH2SteamController extends Controller
                        
                         $this->model_values['model_name'] = "TAC H2 G3";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5411,7 +4912,7 @@ class DoubleH2SteamController extends Controller
                     }
 
                   
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5436,7 +4937,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 G4";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5450,7 +4951,7 @@ class DoubleH2SteamController extends Controller
                     }
 
 
-                   if($this->calculation_values['region_name'] == 'USA')
+                   if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5474,7 +4975,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 G5";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5488,7 +4989,7 @@ class DoubleH2SteamController extends Controller
                     }
 
                    
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5513,7 +5014,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 G6";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5526,7 +5027,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5552,7 +5053,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 H1";
                     }
 
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5565,7 +5066,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
                 
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5589,7 +5090,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 H2";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5602,7 +5103,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                   if($this->calculation_values['region_name'] == 'USA')
+                   if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5625,7 +5126,7 @@ class DoubleH2SteamController extends Controller
                     {
                         $this->model_values['model_name'] = "TAC H2 J1";
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5637,7 +5138,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
-                    if($this->calculation_values['region_name'] == 'USA')
+                    if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5663,7 +5164,7 @@ class DoubleH2SteamController extends Controller
                         $this->model_values['model_name'] = "TAC H2 J2";
                         
                     }
-                    if($this->calculation_values['region_type'] == 2 )
+                    if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3 )
                     {
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
@@ -5676,7 +5177,7 @@ class DoubleH2SteamController extends Controller
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
 
-                   if($this->calculation_values['region_name'] == 'USA')
+                   if($this->calculation_values['region_type'] == 2 )
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -5696,6 +5197,634 @@ class DoubleH2SteamController extends Controller
                 break;
         }
     }
+
+    public function wordFormat($user_report_id){
+        
+        $user_report = UserReport::find($user_report_id);
+
+        $unit_set = UnitSet::find($user_report->unit_set_id);
+
+        $units_data = $this->getUnitsData();
+
+
+
+        $calculation_values = json_decode($user_report->calculation_values,true);
+        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+        $evaporator_name = $evaporator_option->metallurgy->display_name;
+        $absorber_name = $absorber_option->metallurgy->display_name;
+        $condenser_name = $condenser_option->metallurgy->display_name;
+
+
+        $phpWord = new \PhpOffice\PhpWord\PhpWord();
+
+
+        $section = $phpWord->addSection();
+
+
+        $description = "Technical Specification : Vapour Absorption Chiller";
+
+        $section->addImage(asset('assets/images/pic.png'));
+        $section->addText($description);
+
+
+        $table_style = new \PhpOffice\PhpWord\Style\Table;
+        $table_style->setBorderColor('cccccc');
+        $table_style->setBorderSize(1);
+        $table_style->setUnit(\PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT);
+        $table_style->setWidth(100 * 50);
+
+        $header = array('size' => 10, 'bold' => true);
+        $header_table = $section->addTable($table_style);
+        $header_table->addRow();
+        $header_table->addCell(1750)->addText(htmlspecialchars("Client"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->name),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("Version"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("5.1.2.0"),$header);
+
+        $header_table->addRow();
+        $header_table->addCell(1750)->addText(htmlspecialchars("Enquiry"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->phone),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("Date"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($date),$header);
+
+        $header_table->addRow();
+        $header_table->addCell(1750)->addText(htmlspecialchars("Project"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($user_report->project),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars("Model"),$header);
+        $header_table->addCell(1750)->addText(htmlspecialchars($calculation_values['model_name']),$header);
+
+        $section->addTextBreak(1);
+
+        $description_table = $section->addTable($table_style);
+        $description_table->addRow();
+        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("Description"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("Unit"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $description_table->addRow();
+        $description_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars("Capacity(+/-3%)"),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
+        $description_table->addCell(1750)->addText(htmlspecialchars($calculation_values['TON']),$header);
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("A"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("CHILLED WATER CIRCUIT"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water flow"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->FlowRateUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['ChilledWaterFlow'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water inlet temperature"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TCHW11'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water outlet temperature"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['TCHW12'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Evaporate passes"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "No" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['EvaporatorPasses'] ));
+
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water circuit pressure loss"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->PressureDropUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['ChilledFrictionLoss'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water Connection diameter"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->NozzleDiameterUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['ChilledConnectionDiameter'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Glycol type"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
+        if($calculation_values['GL'] == 1)
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "NA" ));
+        else if($calculation_values['GL'] == 2)
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Ethylene" ));
+        else
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Proplylene" ));
+
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("8."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water glycol %"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(" %"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CHGLY'],1) ));
+       
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("9."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water fouling factor"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
+        if($calculation_values['TUU'] == "standard")
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['TUU'] ));
+        else
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['FFCHW1'] ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("10."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Maximum working pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WorkPressureUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['m_maxCHWWorkPressure']) ));
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("B"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("COOLING WATER CIRCUIT"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water flow"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FlowRateUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['GCW'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water inlet temperature"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['TCW11'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water outlet temperature"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CoolingWaterOutTemperature'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorber / Condenser passes"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "No" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['AbsorberPasses']."/".$calculation_values['CondenserPasses'] ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water Bypass Flow"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FlowRateUnit] ));
+        if(empty($calculation_values['BypassFlow']))
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "-" ));
+        else
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['BypassFlow'],1) ));
+
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water circuit pressure loss"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->PressureDropUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CoolingFrictionLoss'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water Connection diameter"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->NozzleDiameterUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['CoolingConnectionDiameter'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("8."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Glycol type"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
+        if($calculation_values['GL'] == 1)
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "NA" ));
+        else if($calculation_values['GL'] == 2)
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Ethylene" ));
+        else
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( "Proplylene" ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("9."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Cooling water glycol %"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "%" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['COGLY'],1) ));
+
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("10."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Chilled water fouling factor"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
+        if($calculation_values['TUU'] == "standard")
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['TUU'] ));
+        else
+            $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['FFCOW1'] ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("11."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Maximum working pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WorkPressureUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['m_maxCOWWorkPressure']) ));
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("C"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam Circuit"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['PST1'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam Consumption(+/-3%)"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->SteamConsumptionUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamConsumption'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condensate drain temperature"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(ceil($calculation_values['m_dMinCondensateDrainTemperature']) ." - ".ceil($calculation_values['m_dMaxCondensateDrainTemperature']) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condensate drain pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['m_dCondensateDrainPressure'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Connection - Inlet diameter"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamConnectionDiameter'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Connection - Drain diameter"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamDrainDiameter'],1)));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Design Pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['m_DesignPressure'],1)));
+
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("D"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Electrical Data"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Power supply"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $calculation_values['PowerSupply'] ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Power consumption"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kVA" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['TotalPowerConsumption'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorbent pump rating"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],2)." )" ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Refrigerant pump rating"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],2)." )" ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Vacuum pump rating"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( "kW (A)" ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],2) ."( ". round($calculation_values['PurgePumpMotorAmp'],2)." )" ));
+
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("E"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Physical Data"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Length"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['Length']) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Width"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['Width']) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Height"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( ceil($calculation_values['Height']) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Operating weight"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['OperatingWeight'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Shipping weight"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['MaxShippingWeight'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Flooded weight"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['FloodedWeight'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Dry weight"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->WeightUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['DryWeight'],1) ));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("8."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Tube cleaning space (any one side length-wise)"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( $units_data[$unit_set->LengthUnit] ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars( round($calculation_values['ClearanceForTubeRemoval'],1) ));
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("F"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Tube Metallurgy"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Evaporator tube material"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($evaporator_name));
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorber tube material"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($absorber_name));
+
+
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condenser tube material"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($condenser_name));
+
+        if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true'){
+            $chilled_table->addRow();
+            $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars("Evaporator tube thickness"));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TU3'],1)));
+
+            $chilled_table->addRow();
+            $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars("Absorber tube thickness"));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TU6'],1)));
+
+            $chilled_table->addRow();
+            $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars("Condenser tube thickness"));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
+            $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['TV6'],1)));
+        }
+
+        $section->addTextBreak(1);
+
+        $chilled_table = $section->addTable($table_style);
+        $chilled_table->addRow();
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("G"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Heat exchanger Type"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($calculation_values['HHType']),$header);
+        
+        $section->addTextBreak(1);
+
+        foreach ($calculation_values['notes'] as $key => $note) {
+            $section->addText(($key + 1).". ".$note);
+        }
+
+        $file_name = "s2-".Auth::user()->id.".docx";
+        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
+        try {
+            $objWriter->save(storage_path($file_name));
+        } catch (Exception $e) {
+            Log::info($e);
+        }
+
+    }
+
+
+    public function getFormValues($model_number){
+
+        $model_number = (int)$model_number;
+        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_number)->first();
+
+        $calculation_values = $chiller_calculation_values->calculation_values;
+        $calculation_values = json_decode($calculation_values,true);
+
+        $form_values = array_only($calculation_values, ['capacity',
+            'model_name',
+            'model_number',
+            'glycol_none',
+            'fouling_factor',
+            'glycol_selected',
+            'chilled_water_in',
+            'cooling_water_in',
+            'fouling_ari_chilled',
+            'fouling_ari_cooling',
+            'chilled_water_out',
+            'cooling_water_flow',
+            'fouling_non_chilled',
+            'fouling_non_cooling',
+            'metallurgy_standard',
+            'cooling_water_ranges',
+            'glycol_chilled_water',
+            'glycol_cooling_water',
+            'min_chilled_water_out',
+            'glycol_max_chilled_water',
+            'glycol_max_cooling_water',
+            'glycol_min_chilled_water',
+            'glycol_min_cooling_water',
+            'hot_water_in',
+            'hot_water_out',
+            'all_work_pr_hw',
+            'min_hot_water_in',
+            'max_hot_water_in',
+            'min_hot_water_out',
+            'cooling_water_in_max_range',
+            'cooling_water_in_min_range',
+            'USA_capacity',
+            'USA_chilled_water_in',
+            'USA_chilled_water_out',
+            'USA_cooling_water_in',
+            'USA_cooling_water_flow']);
+
+        return $form_values;
+    }
+
+
+    public function getCalculationValues($model_number){
+
+        $model_number = (int)$model_number;
+        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_number)->first();
+
+        $calculation_values = $chiller_calculation_values->calculation_values;
+        $calculation_values = json_decode($calculation_values,true);
+
+        $calculation_values = array_only($calculation_values, ['LE',
+            'AHR',
+            'ODA',
+            'PNB',
+            'SHA',
+            'SHE',
+            'SL1',
+            'SL2',
+            'SL3',
+            'SL3',
+            'SL4',
+            'SL5',
+            'SL6',
+            'SL7',
+            'SL8',
+            'TNC',
+            'UHR',
+            'AABS',
+            'ACON',
+            'ADHE',
+            'AEVA',
+            'AHTG',
+            'ALTG',
+            'AT13',
+            'KABS',
+            'KCON',
+            'KEVA',
+            'PNB1',
+            'PNB2',
+            'PSL2',
+            'PSLI',
+            'PSLO',
+            'TCWA',
+            'TNAA',
+            'TNEV',
+            'UDHE',
+            'UHTG',
+            'ULTG',
+            'AHTHE',
+            'ALTHE',
+            'UHTHE',
+            'ULTHE',
+            'MODEL1',
+            'VEMIN1',
+            'TEPMAX',
+            'm_maxCHWWorkPressure',
+            'm_maxCOWWorkPressure',
+            'm_maxHWWorkPressure',
+            'm_maxSteamWorkPressure',
+            'm_maxSteamDesignPressure',
+            'm_DesignPressure',
+            'm_maxHWDesignPressure',
+            'm_dCondensateDrainPressure',
+            'm_dMinCondensateDrainTemperature',
+            'm_dMaxCondensateDrainTemperature',
+            'ChilledConnectionDiameter',
+            'CoolingConnectionDiameter',
+            'SteamConnectionDiameter',
+            'SteamDrainDiameter',
+            'Length',
+            'Width',
+            'Height',
+            'ClearanceForTubeRemoval',
+            'DryWeight',
+            'MaxShippingWeight',
+            'OperatingWeight',
+            'FloodedWeight',
+            'AbsorbentPumpMotorKW',
+            'AbsorbentPumpMotorAmp',
+            'RefrigerantPumpMotorKW',
+            'RefrigerantPumpMotorAmp',
+            'PurgePumpMotorKW',
+            'PurgePumpMotorAmp',
+            'A_SFACTOR',
+            'B_SFACTOR',
+            'A_AT13',
+            'B_AT13',
+            'ALTHE_F',
+            'AHTHE_F',
+            'AHR_F',
+            'EX_AT13',
+            'EX_KEVA',
+            'EX_KABS',
+            'EX_DryWeight',
+            'USA_AbsorbentPumpMotorAmp',
+            'USA_RefrigerantPumpMotorAmp',
+            'USA_AbsorbentPumpMotorKW',
+            'USA_RefrigerantPumpMotorKW',
+            'USA_PurgePumpMotorAmp',
+            'USA_PurgePumpMotorKW',
+            'MCA',
+            'MOP',
+            'ODC'
+
+        ]);
+
+        return $calculation_values;
+    }
+
+
 
     // public function PR_DROP_DATA()
     // {
@@ -5961,6 +6090,5 @@ class DoubleH2SteamController extends Controller
 
 
     // }
-
-
+    
 }
