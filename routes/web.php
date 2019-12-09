@@ -75,6 +75,9 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/calculators/double-effect-h2', 'DoubleH2SteamController@getDoubleEffectH2')->name('calculators/double-effect-h2');
 	Route::post('/calculators/double-effect-h2', 'DoubleH2SteamController@calculateDoubleEffectH2');
 	Route::post('/calculators/double-effect-h2/ajax-calculate', 'DoubleH2SteamController@postAjaxDoubleEffectH2');
+
+	Route::post('/calculators/double-effect-h2/ajax-calculate-region', 'DoubleH2SteamController@postAjaxDoubleEffectH2Region');
+
 	Route::post('/calculators/double-effect-h2/submit-calculate', 'DoubleH2SteamController@postDoubleEffectH2');
 	Route::post('/calculators/double-effect-h2/reset-calculate', 'DoubleH2SteamController@postResetDoubleEffectH2');
 	//report

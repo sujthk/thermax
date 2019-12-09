@@ -63,7 +63,7 @@ class DefaultCalculatorController extends Controller
 
     public function getMetallurgyCalculators(){
 
-    	$metallurgy_calculators = ChillerMetallurgyOption::get();
+    	$metallurgy_calculators = ChillerMetallurgyOption::orderBy('created_at', 'desc')->get();
 
 
     	return view('metallurgy_calculators')->with('metallurgy_calculators',$metallurgy_calculators);
