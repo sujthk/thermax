@@ -144,7 +144,6 @@
  											<label>({{ $units_data[$unit_set->CapacityUnit] }})</label>
  										</div>
  									</div>
-
  								</div>
  								<div class="card-header">
  									<h5>Chilled Water</h5>
@@ -670,14 +669,29 @@
  										<td> <span id="cooling_pressure_loss_span"></span> </td>
  									</tr>
  									<tr>     
- 										<td> Steam pressure </td>
+ 										<td> Hot water flow </td>
  										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
- 										<td> <span id="steam_pressure_span"></span> </td>
+ 										<td><span id="hot_water_flow_span"></span></td>
  									</tr>
  									<tr>     
- 										<td> Steam consumption </td>
- 										<td> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
- 										<td> <span id="steam_consumption_span"></span> </td>
+ 										<td> Hot water inlet temperature</td>
+ 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+ 										<td> <span id="hw_inlet_span"></span> </td>
+ 									</tr>
+ 									<tr>     
+ 										<td> Hot water outlet temperature</td>
+ 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+ 										<td> <span id="hw_outlet_span"></span> </td>
+ 									</tr>
+ 									<tr>     
+ 										<td>Generator passes</td>
+ 										<td> </td>
+ 										<td> <span id="generator_passes_span"></span> </td>
+ 									</tr>
+ 									<tr>     
+ 										<td>Hot water circuit pressure loss</td>
+ 										<td> </td>
+ 										<td> <span id="hw_circuit_pressure_span"></span> </td>
  									</tr>
  								</tbody>
  							</table>
@@ -916,7 +930,7 @@
 		  		$("#glycol_chilled_water").prop('disabled', false);
 		  		$("#glycol_cooling_water").prop('disabled', false);
 		  	}
-		  });
+		});
 
 		$('input:radio[name="tube_metallurgy"]').change(function() {
 			if ($(this).val() == 'standard') {
@@ -1454,13 +1468,21 @@
 	  						$('#chilled_pressure_loss_span').html((calculation_values.ChilledFrictionLoss).toFixed(2));
 	  						$('#cooling_water_flow_span').html(calculation_values.GCW);
 	  						$('#cooling_water_inlet_span').html(calculation_values.TCW11);
-	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature);
+	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature.toFixed(2));
 
 	  						var absorber_condenser_pass = calculation_values.AbsorberPasses+"/"+calculation_values.CondenserPasses
 	  						$('#absorber_pass').html(absorber_condenser_pass);
+	  						
 	  						$('#cooling_pressure_loss_span').html((calculation_values.CoolingFrictionLoss).toFixed(2));
-	  						$('#steam_pressure_span').html(calculation_values.PST1);
-	  						$('#steam_consumption_span').html((calculation_values.SteamConsumption).toFixed(2));
+	  						$('#hot_water_flow_span').html((calculation_values.HotWaterFlow).toFixed(2));
+
+	  						$('#hw_inlet_span').html((calculation_values.hot_water_in));
+	  						$('#hw_outlet_span').html((calculation_values.hot_water_out));
+
+	  						$('#generator_passes_span').html((calculation_values.GeneratorPasses));
+	  						$('#hw_circuit_pressure_span').html((calculation_values.HotWaterFrictionLoss).toFixed(2));
+	  						
+	  						
 	  						$('#result_span').html(calculation_values.Result);
 
 

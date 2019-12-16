@@ -91,7 +91,7 @@ class DoubleH2SteamController extends Controller
         $model_values = $request->input('values');
         $changed_value = $request->input('changed_value');
 
-    // update user values with model values
+        // update user values with model values
 
         $unit_conversions = new UnitConversionController;
         if(!empty($changed_value)){
@@ -107,7 +107,7 @@ class DoubleH2SteamController extends Controller
 
         if(!$attribute_validator['status'])
             return response()->json(['status'=>false,'msg'=>$attribute_validator['msg']]);
-        ;
+        
         $this->updateInputs();
         $this->loadSpecSheetData();
 
@@ -139,6 +139,7 @@ class DoubleH2SteamController extends Controller
         }                                   
 
         $this->model_values = $converted_values;
+//log::info($this->model_values);
         $this->castToBoolean();
 
         $this->updateInputs();
@@ -152,6 +153,7 @@ class DoubleH2SteamController extends Controller
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
+         //Log::info(print_r($this->calculation_values,true));
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
@@ -174,6 +176,8 @@ class DoubleH2SteamController extends Controller
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values);
 
+
+        log::info($calculated_values);
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
     }
     public function postAjaxDoubleEffectH2Region(Request $request){
@@ -329,7 +333,7 @@ class DoubleH2SteamController extends Controller
         $units_data = $this->getUnitsData();
 
 //Log::info($calculation_values);
-        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data])->render();
+        $view = view("report_h2", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data])->render();
 
         return response()->json(['report'=>$view]);
 
@@ -353,7 +357,7 @@ class DoubleH2SteamController extends Controller
         $user_report->calculation_values = json_encode($calculation_values);
         $user_report->save();
 
-        $redirect_url = route('download.report', ['user_report_id' => $user_report->id,'type' => $report_type]);
+        $redirect_url = route('download.report_h2', ['user_report_id' => $user_report->id,'type' => $report_type]);
 
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','redirect_url'=>$redirect_url]);
 
@@ -397,8 +401,8 @@ class DoubleH2SteamController extends Controller
 
         $units_data = $this->getUnitsData();
 
-        $pdf = PDF::loadView('report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data]);
-        return $pdf->download('s2.pdf');
+        $pdf = PDF::loadView('report_pdf_h2', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data]);
+        return $pdf->download('H2.pdf');
 
     }
 
@@ -566,17 +570,17 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['ULTHE'] = 450; 
         $this->calculation_values['UHTHE'] = 1400; 
         $this->calculation_values['UDHE'] = 400; 
-        $this->calculation_values['UHR'] = 700;      
+        //$this->calculation_values['UHR'] = 700;      
 
         if ($this->calculation_values['MODEL'] < 1200)
         {
             $this->calculation_values['ULTG'] = 1850;
-            $this->calculation_values['UHTG'] = 1750;
+            $this->calculation_values['UHTG'] = 1500;
         }
         else
         {
             $this->calculation_values['ULTG'] = 1790; 
-            $this->calculation_values['UHTG'] = 1625;
+            $this->calculation_values['UHTG'] = 1500;
         }
 
         if ($this->calculation_values['MODEL'] < 1200)
@@ -599,6 +603,7 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['ODA'] = 0.019;
             $this->calculation_values['ODC'] = 0.019;
         }
+
         /******** DETERMINATION OF KEVA FOR NON STD.SELECTION*****/
         if ($this->calculation_values['MODEL'] < 750)
         {
@@ -773,19 +778,6 @@ class DoubleH2SteamController extends Controller
 
             case "CHILLED_WATER_OUT":
             // STEAMPRESSURE
-            if (floatval($this->model_values['chilled_water_out']) < 3.5)
-            {
-                $this->model_values['steam_pressure_min_range'] = 6;
-            }
-            else if (floatval($this->model_values['chilled_water_out']) <= 4.5 && floatval($this->model_values['chilled_water_out']) >= 3.5)
-            {
-                $this->model_values['steam_pressure_min_range'] = 5;
-            }
-            else
-            {
-                $this->model_values['steam_pressure_min_range'] = 3.5;
-            }
-
             // Validation
             if (floatval($this->model_values['chilled_water_out']) < floatval($this->model_values['min_chilled_water_out']))
             {
@@ -805,7 +797,6 @@ class DoubleH2SteamController extends Controller
             if(!$range_calculation['status']){
                 return array('status'=>false,'msg'=>$range_calculation['msg']);
             }
-
             break;  
 
             case "EVAPORATOR_TUBE_TYPE":
@@ -1494,6 +1485,7 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TP']));
         $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
 
+
         if ($this->calculation_values['TAP'] == 3)
         {
             $this->calculation_values['TAPH'] = 1;
@@ -1576,6 +1568,7 @@ class DoubleH2SteamController extends Controller
 
         if ($this->calculation_values['TUU'] != 'ari')
         {
+            
             $this->EVAPORATOR();
             $this->HTG();    
         }
@@ -1727,7 +1720,7 @@ class DoubleH2SteamController extends Controller
     public function EVAPORATOR()
     {
 
-        $this->calculation_values['i'] = 0; $this->calculation_values['q'] = 0; $this->calculation_values['r'] = 0;
+        $this->calculation_values['q'] = 0; $this->calculation_values['r'] = 0;
         $ATCHW2H;
 
         $this->calculation_values['LMTDEVA'] = ($this->calculation_values['TON'] * 3024) / ($this->calculation_values['AEVA'] * $this->calculation_values['UEVA']);
@@ -1809,7 +1802,7 @@ class DoubleH2SteamController extends Controller
                 }
                 else
                 {
-                    $tchw2h[$p] = $tchw2h[$p - 1] + $err1[$p - 1] * ($tchw2h[$p - 1] - $tchw2h[$p - 2]) / ($err1[$p - 2] - $err1[$p - 1]) / 4;
+                    $tchw2h[$p] = $tchw2h[$p - 1] + $err1[$p - 1] * ($tchw2h[$p - 1] - $tchw2h[$p - 2]) / ($err1[$p - 2] - $err1[$p - 1]) / 2;
                 }
             }
             $this->calculation_values['TCHW2H'] = $tchw2h[$p];
@@ -1853,10 +1846,10 @@ class DoubleH2SteamController extends Controller
         {
             $this->calculation_values['T2'] = $this->calculation_values['ATCW2'] + 2.5;
         }
-        // else
-        // {
-        //     $this->calculation_values['T2'] = $this->calculation_values['T2'];
-        // }
+        else
+        {
+            $this->calculation_values['T2'] = $this->calculation_values['T2'];
+        }
 
         $this->calculation_values['q'] = 1;
         $ferr2[0] = 1;
@@ -2052,6 +2045,10 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['QCWABSH'] = $this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2H'] + $this->calculation_values['COGLY_SPHT1H']) * 0.5 * ($this->calculation_values['TCW2H'] - $this->calculation_values['TCW1H']) / 4187;
             $this->calculation_values['LMTDABSH'] = (($this->calculation_values['T6H'] - $this->calculation_values['TCW2H']) - ($this->calculation_values['T2'] - $this->calculation_values['TCW1H'])) / log(($this->calculation_values['T6H'] - $this->calculation_values['TCW2H']) / ($this->calculation_values['T2'] - $this->calculation_values['TCW1H']));
             $this->calculation_values['QLMTDABSH'] = $this->calculation_values['UABSH'] * $this->calculation_values['AABSH'] * $this->calculation_values['LMTDABSH'];
+
+            
+
+
             $ferr4[$s] = ($this->calculation_values['QCWABSH'] - $this->calculation_values['QLMTDABSH']) * 100 / $this->calculation_values['QCWABSH'];
             $s++;
         }
@@ -2101,6 +2098,9 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['QCWABSL'] = $this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2L'] + $this->calculation_values['COGLY_SPHT1L']) * 0.5 * ($this->calculation_values['TCW2L'] - $this->calculation_values['TCW1L']) / 4187;
             $this->calculation_values['LMTDABSL'] = (($this->calculation_values['T6'] - $this->calculation_values['TCW2L']) - ($this->calculation_values['T2L'] - $this->calculation_values['TCW1L'])) / log(($this->calculation_values['T6'] - $this->calculation_values['TCW2L']) / ($this->calculation_values['T2L'] - $this->calculation_values['TCW1L']));
             $this->calculation_values['QLMTDABSL'] = $this->calculation_values['UABSL'] * $this->calculation_values['AABSL'] * $this->calculation_values['LMTDABSL'];
+
+
+
             $ferr5[$m] = ($this->calculation_values['QCWABSL'] - $this->calculation_values['QLMTDABSL']) * 100 / $this->calculation_values['QCWABSL'];
             $m++;
         }
@@ -2151,6 +2151,9 @@ class DoubleH2SteamController extends Controller
 
             $this->calculation_values['LMTDCON'] = (($this->calculation_values['T3'] - $this->calculation_values['TCW3']) - ($this->calculation_values['T3'] - $this->calculation_values['TCW4'])) / log(($this->calculation_values['T3'] - $this->calculation_values['TCW3']) / ($this->calculation_values['T3'] - $this->calculation_values['TCW4']));
             $this->calculation_values['QLMTDCON'] = $this->calculation_values['UCON'] * $this->calculation_values['ACON'] * $this->calculation_values['LMTDCON'];
+
+            
+
             $this->calculation_values['QCON'] = $this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT4'] + $this->calculation_values['COGLY_SPHT3']) * 0.5 * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW3']) / 4187;
             $ferr6[$b] = ($this->calculation_values['QLMTDCON'] - $this->calculation_values['QCON']) * 100 / $this->calculation_values['QLMTDCON'];
             $b++;
@@ -2188,12 +2191,13 @@ class DoubleH2SteamController extends Controller
             }
 
             $this->calculation_values['T22'] = $t22[$c];
+
+            //Log::info("T22 =".$this->calculation_values['T22']);
+            
             $this->calculation_values['I22'] = $this->calculation_values['T22'] + 100;
    
             $this->calculation_values['GREF1'] = ($this->calculation_values['QCON'] - $this->calculation_values['GREF'] * ($this->calculation_values['J9'] - $this->calculation_values['I3'])) / ($this->calculation_values['I22'] - $this->calculation_values['J9']);
             
-            //Log::info("GREF1 =".$this->calculation_values['GREF1']);
-
 
             $this->calculation_values['GREF2'] = $this->calculation_values['GREF'] - $this->calculation_values['GREF1'];
             $this->calculation_values['GMED'] = $this->calculation_values['GDIL'] - $this->calculation_values['GREF1'];
@@ -2284,12 +2288,18 @@ class DoubleH2SteamController extends Controller
             }
 
             $this->calculation_values['T8'] = $t8[$h];
+
             $this->calculation_values['I8'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T8'], $this->calculation_values['XCONC']);
+            
             $this->calculation_values['QLIBRLTHE'] = $this->calculation_values['GCONC'] * ($this->calculation_values['I9'] - $this->calculation_values['I8']);
+
             $this->calculation_values['I11'] = ($this->calculation_values['QLIBRLTHE'] / $this->calculation_values['GDIL1']) + $this->calculation_values['I2'];
             $this->calculation_values['T11'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I11']);
+
             $this->calculation_values['LMTDLTHE'] = (($this->calculation_values['T9'] - $this->calculation_values['T11']) - ($this->calculation_values['T8'] - $this->calculation_values['T2'])) / log(($this->calculation_values['T9'] - $this->calculation_values['T11']) / ($this->calculation_values['T8'] - $this->calculation_values['T2']));
             $this->calculation_values['QLMTDLTHE'] = $this->calculation_values['ULTHE'] * $this->calculation_values['ALTHE'] * $this->calculation_values['LMTDLTHE'];
+
+
             $ferr9[$h] = ($this->calculation_values['QLMTDLTHE'] - $this->calculation_values['QLIBRLTHE']) * 100 / $this->calculation_values['QLMTDLTHE'];
 
             $h++;
@@ -2302,7 +2312,8 @@ class DoubleH2SteamController extends Controller
         $vam_base = new VamBaseController();
 
         $this->calculation_values['I14'] = ($this->calculation_values['GDIL2'] * $this->calculation_values['I21'] + $this->calculation_values['GDIL1'] *$this->calculation_values['I11'] ) /$this->calculation_values['GDIL'] ;
-        $this->calculation_values['I14'] =$vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I14']);
+
+        $this->calculation_values['T14'] =$vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I14']);
 
         $ferr10 = array();
         $t7 = array();
@@ -2328,15 +2339,19 @@ class DoubleH2SteamController extends Controller
 
             $this->calculation_values['T7'] = $t7[$ht];
             $this->calculation_values['I7'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T7'], $this->calculation_values['XDIL']);
-            $this->calculation_values['QLIBRHTHE'] = $this->calculation_values['GDIL1'] * ($this->calculation_values['I7'] - $this->calculation_values['I14']);
+            
+            $this->calculation_values['QLIBRHTHE'] = $this->calculation_values['GDIL'] * ($this->calculation_values['I7'] - $this->calculation_values['I14']);
+
             $this->calculation_values['I4'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T4'], $this->calculation_values['XMED']);
-
-
 
             $this->calculation_values['I10'] = $this->calculation_values['I4'] - ($this->calculation_values['QLIBRHTHE'] / $this->calculation_values['GMED']);
             $this->calculation_values['T10'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XMED'], $this->calculation_values['I10']);
-            $this->calculation_values['LMTDHTHE'] = (($this->calculation_values['T4'] - $this->calculation_values['T7']) - ($this->calculation_values['T10'] - $this->calculation_values['T11'])) / log(($this->calculation_values['T4'] - $this->calculation_values['T7']) / ($this->calculation_values['T10'] - $this->calculation_values['T11']));
+
+            $this->calculation_values['LMTDHTHE'] = (($this->calculation_values['T4'] - $this->calculation_values['T7']) - ($this->calculation_values['T10'] - $this->calculation_values['T14'])) / log(($this->calculation_values['T4'] - $this->calculation_values['T7']) / ($this->calculation_values['T10'] - $this->calculation_values['T14']));
+
             $this->calculation_values['QLMTDHTHE'] = $this->calculation_values['UHTHE'] * $this->calculation_values['AHTHE'] * $this->calculation_values['LMTDHTHE'];
+
+
             $ferr10[$ht] = ($this->calculation_values['QLIBRHTHE'] - $this->calculation_values['QLMTDHTHE']) * 100 / $this->calculation_values['QLIBRHTHE'];
             $ht++;
 
@@ -2353,7 +2368,7 @@ class DoubleH2SteamController extends Controller
 
         $this->calculation_values['QHTG']= $this->calculation_values['GMED'] * $this->calculation_values['I4'] + $this->calculation_values['GREF1'] * $this->calculation_values['J4'] - $this->calculation_values['GDIL'] * $this->calculation_values['I7'];
     
-        Log::info("GREF1 =".$this->calculation_values['GREF1']);
+        //Log::info("GREF1 =".$this->calculation_values['GREF1']);
      
         $this->calculation_values['T5'] = $vam_base2->LIBR_TEMP($this->calculation_values['P4'],$this->calculation_values['XDIL']);
 
@@ -2363,7 +2378,8 @@ class DoubleH2SteamController extends Controller
 
         $this->calculation_values['GHOT']  = $this->calculation_values['QHTG'] / (($this->calculation_values['CPH2'] +  $this->calculation_values['CPH3']) * 0.5 * ($this->calculation_values['hot_water_in'] - $this->calculation_values['hot_water_out']) * $this->calculation_values['ROWH']);
 
-        if ($this->calculation_values['TCHW12'] < 5)
+
+        if($this->calculation_values['TCHW12'] < 5)
         {
             $SFACTOR1 = 1.0738 - 0.0068 * $this->calculation_values['TCHW12'];
         }
@@ -2372,92 +2388,97 @@ class DoubleH2SteamController extends Controller
             $SFACTOR1 = 1.0;
         }
 
-    $SFACTOR2 = 1.005; //CP DENSITY CORRECTION
+        $SFACTOR2 = 1.005; //CP DENSITY CORRECTION
 
-    if ($this->calculation_values['DT'] < 14.999)
-    {
-        $SFACTOR3 = 1.0;
-    }
-    else
-    {
-        $SFACTOR3 = (0.0006667 * $this->calculation_values['DT']) + 1.01;
-    }
-
-    $this->calculation_values['GHOT'] = $this->calculation_values['GHOT'] * $this->calculation_values['SFACTOR'] * $SFACTOR1 * $SFACTOR2 * $SFACTOR3;
-
-
-    $this->calculation_values['TGPMAX'] = 0;
-
-    if ($this->calculation_values['MODEL'] < 275)//RESTRICTION IN PASSES DUE TO LOWER TUBE NO IN HTG AS COMM BY DETAILING
-    $this->calculation_values['TGPMAX'] = 4;
-    else
-        $this->calculation_values['TGPMAX'] = 4;
-
-    $this->calculation_values['TGP'] = 0;
-
-    do
-    {
-        $this->calculation_values['TGP'] = $this->calculation_values['TGP'] + 1;
-        $this->calculation_values['VG']  = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
-
-        if ($this->calculation_values['TGP'] > 4)
+        if ($this->calculation_values['DT'] < 14.999)
         {
-            $this->calculation_values['TGP'] = 4;
-            $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
-            break;
+            $SFACTOR3 = 1.0;
         }
-    } while ($this->calculation_values['VG'] < 1.3);
+        else
+        {
+            $SFACTOR3 = (0.0006667 * $this->calculation_values['DT']) + 1.01;
+        }
 
-    $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 *$this->calculation_values['IDG']  * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
-
-    if ($this->calculation_values['VG'] < 1.3)
-    {
-        $this->calculation_values['HWI'] = 2;
-    }
-    if ($this->calculation_values['VG'] < 0.8)
-    {
-        $this->calculation_values['UHTG'] = $this->calculation_values['UHTG'] * (1 - ((0.8 - $this->calculation_values['VG']) * 0.5));
-    }
-    if ($this->calculation_values['VG'] < 0.4)
-    {
-        $this->calculation_values['HTEMP'] = 1;
-    }
-    $this->calculation_values['LMTDHTG'] =$this->calculation_values['QHTG']  / ($this->calculation_values['AHTG'] * $this->calculation_values['UHTG']);
-
-    $this->calculation_values['KM2'] = (0.00333 *$this->calculation_values['hot_water_in']) + 0.4;
-    $this->calculation_values['LMTDHTG'] = $this->calculation_values['LMTDHTG'] / $this->calculation_values['KM2'];
-
-    $this->calculation_values['R1'] = ($this->calculation_values['T5'] - $this->calculation_values['T4']) / ($this->calculation_values['hot_water_out'] - $this->calculation_values['hot_water_in'] );
-    $this->calculation_values['S1']  = ($this->calculation_values['hot_water_out'] - $this->calculation_values['hot_water_in'] ) / ($this->calculation_values['T5'] - $this->calculation_values['hot_water_in'] );
-    $this->calculation_values['FR11']  = sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1.0) * log((1 - $this->calculation_values['S1']) / (1 - $this->calculation_values['R1'] * $this->calculation_values['S1']));
-    $this->calculation_values['FR12']  = ($this->calculation_values['R1'] - 1) * log((2 - ($this->calculation_values['S1'] * ($this->calculation_values['R1'] + 1 - sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1)))) / (2 - ($this->calculation_values['S1'] * ($this->calculation_values['R1'] + 1 + sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1)))));
-    $this->calculation_values['FR13']  = $this->calculation_values['FR11'] /  $this->calculation_values['FR12'];
-    $this->calculation_values['BETA6']  = log(($this->calculation_values['hot_water_in']  -$this->calculation_values['T4']) / ($this->calculation_values['hot_water_out'] - $this->calculation_values['T5']));
-    $this->calculation_values['LMTDGENA']  = ((($this->calculation_values['hot_water_in'] -  $this->calculation_values['T4']) - ($this->calculation_values['hot_water_out'] - $this->calculation_values['T5'])) / $this->calculation_values['BETA6']) * $this->calculation_values['FR13'];          
-
-    //PRESSURE_DROP();
-
-    // PRESSURE_DROP();
+        $this->calculation_values['GHOT'] = $this->calculation_values['GHOT'] * $this->calculation_values['SFACTOR'] * $SFACTOR1 * $SFACTOR2 * $SFACTOR3;
+       
 
 
-    $vam_base = new VamBaseController();
+        $this->calculation_values['TGPMAX'] = 0;
 
-    $pid_ft1 = $vam_base->PIPE_ID($this->calculation_values['PNB1']);
-    $this->calculation_values['PIDE1'] = $pid_ft1['PID'];
-    $this->calculation_values['FT1'] = $pid_ft1['FT'];
+        if ($this->calculation_values['MODEL'] < 275)//RESTRICTION IN PASSES DUE TO LOWER TUBE NO IN HTG AS COMM BY DETAILING
+        $this->calculation_values['TGPMAX'] = 4;
+        else
+            $this->calculation_values['TGPMAX'] = 4;
 
-    $pid_ft2 = $vam_base->PIPE_ID($this->calculation_values['PNB2']);
-    $this->calculation_values['PIDE2'] = $pid_ft2['PID'];
-    $this->calculation_values['FT2'] = $pid_ft2['FT'];
+        $this->calculation_values['TGP'] = 0;
 
-    $pid_ft = $vam_base->PIPE_ID($this->calculation_values['PNB']);
-    $this->calculation_values['PIDA'] = $pid_ft['PID'];
-    $this->calculation_values['FT'] = $pid_ft['FT'];
+        do
+        {
+            $this->calculation_values['TGP'] = $this->calculation_values['TGP'] + 1;
+            $this->calculation_values['VG']  = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
 
-    $this->PR_DROP_CHILL();
+            if ($this->calculation_values['TGP'] > 4)
+            {
+                $this->calculation_values['TGP'] = 4;
+                $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
+                break;
+            }
+        } while ($this->calculation_values['VG'] < 1.3);
 
-    $this->PR_DROP_COW();
-    $this->PR_DROP_HW();
+        $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 *$this->calculation_values['IDG']  * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
+
+        if ($this->calculation_values['VG'] < 1.3)
+        {
+            $this->calculation_values['HWI'] = 2;
+        }
+        if ($this->calculation_values['VG'] < 0.8)
+        {
+            
+            $this->calculation_values['UHTG'] = $this->calculation_values['UHTG'] * (1 - ((0.8 - $this->calculation_values['VG']) * 0.5));
+        }
+        if ($this->calculation_values['VG'] < 0.4)
+        {
+            $this->calculation_values['HTEMP'] = 1;
+        }
+        $this->calculation_values['LMTDHTG'] =$this->calculation_values['QHTG']  / ($this->calculation_values['AHTG'] * $this->calculation_values['UHTG']);
+
+        
+
+        $this->calculation_values['KM2'] = (0.00333 *$this->calculation_values['hot_water_in']) + 0.4;
+        $this->calculation_values['LMTDHTG'] = $this->calculation_values['LMTDHTG'] / $this->calculation_values['KM2'];
+
+
+        $this->calculation_values['R1'] = ($this->calculation_values['T5'] - $this->calculation_values['T4']) / ($this->calculation_values['hot_water_out'] - $this->calculation_values['hot_water_in'] );
+        $this->calculation_values['S1']  = ($this->calculation_values['hot_water_out'] - $this->calculation_values['hot_water_in'] ) / ($this->calculation_values['T5'] - $this->calculation_values['hot_water_in'] );
+        $this->calculation_values['FR11']  = sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1.0) * log((1 - $this->calculation_values['S1']) / (1 - $this->calculation_values['R1'] * $this->calculation_values['S1']));
+        $this->calculation_values['FR12']  = ($this->calculation_values['R1'] - 1) * log((2 - ($this->calculation_values['S1'] * ($this->calculation_values['R1'] + 1 - sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1)))) / (2 - ($this->calculation_values['S1'] * ($this->calculation_values['R1'] + 1 + sqrt($this->calculation_values['R1'] * $this->calculation_values['R1'] + 1)))));
+        $this->calculation_values['FR13']  = $this->calculation_values['FR11'] /  $this->calculation_values['FR12'];
+        $this->calculation_values['BETA6']  = log(($this->calculation_values['hot_water_in']  -$this->calculation_values['T4']) / ($this->calculation_values['hot_water_out'] - $this->calculation_values['T5']));
+        $this->calculation_values['LMTDGENA']  = ((($this->calculation_values['hot_water_in'] -  $this->calculation_values['T4']) - ($this->calculation_values['hot_water_out'] - $this->calculation_values['T5'])) / $this->calculation_values['BETA6']) * $this->calculation_values['FR13'];          
+
+        //PRESSURE_DROP();
+
+        // PRESSURE_DROP();
+
+
+        $vam_base = new VamBaseController();
+
+        $pid_ft1 = $vam_base->PIPE_ID($this->calculation_values['PNB1']);
+        $this->calculation_values['PIDE1'] = $pid_ft1['PID'];
+        $this->calculation_values['FT1'] = $pid_ft1['FT'];
+
+        $pid_ft2 = $vam_base->PIPE_ID($this->calculation_values['PNB2']);
+        $this->calculation_values['PIDE2'] = $pid_ft2['PID'];
+        $this->calculation_values['FT2'] = $pid_ft2['FT'];
+
+        $pid_ft = $vam_base->PIPE_ID($this->calculation_values['PNB']);
+        $this->calculation_values['PIDA'] = $pid_ft['PID'];
+        $this->calculation_values['FT'] = $pid_ft['FT'];
+
+        $this->PR_DROP_CHILL();
+
+        $this->PR_DROP_COW();
+        $this->PR_DROP_HW();
 
     }
     public function HT_SPHT($TH)
@@ -2471,18 +2492,17 @@ class DoubleH2SteamController extends Controller
         {
             $x0 = (int)($TH - fmod($TH, 10));
             $x1 = $x0 + 10;
-            $CPHT[] = array('x0'=>$x0,'x1'=>$x1,'0'=>4.218,'10'=>4.194,'20'=>4.182,'30'=>4.179 ,'40'=>4.179 ,'50'=>4.181 ,'60'=>4.185 ,'70'=>4.191 ,'80'=>4.198 ,'90'=>4.207 ,'100'=>4.218 ,'110'=>4.23 ,'120'=>4.244 ,'130'=>4.262 ,'140'=>4.282 ,'150'=>4.306 ,'160'=>4.334 ,'170'=>4.366 ,'180'=>4.403 ,'190'=>4.446 ,'200'=>4.494 ,'210'=>4.55 ,'220'=>4.613 ,'230'=>4.685 ,'240'=>4.769 ,'260'=>4.985,'270'=>5.134 ,'280'=>5.307 ,'290'=>5.52,'300'=>5.794 ,'310'=>6.143 ,'320'=>6.604 ,'330'=>7.241 ,'340'=>8.225);
+            $CPHT = array('0'=>4.218,'10'=>4.194,'20'=>4.182,'30'=>4.179 ,'40'=>4.179 ,'50'=>4.181 ,'60'=>4.185 ,'70'=>4.191 ,'80'=>4.198 ,'90'=>4.207 ,'100'=>4.218 ,'110'=>4.23 ,'120'=>4.244 ,'130'=>4.262 ,'140'=>4.282 ,'150'=>4.306 ,'160'=>4.334 ,'170'=>4.366 ,'180'=>4.403 ,'190'=>4.446 ,'200'=>4.494 ,'210'=>4.55 ,'220'=>4.613 ,'230'=>4.685 ,'240'=>4.769 ,'260'=>4.985,'270'=>5.134 ,'280'=>5.307 ,'290'=>5.52,'300'=>5.794 ,'310'=>6.143 ,'320'=>6.604 ,'330'=>7.241 ,'340'=>8.225);
 
-        /*  $this->calculation_values['Y0']  = $CPHT['x0'];
-            $this->calculation_values['Y1']  = $CPHT['x1'];*/
-            $this->calculation_values['Y0']  = $x0;
-            $this->calculation_values['Y1']  = $x1;
+            $this->calculation_values['Y0']  = $CPHT[$x0];
+            $this->calculation_values['Y1']  = $CPHT[$x1];
+            //log::info($this->calculation_values['Y0']);
             $this->calculation_values['YY11']  = ($TH - $x1) / ($x0 - $x1) * $this->calculation_values['Y0'];
             $this->calculation_values['YY22']  = ($TH - $x0) / ($x1 - $x0) * $this->calculation_values['Y1'];
             $this->calculation_values['YY2']  = $this->calculation_values['YY11'] + $this->calculation_values['YY22'];
             $this->calculation_values['CPH1'] =$this->calculation_values['YY2'] ;
         }
-
+        
         $CPHT = array();
         return ($this->calculation_values['CPH1'] / 4.187);
     }
@@ -3167,17 +3187,15 @@ class DoubleH2SteamController extends Controller
 
             $CC[5][$j] = ($CC[4][$j] - $CC[3][$j]) / $CC[4][$j] * 100.0;    //R
         }
-        Log::info("TON = ".$this->calculation_values['TON']);
-   Log::info("QHTG = ".$this->calculation_values['QHTG']);
+        
         $HEATIN = ($this->calculation_values['TON'] * 3024) + $this->calculation_values['QHTG'] ;
 
         $HEATOUT = ($this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2H'] + $this->calculation_values['COGLY_SPHT1H']) * 0.5 * ($this->calculation_values['TCW2H'] - $this->calculation_values['TCW1H']) / 4187) + ($this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2L'] + $this->calculation_values['COGLY_SPHT1L']) * 0.5 * ($this->calculation_values['TCW2L'] - $this->calculation_values['TCW1L']) / 4187) + ($this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT4'] + $this->calculation_values['COGLY_SPHT3']) * 0.5 * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW3']) / 4187);
-        Log::info("HEATIN = ".$HEATIN);
-        Log::info("HEATOUT = ".$HEATOUT);
+      
 
 
         $this->calculation_values['HBERROR'] = ($HEATIN - $HEATOUT) / $HEATIN * 100;
-        Log::info("HBERROR = ".$this->calculation_values['HBERROR']);
+        
     }
 
     public function RESULT_CALCULATE(){
@@ -3202,7 +3220,7 @@ class DoubleH2SteamController extends Controller
 
         $this->calculation_values['GFL']  = $this->calculation_values['GFL'] * 1.05;
 
-        //double ROWHH = WATER_DENSITY(THW1);
+        $this->calculation_values['ROWHH'] = $this->WATER_DENSITY($this->calculation_values['hot_water_in']);
 
         $this->calculation_values['COP'] = ($this->calculation_values['TON'] * 3024) / ($this->calculation_values['GHOT'] * (($this->calculation_values['CPH2'] +$this->calculation_values['CPH3'] ) * 0.5 * ($this->calculation_values['hot_water_in'] - $this->calculation_values['hot_water_out']) *$this->calculation_values['ROWHH'] ));
 
@@ -3412,7 +3430,7 @@ class DoubleH2SteamController extends Controller
 
         if (!$this->LMTDCHECK() || abs($this->calculation_values['HBERROR']) > 1)
         {
-            Log::info('haiii');
+           
             $this->calculation_values['Notes'] = $this->notes['NOTES_ERROR'];
             return false;
         }
@@ -3446,6 +3464,7 @@ class DoubleH2SteamController extends Controller
                         }
                         else
                         {
+
                             if (($this->calculation_values['hot_water_out'] - $this->calculation_values['T5']) < 0.0)
                             {
                                 $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_HW_OUTTEMP'];
@@ -3453,6 +3472,7 @@ class DoubleH2SteamController extends Controller
                             }
                             else
                             {
+                                
                                 if ($this->calculation_values['LMTDHTG'] > ($this->calculation_values['LMTDGENA'] - 0.5))
                                 {
                                     $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_HW_INOUT'];
@@ -3527,6 +3547,10 @@ class DoubleH2SteamController extends Controller
         {
             return false;
         }
+        else if (!isset($this->calculation_values['LMTDGENA']) || $this->calculation_values['LMTDGENA'] < 0 )
+        {
+            return false;
+        }
         else if (!isset($this->calculation_values['LMTDLTG']) || $this->calculation_values['LMTDLTG'] < 0)
         {
             return false;
@@ -3540,10 +3564,6 @@ class DoubleH2SteamController extends Controller
             return false;
         }
         else if (!isset($this->calculation_values['LMTDDHE']) || $this->calculation_values['LMTDDHE'] < 0)
-        {
-            return false;
-        }
-        else if (!isset($this->calculation_values['LMTDHR']) || $this->calculation_values['LMTDHR'] < 0)
         {
             return false;
         }
@@ -3786,6 +3806,8 @@ class DoubleH2SteamController extends Controller
         $herr = array();
         $tcwa4 = array();
 
+        $vam_base = new VamBaseController();
+
         $herr[0] = 2;
         while (abs($herr[$ii - 1]) > 0.001)
         {
@@ -3818,6 +3840,10 @@ class DoubleH2SteamController extends Controller
             }
 
             $this->calculation_values['QCW'] = $this->calculation_values['GCW'] * $this->calculation_values['COGLY_ROWH'] * ($this->calculation_values['COGLY_SPHTA4'] + $COGLY_SPHT11) * 0.5 * ($this->calculation_values['TCWA4'] - $this->calculation_values['TCW11']) / 4187;
+            $this->calculation_values['QHTG1']  = ($this->calculation_values['TON'] * 3024)/1.53;
+
+            $this->calculation_values['GHOT']   =$this->calculation_values['QHTG1']  / ($this->calculation_values['ROWHH'] * ($this->calculation_values['CPH2'] + $this->calculation_values['CPH3']) * 0.5 * ($this->calculation_values['hot_water_in'] - $this->calculation_values['hot_water_out']));
+
             $this->calculation_values['QINPUT'] = ($this->calculation_values['TON'] * 3024) + ($this->calculation_values['QHTG1']);
 
             $herr[$ii] = ($this->calculation_values['QINPUT'] - $this->calculation_values['QCW']) * 100 / $this->calculation_values['QINPUT'];
@@ -3919,7 +3945,7 @@ class DoubleH2SteamController extends Controller
             $thw2b = array();
     
             $herr2[0] = 2;
-            while (fabs($herr2[$kk - 1]) > 0.001)
+            while (abs($herr2[$kk - 1]) > 0.001)
             {
                 if ($kk == 1)
                 {
@@ -5307,51 +5333,51 @@ class DoubleH2SteamController extends Controller
         $chilled_table = $section->addTable($table_style);
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("C"),$header);
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam Circuit"),$header);
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot Water Circuit"),$header);
         $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
         $chilled_table->addCell(1750)->addText(htmlspecialchars(""),$header);
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water flow(+/- 3%)"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['PST1'],1)));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['HotWaterFlow'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Steam Consumption(+/-3%)"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water inlet temperature"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->SteamConsumptionUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamConsumption'],1)));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['hot_water_in'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condensate drain temperature"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water outlet temperature"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(ceil($calculation_values['m_dMinCondensateDrainTemperature']) ." - ".ceil($calculation_values['m_dMaxCondensateDrainTemperature']) ));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(ceil($calculation_values['hot_water_out'])  ));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Condensate drain pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Generator passes"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['m_dCondensateDrainPressure'],1)));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['GeneratorPasses'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Connection - Inlet diameter"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water circuit pressure loss"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamConnectionDiameter'],1)));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['HotWaterFrictionLoss'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Connection - Drain diameter"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water connection diameter"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['SteamDrainDiameter'],1)));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['HotWaterConnectionDiameter'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars("Design Pressure"));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars("Maximum working pressure"));
         $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['m_DesignPressure'],1)));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['all_work_pr_hw'],1)));
 
 
         $section->addTextBreak(1);
@@ -5514,7 +5540,7 @@ class DoubleH2SteamController extends Controller
             $section->addText(($key + 1).". ".$note);
         }
 
-        $file_name = "s2-".Auth::user()->id.".docx";
+        $file_name = "H2 Series-".Auth::user()->id.".docx";
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objWriter->save(storage_path($file_name));

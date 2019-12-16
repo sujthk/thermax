@@ -27,6 +27,7 @@ Route::post('/user-send-otp', 'UserController@sendUserOtp');
 Route::get('/data', 'DoubleSteamController@getChillerData');
 
 Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
+Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2')->middleware('auth');
 
 Route::group(['middleware' => ['auth','revalidate']], function(){
 
@@ -84,6 +85,20 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/calculators/double-effect-h2/show-report', 'DoubleH2SteamController@postShowReport');
 	Route::post('/calculators/double-effect-h2/save-report', 'DoubleH2SteamController@postSaveReport');
 	/*End Double Effect H2 Serires*/
+
+	/*Double Effect G2 Serires*/
+	Route::get('/calculators/double-effect-g2', 'DoubleG2SteamController@getDoubleEffectG2')->name('calculators/double-effect-g2');
+	Route::post('/calculators/double-effect-g2', 'DoubleG2SteamController@calculateDoubleEffectG2');
+	Route::post('/calculators/double-effect-g2/ajax-calculate', 'DoubleG2SteamController@postAjaxDoubleEffectG2');
+
+	Route::post('/calculators/double-effect-g2/ajax-calculate-region', 'DoubleG2SteamController@postAjaxDoubleEffectG2Region');
+
+	Route::post('/calculators/double-effect-g2/submit-calculate', 'DoubleG2SteamController@postDoubleEffectG2');
+	Route::post('/calculators/double-effect-g2/reset-calculate', 'DoubleG2SteamController@postResetDoubleEffectG2');
+	//report
+	Route::post('/calculators/double-effect-g2/show-report', 'DoubleG2SteamController@postShowReport');
+	Route::post('/calculators/double-effect-g2/save-report', 'DoubleG2SteamController@postSaveReport');
+	/*End Double Effect G2 Serires*/
 
 
 	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');

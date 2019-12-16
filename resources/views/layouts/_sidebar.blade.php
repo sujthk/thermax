@@ -87,6 +87,9 @@
                         <li class="{{ Nav::isRoute('calculators/double-effect-h2','has-class') }}">
                             <a href="{{ url('/calculators/double-effect-h2') }}" data-i18n="nav.dash.default"> Double Effect H2 Steam </a>
                         </li>
+                        <li class="{{ Nav::isRoute('calculators/double-effect-g2','has-class') }}">
+                            <a href="{{ url('/calculators/double-effect-g2') }}" data-i18n="nav.dash.default"> Double Effect G2 Steam </a>
+                        </li>
                         
                        
                     </ul>
