@@ -263,7 +263,7 @@
 					 <div class="row">
 			  <div class="col-md-6">
 				<div class="page-header-title">
-				 <h4>Double Steam S2</h4>
+				 <h4>Double Effect Steam Fired series</h4>
 			 </div>
 				  </div>
 			 
@@ -302,10 +302,10 @@
 										</div>
 									  
 										<div class="col-lg-4">
-											<input type="text" value="" class="form-control" placeholder="Project">
+											<input type="text" value="" class="form-control" placeholder="Project Name">
 										</div>                                          
 										<div class="col-lg-4">                   
-											<input type="text" value="" class="form-control" placeholder="Opportunity">
+											<input type="text" value="" class="form-control" placeholder="Opportunity Number">
 										</div>
 									</div>
 								</div>
