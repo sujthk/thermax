@@ -22,6 +22,7 @@
     <link rel="stylesheet" type="text/css" href="{{asset('bower_components/bootstrap/dist/css/bootstrap.min.css')}}">
 	<!-- themify-icons line icon -->
 	<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/icon/themify-icons/themify-icons.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/css/all.min.css')}}">
 	<!-- ico font -->
 	<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/icon/icofont/css/icofont.css')}}">
     <!-- flag icon framework css -->

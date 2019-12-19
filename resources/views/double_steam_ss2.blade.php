@@ -782,13 +782,9 @@
 
 </div>
 
-
-
- 	@endsection
-
- 	@section('scripts')	
-
- 	<script>
+@endsection
+@section('scripts')	
+<script>
  		$(document).ready(function(){
 
 
@@ -804,22 +800,13 @@
  			$('#exampleModalLong, #exampleModalLong1').on('hide.bs.modal',function(e){
  				$('body').css('padding-right','0');
  			});
-
- //   $("#show_report").click(function(){ 
- //  		var wi = window.open();
- //  		var html = $('#exampleModalLong2').html();
- //  		$(wi.document.body).html(html);
-
-	// });
-
-
-
 });
 
 </script>
 
 
 <script type="text/javascript">
+    
 
 	var model_values = {!! json_encode($default_values) !!};
 
