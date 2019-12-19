@@ -18293,3 +18293,10 @@ body.dark-layout #reportrange {
 body.dark-layout .chat-bg {
 	background: rgba(1, 1, 1, 0.69)
 }
+
+.logo-img img{
+    width: 45px;
+    background: #ffff;
+    padding: 4px;
+    margin-right: 10px;
+}

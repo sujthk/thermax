@@ -2,6 +2,9 @@
 <nav class="navbar header-navbar">
     <div class="navbar-wrapper">
         <div class="navbar-logo">
+           <div class="logo-img">
+									<img src="http://localhost/thermax/public/assets/images/thermax-logo.png" alt="logo.png">
+								</div>
             <a class="mobile-menu" id="mobile-collapse" href="#!">
                 <i class="ti-menu"></i>
             </a>

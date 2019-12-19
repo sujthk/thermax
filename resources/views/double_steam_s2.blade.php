@@ -809,7 +809,7 @@
 						</div>
 							 
 						<div class="row">
-							<div class="col-md-12">
+							<div class="col-md-6">
 								<div class="card-header">
 									 <h5>Steam</h5>
 								</div>
