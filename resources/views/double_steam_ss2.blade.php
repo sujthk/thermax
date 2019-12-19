@@ -690,103 +690,87 @@
  						</form>
  					</div>
 
-
  					<div class="summary-head">
- 							<h4> Summary : </h4>
+ 						<h4> Summary : </h4>
  					</div>
  					<div class="table-responsive">
- 							<table class="table table-bordered">
- 								<thead>
- 									<tr>
- 										<th scope="col">Item</th>
- 										<th scope="col">Unit</th>
- 										<th scope="col">Value</th>  
- 									</tr>
- 								</thead>
- 								<tbody>
- 									<tr>    
- 										<td> Capacity</td>
- 										<td> {{ $units_data[$unit_set->CapacityUnit] }}</td>
- 										<td><span id="capacity_span"></span> </td>
- 									</tr>
- 									<tr>   
- 										<td> Chilled water flow</td>
- 										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
- 										<td> <span id="chilled_water_flow_span"></span></td>
- 									</tr>
- 									<tr>   
- 										<td> Chilled water inlet temperature</td>
- 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
- 										<td> <span id="chilled_inlet_span"></span> </td>
- 									</tr>
- 									<tr>    
- 										<td> Chilled water outlet temperature</td>
- 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
- 										<td> <span id="chilled_outlet_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Evaporate passes</td>
- 										<td> </td>
- 										<td> <span id="evaporator_pass"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Chilled water circuit pressure loss </td>
- 										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
- 										<td> <span id="chilled_pressure_loss_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Cooling water flow </td>
- 										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
- 										<td> <span id="cooling_water_flow_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Cooling water inlet temperature </td>
- 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
- 										<td> <span id="cooling_water_inlet_span"></span></td>
- 									</tr>
- 									<tr>     
- 										<td> Cooling water outlet temperature </td>
- 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
- 										<td> <span id="cooling_water_outlet_span"></span></td>
- 									</tr>
- 									<tr>     
- 										<td> Absorber / Condenser Passes </td>
- 										<td> </td>
- 										<td> <span id="absorber_pass"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Cooling water circuit pressure loss </td>
- 										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
- 										<td> <span id="cooling_pressure_loss_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Hot water flow </td>
- 										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
- 										<td><span id="hot_water_flow_span"></span></td>
- 									</tr>
- 									<tr>     
- 										<td> Hot water inlet temperature</td>
- 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
- 										<td> <span id="hw_inlet_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td> Hot water outlet temperature</td>
- 										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
- 										<td> <span id="hw_outlet_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td>Generator passes</td>
- 										<td> </td>
- 										<td> <span id="generator_passes_span"></span> </td>
- 									</tr>
- 									<tr>     
- 										<td>Hot water circuit pressure loss</td>
- 										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
- 										<td> <span id="hw_circuit_pressure_span"></span> </td>
- 									</tr>
- 								</tbody>
- 							</table>
- 						</div>
+ 						<table class="table table-bordered">
+ 							<thead>
+ 								<tr>
+ 									<th scope="col">Item</th>
+ 									<th scope="col">Unit</th>
+ 									<th scope="col">Value</th>  
+ 								</tr>
+ 							</thead>
+ 							<tbody>
+ 								<tr>    
+ 									<td> Capacity</td>
+ 									<td> {{ $units_data[$unit_set->CapacityUnit] }}</td>
+ 									<td><span id="capacity_span"></span> </td>
+ 								</tr>
+ 								<tr>   
+ 									<td> Chilled water flow</td>
+ 									<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
+ 									<td> <span id="chilled_water_flow_span"></span></td>
+ 								</tr>
+ 								<tr>   
+ 									<td> Chilled water inlet temperature</td>
+ 									<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+ 									<td> <span id="chilled_inlet_span"></span> </td>
+ 								</tr>
+ 								<tr>    
+ 									<td> Chilled water outlet temperature</td>
+ 									<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+ 									<td> <span id="chilled_outlet_span"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Evaporate passes</td>
+ 									<td> </td>
+ 									<td> <span id="evaporator_pass"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Chilled water circuit pressure loss </td>
+ 									<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
+ 									<td> <span id="chilled_pressure_loss_span"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Cooling water flow </td>
+ 									<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
+ 									<td> <span id="cooling_water_flow_span"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Cooling water inlet temperature </td>
+ 									<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+ 									<td> <span id="cooling_water_inlet_span"></span></td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Cooling water outlet temperature </td>
+ 									<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+ 									<td> <span id="cooling_water_outlet_span"></span></td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Absorber / Condenser Passes </td>
+ 									<td> </td>
+ 									<td> <span id="absorber_pass"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Cooling water circuit pressure loss </td>
+ 									<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
+ 									<td> <span id="cooling_pressure_loss_span"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Steam pressure </td>
+ 									<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
+ 									<td> <span id="steam_pressure_span"></span> </td>
+ 								</tr>
+ 								<tr>     
+ 									<td> Steam consumption </td>
+ 									<td> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
+ 									<td> <span id="steam_consumption_span"></span> </td>
+ 								</tr>
+ 							</tbody>
+ 						</table>
+ 					</div>
  				</div>
  			</div>      
  		</div>
@@ -798,13 +782,9 @@
 
 </div>
 
-
-
- 	@endsection
-
- 	@section('scripts')	
-
- 	<script>
+@endsection
+@section('scripts')	
+<script>
  		$(document).ready(function(){
 
 
@@ -820,22 +800,13 @@
  			$('#exampleModalLong, #exampleModalLong1').on('hide.bs.modal',function(e){
  				$('body').css('padding-right','0');
  			});
-
- //   $("#show_report").click(function(){ 
- //  		var wi = window.open();
- //  		var html = $('#exampleModalLong2').html();
- //  		$(wi.document.body).html(html);
-
-	// });
-
-
-
 });
 
 </script>
 
 
 <script type="text/javascript">
+    
 
 	var model_values = {!! json_encode($default_values) !!};
 
