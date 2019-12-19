@@ -286,12 +286,12 @@
 										<td> 1 </td>
 										<td>Hot water flow(+/- 3%)</td>
 										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
-										<td> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
+										<td> {{ round($calculation_values['FlowRateUnit'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
 										<td> Hot water inlet temperature</td>
-										<td> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
+										<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td> {{ round($calculation_values['hot_water_in'],1) }}</td>
 									</tr>
 									<tr>
@@ -309,7 +309,7 @@
 									<tr>     
 										<td> 5 </td>
 										<td> Hot water circuit pressure loss</td>
-										<td> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
+										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td> {{ round($calculation_values['HotWaterFrictionLoss'],1) }}</td>
 									</tr>
 									<tr>     
@@ -321,7 +321,7 @@
 									<tr>     
 										<td> 7 </td>
 										<td>Maximum working pressure </td>
-										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
+										<td> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
 										<td> {{ round($calculation_values['all_work_pr_hw'],1) }} </td>
 									</tr>
 									<tr>

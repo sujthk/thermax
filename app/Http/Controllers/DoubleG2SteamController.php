@@ -72,7 +72,7 @@ class DoubleG2SteamController extends Controller
 
         $unit_conversions = new UnitConversionController;
         
-        $converted_values = $unit_conversions->formUnitConversion($default_values);
+        $converted_values = $unit_conversions->formUnitConversion($default_values,$this->model_code);
   
         $regions = Region::all();
     	// return $evaporator_options;
@@ -94,7 +94,7 @@ class DoubleG2SteamController extends Controller
         $unit_conversions = new UnitConversionController;
         if(!empty($changed_value)){
 
-            $model_values = $unit_conversions->calculationUnitConversion($model_values);
+            $model_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
         }
        
 
@@ -112,7 +112,7 @@ class DoubleG2SteamController extends Controller
         $this->updateInputs();
         $this->loadSpecSheetData();
 
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
        
 
         // Log::info("converted".print_r($converted_values,true));
@@ -126,7 +126,7 @@ class DoubleG2SteamController extends Controller
         // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
-        $converted_values = $unit_conversions->calculationUnitConversion($model_values);
+        $converted_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
 
 		$this->model_values = $converted_values;
         $this->castToBoolean();
@@ -181,7 +181,7 @@ class DoubleG2SteamController extends Controller
 
 	
 
-        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values);
+        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
 	}
     public function postAjaxDoubleEffectG2Region(Request $request){
@@ -217,7 +217,7 @@ class DoubleG2SteamController extends Controller
         // Log::info($this->model_values);
         $range_calculation = $this->RANGECAL();
         
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
         //Log::info($model_values);
         // Log::info("converted".print_r($converted_values,true));
         // Log::info("metallurgy updated = ".print_r($this->model_values,true));
@@ -274,7 +274,7 @@ class DoubleG2SteamController extends Controller
         $range_calculation = $this->RANGECAL();
         //log::info($this->model_values);
         $unit_conversions = new UnitConversionController;
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
          //log::info($converted_values);
 
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
@@ -3332,10 +3332,11 @@ class DoubleG2SteamController extends Controller
                         }
                         else
                         {
-                            if ($this->calculation_values['PS'] > $this->calculation_values['PST1'])
+                            if(!$this->FUELMAX())
                             {
+                      
                                 // $this->calculation_values['Notes'] = "NOTES_FAIL_SDPRESS";
-                                $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_SPRESS'] . round(($this->calculation_values['PS'] + 0.05), 2) . " kg/sq.cm";
+                                $this->calculation_values['Notes'] = $this->notes['NOTES_H_IP_HI'];
                                 return false;
                             }
                             else

@@ -69,7 +69,7 @@ class DoubleH2SteamController extends Controller
 
         $unit_conversions = new UnitConversionController;
 
-        $converted_values = $unit_conversions->formUnitConversion($default_values);
+        $converted_values = $unit_conversions->formUnitConversion($default_values,$this->model_code);
 
         $regions = Region::all();
 
@@ -96,7 +96,7 @@ class DoubleH2SteamController extends Controller
         $unit_conversions = new UnitConversionController;
         if(!empty($changed_value)){
 
-            $model_values = $unit_conversions->calculationUnitConversion($model_values);
+            $model_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
         }
 
 
@@ -111,7 +111,7 @@ class DoubleH2SteamController extends Controller
         $this->updateInputs();
         $this->loadSpecSheetData();
 
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
 
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
     }
@@ -123,7 +123,7 @@ class DoubleH2SteamController extends Controller
 // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
-        $converted_values = $unit_conversions->calculationUnitConversion($model_values);
+        $converted_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
 
         $this->model_values = $converted_values;
         $this->castToBoolean();
@@ -173,11 +173,14 @@ class DoubleH2SteamController extends Controller
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
+        //log::info($this->calculation_values);
 
-        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values);
+        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
+        log::info("HotWaterFlow =".$calculated_values['HotWaterFlow']);
 
-        log::info($calculated_values);
+        //log::info($calculated_values);
+
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
     }
     public function postAjaxDoubleEffectH2Region(Request $request){
@@ -213,7 +216,7 @@ class DoubleH2SteamController extends Controller
     // Log::info($this->model_values);
         $range_calculation = $this->RANGECAL();
 
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
     //Log::info($model_values);
     // Log::info("converted".print_r($converted_values,true));
     // Log::info("metallurgy updated = ".print_r($this->model_values,true));
@@ -270,7 +273,7 @@ class DoubleH2SteamController extends Controller
         $range_calculation = $this->RANGECAL();
 //log::info($this->model_values);
         $unit_conversions = new UnitConversionController;
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values);
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
 // log::info($converted_values);
 
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
@@ -373,7 +376,7 @@ class DoubleH2SteamController extends Controller
         if($type == 'save_word'){
             $word_download = $this->wordFormat($user_report_id);
 
-            $file_name = "s2-".Auth::user()->id.".docx";
+            $file_name = "H2-Series-".Auth::user()->id.".docx";
             return response()->download(storage_path($file_name));
         }
 
@@ -5346,7 +5349,7 @@ class DoubleH2SteamController extends Controller
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("2."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water inlet temperature"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->SteamConsumptionUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
         $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['hot_water_in'],1)));
 
         $chilled_table->addRow();
@@ -5364,7 +5367,7 @@ class DoubleH2SteamController extends Controller
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("5."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water circuit pressure loss"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureDropUnit]));
         $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['HotWaterFrictionLoss'],1)));
 
         $chilled_table->addRow();
@@ -5376,7 +5379,7 @@ class DoubleH2SteamController extends Controller
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Maximum working pressure"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->WorkPressureUnit]));
         $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['all_work_pr_hw'],1)));
 
 
@@ -5537,10 +5540,10 @@ class DoubleH2SteamController extends Controller
         $section->addTextBreak(1);
 
         foreach ($calculation_values['notes'] as $key => $note) {
-            $section->addText(($key + 1).". ".$note);
+            $section->addText(htmlspecialchars(($key + 1).". ".$note));
         }
 
-        $file_name = "H2 Series-".Auth::user()->id.".docx";
+        $file_name = "H2-Series-".Auth::user()->id.".docx";
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objWriter->save(storage_path($file_name));
