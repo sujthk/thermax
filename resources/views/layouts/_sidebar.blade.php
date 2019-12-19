@@ -10,10 +10,13 @@
         </div> -->
         <div class="main-menu-content">
             <ul class="main-navigation">
+<!--
+             
                 <li class="nav-title" data-i18n="nav.category.navigation">
                     <i class="ti-line-dashed"></i>
                     <span>Navigation</span>
                 </li>
+-->
                 <li data-placement="bottom" title="Dashboard" class="nav-item single-item {{ Nav::isRoute('dashboard','has-class') }}">
                     <a href="{{ url('/dashboard') }}">
                         <i class="ti-home"></i>

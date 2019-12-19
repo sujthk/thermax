@@ -92,8 +92,8 @@
 	 .ss-steam-label label {
 		 font-size: 11px;
 		 margin-bottom: 9px;
-             font-weight: 600;
-    color: #656565;
+         font-weight: 600;
+         color: #656565;
 	 }
 
 	 .ss-steam-label .page-wrapper .page-header {
@@ -296,7 +296,7 @@
 									 <h5>Cooling Water</h5>
 								</div>
 -->
-									<div class="row">
+									<div class="row mb-2">
 										<div class="col-lg-4">
 											<input type="text" value="" class="form-control" placeholder="Customer Name">
 										</div>

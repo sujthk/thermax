@@ -6,7 +6,7 @@
                 <i class="ti-menu"></i>
             </a>
             <a href="{{url('/dashboard')}}">
-                <h6 class="mega-menu-title media-left" style="font-size: 1.5rem;color:#e10010;">THERMAX</h6>
+                <h6 class="mega-menu-title media-left" style="font-size: 1.5rem;color:#e10010;"> i-SelecTAC</h6>
             </a>
             <a class="mobile-options">
                 <i class="ti-more"></i>
