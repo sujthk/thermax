@@ -80,14 +80,20 @@
 		 overflow-y: scroll;
 	 }
 
-
+        
+     .ss-steam-label p{
+         text-align: center;
+         margin: 0;
+     }
 	 .ss-steam-label .page-wrapper {
 		 padding: 20px 15px;
 	 }
 
 	 .ss-steam-label label {
 		 font-size: 11px;
-		 margin-bottom: 5px;
+		 margin-bottom: 9px;
+             font-weight: 600;
+    color: #656565;
 	 }
 
 	 .ss-steam-label .page-wrapper .page-header {
@@ -173,6 +179,9 @@
 	 .padd-2{
 		 
 	 }
+     .padd-mm{
+         padding-top: 10px;
+     }
 	 
 	 
 #scroll-right::-webkit-scrollbar-track
@@ -288,14 +297,14 @@
 								</div>
 -->
 									<div class="row">
-										<div class="col-lg-6">
+										<div class="col-lg-4">
 											<input type="text" value="" class="form-control" placeholder="Customer Name">
 										</div>
 									  
-										<div class="col-lg-3">
+										<div class="col-lg-4">
 											<input type="text" value="" class="form-control" placeholder="Project">
 										</div>                                          
-										<div class="col-lg-3">                   
+										<div class="col-lg-4">                   
 											<input type="text" value="" class="form-control" placeholder="Opportunity">
 										</div>
 									</div>
@@ -517,7 +526,7 @@
 						</div>
 						<div class="row">
 							<div class="col-lg-3">
-								<label class=" col-form-label">Evaporator</label>
+                                <p><label class=" col-form-label">Evaporator</label></p>
 							<div class="row">
 							<div class="col-lg-12">
 								<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
@@ -540,7 +549,7 @@
 								 
 							</div>
 							<div class="col-lg-4">
-							  <label> (mm) </label>
+							  <label class="padd-mm"> (mm) </label>
 						    	</div>
 							 </div>
 				         </div>							
@@ -550,7 +559,7 @@
 							
 
 							<div class="col-lg-3">
-								 <label class=" col-form-label">Absorber</label>
+                                <p> <label class=" col-form-label">Absorber</label></p>
 								 <div class="row">
 							<div class="col-lg-12">								
 								<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
@@ -570,7 +579,7 @@
 								<span class="metallurgy_standard_span" id="absorber_range"></span>
 							</div>
 							<div class="col-lg-4">
-							<label> (mm) </label>
+							<label class="padd-mm"> (mm) </label>
 							</div>
 							</div>
                                      </div>
@@ -579,7 +588,7 @@
 							
 
 							<div class="col-lg-3">
-								<label class=" col-form-label">Condenser</label>
+                                <p> <label class=" col-form-label">Condenser</label></p>
 								 <div class="row">
 							<div class="col-lg-12">		
 								<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
@@ -598,7 +607,7 @@
 								<span class="metallurgy_standard_span" id="condenser_range"></span>
 							</div>
 							<div class="col-lg-4">
-							  	<label> (mm) </label>
+							  	<label class="padd-mm"> (mm) </label>
 							</div>
 							</div>
                                      </div>
@@ -800,12 +809,12 @@
 						</div>
 							 
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-12">
 								<div class="card-header">
 									 <h5>Steam</h5>
 								</div>
 							</div>
-							<div class="col-md-6">
+							<div class="col-md-12">
 								<div class="row">
 									<div class="col-lg-4">
 										 <label>Pressure : </label>
