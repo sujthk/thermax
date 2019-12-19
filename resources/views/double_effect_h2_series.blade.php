@@ -74,7 +74,7 @@
  	<div class="page-wrapper max-calculator">
  		<div class="page-header">
  			<div class="page-header-title">
- 				<h4>Double Steam S2</h4>
+ 				<h4>Double Effect H2 Series</h4>
  			</div>
  			<div class="page-header-breadcrumb">
  				<ul class="breadcrumb-title">
@@ -83,7 +83,7 @@
  							<i class="icofont icofont-home"></i>
  						</a>
  					</li>
- 					<li class=""><a href="#!">Double Steam S2</a>
+ 					<li class=""><a href="#!">Double Effect H2 Series</a>
  					</li>
  				</ul>
  			</div>
@@ -102,31 +102,31 @@
  									</div>
  									<div class="col-lg-5">
  										<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')" >
- 											<option  value="130">S2 C3</option>
- 											<option value="160">S2 C4</option>
- 											<option value="210">S2 D1</option>
- 											<option value="250">S2 D2</option>
- 											<option value="310">S2 D3</option>
- 											<option value="350">S2 D4</option>
- 											<option value="410">S2 E1</option>
- 											<option value="470">S2 E2</option>
- 											<option value="530">S2 E3</option>
- 											<option value="580">S2 E4</option>
- 											<option value="630">S2 E5</option>
- 											<option value="710">S2 E6</option>
- 											<option value="760">S2 F1</option>
- 											<option value="810">S2 F2</option>
- 											<option value="900">S2 F3</option>
- 											<option value="1010">S2 G1</option>
- 											<option value="1130">S2 G2</option>
- 											<option value="1260">S2 G3</option>
- 											<option value="1380">S2 G4</option>
- 											<option value="1560">S2 G5</option>
- 											<option value="1690">S2 G6</option>
- 											<option value="1890">S2 H1</option>
- 											<option value="2130">S2 H2</option>
- 											<option value="2270">S2 J1</option>
- 											<option value="2560">S2 J2</option>
+ 											<option  value="130">H2 C3</option>
+ 											<option value="160">H2 C4</option>
+ 											<option value="210">H2 D1</option>
+ 											<option value="250">H2 D2</option>
+ 											<option value="310">H2 D3</option>
+ 											<option value="350">H2 D4</option>
+ 											<option value="410">H2 E1</option>
+ 											<option value="470">H2 E2</option>
+ 											<option value="530">H2 E3</option>
+ 											<option value="580">H2 E4</option>
+ 											<option value="630">H2 E5</option>
+ 											<option value="710">H2 E6</option>
+ 											<option value="760">H2 F1</option>
+ 											<option value="810">H2 F2</option>
+ 											<option value="900">H2 F3</option>
+ 											<option value="1010">H2 G1</option>
+ 											<option value="1130">H2 G2</option>
+ 											<option value="1260">H2 G3</option>
+ 											<option value="1380">H2 G4</option>
+ 											<option value="1560">H2 G5</option>
+ 											<option value="1690">H2 G6</option>
+ 											<option value="1890">H2 H1</option>
+ 											<option value="2130">H2 H2</option>
+ 											<option value="2270">H2 J1</option>
+ 											<option value="2560">H2 J2</option>
  										</select>
  									</div>
  									<div class="col-lg-3">
@@ -144,7 +144,6 @@
  											<label>({{ $units_data[$unit_set->CapacityUnit] }})</label>
  										</div>
  									</div>
-
  								</div>
  								<div class="card-header">
  									<h5>Chilled Water</h5>
@@ -180,521 +179,431 @@
  								</div>
  							</div>    
  						</div> 
- 						  <div class="col-md-6">
-	                        <div class="">
-	                            <div class="card-header">
-	                                <h5>Tube Metallurgy</h5>
-	                            </div>
-	                            <div class="">
-                                	<div class="row">                                		
-                                		<div class="form-radio col-12">
-	                                        <div class="radio radio-inline">
-	                                            <label>
-	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
-	                                                <i class="helper"></i>Standard
-	                                            </label>
-	                                        </div>
-	                                        <div class="radio radio-inline">
-	                                            <label>
-	                                                <input type="radio" name="tube_metallurgy" id="tube_metallurgy_non_standard" value="non_standard">
-	                                                <i class="helper"></i>Non Standard
-	                                            </label>
-	                                        </div>
-	                                    </div>   
-                                    <div class="col-md-6">                                      
-                                        <label>Material</label>
-                                    </div>
-                                     <div class="col-md-6">      
-                                        <label>Thickness (mm)</label>
-                                    </div>
-                                    </div>
-	                                <div class="row">
-	                                	<div class="col-lg-4">
-	                                		<label class="">Evaporator</label>
-	                                	</div>
-	                                	<div class="col-lg-4">
-	                                	    <select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
-	                                	    	@foreach($evaporator_options as $evaporator_option)
-	                                	    		<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
-	                                	    	@endforeach
-	                                	    </select>
-	                                	</div>
-
-	                                	<div class="col-lg-4 range-hide">
-                                            <input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard">
-
-                                            <span class="messages emsg hidden" id="evaporator_thickness_error"><p class="text-danger error">Please Enter a Valid Evaporator Thickness</p></span>
-                                            <span class="metallurgy_standard_span" id="evaporator_range"></span>
-                                        </div>
-                                        
-	                                	<div class="col-lg-4">
-	                                		<label class=" col-form-label">Absorber</label>
-	                                	</div>
-	                                	<div class="col-lg-4">
-	                                	    <select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
-	                                	        @foreach($absorber_options as $absorber_option)
-	                                	    		<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
-	                                	    	@endforeach
-	                                	    </select>
-	                                	</div>
-	                                	<div class="col-lg-4 range-hide">
-                                            <input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard">
-
-                                            <span class="messages emsg hidden" id="absorber_thickness_error"><p class="text-danger error">Please Enter a Valid Absorber Thickness</p></span>
-                                            <span class="metallurgy_standard_span" id="absorber_range"></span>
-                                        </div>
-                                      
-	                                	<div class="col-lg-4">
-	                                		<label class=" col-form-label">Condenser</label>
-	                                	</div>
-	                                	<div class="col-lg-4">
-	                                	    <select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
-	                                	        @foreach($condenser_options as $condenser_option)
-	                                	    		<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
-	                                	    	@endforeach
-	                                	    </select>
-	                                	</div>
-	                                	<div class="col-lg-4 range-hide">
-                                            <input type="text" name="condenser_thickness" id="condenser_thickness"  onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard">
-                                            <span class="messages emsg hidden" id="condenser_thickness_error"><p class="text-danger error">Please Enter a Valid Condenser Thickness</p></span>
-                                            <span class="metallurgy_standard_span" id="condenser_range"></span>
-                                        </div>
-                                      
-	                            	</div>    	
-	                            </div>
-	                        </div>    
-	                    </div>
- 						<!-- <div class="col-md-6"> 
+ 						<div class="col-md-6">
  							<div class="">
  								<div class="card-header">
  									<h5>Tube Metallurgy</h5>
- 								</div>
- 								<div class="">
- 									<div class="row">  
- 										<div class="col-md-8">                              		<div class="row"> 
- 											<div class="form-radio col-12">
- 												<div class="radio radio-inline">
- 													<label>
- 														<input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
- 														<i class="helper"></i>Standard
- 													</label>
- 												</div>
- 												<div class="radio radio-inline">
- 													<label>
- 														<input type="radio" name="tube_metallurgy" id="tube_metallurgy_non_standard" value="non_standard">
- 														<i class="helper"></i>Non Standard
- 													</label>
- 												</div>
- 											</div>   
- 											<div class="col-md-6">                                      
- 												<label>Material</label>
- 											</div>
- 											<div class="col-md-6">      
- 												<label>Thickness ({{ $units_data[$unit_set->LengthUnit] }})</label>
- 											</div>
-
- 										</div>
- 										<div class="row">
- 											<div class="col-lg-12">
- 												<div class="row">
- 													<div class="col-lg-6">
- 														<label class="">Evaporator</label>
- 													</div>
- 													<div class="col-lg-6">
- 														<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
- 															@foreach($evaporator_options as $evaporator_option)
- 															<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
- 															@endforeach
- 														</select>
- 													</div>
-
-
-
- 													<div class="col-lg-6">
- 														<label class=" col-form-label">Absorber</label>
- 													</div>
- 													<div class="col-lg-6">
- 														<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
- 															@foreach($absorber_options as $absorber_option)
- 															<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
- 															@endforeach
- 														</select>
- 													</div>
-
-
- 													<div class="col-lg-6">
- 														<label class=" col-form-label">Condenser</label>
- 													</div>
- 													<div class="col-lg-6">
- 														<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
- 															@foreach($condenser_options as $condenser_option)
- 															<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
- 															@endforeach
- 														</select>
- 													</div>
- 												</div>
- 											</div>
- 										</div>
- 									</div>	
-
- 									<div class="col-md-4"> 
- 										<div class="row " id="region_list" style="display: none;">
- 											<div class="col-md-12">
-
- 												<label> Region type</label>
- 											</div>
-
- 											<div class="form-radio col-12">
- 												<div class="radio radio-inline">
- 													<label>
- 														<input type="radio" name="region_type" class="region_type" id="domestic" value="1" >
- 														<i class="helper"></i> Domestic
- 													</label>
- 												</div>
- 												<div class="radio radio-inline">
- 													<label>
- 														<input type="radio" name="region_type" id="export_type" value="2" class="region_type">
- 														<i class="helper"></i> Export Type
- 													</label>
- 												</div>
- 											</div>
- 											<div id="regionlist">
- 											<div class="col-md-12">
-
- 												<label> Region </label>
- 											</div>
- 											<div class="col-md-12">
- 												<select name="region" id="region" class="form-control">
- 													@foreach($regions as $region)
- 													<option value="{{$region->name}}">{{$region->name}}</option>
- 													@endforeach
-
- 												</select>
- 											</div>
- 										</div>
- 										</div>
- 									</div>
- 								</div>
- 							</div>    
- 						</div>
- 						</div> -->
-
-
- 					<div class="row">
- 						<div class="col-md-6">
- 							<div class="">
- 								<div class="card-header">
- 									<h5>Cooling Water</h5>
- 								</div>
- 								<div class="">
- 									<div class="row">
- 										<div class="col-lg-4">
- 											<label>Water In (<span id="cooling_water_in_range" ></span>)</label>
- 										</div>
- 										<div class="col-lg-5">
- 											<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control">
-
- 											<span class="messages emsg hidden" id="cooling_water_in_error"><p class="text-danger error">Please Enter a Valid Cooling Water In</p></span>
- 										</div>
- 										<div class="col-lg-3">
- 											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
- 										</div>
- 									</div>
- 									<div class="row">
- 										<div class="col-lg-4">
- 											<label>Water Flow</label>
- 										</div>
- 										<div class="col-lg-5">
- 											<input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control">
-
- 											<span class="messages emsg hidden" id="cooling_water_flow_error"><p class="text-danger error">Please Enter a Valid Cooling Water Flow</p></span>
- 										</div>
- 										<div class="col-lg-3">
- 											<label>({{ $units_data[$unit_set->FlowRateUnit] }})</label>
- 										</div>
- 									</div>
- 									<div class="row">
- 										<label class="col-sm-12">Available Range(s) : <span id="cooling_water_ranges"></span></label>
- 									</div>
- 								</div>
- 							</div>    
- 						</div>
- 						<div class="col-md-6">
- 							<div class="">
- 								<div class="card-header">
- 									<h5>Fouling Factor</h5>
  								</div>
  								<div class="">
  									<div class="row">                                		
  										<div class="form-radio col-12">
  											<div class="radio radio-inline">
  												<label>
- 													<input type="radio" name="fouling_factor" id="fouling_factor_standard" value="standard" checked="checked">
+ 													<input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
  													<i class="helper"></i>Standard
  												</label>
  											</div>
  											<div class="radio radio-inline">
  												<label>
- 													<input type="radio" name="fouling_factor" id="fouling_factor_non_standard" value="non_standard">
+ 													<input type="radio" name="tube_metallurgy" id="tube_metallurgy_non_standard" value="non_standard">
  													<i class="helper"></i>Non Standard
  												</label>
  											</div>
- 											<div class="radio radio-inline">
- 												<label>
- 													<input type="radio" name="fouling_factor" id="fouling_factor_ari" value="ari">
- 													<i class="helper"></i><span id="fouling_ari">ARI</span><span id="fouling_factor_ahri" ></span>
- 												</label>
- 											</div>
- 										</div>    
+ 										</div>   
+ 										<div class="col-md-6">                                      
+ 											<label>Material</label>
+ 										</div>
+ 										<div class="col-md-6">      
+ 											<label>Thickness (mm)</label>
+ 										</div>
  									</div>
- 									<div class="row">                                    	
- 										<div class="col-lg-4 checkbox-fade fade-in-primary">
- 											<label>
- 												<input type="checkbox" class="fouling_standard" name="fouling_chilled_water" id="fouling_chilled_water" value="">
- 												<span class="cr">
- 													<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
- 												</span><span>Chilled Water</span><br><span id="fouling_chilled_min" ></span>
- 											</label>
+ 									<div class="row">
+ 										<div class="col-lg-4">
+ 											<label class="">Evaporator</label>
+ 										</div>
+ 										<div class="col-lg-4">
+ 											<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
+ 												@foreach($evaporator_options as $evaporator_option)
+ 												<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
+ 												@endforeach
+ 											</select>
+ 										</div>
+
+ 										<div class="col-lg-4 range-hide">
+ 											<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard">
+
+ 											<span class="messages emsg hidden" id="evaporator_thickness_error"><p class="text-danger error">Please Enter a Valid Evaporator Thickness</p></span>
+ 											<span class="metallurgy_standard_span" id="evaporator_range"></span>
  										</div>
 
  										<div class="col-lg-4">
- 											<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')"	 class="form-control fouling_standard">
-
- 											<span class="messages emsg hidden" id="fouling_chilled_value_error"><p class="text-danger error">Please Enter a Valid Fouling Chilled Water</p></span>
+ 											<label class=" col-form-label">Absorber</label>
  										</div>
  										<div class="col-lg-4">
- 											<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
- 										</div> 
- 									</div>
- 									<div class="row">                                    	
- 										<div class="col-lg-4 checkbox-fade fade-in-primary">
- 											<label>
- 												<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="">
- 												<span class="cr">
- 													<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
- 												</span><span>Cooling Water</span><br><span id="fouling_cooling_min" ></span>
- 											</label>
+ 											<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
+ 												@foreach($absorber_options as $absorber_option)
+ 												<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
+ 												@endforeach
+ 											</select>
+ 										</div>
+ 										<div class="col-lg-4 range-hide">
+ 											<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard">
+
+ 											<span class="messages emsg hidden" id="absorber_thickness_error"><p class="text-danger error">Please Enter a Valid Absorber Thickness</p></span>
+ 											<span class="metallurgy_standard_span" id="absorber_range"></span>
  										</div>
 
  										<div class="col-lg-4">
- 											<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard">
-
- 											<span class="messages emsg hidden" id="fouling_cooling_value_error"><p class="text-danger error">Please Enter a Valid Fouling Cooling Water</p></span>
+ 											<label class=" col-form-label">Condenser</label>
  										</div>
  										<div class="col-lg-4">
- 											<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
+ 											<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
+ 												@foreach($condenser_options as $condenser_option)
+ 												<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
+ 												@endforeach
+ 											</select>
  										</div>
- 									</div>   	
+ 										<div class="col-lg-4 range-hide">
+ 											<input type="text" name="condenser_thickness" id="condenser_thickness"  onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard">
+ 											<span class="messages emsg hidden" id="condenser_thickness_error"><p class="text-danger error">Please Enter a Valid Condenser Thickness</p></span>
+ 											<span class="metallurgy_standard_span" id="condenser_range"></span>
+ 										</div>
+
+ 									</div>    	
  								</div>
  							</div>    
  						</div>
- 						<div class="col-md-6">
- 							<div class="">
- 								<div class="card-header">
- 									<h5>Glycol Content % (By Vol)</h5>
- 								</div>
+
+ 						<div class="row">
+ 							<div class="col-md-6">
  								<div class="">
- 									<div class="row">                                		
- 										<div class="col-12 form-radio">
-
- 											<div class="radio radio-inline">
- 												<label>
- 													<input type="radio" name="glycol" value="1" id="glycol_none" checked="checked">
- 													<i class="helper"></i>None
- 												</label>
- 											</div>
- 											<div class="radio radio-inline">
- 												<label>
- 													<input type="radio" name="glycol" id="glycol_ethylene" value="2">
- 													<i class="helper"></i>Ethylene
- 												</label>
- 											</div>
- 											<div class="radio radio-inline">
- 												<label>
- 													<input type="radio" name="glycol" id="glycol_propylene" value="3">
- 													<i class="helper"></i>Propylene
- 												</label>
- 											</div>
- 										</div>    
+ 									<div class="card-header">
+ 										<h5>Cooling Water</h5>
  									</div>
- 									<div class="row">
- 										<div class="col-lg-4">
- 											<label>Chilled Water </label>
- 										</div>
- 										<div class="col-md-5">
- 											<input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
-
- 											<span class="messages emsg hidden" id="glycol_chilled_water_error"><p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p></span>
- 										</div>
- 									</div> 
- 									<div class="row">
- 										<div class="col-lg-4">
- 											<label>Cooling Water </label>
- 										</div>
- 										<div class="col-md-5">
- 											<input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
-
- 											<span class="messages emsg hidden" id="glycol_cooling_water_error"><p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p></span>
- 										</div>
- 									</div>   	
- 								</div>
- 							</div>    
- 						</div>
- 						<div class="col-md-6">
- 							<div class="">
- 								<div class="card-header">
- 									<h5>Steam</h5>
- 								</div>
- 								<div class="">
- 									<div class="row">
- 										<div class="col-lg-4">
- 											<label>Pressure : (<span id="steam_pressure_range"></span>)</label>
- 										</div>
- 										<div class="col-lg-4">
- 											<input type="text" name="steam_pressure" id="steam_pressure" onchange="updateModelValues('steam_pressure')" value="" class="form-control">
-
- 											<span class="messages emsg hidden" id="steam_pressure_error"><p class="text-danger error">Please Enter a Valid Steam Pressure</p></span>
- 										</div>
- 										<div class="col-lg-4">
- 											<label>({{ $units_data[$unit_set->PressureUnit] }})</label>
- 										</div>
- 									</div>   	
- 								</div>
- 							</div>    
- 						</div>
-
- 									<div class="col-md-4"> <!-- end-new -->
- 										<div class="row " id="region_list" style="display: none;">
- 											<div class="col-md-12">
- 												<div class="card-header">
- 									<h5>Region type</h5>
- 								</div>
- 												
+ 									<div class="">
+ 										<div class="row">
+ 											<div class="col-lg-4">
+ 												<label>Water In (<span id="cooling_water_in_range" ></span>)</label>
  											</div>
+ 											<div class="col-lg-5">
+ 												<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control">
 
+ 												<span class="messages emsg hidden" id="cooling_water_in_error"><p class="text-danger error">Please Enter a Valid Cooling Water In</p></span>
+ 											</div>
+ 											<div class="col-lg-3">
+ 												<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
+ 											</div>
+ 										</div>
+ 										<div class="row">
+ 											<div class="col-lg-4">
+ 												<label>Water Flow</label>
+ 											</div>
+ 											<div class="col-lg-5">
+ 												<input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control">
+
+ 												<span class="messages emsg hidden" id="cooling_water_flow_error"><p class="text-danger error">Please Enter a Valid Cooling Water Flow</p></span>
+ 											</div>
+ 											<div class="col-lg-3">
+ 												<label>({{ $units_data[$unit_set->FlowRateUnit] }})</label>
+ 											</div>
+ 										</div>
+ 										<div class="row">
+ 											<label class="col-sm-12">Available Range(s) : <span id="cooling_water_ranges"></span></label>
+ 										</div>
+ 									</div>
+ 								</div>    
+ 							</div>
+ 							<div class="col-md-6">
+ 								<div class="">
+ 									<div class="card-header">
+ 										<h5>Fouling Factor</h5>
+ 									</div>
+ 									<div class="">
+ 										<div class="row">                                		
  											<div class="form-radio col-12">
  												<div class="radio radio-inline">
  													<label>
- 														<input type="radio" name="region_type" class="region_type" id="domestic" value="1" >
- 														<i class="helper"></i> Domestic
+ 														<input type="radio" name="fouling_factor" id="fouling_factor_standard" value="standard" checked="checked">
+ 														<i class="helper"></i>Standard
  													</label>
  												</div>
  												<div class="radio radio-inline">
  													<label>
- 														<input type="radio" name="region_type" id="USA_type" value="2" class="region_type">
- 														<i class="helper"></i> USA
+ 														<input type="radio" name="fouling_factor" id="fouling_factor_non_standard" value="non_standard">
+ 														<i class="helper"></i>Non Standard
  													</label>
  												</div>
  												<div class="radio radio-inline">
  													<label>
- 														<input type="radio" name="region_type" id="Europe_type" value="3" class="region_type">
- 														<i class="helper"></i> Europe
+ 														<input type="radio" name="fouling_factor" id="fouling_factor_ari" value="ari">
+ 														<i class="helper"></i><span id="fouling_ari">ARI</span><span id="fouling_factor_ahri" ></span>
  													</label>
  												</div>
- 											</div>
- 											<div id="regionlist">
- 											<div class="col-md-12">
-
- 												<label> Region </label>
- 											</div>
- 											<div class="col-md-12">
- 												<select name="region" id="region" class="form-control">
- 													@foreach($regions as $region)
- 													<option value="{{$region->name}}">{{$region->name}}</option>
- 													@endforeach
-
- 												</select>
- 											</div>
+ 											</div>    
  										</div>
+ 										<div class="row">                                    	
+ 											<div class="col-lg-4 checkbox-fade fade-in-primary">
+ 												<label>
+ 													<input type="checkbox" class="fouling_standard" name="fouling_chilled_water" id="fouling_chilled_water" value="">
+ 													<span class="cr">
+ 														<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+ 													</span><span>Chilled Water</span><br><span id="fouling_chilled_min" ></span>
+ 												</label>
+ 											</div>
+
+ 											<div class="col-lg-4">
+ 												<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')"	 class="form-control fouling_standard">
+
+ 												<span class="messages emsg hidden" id="fouling_chilled_value_error"><p class="text-danger error">Please Enter a Valid Fouling Chilled Water</p></span>
+ 											</div>
+ 											<div class="col-lg-4">
+ 												<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
+ 											</div> 
+ 										</div>
+ 										<div class="row">                                    	
+ 											<div class="col-lg-4 checkbox-fade fade-in-primary">
+ 												<label>
+ 													<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="">
+ 													<span class="cr">
+ 														<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
+ 													</span><span>Cooling Water</span><br><span id="fouling_cooling_min" ></span>
+ 												</label>
+ 											</div>
+
+ 											<div class="col-lg-4">
+ 												<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard">
+
+ 												<span class="messages emsg hidden" id="fouling_cooling_value_error"><p class="text-danger error">Please Enter a Valid Fouling Cooling Water</p></span>
+ 											</div>
+ 											<div class="col-lg-4">
+ 												<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
+ 											</div>
+ 										</div>   	
+ 									</div>
+ 								</div>    
+ 							</div>
+ 							<div class="col-md-6">
+ 								<div class="">
+ 									<div class="card-header">
+ 										<h5>Glycol Content % (By Vol)</h5>
+ 									</div>
+ 									<div class="">
+ 										<div class="row">                                		
+ 											<div class="col-12 form-radio">
+
+ 												<div class="radio radio-inline">
+ 													<label>
+ 														<input type="radio" name="glycol" value="1" id="glycol_none" checked="checked">
+ 														<i class="helper"></i>None
+ 													</label>
+ 												</div>
+ 												<div class="radio radio-inline">
+ 													<label>
+ 														<input type="radio" name="glycol" id="glycol_ethylene" value="2">
+ 														<i class="helper"></i>Ethylene
+ 													</label>
+ 												</div>
+ 												<div class="radio radio-inline">
+ 													<label>
+ 														<input type="radio" name="glycol" id="glycol_propylene" value="3">
+ 														<i class="helper"></i>Propylene
+ 													</label>
+ 												</div>
+ 											</div>    
+ 										</div>
+ 										<div class="row">
+ 											<div class="col-lg-4">
+ 												<label>Chilled Water </label>
+ 											</div>
+ 											<div class="col-md-5">
+ 												<input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
+
+ 												<span class="messages emsg hidden" id="glycol_chilled_water_error"><p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p></span>
+ 											</div>
+ 										</div> 
+ 										<div class="row">
+ 											<div class="col-lg-4">
+ 												<label>Cooling Water </label>
+ 											</div>
+ 											<div class="col-md-5">
+ 												<input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
+
+ 												<span class="messages emsg hidden" id="glycol_cooling_water_error"><p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p></span>
+ 											</div>
+ 										</div>   	
+ 									</div>
+ 								</div>    
+ 							</div>
+ 							<div class="col-md-6">
+ 							<div class="">
+ 								<div class="card-header">
+ 									<h5>Hot Water</h5>
+ 								</div>
+ 								<div class="">
+ 									<div class="row">
+ 										<div class="col-lg-5">
+ 											<label>Water In : (<span id="hot_water_in_range"></span>)</label>
+ 										</div>
+ 										<div class="col-lg-4">
+ 											<input type="text" name="hot_water_in" id="hot_water_in" onchange="updateModelValues('hot_water_in')" value="" class="form-control">
+
+ 											<span class="messages emsg hidden" id="hot_water_in_error"><p class="text-danger error">Please Enter a Valid Hot Water In</p></span>
+ 										</div>
+ 										<div class="col-lg-3">
+ 											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
+ 										</div>
+ 									</div> 
+ 									<div class="row">
+ 										<div class="col-lg-5">
+ 											<label>Water Out (min <span id="hot_water_out_range">0</span>)</label>
+ 										</div>
+ 										<div class="col-lg-4">
+ 											<input type="text" name="hot_water_out" id="hot_water_out" onchange="updateModelValues('hot_water_out')" value="" class="form-control">
+
+ 											<span class="messages emsg hidden" id="hot_water_out_error"><p class="text-danger error">Please Enter a Valid Hot Water Out</p></span>
+ 										</div>
+ 										<div class="col-lg-3">
+ 											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
+ 										</div>
+ 									</div>   	
+ 									<div class="row">
+ 										<div class="col-lg-5">
+ 											<label>Maximum Working Pressure in Hot Water </label>
+ 										</div>
+ 										<div class="col-lg-4">
+ 											<input type="text" name="all_work_pr_hw" id="all_work_pr_hw" onchange="updateModelValues('all_work_pr_hw')" value="" class="form-control">
+
+ 											<span class="messages emsg hidden" id="all_work_pr_hw_error"><p class="text-danger error">Please Enter a Valid AllWorkPrHWUnit</p></span>
+ 										</div>
+ 										<div class="col-lg-3">
+ 											<label>({{ $units_data[$unit_set->AllWorkPrHWUnit] }})</label>
+ 										</div>
+ 									</div>   	  	
+ 								</div>
+ 							</div>    
+ 						</div>
+
+ 							<div class="col-md-4"> <!-- end-new -->
+ 								<div class="row " id="region_list" style="display: none;">
+ 									<div class="col-md-12">
+ 										<div class="card-header">
+ 											<h5>Region type</h5>
+ 										</div>
+
+ 									</div>
+
+ 									<div class="form-radio col-12">
+ 										<div class="radio radio-inline">
+ 											<label>
+ 												<input type="radio" name="region_type" class="region_type" id="domestic" value="1" >
+ 												<i class="helper"></i> Domestic
+ 											</label>
+ 										</div>
+ 										<div class="radio radio-inline">
+ 											<label>
+ 												<input type="radio" name="region_type" id="USA_type" value="2" class="region_type">
+ 												<i class="helper"></i> USA
+ 											</label>
+ 										</div>
+ 										<div class="radio radio-inline">
+ 											<label>
+ 												<input type="radio" name="region_type" id="Europe_type" value="3" class="region_type">
+ 												<i class="helper"></i> Europe
+ 											</label>
  										</div>
  									</div>
- 						<div class="col-sm-12">    
- 							<div class="row">		                    	
- 								<div class="col-md-12 text-center">
- 									<input type="submit" name="submit_value" value="Calculate" id="calculate_button" class="btn btn-primary m-b-0" >
- 									<input type="button" name="reset" id="reset" value="Reset" class="btn btn-primary m-b-0">
+ 									<div id="regionlist">
+ 										<div class="col-md-12">
+
+ 											<label> Region </label>
+ 										</div>
+ 										<div class="col-md-12">
+ 											<select name="region" id="region" class="form-control">
+ 												@foreach($regions as $region)
+ 												<option value="{{$region->name}}">{{$region->name}}</option>
+ 												@endforeach
+
+ 											</select>
+ 										</div>
+ 									</div>
  								</div>
  							</div>
- 						</div>  
- 					</div>      
- 				</form>            
+ 							<div class="col-sm-12">    
+ 								<div class="row">		                    	
+ 									<div class="col-md-12 text-center">
+ 										<input type="submit" name="submit_value" value="Calculate" id="calculate_button" class="btn btn-primary m-b-0" >
+ 										<input type="button" name="reset" id="reset" value="Reset" class="btn btn-primary m-b-0">
+ 									</div>
+ 								</div>
+ 							</div>  
+ 						</div>      
+ 					</form>            
+ 				</div>
  			</div>
  		</div>
- 	</div>
 
 
 
- 	<!-- Modal one -->
- 	<div class="modal fade model-one" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
- 		<div class="modal-dialog modal-dialog-centered" role="document">
- 			<div class="modal-content">
- 				<div class="modal-header">
- 					<h5 class="modal-title" id="exampleModalLongTitle"> Notes </h5>
- 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
- 						<span aria-hidden="true">&times;</span>
- 					</button>
- 				</div>
- 				<div class="modal-body">
- 					<div id="notes_div" class="modal-scrol">
-
+ 		<!-- Modal one -->
+ 		<div class="modal fade model-one" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+ 			<div class="modal-dialog modal-dialog-centered" role="document">
+ 				<div class="modal-content">
+ 					<div class="modal-header">
+ 						<h5 class="modal-title" id="exampleModalLongTitle"> Notes </h5>
+ 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+ 							<span aria-hidden="true">&times;</span>
+ 						</button>
  					</div>
- 				</div>
- 				<div class="modal-footer">
- 					<button type="button" class="btn btn-secondary ok-snd" data-toggle="modal" data-target="#exampleModalLong1"> ok </button>       
+ 					<div class="modal-body">
+ 						<div id="notes_div" class="modal-scrol">
+
+ 						</div>
+ 					</div>
+ 					<div class="modal-footer">
+ 						<button type="button" class="btn btn-secondary ok-snd" data-toggle="modal" data-target="#exampleModalLong1"> ok </button>       
+ 					</div>
  				</div>
  			</div>
  		</div>
- 	</div>
 
 
- 	<!-- Modal -->
- 	<div class="modal fade model-two" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
- 		<div class="modal-dialog modal-dialog-centered" role="document">
- 			<div class="modal-content">
- 				<div class="modal-header">
- 					<h5 class="modal-title" id="exampleModalLongTitle1"><span id="result_span"></span> Design</h5>
- 					<button type="button" id="model2" class="close" data-dismiss="modal" aria-label="Close">
- 						<span aria-hidden="true">&times;</span>
- 					</button>
- 				</div>
- 				<div class="modal-body">
- 					<div class="row">
- 						<form id="report_form" method="post" enctype="multipart/form-data">
- 							<div class="col-md-8">
- 								<div class="row">
- 									<div class="col-md-12">
- 										<input type="text" class="form-control" required id="customer_name" placeholder="Customer" name="customer_name">
- 									</div>
- 									<div class="col-md-12">
- 										<input type="text" class="form-control" required id="project" placeholder="Project" name="project">
- 									</div>
-
- 									<div class="col-md-12">
- 										<input type="text" class="form-control" required id="phone" placeholder="Enquiry Number" name="phone">
- 									</div>
- 								</div>
- 							</div>
- 							<div class="col-md-4">
- 								<div class="row">
- 									<div class="col-12">
- 										<input type="button" name="show_report" id="show_report" value="Show Report"  class="contact-submit">
- 									</div>
- 									<div class="col-12">
- 										<input type="button" name="submit" id="save_word" value="Export to Word" class="contact-submit save_report"> 
- 									</div>
- 									<div class="col-12">
- 										<input type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">
- 									</div>
- 								</div>
- 							</div>
- 						</form>
+ 		<!-- Modal -->
+ 		<div class="modal fade model-two" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+ 			<div class="modal-dialog modal-dialog-centered" role="document">
+ 				<div class="modal-content">
+ 					<div class="modal-header">
+ 						<h5 class="modal-title" id="exampleModalLongTitle1"><span id="result_span"></span> Design</h5>
+ 						<button type="button" id="model2" class="close" data-dismiss="modal" aria-label="Close">
+ 							<span aria-hidden="true">&times;</span>
+ 						</button>
  					</div>
+ 					<div class="modal-body">
+ 						<div class="row">
+ 							<form id="report_form" method="post" enctype="multipart/form-data">
+ 								<div class="col-md-8">
+ 									<div class="row">
+ 										<div class="col-md-12">
+ 											<input type="text" class="form-control" required id="customer_name" placeholder="Customer" name="customer_name">
+ 										</div>
+ 										<div class="col-md-12">
+ 											<input type="text" class="form-control" required id="project" placeholder="Project" name="project">
+ 										</div>
 
+ 										<div class="col-md-12">
+ 											<input type="text" class="form-control" required id="phone" placeholder="Enquiry Number" name="phone">
+ 										</div>
+ 									</div>
+ 								</div>
+ 								<div class="col-md-4">
+ 									<div class="row">
+ 										<div class="col-12">
+ 											<input type="button" name="show_report" id="show_report" value="Show Report"  class="contact-submit">
+ 										</div>
+ 										<div class="col-12">
+ 											<input type="button" name="submit" id="save_word" value="Export to Word" class="contact-submit save_report"> 
+ 										</div>
+ 										<div class="col-12">
+ 											<input type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">
+ 										</div>
+ 									</div>
+ 								</div>
+ 							</form>
+ 						</div>
 
- 					<div class="summary-head">
+ 						<div class="summary-head">
  							<h4> Summary : </h4>
- 					</div>
- 					<div class="table-responsive">
+ 						</div>
+ 						<div class="table-responsive">
  							<table class="table table-bordered">
  								<thead>
  									<tr>
@@ -761,7 +670,7 @@
  									</tr>
  									<tr>     
  										<td> Hot water flow </td>
- 										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
+ 										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
  										<td><span id="hot_water_flow_span"></span></td>
  									</tr>
  									<tr>     
@@ -781,45 +690,45 @@
  									</tr>
  									<tr>     
  										<td>Hot water circuit pressure loss</td>
- 										<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
+ 										<td> </td>
  										<td> <span id="hw_circuit_pressure_span"></span> </td>
  									</tr>
  								</tbody>
  							</table>
  						</div>
- 				</div>
- 			</div>      
+ 					</div>
+ 				</div>      
+ 			</div>
  		</div>
- 	</div>
 
 
-<div class="ajax-loader" id="ajax-loader"  style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none;">
-   <img src="{{asset('assets/pageloader.gif')}}" id="ajax-loader" class="img-responsive" />
+ 		<div class="ajax-loader" id="ajax-loader"  style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none;">
+ 			<img src="{{asset('assets/pageloader.gif')}}" id="ajax-loader" class="img-responsive" />
 
-</div>
-
-
-
- 	@endsection
-
- 	@section('scripts')	
-
- 	<script>
- 		$(document).ready(function(){
+ 		</div>
 
 
- 			$(".ok-snd").click(function(){ 
- 				$("#exampleModalLong").modal('hide'); 
- 				$("body").addClass("model-open");
- 				$('#exampleModalLong1').modal({
- 					backdrop: 'static',
- 					keyboard: false
+
+ 		@endsection
+
+ 		@section('scripts')	
+
+ 		<script>
+ 			$(document).ready(function(){
+
+
+ 				$(".ok-snd").click(function(){ 
+ 					$("#exampleModalLong").modal('hide'); 
+ 					$("body").addClass("model-open");
+ 					$('#exampleModalLong1').modal({
+ 						backdrop: 'static',
+ 						keyboard: false
+ 					});
+
  				});
-
- 			});
- 			$('#exampleModalLong, #exampleModalLong1').on('hide.bs.modal',function(e){
- 				$('body').css('padding-right','0');
- 			});
+ 				$('#exampleModalLong, #exampleModalLong1').on('hide.bs.modal',function(e){
+ 					$('body').css('padding-right','0');
+ 				});
 
  //   $("#show_report").click(function(){ 
  //  		var wi = window.open();
@@ -951,9 +860,12 @@
 			$("#evaporator_material").val(model_values.evaporator_material_value);
 			$("#absorber_material").val(model_values.absorber_material_value);
 			$("#condenser_material").val(model_values.condenser_material_value);
-			$("#steam_pressure").val(model_values.steam_pressure);
-			var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
-			$('#steam_pressure_range').html(steam_pressure_range);
+			$("#hot_water_in").val(model_values.hot_water_in);
+			$("#hot_water_out").val(model_values.hot_water_out);
+			$("#all_work_pr_hw").val(model_values.all_work_pr_hw);
+			var hot_water_in_range = model_values.min_hot_water_in+" - "+model_values.max_hot_water_in;
+			$('#hot_water_in_range').html(hot_water_in_range);
+			$('#hot_water_out_range').html(model_values.min_hot_water_out);
 			// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
 			if(model_values.glycol_none === 'true')
 				$("#glycol_none").prop('disabled', true);
@@ -1018,7 +930,7 @@
 		  		$("#glycol_chilled_water").prop('disabled', false);
 		  		$("#glycol_cooling_water").prop('disabled', false);
 		  	}
-		  });
+		});
 
 		$('input:radio[name="tube_metallurgy"]').change(function() {
 			if ($(this).val() == 'standard') {
@@ -1084,7 +996,7 @@
 			}
 			foulingFactor($(this).val());
 		});
-	
+
 		function foulingFactor(value){
 			$("#fouling_chilled_water").prop('checked', false);
 
@@ -1153,7 +1065,7 @@
 
 		function getCoolingWaterRanges(cooling_water_ranges){
 			var range_values = "";
-			 console.log(cooling_water_ranges);
+			console.log(cooling_water_ranges);
 			if(!$.isArray(cooling_water_ranges)){
 				var cooling_water_ranges = cooling_water_ranges.split(",");
 			}
@@ -1305,7 +1217,7 @@
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			$.ajax({
 				type: "POST",
-				url: "{{ url('calculators/double-effect-s2/ajax-calculate-region') }}",
+				url: "{{ url('calculators/double-effect-h2/ajax-calculate-region') }}",
 				data: { values : model_values,_token: CSRF_TOKEN},
 				success: function(response){
 					if(response.status){
@@ -1349,7 +1261,7 @@
 				if(model_values.region_type == 2){
 					//$("#regionlist").show();
 					//model_values.region_name = $("#region").val();
-	 				$("#fouling_ari").html('');
+					$("#fouling_ari").html('');
 					$("#fouling_factor_ahri").html("AHRI");
 					model_values.fouling_factor ="ari";
 					model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
@@ -1458,11 +1370,18 @@
 		    		model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
 		    		validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error");
 		    		break;	
-		    		case 'steam_pressure':
-		    		model_values.steam_pressure = $("#steam_pressure").val();
-		    		validate = inputValidation(model_values.steam_pressure,"positive_decimals","steam_pressure_error");
-		    		break;								
-
+		    		case 'hot_water_in':
+		    		model_values.hot_water_in = $("#hot_water_in").val();
+		    		validate = inputValidation(model_values.hot_water_in,"positive_decimals","hot_water_in_error");
+		    		break;
+		    		case 'hot_water_out':
+		    		model_values.hot_water_out = $("#hot_water_out").val();
+		    		validate = inputValidation(model_values.hot_water_out,"positive_decimals","hot_water_out_error");
+		    		break;
+		    		case 'all_work_pr_hw':
+		    		model_values.all_work_pr_hw = $("#all_work_pr_hw").val();
+		    		validate = inputValidation(model_values.all_work_pr_hw,"positive_decimals","all_work_pr_hw_error");
+		    		break;										
 		    		default:
 			    	// code block
 			    }
@@ -1483,7 +1402,7 @@
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			$.ajax({
 				type: "POST",
-				url: "{{ url('calculators/double-effect-s2/ajax-calculate') }}",
+				url: "{{ url('calculators/double-effect-h2/ajax-calculate') }}",
 				data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 				success: function(response){
 					if(response.status){
@@ -1515,11 +1434,11 @@
 	  		$("#ajax-loader").show();
 	  		$.ajax({
 	  			type: "POST",
-	  			url: "{{ url('calculators/double-effect-s2/submit-calculate') }}",
+	  			url: "{{ url('calculators/double-effect-h2/submit-calculate') }}",
 	  			data: { values : model_values,_token: CSRF_TOKEN},
-	  			 complete: function(){
-                    $("#ajax-loader").hide();
-                 },
+	  			complete: function(){
+	  				$("#ajax-loader").hide();
+	  			},
 	  			success: function(response){
 	  				$("#ajax-loader").show();
 	  				if(response.status){
@@ -1549,13 +1468,21 @@
 	  						$('#chilled_pressure_loss_span').html((calculation_values.ChilledFrictionLoss).toFixed(2));
 	  						$('#cooling_water_flow_span').html(calculation_values.GCW);
 	  						$('#cooling_water_inlet_span').html(calculation_values.TCW11);
-	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature);
+	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature.toFixed(2));
 
 	  						var absorber_condenser_pass = calculation_values.AbsorberPasses+"/"+calculation_values.CondenserPasses
 	  						$('#absorber_pass').html(absorber_condenser_pass);
+	  						
 	  						$('#cooling_pressure_loss_span').html((calculation_values.CoolingFrictionLoss).toFixed(2));
-	  						$('#steam_pressure_span').html(calculation_values.PST1);
-	  						$('#steam_consumption_span').html((calculation_values.SteamConsumption).toFixed(2));
+	  						$('#hot_water_flow_span').html((calculation_values.HotWaterFlow).toFixed(2));
+
+	  						$('#hw_inlet_span').html((calculation_values.hot_water_in));
+	  						$('#hw_outlet_span').html((calculation_values.hot_water_out));
+
+	  						$('#generator_passes_span').html((calculation_values.GeneratorPasses));
+	  						$('#hw_circuit_pressure_span').html((calculation_values.HotWaterFrictionLoss).toFixed(2));
+	  						
+	  						
 	  						$('#result_span').html(calculation_values.Result);
 
 
@@ -1565,14 +1492,12 @@
 	  							keyboard: false
 	  						});
 	  					}
-
 	  				}
 	  				else{
 	  					$("#calculate_button").prop('disabled', true);
 	  					swal(response.msg, "", "error");
 	  					
 	  				}	
-
 	  			},
 	  		});
 	  	});
@@ -1582,7 +1507,7 @@
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			$.ajax({
 				type: "POST",
-				url: "{{ url('calculators/double-effect-s2/reset-calculate') }}",
+				url: "{{ url('calculators/double-effect-h2/reset-calculate') }}",
 				data: { model_number : model_values.model_number,values : model_values,_token: CSRF_TOKEN},
 				success: function(response){
 					if(response.status){
@@ -1630,7 +1555,7 @@
 				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 				$.ajax({
 					type: "POST",
-					url: "{{ url('calculators/double-effect-s2/show-report') }}",
+					url: "{{ url('calculators/double-effect-h2/show-report') }}",
 					data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone},
 					success: function(response){
 						// console.log(response);	
@@ -1659,7 +1584,7 @@
 				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 				$.ajax({
 					type: "POST",
-					url: "{{ url('calculators/double-effect-s2/save-report') }}",
+					url: "{{ url('calculators/double-effect-h2/save-report') }}",
 					data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone,report_type: report_type},
 					success: function(response){
 						$("#exampleModalLong1").modal('toggle');
