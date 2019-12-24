@@ -13,11 +13,7 @@
     <script src="{{asset('bower_components/d3/d3.js')}} "></script>
     <script src="{{asset('bower_components/nvd3/build/nv.d3.js')}} "></script>
     <script src="{{asset('dark-assets/assets/pages/chart/nv-chart/js/stream_layers.js')}}"></script>
-    <!-- amchart js -->
-    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
-    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
-    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
-    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+    
     <!-- High-chart js -->
     <script src="{{asset('dark-assets/assets/pages/dashboard/high-chart/js/high-chart.js')}}"></script>
     <!-- Morris Chart js -->
@@ -32,9 +28,9 @@
     <script type="text/javascript" src="{{asset('bower_components/jquery-i18next/jquery-i18next.min.js')}}"></script>
     <!-- Custom js -->
 
-    
     <script type="text/javascript" src="{{asset('dark-assets/assets/js/script.js')}}"></script>
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+   <link rel="stylesheet" type="text/css" href="{{asset('sweetalert2/dist/sweetalert2.css')}}">
+   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.min.js"></script>
     <script src="{{asset('assets/pages/user-profile.js')}}"></script>
     
     @yield('scripts')

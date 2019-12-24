@@ -177,7 +177,7 @@ class DoubleH2SteamController extends Controller
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
-        log::info("HotWaterFlow =".$calculated_values['HotWaterFlow']);
+        
 
         //log::info($calculated_values);
 
@@ -537,6 +537,8 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['ChilledFrictionLoss'] = 0;
         $this->calculation_values['CoolingFrictionLoss'] = 0;
         $this->calculation_values['SteamConsumption'] = 0;
+        $this->calculation_values['HotWaterFlow'] = 0;
+        $this->calculation_values['HotWaterFrictionLoss'] = 0;
 
 
         $this->DATA();
@@ -1928,10 +1930,14 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['I3'] = $this->calculation_values['T3'] + 100;
 
             $this->calculation_values['GREFL'] = $this->calculation_values['QEVAL'] / ($this->calculation_values['J1L'] - $this->calculation_values['I1H']);
+            
             $this->calculation_values['GREFH'] = ($this->calculation_values['QEVAH'] + $this->calculation_values['GREFL'] * ($this->calculation_values['I3'] - $this->calculation_values['I1H'])) / ($this->calculation_values['J1H'] - $this->calculation_values['I3']);
 
+
             $this->calculation_values['GCONCH'] = $this->calculation_values['GDIL'] - $this->calculation_values['GREFH'];
+
             $this->calculation_values['XCONCH'] = $this->calculation_values['GDIL'] * $this->calculation_values['XDIL'] / $this->calculation_values['GCONCH'];
+
             $this->calculation_values['T6H'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1H'], $this->calculation_values['XCONCH']);
             $this->calculation_values['I6H'] = $vam_base2->LIBR_ENTHALPY($this->calculation_values['T6H'], $this->calculation_values['XCONCH']);
 
@@ -1941,7 +1947,11 @@ class DoubleH2SteamController extends Controller
             $this->calculation_values['I2L'] = $vam_base2->LIBR_ENTHALPY($this->calculation_values['T2L'], $this->calculation_values['XDILL']);
 
             $this->calculation_values['GCONC'] = $this->calculation_values['GDILL'] - $this->calculation_values['GREFL'];
+
             $this->calculation_values['XCONC'] = $this->calculation_values['GDILL'] * $this->calculation_values['XDILL'] / $this->calculation_values['GCONC'];
+           
+            
+
             $this->calculation_values['GREF'] = $this->calculation_values['GREFH'] + $this->calculation_values['GREFL'];
             $this->calculation_values['T6'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XCONC']);
 
@@ -3746,6 +3756,7 @@ class DoubleH2SteamController extends Controller
 
 
         $this->calculation_values['HTG_HSEP_DS_REQ'] = (($this->calculation_values['QHTG'] / 860) / $this->calculation_values['AHTG']) * 0.015;
+        
 
         if ($this->calculation_values['HTG_HSEP_DS'] < $this->calculation_values['HTG_HSEP_DS_REQ'])
             return false;
@@ -5343,7 +5354,7 @@ class DoubleH2SteamController extends Controller
         $chilled_table->addRow();
         $chilled_table->addCell(1750)->addText(htmlspecialchars("1."));
         $chilled_table->addCell(1750)->addText(htmlspecialchars("Hot water flow(+/- 3%)"));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
+        $chilled_table->addCell(1750)->addText(htmlspecialchars($units_data[$unit_set->FlowRateUnit]));
         $chilled_table->addCell(1750)->addText(htmlspecialchars(round($calculation_values['HotWaterFlow'],1)));
 
         $chilled_table->addRow();

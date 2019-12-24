@@ -286,7 +286,7 @@
 										<td> 1 </td>
 										<td>Hot water flow(+/- 3%)</td>
 										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
-										<td> {{ round($calculation_values['FlowRateUnit'],1) }}</td>
+										<td> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>

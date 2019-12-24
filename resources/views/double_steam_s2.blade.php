@@ -137,7 +137,7 @@
 	 }
 	 
 	 .notes-content{
-		 border: 3px solid #5d5d5d;
+		
 		  padding: 15px; 
 /*
 		 max-height: 500px;              
@@ -209,6 +209,7 @@
 	width: 100%;
 	background: #fff;
 	overflow-y: auto;
+	 border: 3px solid #5d5d5d;
 }
 	 .force-overflow{
 		 min-height: 450px;
@@ -260,34 +261,36 @@
 				{{ csrf_field() }}
 				<div class="row">
 					<div class="col-md-7 padd-2">
-					 <div class="row">
-			  <div class="col-md-6">
-				<div class="page-header-title">
-				 <h4>Double Effect Steam Fired series</h4>
-			 </div>
-				  </div>
+					 	<div class="row">
+						  	<div class="col-md-6">
+								<div class="page-header-title">
+								 <h4>Double Effect Steam Fired series</h4>
+							 	</div>
+							</div>
 			 
-			  <div class="form-radio col-6">
-					 <div class="radio radio-inline">
-						 <label>
-							 <input type="radio" name="region_type" class="region_type" id="domestic" value="1">
-							 <i class="helper"></i> Domestic
-						 </label>
-					 </div>
-					 <div class="radio radio-inline">
-						 <label>
-							 <input type="radio" name="region_type" id="USA_type" value="2" class="region_type">
-							 <i class="helper"></i> USA
-						 </label>
-					 </div>
-					 <div class="radio radio-inline">
-						 <label>
-							 <input type="radio" name="region_type" id="Europe_type" value="3" class="region_type">
-							 <i class="helper"></i> Europe
-						 </label>
-					 </div>
-				 </div>
-			 </div>
+						  	<div class="form-radio col-6">
+						  		<div class="row " id="region_list" style="display: none;">
+									<div class="radio radio-inline">
+										 <label>
+											 <input type="radio" name="region_type" class="region_type" id="domestic" value="1">
+											 <i class="helper"></i> Domestic
+										 </label>
+									</div>
+								 	<div class="radio radio-inline">
+									 	<label>
+										 	<input type="radio" name="region_type" id="USA_type" value="2" class="region_type">
+										 	<i class="helper"></i> USA
+									 	</label>
+								 	</div>
+								 	<div class="radio radio-inline">
+									 	<label>
+										 	<input type="radio" name="region_type" id="Europe_type" value="3" class="region_type">
+										 	<i class="helper"></i> Europe
+									 	</label>
+								 	</div>
+								</div>
+							</div>
+			 			</div>
 						<div class="row">
 							<div class="col-md-12">
 								<div class="">
@@ -298,14 +301,17 @@
 -->
 									<div class="row mb-2">
 										<div class="col-lg-4">
-											<input type="text" value="" class="form-control" placeholder="Customer Name">
+
+											<input type="text" class="form-control" required id="customer_name" placeholder="Customer Name" name="customer_name">
+											
 										</div>
 									  
 										<div class="col-lg-4">
-											<input type="text" value="" class="form-control" placeholder="Project Name">
+											 <input type="text" class="form-control" required id="project" placeholder="Project Name" name="project">
+
 										</div>                                          
-										<div class="col-lg-4">                   
-											<input type="text" value="" class="form-control" placeholder="Opportunity Number">
+										<div class="col-lg-4">        
+											<input type="text" class="form-control" required id="phone" placeholder="Opportunity Number" name="phone">       
 										</div>
 									</div>
 								</div>
@@ -844,19 +850,31 @@
 
 					<div class="col-md-5 padd-2">
 						<div class="scrollbar-right" id="scroll-right">
-							<div class="force-overflow">                        
-								<div class="notes-content">                     
+							<div class="force-overflow"> 
+							    <div class="notes-content"  >
+							    	<div id="errornotes" style="display: none;">
+								    	<div class="summary-head">
+						 				<h4> NOTES : </h4>
+					 					</div>
+					 					<span id="errormessage">
+												
+										</span>
+							    	</div>              
+									<div class="showreport" style="display: none;">                 
 									<div class="row">
 									
 									 	<div class="col-md-6">
-										 <button type="button" name="submit" id="save_word" value="Export to Word" class="contact-submit save_report">   <i class="fas fa-file-word"></i> Export to Word</button>
+										 	<button type="button" name="submit" id="save_word" value="Export to Word" class="contact-submit save_report">   <i class="fas fa-file-word"></i> Export to Word</button>
 									 	</div>
 									 	<div class="col-md-6">
-										 <button type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">  <i class="fas fa-file-pdf"></i> Export to Pdf</button>
+										 	<button type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">  <i class="fas fa-file-pdf"></i> Export to Pdf</button>
 										</div>
 								 	</div>                           
 						  			<div class="summary-head">
 					 				<h4> Summary : </h4>
+				 					</div>
+				 					<div id="notes_div" >
+
 				 					</div>
 									<div class="table-responsive">
 										<table class="table table-bordered">
@@ -937,6 +955,7 @@
 										</table>
 									</div>
 								</div>
+
 							</div>
 	  					</div>
    					</div>                     
@@ -948,79 +967,6 @@
 </div>
 
 
- <!-- Modal one -->
- <div class="modal fade model-one" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-	 <div class="modal-dialog modal-dialog-centered" role="document">
-		 <div class="modal-content">
-			 <div class="modal-header">
-				 <h5 class="modal-title" id="exampleModalLongTitle"> Notes </h5>
-				 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					 <span aria-hidden="true">&times;</span>
-				 </button>
-			 </div>
-			 <div class="modal-body">
-				 <div id="notes_div" class="modal-scrol">
-
-				 </div>
-			 </div>
-			 <div class="modal-footer">
-				 <button type="button" class="btn btn-secondary ok-snd" data-toggle="modal" data-target="#exampleModalLong1"> ok </button>
-			 </div>
-		 </div>
-	 </div>
- </div>
-
-
- <!-- Modal -->
- <div class="modal fade model-two" id="exampleModalLong1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
-	 <div class="modal-dialog modal-dialog-centered" role="document">
-		 <div class="modal-content">
-			 <div class="modal-header">
-				 <h5 class="modal-title" id="exampleModalLongTitle1"><span id="result_span"></span> Design</h5>
-				 <button type="button" id="model2" class="close" data-dismiss="modal" aria-label="Close">
-					 <span aria-hidden="true">&times;</span>
-				 </button>
-			 </div>
-			 <div class="modal-body">
-				 <div class="row">
-					 <form id="report_form" method="post" enctype="multipart/form-data">
-						 <div class="col-md-8">
-							 <div class="row">
-								 <div class="col-md-12">
-									 <input type="text" class="form-control" required id="customer_name" placeholder="Customer" name="customer_name">
-								 </div>
-								 <div class="col-md-12">
-									 <input type="text" class="form-control" required id="project" placeholder="Project" name="project">
-								 </div>
-
-								 <div class="col-md-12">
-									 <input type="text" class="form-control" required id="phone" placeholder="Enquiry Number" name="phone">
-								 </div>
-							 </div>
-						 </div>
-						 <div class="col-md-4">
-							 <div class="row">
-								 <div class="col-12">
-									 <input type="button" name="show_report" id="show_report" value="Show Report" class="contact-submit">
-								 </div>
-								 <div class="col-12">
-									 <input type="button" name="submit" id="save_word" value="Export to Word" class="contact-submit save_report">
-								 </div>
-								 <div class="col-12">
-									 <input type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">
-								 </div>
-							 </div>
-						 </div>
-					 </form>
-				 </div>
-
-				
-			 </div>
-		 </div>
-	 </div>
- </div>
-
-
 <div class="ajax-loader" id="ajax-loader"  style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none;">
    <img src="{{asset('assets/pageloader.gif')}}" id="ajax-loader" class="img-responsive" />
 
@@ -1028,26 +974,6 @@
 
 @endsection
 @section('scripts')	
-<script>
-		$(document).ready(function(){
-
-
-			$(".ok-snd").click(function(){ 
-				$("#exampleModalLong").modal('hide'); 
-				$("body").addClass("model-open");
-				$('#exampleModalLong1').modal({
-					backdrop: 'static',
-					keyboard: false
-				});
-
-			});
-			$('#exampleModalLong, #exampleModalLong1').on('hide.bs.modal',function(e){
-				$('body').css('padding-right','0');
-			});
-});
-
-</script>
-
 
 <script type="text/javascript">
 	
@@ -1148,7 +1074,7 @@
 			$('#model_name').html(model_values.model_name);
 			$('#chilled_water_in').val(model_values.chilled_water_in);
 			$('#chilled_water_out').val(model_values.chilled_water_out);
-			$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out );
+			$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
 			var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
 			$('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
 			//$('#cooling_water_in_range').attr(cooling_water_in_range);
@@ -1379,10 +1305,11 @@
 			}
 			
 			for (var i = 0; i < cooling_water_ranges.length; i+=2) {
-				range_values += "("+cooling_water_ranges[i]+" - "+cooling_water_ranges[i+1]+")";
-			}
+				range_values += "("+cooling_water_ranges[i]+" - "+cooling_water_ranges[i+1]+") /";
 
-			return range_values;
+			}
+		return range_values.replace(/\/$/, "");
+			
 		}
 
 		function updateEvaporatorOptions(value,thickness_change){
@@ -1541,10 +1468,13 @@
 					else{
 						$("#calculate_button").prop('disabled', true);
 						// alert(response.msg);
+						$(".showreport").hide();
+						$("#errornotes").show();
+						$("#errormessage").html(response.msg);
 						
-						swal(response.msg, "", "error").then((value) => {
-							$('#'+changed_value).focus();
-						});
+						// swal(response.msg, "", "error").then((value) => {
+						// 	$('#'+changed_value).focus();
+						// });
 						// console.log(changed_value);
 						
 					}					
@@ -1717,10 +1647,15 @@
 					else{
 						$("#calculate_button").prop('disabled', true);
 						// alert(response.msg);
+						console.log(changed_value);
+						$(".showreport").hide();
+						$("#errornotes").show();
+						$('#'+changed_value).focus();
+						$("#errormessage").html(response.msg);
 						
-						swal(response.msg, "", "error").then((value) => {
-							$('#'+changed_value).focus();
-						});
+						// swal(response.msg, "", "error").then((value) => {
+						// 	
+						// });
 						// console.log(changed_value);
 						
 					}					
@@ -1746,18 +1681,17 @@
 						console.log(response.calculation_values);
 						calculation_values = response.calculation_values;
 						if(calculation_values.Result == "FAILED"){
-							swal(calculation_values.Notes, "", "error");
+							$(".showreport").hide();
+							$("#errornotes").show();
+							$("#errormessage").html(calculation_values.Notes);
+							//swal(calculation_values.Notes, "", "error");
 						}
 						else{
 							var notes = calculation_values.notes;
-							$( "#notes_div" ).html("");
+							$("#notes_div").html("");
 							for (var i = 0; i < notes.length; i++) {
 								$( "#notes_div" ).append("<p>"+notes[i]+"</p>");
 							}
-
-							$('#customer_name').val("");
-							$('#project').val("");
-							$('#phone').val("");
 
 							$('#capacity_span').html(calculation_values.TON);
 							$('#chilled_water_flow_span').html(calculation_values.ChilledWaterFlow);
@@ -1780,17 +1714,22 @@
 
 
 							// $('#exampleModalLong').modal('show');
-							$('#exampleModalLong').modal({
-								backdrop: 'static',
-								keyboard: false
-							});
+							// $('#exampleModalLong').modal({
+							// 	backdrop: 'static',
+							// 	keyboard: false
+							// });
+							$("#errornotes").hide();
+							$(".showreport").show();
+							
 						}
 
 					}
 					else{
+						$(".showreport").hide();
+						$("#errornotes").show();
+						$("#errormessage").html(response.msg);
 						$("#calculate_button").prop('disabled', true);
-						swal(response.msg, "", "error");
-						
+						//swal(response.msg, "", "error");
 					}	
 
 				},
@@ -1827,10 +1766,15 @@
 						updateValues();
 						$('#capacity').focus();
 						$("#calculate_button").prop('disabled', false);
+						$(".showreport").hide();
+						$("#errornotes").hide();
 						
 					}
 					else{
-						swal("Sorry Something Went Wrong", "", "error");
+						$(".showreport").hide();
+						$("#errornotes").show();
+						$("#errormessage").html("Sorry Something Went Wrong");
+						//swal("Sorry Something Went Wrong", "", "error");
 					}					
 				},
 			});
@@ -1872,8 +1816,8 @@
 			var report_type = this.id;
 			
 			if(name == '' || project == '' || phone == ''){
-				
-				alert("Enter the details");
+
+				swal("Enter the details", "", "error");
 			}
 			else{
 				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -1882,7 +1826,7 @@
 					url: "{{ url('calculators/double-effect-s2/save-report') }}",
 					data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone,report_type: report_type},
 					success: function(response){
-						$("#exampleModalLong1").modal('toggle');
+						//$("#exampleModalLong1").modal('toggle');
 						console.log(response);	
 						window.open(response.redirect_url, '_blank');
 

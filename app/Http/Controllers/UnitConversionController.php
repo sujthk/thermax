@@ -755,10 +755,6 @@ class UnitConversionController extends Controller
     		}
     	}
         
-
-
-        log::info($calculated_values);
-
     	return $calculated_values;
 
     }

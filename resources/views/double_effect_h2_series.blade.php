@@ -670,7 +670,7 @@
  									</tr>
  									<tr>     
  										<td> Hot water flow </td>
- 										<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
+ 										<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
  										<td><span id="hot_water_flow_span"></span></td>
  									</tr>
  									<tr>     
@@ -690,7 +690,7 @@
  									</tr>
  									<tr>     
  										<td>Hot water circuit pressure loss</td>
- 										<td> </td>
+ 										<td>{{ $units_data[$unit_set->PressureDropUnit] }} </td>
  										<td> <span id="hw_circuit_pressure_span"></span> </td>
  									</tr>
  								</tbody>
