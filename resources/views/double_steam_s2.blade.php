@@ -112,150 +112,135 @@
 		 margin-bottom: 4px;
 		 margin-top: 2px;
 	 }
-	 
+ 
 	body.dark-layout .ss-steam-label .form-control{
-	 background: #fff;
-	color: #333;
-	border: none;
-	border-bottom: 1px solid #c5c5c5;
-	border-radius: 1px;
+		background: #fff;
+		color: #333;
+		border: none;
+		border-bottom: 1px solid #c5c5c5;
+		border-radius: 1px;
 		font-size: 11px;
+	    text-align-last: center;
+	}
+    body.dark-layout .ss-steam-label select option{
         text-align-last: center;
-}
-     body.dark-layout .ss-steam-label select option{
-         text-align-last: center;
-     }
+    }
    
-	 .ss-steam-label .form-control{
-		 text-align: center;
-	 }
+	.ss-steam-label .form-control{
+		text-align: center;
+	}
 	 
-	 .ss-steam-label .btn-primary{
-		 padding: 4px 20px;
-		 width: 100px;
-		 font-size: 11px;
-	 }
+	.ss-steam-label .btn-primary{
+	 	padding: 4px 20px;
+	 	width: 100px;
+	 	font-size: 11px;
+	}
 	 
-	 .notes-content{
+	.notes-content{
 		
-		  padding: 15px; 
-/*
-		 max-height: 500px;              
-		 overflow: hidden;         
-*/
-	 }
-/*
-	  .notes-content:hover{
-		   overflow-y: auto;     
-		  
-	 }
-*/
-	 .notes-content td, .notes-content th{
-		 padding: 5px;
-		 font-size: 11px;
-	 }
+		padding: 15px; 
+		/*
+			max-height: 500px;              
+			overflow: hidden;         
+		*/
+	}
+	/*
+		  .notes-content:hover{
+			   overflow-y: auto;     
+			  
+		 }
+	*/
+	.notes-content td, .notes-content th{
+		padding: 2px;
+		font-size: 11px;
+	}
 	 
-	 .contact-submit{
-			padding: 4px 15px;
-	background: #e10010;
-	border: none;
-	font-size: 11px;
-	border-radius: 2px;
-	color: #fff;
-		 transition: all .2s;
-	 }
-	 .contact-submit:hover{
-		 background: #333;
-		 transition: all .2s;
-	 }
-	 .contact-submit:focus{
-		 outline: 0;
-		 box-shadow: none;
-	 }
+	.contact-submit{
+		padding: 4px 15px;
+		background: #e10010;
+		border: none;
+		font-size: 11px;
+		border-radius: 2px;
+		color: #fff;
+		transition: all .2s;
+	}
+	.contact-submit:hover{
+		background: #333;
+		transition: all .2s;
+	}
+	.contact-submit:focus{
+		outline: 0;
+		box-shadow: none;
+	}
 	 
-	 .cal-rest{
-		 padding: 25px 0 0 0;
-	 }
-	 .padd-2{
+	.cal-rest{
+		padding: 25px 0 0 0;
+	}
+	.padd-2{
 		 
-	 }
-     .padd-mm{
-         padding-top: 10px;
-     }
+	}
+    .padd-mm{
+        padding-top: 10px;
+    }
 	 
-	 
-#scroll-right::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 4px;
-	background-color: #F5F5F5;
-}
+	#scroll-right::-webkit-scrollbar-track
+	{
+		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+		border-radius: 4px;
+		background-color: #F5F5F5;
+	}
 
-#scroll-right::-webkit-scrollbar
-{
-	width: 8px;
-	background-color: #F5F5F5;
-}
+	#scroll-right::-webkit-scrollbar
+	{
+		width: 8px;
+		background-color: #F5F5F5;
+	}
 
-#scroll-right::-webkit-scrollbar-thumb
-{
-	border-radius: 4px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #555;
-}
-.scrollbar-right
-{	
-	height: 495px;
-	width: 100%;
-	background: #fff;
-	overflow-y: auto;
-	 border: 3px solid #5d5d5d;
-}
-	 .force-overflow{
-		 min-height: 450px;
-	 } 
+	#scroll-right::-webkit-scrollbar-thumb
+	{
+		border-radius: 4px;
+		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+		background-color: #555;
+	}
+	.scrollbar-right
+	{	
+		height: 495px;
+		width: 100%;
+		background: #fff;
+		overflow-y: auto;
+		 border: 3px solid #5d5d5d;
+	}
+	.force-overflow{
+		min-height: 450px;
+	} 
 
 
-.tooltip-inner {
-	  background-color: #fff; 
-	  color: #000;
-	  border: 1px solid #000;
-   padding: 0 10px;
-    margin: 0;
-   font-size: 11px;
-  }
+	.tooltip-inner {
+		background-color: #fff; 
+		color: #000;
+		border: 1px solid #000;
+	   	padding: 0 10px;
+    	margin: 0;
+   		font-size: 11px;
+  	}
 
-     .margin-0{
-         margin: 0;
-     }
-     .padding-0{
-         padding: 0;
-     }
+    .margin-0{
+        margin: 0;
+    }
+    .padding-0{
+        padding: 0;
+    }
     
- </style>
- 
- 
- @endsection
-
- @section('content')
- <div class="main-body ss-steam-label">
-	 <div class="page-wrapper max-calculator">
-		 <div class="page-header">
-		
-			 <!--
-			 <div class="page-header-breadcrumb">
-				 <ul class="breadcrumb-title">
-					 <li class="breadcrumb-item">
-						 <a href="{{ url('dashboard') }}">
-							 <i class="icofont icofont-home"></i>
-						 </a>
-					 </li>
-					 <li class=""><a href="#!">Double Steam S2</a>
-					 </li>
-				 </ul>
-			 </div>
--->
-	   
+    .box-color{
+    	
+    	border: 1px solid red !important;
+    }
+</style>
+@endsection
+@section('content')
+<div class="main-body ss-steam-label">
+	<div class="page-wrapper max-calculator">
+		<div class="page-header">
 		<div class="page-body">
 			<form id="double_steam_s2" method="post" enctype="multipart/form-data">
 				{{ csrf_field() }}
@@ -294,11 +279,7 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div class="">
-<!--
-								<div class="card-header">
-									 <h5>Cooling Water</h5>
-								</div>
--->
+
 									<div class="row mb-2">
 										<div class="col-lg-4">
 
@@ -430,7 +411,8 @@
 								<label>Cooling Water Flow</label>
 							</div>
 							<div class="col-lg-2">
-								<input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control cooling_water_ranges" data-placement="bottom" data-original-title>
+
+								<input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control cooling_water_ranges " data-placement="bottom" data-original-title>
 
 								<span class="messages emsg hidden" id="cooling_water_flow_error">
 									<p class="text-danger error">Please Enter a Valid Cooling Water Flow</p>
@@ -501,7 +483,7 @@
 						</div>
 
 						<div class="row">
-							<div class="col-md-6">                               
+							<div class="col-md-6">                      
 								<div class="card-header">
 									 <h5>Tube Metallurgy</h5>
 								</div>
@@ -521,223 +503,94 @@
 									</label>
 								 </div>
 							</div>
-<!--
-							 <div class="col-md-6">
-								 <label>Material</label>
-							 </div>
-							 <div class="col-md-6">
-								 <label>Thickness (mm)</label>
-							 </div>
--->
 						</div>
 						<div class="row">
 							<div class="col-lg-3">
                                 <p><label class=" col-form-label">Evaporator</label></p>
 							<div class="row">
-							<div class="col-lg-12">
-								<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
-									 @foreach($evaporator_options as $evaporator_option)
-									 <option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
-									 @endforeach
-								 </select>
-                                </div>
-								 <div class="col-lg-12 range-hide">
-								 <div class="row">
-								     <div class="col-md-8">
-								         
-								    
-								<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" title="">
+								<div class="col-lg-12">
+									<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
+										 @foreach($evaporator_options as $evaporator_option)
+										 <option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
+										 @endforeach
+									 </select>
+	                            </div>
+								<div class="col-lg-12 range-hide">
+									<div class="row">
+									    <div class="col-md-8">
+											<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" title="">
 
-								<span class="messages emsg hidden" id="evaporator_thickness_error">
-									 <p class="text-danger error">Please Enter a Valid Evaporator Thickness</p>
-								 </span>
-								 <span class="" id="evaporator_range"></span>
-								 
+											<span class="messages emsg hidden" id="evaporator_thickness_error">
+											 <p class="text-danger error">Please Enter a Valid Evaporator Thickness</p>
+										 	</span>
+										 	<span class="" id="evaporator_range"></span>
+										</div>
+										<div class="col-lg-4">
+										 	<label class="padd-mm"> (mm) </label>
+									    </div>
+								 	</div>
+					         	</div>							
 							</div>
-							<div class="col-lg-4">
-							  <label class="padd-mm"> (mm) </label>
-						    	</div>
-							 </div>
-				         </div>							
-					</div>
-				</div>                           
+						</div>                           
 
-							
-
-							<div class="col-lg-3">
-                                <p> <label class=" col-form-label">Absorber</label></p>
-								 <div class="row">
-							<div class="col-lg-12">								
-								<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
-									@foreach($absorber_options as $absorber_option)
-									<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
-									@endforeach
-								</select>
-							</div>
-							<div class="col-lg-12 range-hide">
-							 <div class="row">
-								     <div class="col-md-8">
-								<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
-
-								<span class="messages emsg hidden" id="absorber_thickness_error">
-									 <p class="text-danger error">Please Enter a Valid Absorber Thickness</p>
-								</span>
-								<span class="metallurgy_standard_span" id="absorber_range"></span>
-							</div>
-							<div class="col-lg-4">
-							<label class="padd-mm"> (mm) </label>
-							</div>
-							</div>
-                                     </div>
-                                </div>
-                            </div>
-							
-
-							<div class="col-lg-3">
-                                <p> <label class=" col-form-label">Condenser</label></p>
-								 <div class="row">
-							<div class="col-lg-12">		
-								<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
-									 @foreach($condenser_options as $condenser_option)
-									 <option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
-									 @endforeach
-								</select>
-							</div>
-							<div class="col-lg-12 range-hide">
+						<div class="col-lg-3">
+                            <p><label class=" col-form-label">Absorber</label></p>
 							<div class="row">
-								     <div class="col-md-8">
-								<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
-								<span class="messages emsg hidden" id="condenser_thickness_error">
-									 <p class="text-danger error">Please Enter a Valid Condenser Thickness</p>
-								</span>
-								<span class="metallurgy_standard_span" id="condenser_range"></span>
-							</div>
-							<div class="col-lg-4">
-							  	<label class="padd-mm"> (mm) </label>
-							</div>
-							</div>
-                                     </div>
-                                </div>
-							
-						</div>
-                       <div class="col-lg-3">
-                            </div>
-                        </div>
-
-						<!-- <div class="col-md-6"> 
-							<div class="">
-								<div class="card-header">
-									<h5>Tube Metallurgy</h5>
+								<div class="col-lg-12">								
+									<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
+										@foreach($absorber_options as $absorber_option)
+										<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
+										@endforeach
+									</select>
 								</div>
-								<div class="">
-									<div class="row">  
-										<div class="col-md-8">                              		<div class="row"> 
-											<div class="form-radio col-12">
-												<div class="radio radio-inline">
-													<label>
-														<input type="radio" name="tube_metallurgy" id="tube_metallurgy_standard" value="standard" checked="checked">
-														<i class="helper"></i>Standard
-													</label>
-												</div>
-												<div class="radio radio-inline">
-													<label>
-														<input type="radio" name="tube_metallurgy" id="tube_metallurgy_non_standard" value="non_standard">
-														<i class="helper"></i>Non Standard
-													</label>
-												</div>
-											</div>   
-											<div class="col-md-6">                                      
-												<label>Material</label>
-											</div>
-											<div class="col-md-6">      
-												<label>Thickness ({{ $units_data[$unit_set->LengthUnit] }})</label>
-											</div>
+								<div class="col-lg-12 range-hide">
+									<div class="row">
+										<div class="col-md-8">
+											<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
 
+											<span class="messages emsg hidden" id="absorber_thickness_error">
+												 <p class="text-danger error">Please Enter a Valid Absorber Thickness</p>
+											</span>
+											<span class="metallurgy_standard_span" id="absorber_range"></span>
 										</div>
-										<div class="row">
-											<div class="col-lg-12">
-												<div class="row">
-													<div class="col-lg-6">
-														<label class="">Evaporator</label>
-													</div>
-													<div class="col-lg-6">
-														<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
-															@foreach($evaporator_options as $evaporator_option)
-															<option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
-															@endforeach
-														</select>
-													</div>
-
-
-
-													<div class="col-lg-6">
-														<label class=" col-form-label">Absorber</label>
-													</div>
-													<div class="col-lg-6">
-														<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
-															@foreach($absorber_options as $absorber_option)
-															<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
-															@endforeach
-														</select>
-													</div>
-
-
-													<div class="col-lg-6">
-														<label class=" col-form-label">Condenser</label>
-													</div>
-													<div class="col-lg-6">
-														<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
-															@foreach($condenser_options as $condenser_option)
-															<option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
-															@endforeach
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>	
-
-									<div class="col-md-4"> 
-										<div class="row " id="region_list" style="display: none;">
-											<div class="col-md-12">
-
-												<label> Region type</label>
-											</div>
-
-											<div class="form-radio col-12">
-												<div class="radio radio-inline">
-													<label>
-														<input type="radio" name="region_type" class="region_type" id="domestic" value="1" >
-														<i class="helper"></i> Domestic
-													</label>
-												</div>
-												<div class="radio radio-inline">
-													<label>
-														<input type="radio" name="region_type" id="export_type" value="2" class="region_type">
-														<i class="helper"></i> Export Type
-													</label>
-												</div>
-											</div>
-											<div id="regionlist">
-											<div class="col-md-12">
-
-												<label> Region </label>
-											</div>
-											<div class="col-md-12">
-												<select name="region" id="region" class="form-control">
-													@foreach($regions as $region)
-													<option value="{{$region->name}}">{{$region->name}}</option>
-													@endforeach
-
-												</select>
-											</div>
-										</div>
+										<div class="col-lg-4">
+										<label class="padd-mm"> (mm) </label>
 										</div>
 									</div>
+                                </div>
+                            </div>
+                        </div>
+							
+
+						<div class="col-lg-3">
+                            <p> <label class=" col-form-label">Condenser</label></p>
+							<div class="row">
+								<div class="col-lg-12">		
+									<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
+										 @foreach($condenser_options as $condenser_option)
+										 <option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
+										 @endforeach
+									</select>
 								</div>
-							</div>    
+								<div class="col-lg-12 range-hide">
+									<div class="row">
+										<div class="col-md-8">
+											<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
+											<span class="messages emsg hidden" id="condenser_thickness_error">
+												 <p class="text-danger error">Please Enter a Valid Condenser Thickness</p>
+											</span>
+											<span class="metallurgy_standard_span" id="condenser_range"></span>
+										</div>
+										<div class="col-lg-4">
+										  	<label class="padd-mm"> (mm) </label>
+										</div>
+									</div>
+                                </div>
+                            </div>
 						</div>
-						</div> -->
+                       	<div class="col-lg-3">
+                        </div>
+                        </div>
 
 						<div class="row">
 							<div class="col-md-6">
@@ -861,6 +714,9 @@
 										</span>
 							    	</div>              
 									<div class="showreport" style="display: none;">                 
+									<div class="summary-head">
+					 				<h4> Optimal Design  </h4>
+				 					</div>
 									<div class="row">
 									
 									 	<div class="col-md-6">
@@ -870,92 +726,16 @@
 										 	<button type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">  <i class="fas fa-file-pdf"></i> Export to Pdf</button>
 										</div>
 								 	</div>                           
-						  			<div class="summary-head">
+						  			<!-- <div class="summary-head">
 					 				<h4> Summary : </h4>
-				 					</div>
+				 					</div> -->
 				 					<div id="notes_div" >
 
 				 					</div>
-									<div class="table-responsive">
-										<table class="table table-bordered">
-											<thead>
-												<tr>
-													<th scope="col">Item</th>
-													<th scope="col">Unit</th>
-													<th scope="col">Value</th>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td> Capacity</td>
-													<td> {{ $units_data[$unit_set->CapacityUnit] }}</td>
-													<td><span id="capacity_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Chilled water flow</td>
-													<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
-													<td> <span id="chilled_water_flow_span"></span></td>
-												</tr>
-												<tr>
-													<td> Chilled water inlet temperature</td>
-													<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-													<td> <span id="chilled_inlet_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Chilled water outlet temperature</td>
-													<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-													<td> <span id="chilled_outlet_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Evaporate passes</td>
-													<td> </td>
-													<td> <span id="evaporator_pass"></span> </td>
-												</tr>
-												<tr>
-													<td> Chilled water circuit pressure loss </td>
-													<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
-													<td> <span id="chilled_pressure_loss_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Cooling water flow </td>
-													<td> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
-													<td> <span id="cooling_water_flow_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Cooling water inlet temperature </td>
-													<td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-													<td> <span id="cooling_water_inlet_span"></span></td>
-												</tr>
-												<tr>
-													<td> Cooling water outlet temperature </td>
-													 <td> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-													<td> <span id="cooling_water_outlet_span"></span></td>
-												</tr>
-												<tr>
-													<td> Absorber / Condenser Passes </td>
-													<td> </td>
-													<td> <span id="absorber_pass"></span> </td>
-												</tr>
-												<tr>
-													<td> Cooling water circuit pressure loss </td>
-													<td> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
-													<td> <span id="cooling_pressure_loss_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Steam pressure </td>
-													<td> {{ $units_data[$unit_set->PressureUnit] }}</td>
-													<td> <span id="steam_pressure_span"></span> </td>
-												</tr>
-												<tr>
-													<td> Steam consumption </td>
-													<td> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
-													<td> <span id="steam_consumption_span"></span> </td>
-												</tr>
-											</tbody>
-										</table>
+									<div id="showreportlist">
+										
 									</div>
 								</div>
-
 							</div>
 	  					</div>
    					</div>                     
@@ -976,10 +756,8 @@
 @section('scripts')	
 
 <script type="text/javascript">
-	
 
 	var model_values = {!! json_encode($default_values) !!};
-
 	var evaporator_options = {!! json_encode($evaporator_options) !!};
 	var absorber_options = {!! json_encode($absorber_options) !!};
 	var condenser_options = {!! json_encode($condenser_options) !!};
@@ -999,12 +777,10 @@
 		$("#region_list").hide();
 	}
 	$( document ).ready(function() {
-			// swal("Hello world!");
-			
-			loadDefaultValues();
-
-			// sendValues();
-		});
+		// swal("Hello world!");
+		loadDefaultValues();
+		// sendValues();
+	});
 
 
 	function loadDefaultValues(){
@@ -1026,209 +802,210 @@
 		updateValues();
 	}
 
-	function inputValidation(value,validation_type,input_name){
-			// console.log(value);
-			var positive_decimal=/^(0|[1-9]\d*)(\.\d+)?$/;
-			var negative_decimal=/^-?(0|[1-9]\d*)(\.\d+)?$/;
-			var value_input = input_name.replace('_error', '')
-			if(validation_type == "positive_decimals"){
-				if (!value.match(positive_decimal)) {
-				  // there is a mismatch, hence show the error message
-				  $('#'+input_name).removeClass('hidden');
-				  $('#'+input_name).show();
-				  $('#'+value_input).focus();
-			  }
-			  else{
-					// else, do not display message
-					$('#'+input_name).addClass('hidden');
-					return true;
-				}
+	function inputValidation(value,validation_type,input_name,message){
+		// console.log(value);
+		var positive_decimal=/^(0|[1-9]\d*)(\.\d+)?$/;
+		var negative_decimal=/^-?(0|[1-9]\d*)(\.\d+)?$/;
+		var value_input = input_name.replace('_error', '')
+		if(validation_type == "positive_decimals"){
+			if (!value.match(positive_decimal)) {
+			  // there is a mismatch, hence show the error message
+			  	$('#'+value_input).addClass("box-color");
+			  	$(".showreport").hide();
+				$("#errornotes").show();
+				$("#errormessage").html(message);
+				$('#'+value_input).focus();
+		  	}
+		  	else{
+				// else, do not display message
+				$("#errornotes").hide();
+				$('#'+value_input).removeClass("box-color");
+				return true;
 			}
-
-			if(validation_type == "decimals"){
-				if (!value.match(negative_decimal)) {
-				  // there is a mismatch, hence show the error message
-				  $('.emsg').removeClass('hidden');
-				  $('.emsg').show();
-			  }
-			  else{
-					// else, do not display message
-					$('.emsg').addClass('hidden');
-					return true;
-				}
-			}
-
-
-			return false;
 		}
 
-
-		function updateValues() {
-
-			updateEvaporatorOptions(model_values.evaporator_material_value,model_values.evaporator_thickness_change);
-			updateAbsorberOptions(model_values.absorber_material_value,model_values.absorber_thickness_change);
-			updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
-
-			$("#model_number").val(model_values.model_number);
-			$('#capacity').val(model_values.capacity);
-			$('#model_name').html(model_values.model_name);
-			$('#chilled_water_in').val(model_values.chilled_water_in);
-			$('#chilled_water_out').val(model_values.chilled_water_out);
-			$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
-			var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
-			$('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
-			//$('#cooling_water_in_range').attr(cooling_water_in_range);
-			$('#cooling_water_in').val(model_values.cooling_water_in);
-			$('#cooling_water_flow').val(model_values.cooling_water_flow);
-			var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
-
-			$('.cooling_water_ranges').attr('data-original-title',cooling_water_ranges);
-			// $("#glycol_none").attr('disabled', model_values.glycol_none);
-			$('#glycol_chilled_water').val(model_values.glycol_chilled_water ?  model_values.glycol_chilled_water : 0);
-			$('#glycol_cooling_water').val(model_values.glycol_cooling_water ?  model_values.glycol_cooling_water : 0);
-			
-			$('#evaporator_thickness').val(model_values.evaporator_thickness);
-			$('#absorber_thickness').val(model_values.absorber_thickness);
-			$('#condenser_thickness').val(model_values.condenser_thickness);
-			$("#evaporator_material").val(model_values.evaporator_material_value);
-			$("#absorber_material").val(model_values.absorber_material_value);
-			$("#condenser_material").val(model_values.condenser_material_value);
-			$("#steam_pressure").val(model_values.steam_pressure);
-			var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
-			$('.steam_pressure_range').attr('data-original-title',steam_pressure_range);
-			// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
-			if(model_values.glycol_none === 'true')
-				$("#glycol_none").prop('disabled', true);
-			else
-				$("#glycol_none").prop('disabled', false);
-
-
-			foulingFactor(model_values.fouling_factor);
-
-			if(model_values.glycol_selected == 1){
-				$("#glycol_none").prop('checked', true);
-				$("#glycol_chilled_water").prop('disabled', true);
-				$("#glycol_cooling_water").prop('disabled', true);
-
+		if(validation_type == "decimals"){
+			if (!value.match(negative_decimal)) {
+			  // there is a mismatch, hence show the error message
+			  $("#errornotes").show();
+			  $('#'+value_input).addClass("box-color");
+			  $("#errormessage").html(message);
+		  	}
+		  	else{
+				// else, do not display message
+				$("#errornotes").hide();
+				$('#'+value_input).removeClass("box-color");
+				return true;
 			}
-			else if(model_values.glycol_selected == 2){
-				$("#glycol_ethylene").prop('checked', true);
-				$("#glycol_chilled_water").prop('disabled', false);
-				$("#glycol_cooling_water").prop('disabled', false);
-			}
-			else{
-				$("#glycol_propylene").prop('checked', true);
-				$("#glycol_chilled_water").prop('disabled', false);
-				$("#glycol_cooling_water").prop('disabled', false);
-
-			}
+		}
+		return false;
+	}
 
 
-			if(model_values.metallurgy_standard){
-				$("#tube_metallurgy_standard").prop('checked', true);
-				$(".metallurgy_standard").prop('disabled', true);
-				$(".metallurgy_standard_span").html("");
-				$(".range-hide").removeClass('show-div').addClass('hidden-div');
+	function updateValues() {
 
-			}else{
-				$(".range-hide").addClass('show-div');
-				$("#tube_metallurgy_non_standard").prop('checked', true);
+		updateEvaporatorOptions(model_values.evaporator_material_value,model_values.evaporator_thickness_change);
+		updateAbsorberOptions(model_values.absorber_material_value,model_values.absorber_thickness_change);
+		updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
 
-				if(model_values.tube_metallurgy_standard === 'false')
-					$("#tube_metallurgy_standard").prop('disabled', true);
-				else
-					$("#tube_metallurgy_standard").prop('disabled', false);
-				// $("#tube_metallurgy_standard").prop('disabled', true);
-				$(".metallurgy_standard").prop('disabled', false);
-				var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
-				
-				$('#evaporator_thickness').attr('data-original-title',evaporator_range);
+		$("#model_number").val(model_values.model_number);
+		$('#capacity').val(model_values.capacity);
+		$('#model_name').html(model_values.model_name);
+		$('#chilled_water_in').val(model_values.chilled_water_in);
+		$('#chilled_water_out').val(model_values.chilled_water_out);
+		$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
+		var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
+		$('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
+		//$('#cooling_water_in_range').attr(cooling_water_in_range);
+		$('#cooling_water_in').val(model_values.cooling_water_in);
+		$('#cooling_water_flow').val(model_values.cooling_water_flow);
+		var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
+
+		$('.cooling_water_ranges').attr('data-original-title',cooling_water_ranges);
+		// $("#glycol_none").attr('disabled', model_values.glycol_none);
+		$('#glycol_chilled_water').val(model_values.glycol_chilled_water ?  model_values.glycol_chilled_water : 0);
+		$('#glycol_cooling_water').val(model_values.glycol_cooling_water ?  model_values.glycol_cooling_water : 0);
 		
-				var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
-				$("#absorber_thickness").attr('data-original-title',absorber_range);
-				var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
-				$("#condenser_thickness").attr('data-original-title',condenser_range);
-			}
+		$('#evaporator_thickness').val(model_values.evaporator_thickness);
+		$('#absorber_thickness').val(model_values.absorber_thickness);
+		$('#condenser_thickness').val(model_values.condenser_thickness);
+		$("#evaporator_material").val(model_values.evaporator_material_value);
+		$("#absorber_material").val(model_values.absorber_material_value);
+		$("#condenser_material").val(model_values.condenser_material_value);
+		$("#steam_pressure").val(model_values.steam_pressure);
+		var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
+		$('.steam_pressure_range').attr('data-original-title',steam_pressure_range);
+		// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
+		if(model_values.glycol_none === 'true')
+			$("#glycol_none").prop('disabled', true);
+		else
+			$("#glycol_none").prop('disabled', false);
+
+
+		foulingFactor(model_values.fouling_factor);
+
+		if(model_values.glycol_selected == 1){
+			$("#glycol_none").prop('checked', true);
+			$("#glycol_chilled_water").prop('disabled', true);
+			$("#glycol_cooling_water").prop('disabled', true);
+
+		}
+		else if(model_values.glycol_selected == 2){
+			$("#glycol_ethylene").prop('checked', true);
+			$("#glycol_chilled_water").prop('disabled', false);
+			$("#glycol_cooling_water").prop('disabled', false);
+		}
+		else{
+			$("#glycol_propylene").prop('checked', true);
+			$("#glycol_chilled_water").prop('disabled', false);
+			$("#glycol_cooling_water").prop('disabled', false);
 
 		}
 
-		$('input:radio[name="glycol"]').change(function() {
-			if ($(this).val() == 'none') {
-				$("#glycol_chilled_water").prop('disabled', true);
-				$("#glycol_cooling_water").prop('disabled', true);
-			} else {
-				// $("#glycol_none").prop('checked', false);
-				$("#glycol_ethylene").prop('checked', true);
-				$("#glycol_chilled_water").prop('disabled', false);
-				$("#glycol_cooling_water").prop('disabled', false);
-			}
-		  });
 
-		$('input:radio[name="tube_metallurgy"]').change(function() {
-			if ($(this).val() == 'standard') {
-				$(".metallurgy_standard").prop('disabled', true);
-				$(".metallurgy_standard_span").html("");
-				$(".range-hide").removeClass('show-div').addClass('hidden-div');
+		if(model_values.metallurgy_standard){
+			$("#tube_metallurgy_standard").prop('checked', true);
+			$(".metallurgy_standard").prop('disabled', true);
+			$(".metallurgy_standard_span").html("");
+			$(".range-hide").removeClass('show-div').addClass('hidden-div');
 
-			} else {
+		}else{
+			$(".range-hide").addClass('show-div');
+			$("#tube_metallurgy_non_standard").prop('checked', true);
+
+			if(model_values.tube_metallurgy_standard === 'false')
+				$("#tube_metallurgy_standard").prop('disabled', true);
+			else
 				$("#tube_metallurgy_standard").prop('disabled', false);
-				$(".range-hide").addClass('show-div');
-				$(".metallurgy_standard").prop('disabled', false);
-				var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
-				$('#evaporator_thickness').attr('data-original-title',evaporator_range);
-	;
-				var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
-				$("#absorber_thickness").attr('data-original-title',absorber_range);
-				var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
-				$("#condenser_thickness").attr('data-original-title',condenser_range);
-			}
-		});
+			// $("#tube_metallurgy_standard").prop('disabled', true);
+			$(".metallurgy_standard").prop('disabled', false);
+			var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+			
+			$('#evaporator_thickness').attr('data-original-title',evaporator_range);
+	
+			var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+			$("#absorber_thickness").attr('data-original-title',absorber_range);
+			var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+			$("#condenser_thickness").attr('data-original-title',condenser_range);
+		}
+	}
 
-		$('#fouling_chilled_water').change(function() {
-			if($(this).is(":checked")) {
-				model_values.fouling_chilled_water_checked = true;
-				model_values.fouling_chilled_water_value_disabled = false;
-				model_values.fouling_chilled_water_value = model_values.fouling_non_chilled;
-				$("#fouling_chilled_value").val(model_values.fouling_non_chilled);
-				$("#fouling_chilled_value").prop('disabled', false);
-			}
-			else{
-				model_values.fouling_chilled_water_checked = false;
-				model_values.fouling_chilled_water_value_disabled = true;
-				model_values.fouling_chilled_water_value = "";
-				$("#fouling_chilled_value").val("");
-				$("#fouling_chilled_value").prop('disabled', true);
-			}
+	$('input:radio[name="glycol"]').change(function() {
+		if ($(this).val() == 'none') {
+			$("#glycol_chilled_water").prop('disabled', true);
+			$("#glycol_cooling_water").prop('disabled', true);
+		} else {
+			// $("#glycol_none").prop('checked', false);
+			$("#glycol_ethylene").prop('checked', true);
+			$("#glycol_chilled_water").prop('disabled', false);
+			$("#glycol_cooling_water").prop('disabled', false);
+		}
+	});
 
-		});
+	$('input:radio[name="tube_metallurgy"]').change(function() {
+		if ($(this).val() == 'standard') {
+			$(".metallurgy_standard").prop('disabled', true);
+			$(".metallurgy_standard_span").html("");
+			$(".range-hide").removeClass('show-div').addClass('hidden-div');
 
-		$('#fouling_cooling_water').change(function() {
-			if($(this).is(":checked")) {
-				model_values.fouling_cooling_water_checked = true;
-				model_values.fouling_cooling_water_value_disabled = false;
-				model_values.fouling_cooling_water_value = model_values.fouling_non_cooling;
-				$("#fouling_cooling_value").val(model_values.fouling_non_cooling);
-				$("#fouling_cooling_value").prop('disabled', false);
-			}
-			else{
-				model_values.fouling_cooling_water_checked = false;
-				model_values.fouling_cooling_water_value_disabled = true;
-				model_values.fouling_cooling_water_value = "";
-				$("#fouling_cooling_value").val("");
-				$("#fouling_cooling_value").prop('disabled', true);
-			}
+		} else {
+			$("#tube_metallurgy_standard").prop('disabled', false);
+			$(".range-hide").addClass('show-div');
+			$(".metallurgy_standard").prop('disabled', false);
+			var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+			$('#evaporator_thickness').attr('data-original-title',evaporator_range);
+			var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+			$("#absorber_thickness").attr('data-original-title',absorber_range);
+			var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+			$("#condenser_thickness").attr('data-original-title',condenser_range);
+		}
+	});
 
-		});
+	$('#fouling_chilled_water').change(function() {
+		if($(this).is(":checked")) {
+			model_values.fouling_chilled_water_checked = true;
+			model_values.fouling_chilled_water_value_disabled = false;
+			model_values.fouling_chilled_water_value = model_values.fouling_non_chilled;
+			$("#fouling_chilled_value").val(model_values.fouling_non_chilled);
+			$("#fouling_chilled_value").prop('disabled', false);
+		}
+		else{
+			model_values.fouling_chilled_water_checked = false;
+			model_values.fouling_chilled_water_value_disabled = true;
+			model_values.fouling_chilled_water_value = "";
+			$("#fouling_chilled_value").val("");
+			$("#fouling_chilled_value").prop('disabled', true);
+		}
 
-		$('input:radio[name="fouling_factor"]').change(function() {
-			$("#calculate_button").prop('disabled', false);
-			model_values.fouling_factor = $(this).val();
-			if($(this).val() == 'ari'){
-				model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
-				model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
-			}
-			foulingFactor($(this).val());
-		});
+	});
+
+	$('#fouling_cooling_water').change(function() {
+		if($(this).is(":checked")) {
+			model_values.fouling_cooling_water_checked = true;
+			model_values.fouling_cooling_water_value_disabled = false;
+			model_values.fouling_cooling_water_value = model_values.fouling_non_cooling;
+			$("#fouling_cooling_value").val(model_values.fouling_non_cooling);
+			$("#fouling_cooling_value").prop('disabled', false);
+		}
+		else{
+			model_values.fouling_cooling_water_checked = false;
+			model_values.fouling_cooling_water_value_disabled = true;
+			model_values.fouling_cooling_water_value = "";
+			$("#fouling_cooling_value").val("");
+			$("#fouling_cooling_value").prop('disabled', true);
+		}
+
+	});
+
+	$('input:radio[name="fouling_factor"]').change(function() {
+		$("#calculate_button").prop('disabled', false);
+		model_values.fouling_factor = $(this).val();
+		if($(this).val() == 'ari'){
+			model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
+			model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
+		}
+		foulingFactor($(this).val());
+	});
 	
 		function foulingFactor(value){
 			$("#fouling_chilled_water").prop('checked', false);
@@ -1543,34 +1320,34 @@
 				case 'capacity':
 				var capacity = $("#capacity").val();
 				model_values.capacity = capacity;
-				validate = inputValidation(capacity,"positive_decimals","capacity_error");
+				validate = inputValidation(capacity,"positive_decimals","capacity_error","Please Enter a Valid Capacity");
 				break;
 				case 'chilled_water_in':
 				model_values.chilled_water_in = $("#chilled_water_in").val();
-				validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error");
+				validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error","Please Enter a Valid Chilled Water In");
 				break;	
 				case 'chilled_water_out':
 				model_values.chilled_water_out = $("#chilled_water_out").val();
-				validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error");
+				validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error","Please Enter a Valid Chilled Water Out");
 				break;
 				case 'glycol_type_changed':
 				validate = true;
 				break;	
 				case 'glycol_chilled_water':
 				model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
-				validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error");
+				validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error","Please Enter a Valid Glycol Chilled Water");
 				break;
 				case 'glycol_cooling_water':
 				model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
-				validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error");
+				validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error","Please Enter a Valid Glycol Cooling Water");
 				break;
 				case 'cooling_water_in':
 				model_values.cooling_water_in = $("#cooling_water_in").val();
-				validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error");
+				validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error","Please Enter a Valid Cooling Water In");
 				break;
 				case 'cooling_water_flow':
 				model_values.cooling_water_flow = $("#cooling_water_flow").val();
-				validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error");
+				validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error","Please Enter a Valid Cooling Water Flow");
 				break;					
 				case 'evaporator_tube_type':
 				model_values.evaporator_material_value = $("#evaporator_material").val();
@@ -1590,27 +1367,27 @@
 					break;
 					case 'evaporator_thickness':
 					model_values.evaporator_thickness = $("#evaporator_thickness").val();
-					validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error");
+					validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error","Please Enter a Valid Evaporator Thickness");
 					break;
 					case 'absorber_thickness':
 					model_values.absorber_thickness = $("#absorber_thickness").val();
-					validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error");
+					validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error","Please Enter a Valid Absorber Thickness");
 					break;
 					case 'condenser_thickness':
 					model_values.condenser_thickness = $("#condenser_thickness").val();
-					validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error");
+					validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error","Please Enter a Valid Condenser Thickness");
 					break;	
 					case 'fouling_chilled_value':
 					model_values.fouling_chilled_water_value = $("#fouling_chilled_value").val();
-					validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error");
+					validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error","Please Enter a Valid Fouling Chilled Water");
 					break;	
 					case 'fouling_cooling_value':
 					model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
-					validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error");
+					validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","Please Enter a Valid Fouling Cooling Water");
 					break;	
 					case 'steam_pressure':
 					model_values.steam_pressure = $("#steam_pressure").val();
-					validate = inputValidation(model_values.steam_pressure,"positive_decimals","steam_pressure_error");
+					validate = inputValidation(model_values.steam_pressure,"positive_decimals","steam_pressure_error","Please Enter a Valid Steam Pressure");
 					break;								
 
 					default:
@@ -1637,6 +1414,7 @@
 				data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 				success: function(response){
 					if(response.status){
+						$('#'+changed_value).removeClass("box-color");
 						console.log(response.model_values);
 						$("#calculate_button").prop('disabled', false);
 						model_values = response.model_values;
@@ -1650,6 +1428,7 @@
 						console.log(changed_value);
 						$(".showreport").hide();
 						$("#errornotes").show();
+						$('#'+changed_value).addClass("box-color");
 						$('#'+changed_value).focus();
 						$("#errormessage").html(response.msg);
 						
@@ -1668,10 +1447,15 @@
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			// console.log(model_values);
 			$("#ajax-loader").show();
+
+			var name = $('#customer_name').val();
+			var project = $('#project').val();
+			var phone = $('#phone').val();
+
 			$.ajax({
 				type: "POST",
 				url: "{{ url('calculators/double-effect-s2/submit-calculate') }}",
-				data: { values : model_values,_token: CSRF_TOKEN},
+				data: { values : model_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone},
 				 complete: function(){
 					$("#ajax-loader").hide();
 				 },
@@ -1688,9 +1472,15 @@
 						}
 						else{
 							var notes = calculation_values.notes;
-							$("#notes_div").html("");
-							for (var i = 0; i < notes.length; i++) {
-								$( "#notes_div" ).append("<p>"+notes[i]+"</p>");
+							$("#notes_div").html("");	
+							for(var i = notes.length - 1; i >= 0; --i)
+							{
+								if(!model_values.metallurgy_standard)
+								{
+									if (i < 1){
+										$( "#notes_div" ).append("<p>"+notes[i]+"</p>");
+									}
+								}
 							}
 
 							$('#capacity_span').html(calculation_values.TON);
@@ -1713,11 +1503,8 @@
 							$('#result_span').html(calculation_values.Result);
 
 
-							// $('#exampleModalLong').modal('show');
-							// $('#exampleModalLong').modal({
-							// 	backdrop: 'static',
-							// 	keyboard: false
-							// });
+							$("#showreportlist").html(response.report);	
+					
 							$("#errornotes").hide();
 							$(".showreport").show();
 							
