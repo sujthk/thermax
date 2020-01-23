@@ -25,7 +25,8 @@ p {
 .main-body .page-wrapper {
 	padding: 0.8rem;
 	margin-left: 240px;
-	transition: all ease-in .3s
+	transition: all ease-in .3s;
+	height:94vh;
 }
 .main-body .page-wrapper .page-header {
 	margin-bottom: 20px
@@ -4780,7 +4781,7 @@ table tbody .border-bottom-info td {
 .main-menu .main-menu-content .nav-item .tree-3 a i,
 .main-menu .main-menu-content .nav-item .tree-4 a i {
 	margin-right: 10px;
-	font-size: 15px;
+	font-size: 25px;
 	vertical-align: middle
 }
 .main-menu .main-menu-content .nav-item .icon-arrow-down,
@@ -7937,7 +7938,7 @@ body.menu-sidebar .navbar-wrapper {
 .btn-primary,
 .sweet-alert button.confirm,
 .wizard>.actions a {
-	background-color: #e10010;
+	background-color: #e10010 !important;
 	border-color: #e10010;
 	color: #fff;
 	cursor: pointer;
@@ -17759,7 +17760,7 @@ body.dark-layout #task-container li {
 	background-color: #1b1b1b
 }
 body.dark-layout .main-menu {
-	background: #242424
+	background: #333333
 }
 body.dark-layout .main-menu .main-menu-header,
 body.dark-layout .nav-tabs .nav-link.active,

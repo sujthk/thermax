@@ -26,12 +26,13 @@
 
  	.max-calculator .form-control,
  	.max-calculator select.form-control {
- 		height: 26px !important;
+ 		height: 35px !important;
  		padding: 3px .5rem;
  	}
 
  	.max-calculator {
  		background: #fff;
+		 height:94vh;
  	}
 
  	.max-calculator .card-header {
@@ -41,7 +42,8 @@
 
  	.max-calculator .card-header h5 {
  		font-size: 15px;
- 		font-weight: 700;
+		 font-weight: 700;
+		 padding-bottom:5px;
  	}
 
  	.modal-scrol {
@@ -90,8 +92,7 @@
  	}
 
  	.ss-steam-label label {
- 		font-size: 11px;
- 		margin-bottom: 9px;
+ 		margin-bottom: 10%;
  		font-weight: 600;
  		color: #656565;
  	}
@@ -100,16 +101,10 @@
  		margin-bottom: 0px;
  	}
 
- 	.ss-steam-label .max-calculator .card-header h5 {
- 		font-size: 11px;
- 	}
- 	.show-div{
- 		font-size: 11px;
- 	}
-
  	.ss-steam-label .card-header{
- 		padding: 3px 10px;
- 		margin-bottom: 4px;
+		 padding: 0;
+    	background: none;
+ 		margin-bottom: 3%;
  		margin-top: 2px;
  	}
 
@@ -119,7 +114,6 @@
  		border: none;
  		border-bottom: 1px solid #c5c5c5;
  		border-radius: 1px;
- 		font-size: 11px;
  		text-align-last: center;
  	}
  	body.dark-layout .ss-steam-label select option{
@@ -131,9 +125,8 @@
  	}
 
  	.ss-steam-label .btn-primary{
- 		padding: 4px 20px;
- 		width: 100px;
- 		font-size: 11px;
+    text-transform: uppercase;
+    text-align: center;
  	}
 
  	.notes-content{
@@ -152,14 +145,12 @@
 		 */
 		 .notes-content td, .notes-content th{
 		 	padding: 2px;
-		 	font-size: 11px;
 		 }
 
 		 .contact-submit{
 		 	padding: 4px 15px;
 		 	background: #e10010;
 		 	border: none;
-		 	font-size: 11px;
 		 	border-radius: 2px;
 		 	color: #fff;
 		 	transition: all .2s;
@@ -176,8 +167,8 @@
 		 .cal-rest{
 		 	padding: 25px 0 0 0;
 		 }
-		 .padd-2{
-
+		 .padd-2 input,select{
+			margin-bottom:15px;
 		 }
 		 .padd-mm{
 		 	padding-top: 10px;
@@ -204,7 +195,7 @@
 		 }
 		 .scrollbar-right
 		 {	
-		 	height: 495px;
+		 	height: 89vh;
 		 	width: 100%;
 		 	background: #fff;
 		 	overflow-y: auto;
@@ -221,7 +212,6 @@
 		 	border: 1px solid #000;
 		 	padding: 0 10px;
 		 	margin: 0;
-		 	font-size: 11px;
 		 }
 
 		 .margin-0{

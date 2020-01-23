@@ -36,7 +36,8 @@
 
 	 .max-calculator .card-header {
 		 margin-bottom: 5px;
-		 padding: 8px;
+		 padding: 8px 0;
+		 background:none;
 	 }
 
 	 .max-calculator .card-header h5 {
@@ -89,9 +90,8 @@
 		 padding: 20px 15px;
 	 }
 
-	 .ss-steam-label label {
-		 font-size: 11px;
-		 margin-bottom: 9px;
+	 .ss-steam-label label {		  
+		 margin-bottom: 16%;
          font-weight: 600;
          color: #656565;
 	 }
@@ -99,16 +99,8 @@
 	 .ss-steam-label .page-wrapper .page-header {
 		 margin-bottom: 0px;
 	 }
-
-	 .ss-steam-label .max-calculator .card-header h5 {
-		 font-size: 11px;
-	 }
-	 .show-div{
-		 font-size: 11px;
-	 }
 	 
 	 .ss-steam-label .card-header{
-		 padding: 3px 10px;
 		 margin-bottom: 4px;
 		 margin-top: 2px;
 	 }
@@ -119,7 +111,7 @@
 		border: none;
 		border-bottom: 1px solid #c5c5c5;
 		border-radius: 1px;
-		font-size: 11px;
+		 
 	    text-align-last: center;
 	}
     body.dark-layout .ss-steam-label select option{
@@ -129,13 +121,6 @@
 	.ss-steam-label .form-control{
 		text-align: center;
 	}
-	 
-	.ss-steam-label .btn-primary{
-	 	padding: 4px 20px;
-	 	width: 100px;
-	 	font-size: 11px;
-	}
-	 
 	.notes-content{
 		
 		padding: 15px; 
@@ -152,14 +137,14 @@
 	*/
 	.notes-content td, .notes-content th{
 		padding: 2px;
-		font-size: 11px;
+		 
 	}
 	 
 	.contact-submit{
 		padding: 4px 15px;
 		background: #e10010;
 		border: none;
-		font-size: 11px;
+		 
 		border-radius: 2px;
 		color: #fff;
 		transition: all .2s;
@@ -176,8 +161,8 @@
 	.cal-rest{
 		padding: 25px 0 0 0;
 	}
-	.padd-2{
-		 
+	.padd-2 input,select{
+		 background:none;
 	}
     .padd-mm{
         padding-top: 10px;
@@ -204,7 +189,7 @@
 	}
 	.scrollbar-right
 	{	
-		height: 495px;
+		height: 89vh;
 		width: 100%;
 		background: #fff;
 		overflow-y: auto;
@@ -221,7 +206,7 @@
 		border: 1px solid #000;
 	   	padding: 0 10px;
     	margin: 0;
-   		font-size: 11px;
+   		 
   	}
 
     .margin-0{
