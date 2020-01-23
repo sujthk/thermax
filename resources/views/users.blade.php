@@ -30,7 +30,7 @@
 	            <div class="row">
 	                <div class="col-sm-12">
 	                    <!-- Zero config.table start -->
-	                    @if ($errors->any())
+	                    @if($errors->any())
 	                        <div class="alert alert-danger">
 	                            <ul>
 	                                @foreach ($errors->all() as $error)
@@ -74,6 +74,7 @@
 		                                                @endif 
 		                                            </td> 
 		                                            <td>
+		                                            	 <a href="{{ url('user-profile/view',[$user->id]) }}" class="btn btn-info btn-sm">View</a>
 		                                                <a href="{{ url('users/edit',[$user->id]) }}" class="btn btn-primary btn-sm">Edit</a>
 		                                            </td> 
 	                                    		</tr>

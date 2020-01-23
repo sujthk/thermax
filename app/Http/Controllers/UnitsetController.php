@@ -3,15 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Redirect;
 use App\UnitSet;
-
+use Auth;
 class UnitsetController extends Controller
 {
     public function getUnitsets(){
-
-    	$unit_sets = UnitSet::all();
-
+		$user=Auth::user() ;
+		if($user->user_type=='ADMIN')
+    		$unit_sets = UnitSet::where('user_type','ADMIN')->get();
+    	else
+    		$unit_sets = UnitSet::where('user_type','USER')->where('user_id',$user->id)->get();
 
     	return view('unit_sets')->with('unit_sets',$unit_sets);
     }
@@ -48,10 +50,24 @@ class UnitsetController extends Controller
 		    'HeatCapacityUnit' => 'required',
 		]);
 
+		$unit_name =	UnitSet::where('user_type','ADMIN')->pluck('name')->toArray();
 
-
+		if(in_array($request->name,$unit_name))
+		{
+			return Redirect::back()->withInput()->withErrors('This Name Altraday Excited');
+		}
+		
+		$user=Auth::user();
 		$unit_set = new UnitSet;
 		$unit_set->name = $request->name;
+		$unit_set->user_id = $user->id;
+
+		if($user->user_type =='ADMIN')
+        	$unit_set->user_type = 'ADMIN';
+        else
+        	$unit_set->user_type = 'USER';
+
+
 		$unit_set->TemperatureUnit = $request->TemperatureUnit;
 		$unit_set->LengthUnit = $request->LengthUnit;
 		$unit_set->WeightUnit = $request->WeightUnit;
@@ -112,11 +128,24 @@ class UnitsetController extends Controller
 		    'AllWorkPrHWUnit' => 'required',
 		    'HeatCapacityUnit' => 'required',
 		]);
+		$unit_name =	UnitSet::where('user_type','ADMIN')->pluck('name')->toArray();
 
+		if(in_array($request->name,$unit_name))
+		{
+			return Redirect::back()->withInput()->withErrors('This Name Altraday Excited');
+		}
+		
 
-
+		$user=Auth::user();
 		$unit_set = UnitSet::find($unit_set_id);
 		$unit_set->name = $request->name;
+		$unit_set->user_id = $user->id;
+
+		if($user->user_type =='ADMIN')
+        	$unit_set->user_type = 'ADMIN';
+        else
+        	$unit_set->user_type = 'USER';
+
 		$unit_set->TemperatureUnit = $request->TemperatureUnit;
 		$unit_set->LengthUnit = $request->LengthUnit;
 		$unit_set->WeightUnit = $request->WeightUnit;

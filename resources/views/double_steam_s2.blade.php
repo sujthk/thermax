@@ -714,8 +714,8 @@
 										</span>
 							    	</div>              
 									<div class="showreport" style="display: none;">                 
-									<div class="summary-head">
-					 				<h4> Optimal Design  </h4>
+									<div class="summary-head" id="notes_head_div">
+					 		
 				 					</div>
 									<div class="row">
 									
@@ -779,6 +779,7 @@
 	$( document ).ready(function() {
 		// swal("Hello world!");
 		loadDefaultValues();
+		$('.menu-hide-click').trigger('click');
 		// sendValues();
 	});
 
@@ -1425,6 +1426,7 @@
 					else{
 						$("#calculate_button").prop('disabled', true);
 						// alert(response.msg);
+						changed_value = response.changed_value
 						console.log(changed_value);
 						$(".showreport").hide();
 						$("#errornotes").show();
@@ -1435,8 +1437,7 @@
 						// swal(response.msg, "", "error").then((value) => {
 						// 	
 						// });
-						// console.log(changed_value);
-						
+						// console.log(changed_value);	
 					}					
 				},
 			});
@@ -1451,6 +1452,8 @@
 			var name = $('#customer_name').val();
 			var project = $('#project').val();
 			var phone = $('#phone').val();
+
+
 
 			$.ajax({
 				type: "POST",
@@ -1482,6 +1485,10 @@
 									}
 								}
 							}
+						
+							$("#notes_head_div").html('<h4>'+calculation_values.Result+'</h4>');	
+							
+
 
 							$('#capacity_span').html(calculation_values.TON);
 							$('#chilled_water_flow_span').html(calculation_values.ChilledWaterFlow);
@@ -1555,6 +1562,7 @@
 						$("#calculate_button").prop('disabled', false);
 						$(".showreport").hide();
 						$("#errornotes").hide();
+						$('.box-color').removeClass("box-color");
 						
 					}
 					else{
@@ -1565,7 +1573,6 @@
 					}					
 				},
 			});
-
 		});
 
 		$( "#show_report" ).click(function() {
@@ -1601,10 +1608,10 @@
 			var project = $('#project').val();
 			var phone = $('#phone').val();
 			var report_type = this.id;
-			
+		
 			if(name == '' || project == '' || phone == ''){
 
-				swal("Enter the details", "", "error");
+				Swal.fire("Enter the details", "", "error");
 			}
 			else{
 				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
@@ -1620,7 +1627,6 @@
 					},
 				});
 			}
-
 		});
 
 

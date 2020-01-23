@@ -47,15 +47,7 @@
 					<div class="col-sm-12">
 						<!-- Authentication card start -->
 						<div class="login-card card-block auth-body">
-							@if ($errors->any())
-							    <div class="alert alert-danger">
-							        <ul>
-							            @foreach ($errors->all() as $error)
-							                <li>{{ $error }}</li>
-							            @endforeach
-							        </ul>
-							    </div>
-							@endif
+							
 							<form class="md-float-material" id="login_form" method="post" action="{{ url('login') }}">
 								{{ csrf_field() }}
 								<div class="text-center">
@@ -67,16 +59,26 @@
 											<h3 class="text-left txt-primary">Sign In</h3>
 										</div>
 									</div>
+									@if ($errors->any())
+									
+									    <div class="alert alert-danger">
+									        <ul>
+									            @foreach ($errors->all() as $error)
+									                <li>{{ $error }}</li>
+									            @endforeach
+									        </ul>
+									    </div>
+									@endif
 									<hr/>
 									<div class="input-group">
-										<input type="email" class="form-control" name="email" id="email" value="sujith.k@gmail.com" required placeholder="Your Email Address">
+										<input type="email" class="form-control" name="email" id="email" value="" required placeholder="Your Email Address">
 									</div>
 									<div class="input-group">
-										<input type="password" class="form-control" name="password" id="password" value="admin@123" required placeholder="Password">
+										<input type="password" class="form-control" name="password" id="password" value="" required placeholder="Password">
 										<span class="md-line"></span>
 									</div>
 									<div class="input-group otp_div" style="display: none;">
-										<input type="text" class="form-control" name="otp" id="otp" value="12345" placeholder="Enter Otp">
+										<input type="text" class="form-control" name="otp" id="otp" value="" placeholder="Enter Otp">
 										<span class="md-line"></span>
 									</div>
 									<div id="error-display"></div>
@@ -91,7 +93,7 @@
 											</div>
 										</div>
 										<div class="col-sm-6 col-xs-12 forgot-phone text-right">
-											<a href="" class="text-right f-w-600 text-inverse"> Forgot Your Password?</a>
+											<a href="{{url('forgot-password')}}" class="text-right f-w-600 text-inverse"> Forgot Your Password?</a>
 										</div>
 									</div>
 									<div class="row m-t-30">

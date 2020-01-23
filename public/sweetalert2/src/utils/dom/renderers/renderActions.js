@@ -1,7 +1,8 @@
 import { swalClasses } from '../../classes.js'
 import * as dom from '../../dom/index.js'
+import { capitalizeFirstLetter } from '../../utils.js'
 
-export const renderActions = (params) => {
+export const renderActions = (instance, params) => {
   const actions = dom.getActions()
   const confirmButton = dom.getConfirmButton()
   const cancelButton = dom.getCancelButton()
@@ -9,58 +10,53 @@ export const renderActions = (params) => {
   // Actions (buttons) wrapper
   if (!params.showConfirmButton && !params.showCancelButton) {
     dom.hide(actions)
-  } else {
-    dom.show(actions)
   }
 
-  // Cancel button
-  if (params.showCancelButton) {
-    cancelButton.style.display = 'inline-block'
-  } else {
-    dom.hide(cancelButton)
-  }
+  // Custom class
+  dom.applyCustomClass(actions, params, 'actions')
 
-  // Confirm button
-  if (params.showConfirmButton) {
-    confirmButton.style.removeProperty('display')
-  } else {
-    dom.hide(confirmButton)
-  }
+  // Render confirm button
+  renderButton(confirmButton, 'confirm', params)
+  // render Cancel Button
+  renderButton(cancelButton, 'cancel', params)
 
-  // Edit text on confirm and cancel buttons
-  confirmButton.innerHTML = params.confirmButtonText
-  cancelButton.innerHTML = params.cancelButtonText
-
-  // ARIA labels for confirm and cancel buttons
-  confirmButton.setAttribute('aria-label', params.confirmButtonAriaLabel)
-  cancelButton.setAttribute('aria-label', params.cancelButtonAriaLabel)
-
-  // Add buttons custom classes
-  confirmButton.className = swalClasses.confirm
-  dom.addClass(confirmButton, params.confirmButtonClass)
-  cancelButton.className = swalClasses.cancel
-  dom.addClass(cancelButton, params.cancelButtonClass)
-
-  // Buttons styling
   if (params.buttonsStyling) {
-    dom.addClass([confirmButton, cancelButton], swalClasses.styled)
-
-    // Buttons background colors
-    if (params.confirmButtonColor) {
-      confirmButton.style.backgroundColor = params.confirmButtonColor
-    }
-    if (params.cancelButtonColor) {
-      cancelButton.style.backgroundColor = params.cancelButtonColor
-    }
-
-    // Loading state
-    const confirmButtonBackgroundColor = window.getComputedStyle(confirmButton).getPropertyValue('background-color')
-    confirmButton.style.borderLeftColor = confirmButtonBackgroundColor
-    confirmButton.style.borderRightColor = confirmButtonBackgroundColor
+    handleButtonsStyling(confirmButton, cancelButton, params)
   } else {
     dom.removeClass([confirmButton, cancelButton], swalClasses.styled)
-
     confirmButton.style.backgroundColor = confirmButton.style.borderLeftColor = confirmButton.style.borderRightColor = ''
     cancelButton.style.backgroundColor = cancelButton.style.borderLeftColor = cancelButton.style.borderRightColor = ''
   }
+
+  if (params.reverseButtons) {
+    confirmButton.parentNode.insertBefore(cancelButton, confirmButton)
+  }
+}
+
+function handleButtonsStyling (confirmButton, cancelButton, params) {
+  dom.addClass([confirmButton, cancelButton], swalClasses.styled)
+
+  // Buttons background colors
+  if (params.confirmButtonColor) {
+    confirmButton.style.backgroundColor = params.confirmButtonColor
+  }
+  if (params.cancelButtonColor) {
+    cancelButton.style.backgroundColor = params.cancelButtonColor
+  }
+
+  // Loading state
+  const confirmButtonBackgroundColor = window.getComputedStyle(confirmButton).getPropertyValue('background-color')
+  confirmButton.style.borderLeftColor = confirmButtonBackgroundColor
+  confirmButton.style.borderRightColor = confirmButtonBackgroundColor
+}
+
+function renderButton (button, buttonType, params) {
+  dom.toggle(button, params[`show${capitalizeFirstLetter(buttonType)}Button`], 'inline-block')
+  button.innerHTML = params[`${buttonType}ButtonText`] // Set caption text
+  button.setAttribute('aria-label', params[`${buttonType}ButtonAriaLabel`]) // ARIA label
+
+  // Add buttons custom classes
+  button.className = swalClasses[buttonType]
+  dom.applyCustomClass(button, params, `${buttonType}Button`)
+  dom.addClass(button, params[`${buttonType}ButtonClass`])
 }

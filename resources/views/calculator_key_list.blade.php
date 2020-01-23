@@ -63,7 +63,9 @@
 	                                    		<tr>
 	                                    			<td>{{ $i }}</td>
 	                                    		    <td>{{ $calculator_key->name }}</td>
-	                                    		    <td style="width: 8%">{{ $calculator_key->keys }}</td>
+	                                    		    <td style="width: 8%">
+	                                    		    	{{str_limit($calculator_key->keys, 95)  }} </td>
+
 	                                    		   
 		                                            <td>
 		                                                <a href="#" data-toggle="modal" data-target="#calculator_key{{$calculator_key->id}}" class="btn btn-primary btn-sm">Edit</a>

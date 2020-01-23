@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Route::group(['middleware' => 'guest'], function(){
 
 Route::get('/', function () {
     return view('login');
@@ -17,24 +18,29 @@ Route::get('/', function () {
 Route::get('/login', function () {
     return view('login');
 })->name('login');
-Route::get('/report', function () {
-    return view('report');
+
+Route::get('/forgot-password', function () 
+{
+	return view('forgot_password');
 });
+Route::post('/forgot-password', 'UserController@forgotPassword');
+Route::post('/password-reset', 'UserController@resetAdminPassword');
+Route::get('/password_verification/{token}', 'UserController@verifyCustomerToken');
 
 Route::post('/login', 'UserController@loginUser');
 Route::post('/user-send-otp', 'UserController@sendUserOtp');
 
-Route::get('/data', 'DoubleSteamController@getChillerData');
+});
 
+Route::get('/data', 'DoubleSteamController@getChillerData');
 Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
 Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2')->middleware('auth');
 
 Route::group(['middleware' => ['auth','revalidate']], function(){
 
-	Route::get('/dashboard', function () {
-	    return view('dashboard');
-	})->name('dashboard');
-	Route::get('/logout', 'UserController@logoutUser');
+	
+	Route::get('/dashboard', 'UserController@getDashboard')->name('dashboard');
+	Route::get('/logout', 'UserController@logoutUser')->name('logout');
 	
 
 	Route::get('/users', 'UserController@getUsers')->name('users');
@@ -43,15 +49,38 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/users/status/{user_id}/{status}', 'UserController@changeUserStatus');
 	Route::get('/users/edit/{user_id}', 'UserController@editUser');
 	Route::post('/users/edit/{user_id}', 'UserController@updateUser');
-
-	Route::get('/profile', 'UserController@getProfile');
+	Route::post('/users/group_calculator/list', 'UserController@getGroupCalcluation');
+	Route::get('/user-profile/view/{id}', 'UserController@getuserlist');
+	Route::get('/user-profile/download/{id}', 'UserController@getUserReport');
+	Route::get('/profile', 'UserController@getProfile')->name('profile');
 	Route::post('/user_profile/edit/{user_id}', 'UserController@updateUserProfile');
 	Route::post('/password_change', 'UserController@postPasswordChange');
+
+
 	/*Regions*/
 	Route::get('/region', 'RegionController@getRegion')->name('region');
 	Route::post('/region/add', 'RegionController@postRegion');
 	Route::post('/region/edit/{id}', 'RegionController@editRegion');
 	/*End Region*/
+
+	/*Time Line*/
+	Route::get('/time-line', 'TimeLineController@getTimeLine')->name('time-line');
+	Route::post('/time_line/add', 'TimeLineController@postTimeLine');
+	Route::post('/time_line/edit/{id}', 'TimeLineController@editTimeLine');
+	Route::get('/time_line/destroy/{id}', 'TimeLineController@destroy');
+	/*End Time Line*/
+
+	/*Group Calculations*/
+	Route::get('/group-calcluation', 'GroupCalculatorController@getGroupCalcluation')->name('group-calcluation');
+	Route::get('/group-calcluation/add', 'GroupCalculatorController@addGroupCalcluation');
+	Route::post('/group-calcluation/install', 'GroupCalculatorController@postGroupCalcluation');
+	Route::get('/group-calcluation/edit/{id}', 'GroupCalculatorController@editGroupCalcluation');
+
+	Route::post('/group-calcluation/update/{id}', 'GroupCalculatorController@GroupCalcluationUpdate');
+
+	/*End Group Calculations*/
+
+
 	Route::get('/metallurgies', 'MetallurgyController@getMetallurgies')->name('metallurgies');
 	Route::get('/metallurgies/add', 'MetallurgyController@addMetallurgy');
 	Route::post('/metallurgies/add', 'MetallurgyController@postMetallurgy');

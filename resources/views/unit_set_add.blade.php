@@ -28,7 +28,7 @@
 	        </div>
 	        <div class="page-body">
 	            <div class="row">
-	                <div class="col-sm-6">
+	                <div class="col-sm-8">
 	                    <!-- Zero config.table start -->
 	                    @if ($errors->any())
 	                        <div class="alert alert-danger">
@@ -43,6 +43,9 @@
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Add Unit Set</h5>
+		                            <div class="pull-left" style="float: right;">
+									<a href="{{ url()->previous() }}" class="btn btn-info" title="Back" >Back</a>
+									</div>
                             	</div>
 	                        </div>
 	                        <form id="add_unit_set" method="post" action="{{ url('unit-sets/add') }}" enctype="multipart/form-data">

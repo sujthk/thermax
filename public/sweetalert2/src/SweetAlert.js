@@ -28,7 +28,8 @@ function SweetAlert (...args) {
     params: {
       value: outerParams,
       writable: false,
-      enumerable: true
+      enumerable: true,
+      configurable: true
     }
   })
 
@@ -63,6 +64,6 @@ Object.keys(instanceMethods).forEach(key => {
 
 SweetAlert.DismissReason = DismissReason
 
-SweetAlert.version = '8.0.6'
+SweetAlert.version = '9.5.4'
 
 export default SweetAlert

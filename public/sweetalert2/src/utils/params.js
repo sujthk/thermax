@@ -1,18 +1,28 @@
-import { warn, warnOnce } from '../utils/utils.js'
+import { warn, warnAboutDepreation } from '../utils/utils.js'
 
-const defaultParams = {
+export const defaultParams = {
   title: '',
   titleText: '',
   text: '',
   html: '',
   footer: '',
-  type: null,
+  icon: undefined,
+  iconHtml: undefined,
   toast: false,
-  customClass: '',
-  customContainerClass: '',
+  animation: true,
+  showClass: {
+    popup: 'swal2-show',
+    backdrop: 'swal2-backdrop-show',
+    icon: 'swal2-icon-show',
+  },
+  hideClass: {
+    popup: 'swal2-hide',
+    backdrop: 'swal2-backdrop-hide',
+    icon: 'swal2-icon-hide',
+  },
+  customClass: undefined,
   target: 'body',
   backdrop: true,
-  animation: true,
   heightAuto: true,
   allowOutsideClick: true,
   allowEscapeKey: true,
@@ -21,52 +31,79 @@ const defaultParams = {
   keydownListenerCapture: false,
   showConfirmButton: true,
   showCancelButton: false,
-  preConfirm: null,
+  preConfirm: undefined,
   confirmButtonText: 'OK',
   confirmButtonAriaLabel: '',
-  confirmButtonColor: null,
-  confirmButtonClass: '',
+  confirmButtonColor: undefined,
   cancelButtonText: 'Cancel',
   cancelButtonAriaLabel: '',
-  cancelButtonColor: null,
-  cancelButtonClass: '',
+  cancelButtonColor: undefined,
   buttonsStyling: true,
   reverseButtons: false,
   focusConfirm: true,
   focusCancel: false,
   showCloseButton: false,
+  closeButtonHtml: '&times;',
   closeButtonAriaLabel: 'Close this dialog',
   showLoaderOnConfirm: false,
-  imageUrl: null,
-  imageWidth: null,
-  imageHeight: null,
+  imageUrl: undefined,
+  imageWidth: undefined,
+  imageHeight: undefined,
   imageAlt: '',
-  imageClass: '',
-  timer: null,
-  width: null,
-  padding: null,
-  background: null,
-  input: null,
+  timer: undefined,
+  timerProgressBar: false,
+  width: undefined,
+  padding: undefined,
+  background: undefined,
+  input: undefined,
   inputPlaceholder: '',
   inputValue: '',
   inputOptions: {},
   inputAutoTrim: true,
-  inputClass: '',
   inputAttributes: {},
-  inputValidator: null,
-  validationMessage: null,
+  inputValidator: undefined,
+  validationMessage: undefined,
   grow: false,
   position: 'center',
   progressSteps: [],
-  currentProgressStep: null,
-  progressStepsDistance: null,
-  onBeforeOpen: null,
-  onAfterClose: null,
-  onOpen: null,
-  onClose: null
+  currentProgressStep: undefined,
+  progressStepsDistance: undefined,
+  onBeforeOpen: undefined,
+  onOpen: undefined,
+  onRender: undefined,
+  onClose: undefined,
+  onAfterClose: undefined,
+  scrollbarPadding: true
 }
 
-export const deprecatedParams = []
+export const updatableParams = [
+  'title',
+  'titleText',
+  'text',
+  'html',
+  'icon',
+  'customClass',
+  'showConfirmButton',
+  'showCancelButton',
+  'confirmButtonText',
+  'confirmButtonAriaLabel',
+  'confirmButtonColor',
+  'cancelButtonText',
+  'cancelButtonAriaLabel',
+  'cancelButtonColor',
+  'buttonsStyling',
+  'reverseButtons',
+  'imageUrl',
+  'imageWidth',
+  'imageHeight',
+  'imageAlt',
+  'progressSteps',
+  'currentProgressStep'
+]
+
+export const deprecatedParams = {
+  animation: 'showClass" and "hideClass',
+}
 
 const toastIncompatibleParams = [
   'allowOutsideClick',
@@ -83,7 +120,7 @@ const toastIncompatibleParams = [
  * @param {String} paramName
  */
 export const isValidParameter = (paramName) => {
-  return defaultParams.hasOwnProperty(paramName)
+  return Object.prototype.hasOwnProperty.call(defaultParams, paramName)
 }
 
 /**
@@ -91,32 +128,7 @@ export const isValidParameter = (paramName) => {
  * @param {String} paramName
  */
 export const isUpdatableParameter = (paramName) => {
-  return [
-    'title',
-    'titleText',
-    'text',
-    'html',
-    'type',
-    'showConfirmButton',
-    'showCancelButton',
-    'confirmButtonText',
-    'confirmButtonAriaLabel',
-    'confirmButtonColor',
-    'confirmButtonClass',
-    'cancelButtonText',
-    'cancelButtonAriaLabel',
-    'cancelButtonColor',
-    'cancelButtonClass',
-    'buttonsStyling',
-    'reverseButtons',
-    'imageUrl',
-    'imageWidth',
-    'imageHeigth',
-    'imageAlt',
-    'imageClass',
-    'progressSteps',
-    'currentProgressStep'
-  ].indexOf(paramName) !== -1
+  return updatableParams.indexOf(paramName) !== -1
 }
 
 /**
@@ -124,7 +136,25 @@ export const isUpdatableParameter = (paramName) => {
  * @param {String} paramName
  */
 export const isDeprecatedParameter = (paramName) => {
-  return deprecatedParams.includes(paramName)
+  return deprecatedParams[paramName]
+}
+
+const checkIfParamIsValid = (param) => {
+  if (!isValidParameter(param)) {
+    warn(`Unknown parameter "${param}"`)
+  }
+}
+
+const checkIfToastParamIsValid = (param) => {
+  if (toastIncompatibleParams.includes(param)) {
+    warn(`The parameter "${param}" is incompatible with toasts`)
+  }
+}
+
+const checkIfParamIsDeprecated = (param) => {
+  if (isDeprecatedParameter(param)) {
+    warnAboutDepreation(param, isDeprecatedParameter(param))
+  }
 }
 
 /**
@@ -134,15 +164,13 @@ export const isDeprecatedParameter = (paramName) => {
  */
 export const showWarningsForParams = (params) => {
   for (const param in params) {
-    if (!isValidParameter(param)) {
-      warn(`Unknown parameter "${param}"`)
+    checkIfParamIsValid(param)
+
+    if (params.toast) {
+      checkIfToastParamIsValid(param)
     }
-    if (params.toast && toastIncompatibleParams.includes(param)) {
-      warn(`The parameter "${param}" is incompatible with toasts`)
-    }
-    if (isDeprecatedParameter(param)) {
-      warnOnce(`The parameter "${param}" is deprecated and will be removed in the next major release.`)
-    }
+
+    checkIfParamIsDeprecated(param)
   }
 }
 

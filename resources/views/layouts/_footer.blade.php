@@ -29,17 +29,17 @@
     <!-- Custom js -->
 
     <script type="text/javascript" src="{{asset('dark-assets/assets/js/script.js')}}"></script>
-   <link rel="stylesheet" type="text/css" href="{{asset('sweetalert2/dist/sweetalert2.css')}}">
-   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@7.33.1/dist/sweetalert2.min.js"></script>
+
+    <link rel="stylesheet" href="{{asset('sweetalert2/dist/sweetalert2.min.css')}}">
+    <script src="{{asset('sweetalert2/dist/sweetalert2.min.js')}}"></script>
+    
     <script src="{{asset('assets/pages/user-profile.js')}}"></script>
     
     @yield('scripts')
      <script>
-
         $( document ).ready(function() {
             @if (session('status'))
-
-                swal({
+                Swal.fire({
                     title: "{{session('message')}}",
                     icon:"{{session('status')}}",
                     timer: 2000,
@@ -47,7 +47,6 @@
                 });
             @endif 
         });
-    
     </script>
 </body>
 

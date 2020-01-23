@@ -43,6 +43,9 @@
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Update Unit Set</h5>
+		                             <div class="pull-left" style="float: right;">
+									<a href="{{ url()->previous() }}" class="btn btn-info" title="Back" >Back</a>
+									</div>
                             	</div>
 	                        </div>
 	                        <form id="add_unit_set" method="post" action="{{ url('unit-sets/edit',[$unit_set->id]) }}" enctype="multipart/form-data">

@@ -15,52 +15,69 @@ export const openPopup = (params) => {
   const container = dom.getContainer()
   const popup = dom.getPopup()
 
-  if (params.onBeforeOpen !== null && typeof params.onBeforeOpen === 'function') {
+  if (typeof params.onBeforeOpen === 'function') {
     params.onBeforeOpen(popup)
   }
 
-  if (params.animation) {
-    dom.addClass(popup, swalClasses.show)
-    dom.addClass(container, swalClasses.fade)
-    dom.removeClass(popup, swalClasses.hide)
-  } else {
-    dom.removeClass(popup, swalClasses.fade)
-  }
-  dom.show(popup)
+  addClasses(container, popup, params)
 
   // scrolling is 'hidden' until animation is done, after that 'auto'
-  container.style.overflowY = 'hidden'
-  if (dom.animationEndEvent && !dom.hasClass(popup, swalClasses.noanimation)) {
-    popup.addEventListener(dom.animationEndEvent, function swalCloseEventFinished () {
-      popup.removeEventListener(dom.animationEndEvent, swalCloseEventFinished)
-      container.style.overflowY = 'auto'
-    })
-  } else {
-    container.style.overflowY = 'auto'
-  }
-
-  dom.addClass([document.documentElement, document.body, container], swalClasses.shown)
-  if (params.heightAuto && params.backdrop && !params.toast) {
-    dom.addClass([document.documentElement, document.body], swalClasses['height-auto'])
-  }
+  setScrollingVisibility(container, popup)
 
   if (dom.isModal()) {
-    fixScrollbar()
-    iOSfix()
-    IEfix()
-    setAriaHidden()
-
-    // sweetalert2/issues/1247
-    setTimeout(() => {
-      container.scrollTop = 0
-    })
+    fixScrollContainer(container, params.scrollbarPadding)
   }
+
   if (!dom.isToast() && !globalState.previousActiveElement) {
     globalState.previousActiveElement = document.activeElement
   }
-  if (params.onOpen !== null && typeof params.onOpen === 'function') {
-    setTimeout(() => {
-      params.onOpen(popup)
-    })
+  if (typeof params.onOpen === 'function') {
+    setTimeout(() => params.onOpen(popup))
+  }
+}
+
+function swalOpenAnimationFinished (event) {
+  const popup = dom.getPopup()
+  if (event.target !== popup) {
+    return
+  }
+  const container = dom.getContainer()
+  popup.removeEventListener(dom.animationEndEvent, swalOpenAnimationFinished)
+  container.style.overflowY = 'auto'
+}
+
+const setScrollingVisibility = (container, popup) => {
+  if (dom.animationEndEvent && dom.hasCssAnimation(popup)) {
+    container.style.overflowY = 'hidden'
+    popup.addEventListener(dom.animationEndEvent, swalOpenAnimationFinished)
+  } else {
+    container.style.overflowY = 'auto'
+  }
+}
+
+const fixScrollContainer = (container, scrollbarPadding) => {
+  iOSfix()
+  IEfix()
+  setAriaHidden()
+
+  if (scrollbarPadding) {
+    fixScrollbar()
+  }
+
+  // sweetalert2/issues/1247
+  setTimeout(() => {
+    container.scrollTop = 0
+  })
+}
+
+const addClasses = (container, popup, params) => {
+  dom.addClass(container, params.showClass.backdrop)
+  dom.show(popup)
+  // Animate popup right after showing it
+  dom.addClass(popup, params.showClass.popup)
+
+  dom.addClass([document.documentElement, document.body], swalClasses.shown)
+  if (params.heightAuto && params.backdrop && !params.toast) {
+    dom.addClass([document.documentElement, document.body], swalClasses['height-auto'])
   }
 }

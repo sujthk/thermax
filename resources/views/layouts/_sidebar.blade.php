@@ -23,12 +23,33 @@
                         <span data-i18n="nav.widget.main"> Dashboard</span>
                     </a>
                 </li>
+
+             @if(Auth::guard()->user()->user_type == 'ADMIN')      
                 <li data-placement="bottom" title="Users" class="nav-item single-item {{ Nav::isRoute('users','has-class') }}">
                     <a href="{{ url('/users') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Users</span>
                     </a>
                 </li>
+                 <li data-placement="bottom" title="Group Calculator" class="nav-item single-item {{ Nav::isRoute('group-calcluation','has-class') }}">
+                    <a href="{{ url('/group-calcluation') }}">
+                        
+                        <i class="ti-harddrives"></i>
+                        <span data-i18n="nav.widget.main"> Group Calculator</span>
+                    </a>
+                </li>
+                <li class="nav-item single-item {{ Nav::isRoute('time-line','has-class') }}" >
+                    <a href="{{ url('/time-line') }}">
+                      <i class="ti-stats-up"></i>
+                        <span data-i18n="nav.widget.main">Time Line</span>
+                    </a>
+                </li>
+                <!--    <li class="nav-item single-item {{ Nav::isRoute('default/calculators','has-class') }}" >
+                    <a href="{{ url('/default/calculators') }}">
+                      <i class="ti-stats-up"></i>
+                        <span data-i18n="nav.widget.main"> Default Values Calculators</span>
+                    </a>
+                </li> -->
                 <li data-placement="bottom" title="Metallurgies" class="nav-item single-item {{ Nav::isRoute('metallurgies','has-class') }}">
                     <a href="{{ url('/metallurgies') }}">
                        <i class="ti-dropbox-alt"></i>
@@ -42,12 +63,7 @@
                         <span data-i18n="nav.widget.main"> Metallurgy Calculators</span>
                     </a>
                 </li>
-             <!--    <li class="nav-item single-item {{ Nav::isRoute('default/calculators','has-class') }}" >
-                    <a href="{{ url('/default/calculators') }}">
-                      <i class="ti-stats-up"></i>
-                        <span data-i18n="nav.widget.main"> Default Values Calculators</span>
-                    </a>
-                </li> -->
+            
                 <li data-placement="bottom" title="Calculation Values" class="nav-item single-item {{ Nav::isRoute('chiller/calculation-values','has-class') }}" >
                     <a href="{{ url('/chiller/calculation-values') }}">
                        <i class="ti-pulse"></i>
@@ -68,35 +84,44 @@
                 </li>
                 <li data-placement="bottom" title="Unit Sets" class="nav-item single-item {{ Nav::isRoute('unit-sets','has-class') }}" >
                     <a href="{{ url('/unit-sets') }}">
-                        <i class="ti-user"></i>
+                       <i class="ti-id-badge"></i>
                         <span data-i18n="nav.widget.main"> Unit Sets</span>
                     </a>
                 </li>
                 <li data-placement="bottom" title="Region" class="nav-item single-item {{ Nav::isRoute('region','has-class') }}" >
                     <a href="{{ url('/region') }}">
-                        <i class="ti-user"></i>
+                        <i class="ti-world"></i>
                         <span data-i18n="nav.widget.main">Region</span>
                     </a>
                 </li>
-                <li data-placement="bottom" title="Calculators" class="nav-item {{ Nav::hasSegment('calculators',[1],'has-class') }}">
-                    <a href="#!">
-                        <i class="ti-joomla"></i>
-                        <span data-i18n="nav.dash.main">Calculators</span>
+                 <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-s2','has-class') }}" >
+                    <a href="{{ url('/calculators/double-effect-s2') }}">
+                        <i class="ti-package"></i>
+                        <span data-i18n="nav.widget.main">Double Effect S2 Steam</span>
                     </a>
-                    <ul class="tree-1 ">
-                        <li data-placement="bottom" title="Double Effect S2 Steam" class="{{ Nav::isRoute('calculators/double-effect-s2','has-class') }}">
-                            <a href="{{ url('/calculators/double-effect-s2') }}" data-i18n="nav.dash.default"> Double Effect S2 Steam</a>
-                        </li>  
-                        <li data-placement="bottom" title="Double Effect H2 Steam" class="{{ Nav::isRoute('calculators/double-effect-h2','has-class') }}">
-                            <a href="{{ url('/calculators/double-effect-h2') }}" data-i18n="nav.dash.default"> Double Effect H2 Steam </a>
-                        </li>
-                        <li data-placement="bottom" title="Double Effect G2 Steam" class="{{ Nav::isRoute('calculators/double-effect-g2','has-class') }}">
-                            <a href="{{ url('/calculators/double-effect-g2') }}" data-i18n="nav.dash.default"> Double Effect G2 Steam </a>
-                        </li>
-                        
-                       
-                    </ul>
                 </li>
+                <li data-placement="bottom" title="Double Effect H2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-h2','has-class') }}" >
+                    <a href="{{ url('/calculators/double-effect-h2') }}">
+                        <i class="ti-package"></i>
+                        <span data-i18n="nav.widget.main">Double Effect H2 Hot Water </span>
+                    </a>
+                </li>
+                <li data-placement="bottom" title="Double Effect G2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-g2','has-class') }}" >
+                    <a href="{{ url('/calculators/double-effect-g2') }}">
+                       <i class="ti-package"></i>
+                        <span data-i18n="nav.widget.main">Double Effect G2 Steam</span>
+                    </a>
+                </li>
+                @else
+                @foreach(Auth::guard()->user()->userCalculators as $userCalculator)
+                    <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >
+                        <a href="{{ route($userCalculator->calculator->route)}}">
+                            <i class="ti-package"></i>
+                            <span data-i18n="nav.widget.main">{{$userCalculator->calculator->name}}</span>
+                        </a>
+                    </li> 
+                @endforeach  
+                @endif
             </ul>
         </div>
     </div>

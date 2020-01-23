@@ -19,7 +19,7 @@
             <div>
                 <ul class="nav-left">
                     <li>
-                        <a id="collapse-menu" href="#">
+                        <a id="collapse-menu" class="menu-hide-click" href="#">
                             <i class="ti-menu"></i>
                         </a>
                     </li>

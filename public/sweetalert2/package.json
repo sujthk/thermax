@@ -1,60 +1,65 @@
 {
   "_args": [
     [
-      {
-        "raw": "sweetalert2",
-        "scope": null,
-        "escapedName": "sweetalert2",
-        "name": "sweetalert2",
-        "rawSpec": "",
-        "spec": "latest",
-        "type": "tag"
-      },
-      "C:\\laragon-new\\www\\ecphasisinfotech"
+      "sweetalert2",
+      "/var/www/html/thermax"
     ]
   ],
   "_from": "sweetalert2@latest",
   "_hasShrinkwrap": false,
-  "_id": "sweetalert2@8.0.6",
+  "_id": "sweetalert2@9.5.4",
   "_inCache": true,
+  "_installable": true,
   "_location": "/sweetalert2",
-  "_nodeVersion": "10.15.1",
+  "_nodeVersion": "12.13.1",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/sweetalert2_8.0.6_1549399263312_0.055394125304461195"
+    "tmp": "tmp/sweetalert2_9.5.4_1577450797417_0.787845520627076"
   },
   "_npmUser": {
-    "name": "limonte",
-    "email": "limon.monte@gmail.com"
+    "email": "limon.monte@gmail.com",
+    "name": "limonte"
   },
-  "_npmVersion": "6.4.1",
+  "_npmVersion": "6.13.2",
   "_phantomChildren": {},
   "_requested": {
-    "raw": "sweetalert2",
-    "scope": null,
-    "escapedName": "sweetalert2",
     "name": "sweetalert2",
+    "raw": "sweetalert2",
     "rawSpec": "",
+    "scope": null,
     "spec": "latest",
     "type": "tag"
   },
   "_requiredBy": [
-    "#USER"
+    "/"
   ],
-  "_resolved": "https://registry.npmjs.org/sweetalert2/-/sweetalert2-8.0.6.tgz",
-  "_shasum": "9bb77e4220de936c8d93b2b67530421596f3b548",
+  "_resolved": "https://registry.npmjs.org/sweetalert2/-/sweetalert2-9.5.4.tgz",
+  "_shasum": "fcf9306a70ff9dbe2cb867b3bb7e871d854a2979",
   "_shrinkwrap": null,
   "_spec": "sweetalert2",
-  "_where": "C:\\laragon-new\\www\\ecphasisinfotech",
+  "_where": "/var/www/html/thermax",
   "author": {
-    "name": "Limon Monte",
     "email": "limon.monte@gmail.com",
+    "name": "Limon Monte",
     "url": "https://limonte.github.io"
   },
+  "browser": "dist/sweetalert2.all.js",
   "bugs": {
     "url": "https://github.com/sweetalert2/sweetalert2/issues"
   },
+  "bundlewatch": {
+    "files": [
+      {
+        "path": "dist/sweetalert2.all.min.js",
+        "maxSize": "20kB"
+      }
+    ]
+  },
   "contributors": [
+    {
+      "name": "Giuseppe Verni",
+      "url": "https://github.com/gverni"
+    },
     {
       "name": "Matthew Francis Brunetti",
       "email": "zenflow87@gmail.com",
@@ -70,17 +75,8 @@
       "url": "https://github.com/acupajoe"
     },
     {
-      "name": "Sam Turrell",
-      "email": "sam@samturrell.co.uk",
-      "url": "https://github.com/samturrell"
-    },
-    {
       "name": "Johan Fagerberg",
       "url": "https://github.com/birjolaxew"
-    },
-    {
-      "name": "Giuseppe Verni",
-      "url": "https://github.com/gverni"
     }
   ],
   "dependencies": {},
@@ -89,78 +85,71 @@
     "@babel/core": "^7.2.2",
     "@babel/plugin-transform-object-assign": "^7.2.0",
     "@babel/preset-env": "^7.3.1",
+    "@sweetalert2/eslint-config": "^1.0.0",
+    "@sweetalert2/execute": "^1.0.0",
+    "@sweetalert2/stylelint-config": "^1.1.5",
     "babel-loader": "^8.0.4",
     "babel-plugin-array-includes": "^2.0.3",
     "browser-sync": "^2.26.3",
     "custom-event-polyfill": "^1.0.6",
-    "eslint": "^5.12.1",
-    "execa": "^1.0.0",
+    "eslint": "^6.0.0",
     "gulp": "^4.0.0",
-    "gulp-autoprefixer": "^6.0.0",
+    "gulp-autoprefixer": "^7.0.0",
     "gulp-clean-css": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-css2js": "^1.1.2",
-    "gulp-eslint": "^5.0.0",
-    "gulp-if": "^2.0.2",
-    "gulp-load-plugins": "^1.5.0",
+    "gulp-if": "^3.0.0",
     "gulp-rename": "^1.2.2",
     "gulp-rollup": "^2.16.2",
-    "gulp-sass": "^4.0.2",
-    "gulp-sass-lint": "^1.3.4",
-    "gulp-tslint": "^8.1.2",
-    "gulp-typescript": "^5.0.0",
     "gulp-uglify": "^3.0.0",
-    "is-ci": "^2.0.0",
     "jquery": "^3.3.1",
     "karma": "^4.0.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-coverage": "^1.1.2",
+    "karma-chrome-launcher": "^3.0.0",
+    "karma-coverage": "^2.0.0",
     "karma-firefox-launcher": "^1.1.0",
     "karma-ie-launcher": "^1.0.0",
-    "karma-qunit": "^2.0.0",
+    "karma-qunit": "^4.0.0",
     "karma-sauce-launcher": "^2.0.2",
     "karma-sourcemap-loader": "^0.3.7",
     "karma-spec-reporter": "^0.0.32",
-    "karma-webpack": "^4.0.0-rc.5",
+    "karma-webpack": "^4.0.0",
     "merge2": "^1.2.3",
-    "mkdirp": "^0.5.1",
-    "pify": "^4.0.1",
     "promise-polyfill": "^8.1.0",
     "qunit": "^2.8.0",
-    "replace-in-file": "^3.4.3",
-    "rimraf": "^2.6.2",
+    "replace-in-file": "^5.0.2",
     "rollup": "^1.1.2",
     "rollup-plugin-babel": "^4.3.2",
-    "rollup-plugin-json": "^3.0.0",
-    "sinon": "^7.2.3",
-    "tslint": "^5.12.1",
-    "typescript": "^3.2.4",
+    "rollup-plugin-json": "^4.0.0",
+    "sass": "^1.22.1",
+    "sinon": "^8.0.0",
+    "stylelint": "^12.0.0",
+    "typescript": "^3.5.0",
     "webpack": "^4.29.0"
   },
   "directories": {},
   "dist": {
-    "integrity": "sha512-ymekWX+fV4X0zHRkbPVyTh7qhq31+8j+4uQl3oowIlpk1nclqMqrKeGihi8I5uNXvlo2ur4e9Nga7pxE+GIrmQ==",
-    "shasum": "9bb77e4220de936c8d93b2b67530421596f3b548",
-    "tarball": "https://registry.npmjs.org/sweetalert2/-/sweetalert2-8.0.6.tgz",
-    "fileCount": 67,
-    "unpackedSize": 505755,
-    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJcWfTgCRA9TVsSAnZWagAA5XMP/1dJkOrp9v3XJWURKzWH\nPHUqudNZQqe40bL6UrN1mnNAyMxtT2g7TWr8VAAMJGXPpalUMhX+OoQGLSsB\nFwqysQau789wXNwKWb5pIwPO4rEIxZcR8kjI1QBQvp1qDq5gIc/aEI9CziyT\no/nayHO9Pa9BM0uI9oM1trgknUCc5Vb3lZRECRily2OR4JvDfSp1hoWJLEwv\nL+G9hPI/OXbibSmYX1HS7YdO3w4vd+nkzefc1exmG/g9NilF3PoRDsMp9kqp\nLq7uzTLViDKxi0mPsUK5s4/UGRJzki+eUXjKogbSKgiOwCL4+tIRll0E4zLc\njkbwc7lHzry53F8M7CK4EAJfxKw/oXSxIH1Mq/8onaHX9Yi3rooDwSG9eqv0\nIU1T4AN9JYahgWNi411P/cVqeGZPb37vDff11XdSSD3Plz4MSnCE4w+8QV02\nM73qnU2eeAn2tdEiUxLkMKcwhMEg4+hgUpXZlqLLjlARbWW8gzqi2OROune1\nHAqaSB9waaG0n2EXGtZ2Mab0MO7v+jwFAPahtjPJnaid8PNwvYrpdcUl/E5R\njLgcqxEWZAAJOAjF2kkYBHZTo4p74CG3j5NDXayGQWKznYVrV6uxGwofyges\nT6qRpOiEQ3vA1ZJnGNKeuDEGNz7aGYps6FVvcJlk8LqInE6W1KvV5b1syr/D\nWmx6\r\n=NMb+\r\n-----END PGP SIGNATURE-----\r\n"
+    "fileCount": 82,
+    "integrity": "sha512-9FSmW9mCbRTHyx6Nbtgeb5348pJYNGaBafn3reKe/Zx/gOBgxsRVHj3GQ4VusU/tuqDobKAIHUdUvNdsU3MXPQ==",
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJeBf0uCRA9TVsSAnZWagAAdIEP/i26troumP1J4iZUztiW\nMN1irEjXxCK2rtQFHTFVhKnaPu/zpHCXn8NWQhPRlqevKJ/UDS5bCMCQfmDw\n51uSkyFHNXPE1SwRkq03iaylJBEvOS52q0TeEnyyA337txmirKEN0laPMktw\nMoKB9ZJZFx8LDkof7lecKEeJCTnPgtSj0+c044ePtO0MQR5hG0oY1iZcs2wK\nmLzpsJ4gActa09U6C92Np0q2dYPiyN8OGC4LYsCKx/CoYSkqmqXb6Fxxwshy\n2XXH6vFwyqCFyg9rwD49X01uLidZzf65I5yFcfNckSSS1CXg9A29MRbdV5Yr\na62MN+xUZ0Zb0GbmZ1dc9Kh4XGeUFTlJaGrIBpqpsW4LiwQ/S5SV1+rnA/cs\neyKY0NFm7uPe1Q/bhtHrTMUiToBSmw4pUTJ+z/b/yU23DqxSeBtKgyGtOIII\nsorKcTmoLOa+J7aD2hXnk3CTHbquptcZCh3T1WONY49GRRYAOXCk+29MGxyX\nMFG61NG5UuxinSMmsIHt8ZKocnL4NtTH5wIQ6Hu1CyvmKAtM/nUNq57RLpTQ\nu4RXYtmRf7f4UiR0zfPIA6ZeQIaw7m7VoLSKnyKbHSM82Q9cQ+HAanEIivfI\n7H6HXLXv5EX4d7NCUC41C8vqNiiEcwpTJn2tCBUCEmuk7jDxIDXzoHf6HAXq\n5XDp\r\n=Yw7C\r\n-----END PGP SIGNATURE-----\r\n",
+    "shasum": "fcf9306a70ff9dbe2cb867b3bb7e871d854a2979",
+    "tarball": "https://registry.npmjs.org/sweetalert2/-/sweetalert2-9.5.4.tgz",
+    "unpackedSize": 608244
   },
-  "engines": {
-    "node": ">=0.10.0"
+  "funding": {
+    "url": "https://sweetalert2.github.io/#donations"
   },
-  "gitHead": "7618f8a8341c57b27ede5a477e2f5735d270e677",
+  "gitHead": "827cf244f4a0c5b550cddde62225eeb080af5386",
   "homepage": "https://sweetalert2.github.io/",
   "keywords": [
-    "sweetalert",
-    "sweetalert2",
+    "accessible",
     "alert",
+    "confirm",
     "modal",
     "popup",
     "prompt",
-    "confirm",
-    "toast",
-    "accessible"
+    "sweetalert",
+    "sweetalert2",
+    "toast"
   ],
   "license": "MIT",
   "main": "dist/sweetalert2.all.js",
@@ -168,6 +157,10 @@
     {
       "name": "acupajoe",
       "email": "joseph@acupajoe.io"
+    },
+    {
+      "name": "gverni",
+      "email": "g.verni@gmail.com"
     },
     {
       "name": "limonte",
@@ -186,6 +179,7 @@
       "email": "zenflow87@gmail.com"
     }
   ],
+  "module": "src/sweetalert2.js",
   "name": "sweetalert2",
   "optionalDependencies": {},
   "readme": "ERROR: No README data found!",
@@ -195,23 +189,10 @@
   },
   "scripts": {
     "build": "gulp build",
-    "check": "npm run check:lint && npm run check:require-in-node && npm run check:qunit && npm run check:qunit:minified && npm run check:ts",
-    "check:jsdelivr": "curl --location 'https://cdn.jsdelivr.net/npm/sweetalert2' 2>&1 | grep --quiet 'window.Swal'",
-    "check:lint": "gulp lint",
-    "check:qunit": "karma start karma.conf.js --single-run",
-    "check:qunit:minified": "karma start karma.conf.js --single-run --minified",
-    "check:qunit:minified:sauce": "karma start karma.conf.js --single-run --minified --sauce",
-    "check:qunit:sauce": "karma start karma.conf.js --single-run --sauce",
-    "check:require-in-node": "node test/require-in-node",
-    "check:sauce": "npm run check:qunit:sauce && npm run check:qunit:minified:sauce",
-    "check:third-party": "npm run check:unpkg && npm run check:jsdelivr && npm run check:wappalyzer",
-    "check:ts": "tsc --lib dom,es6 sweetalert2.d.ts",
-    "check:unpkg": "curl --location 'https://unpkg.com/sweetalert2' 2>&1 | grep --quiet 'window.Swal'",
-    "check:wappalyzer": "curl 'https://api.wappalyzer.com/lookup-basic/v1/?url=https%3A%2F%2Fsweetalert2.github.io' 2>&1 | grep --quiet 'SweetAlert2'",
-    "fix:lint": "eslint --fix .",
+    "lint": "stylelint src && eslint src test tools *.js *.ts",
     "start": "gulp develop --continue-on-error --skip-minification --skip-standalone",
-    "test": "npm run build && npm run check"
+    "test": "karma start karma.conf.js --single-run"
   },
   "types": "sweetalert2.d.ts",
-  "version": "8.0.6"
+  "version": "9.5.4"
 }

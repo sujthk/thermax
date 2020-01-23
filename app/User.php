@@ -37,11 +37,11 @@ class User extends Authenticatable
             return date('d-m-Y h:i A', strtotime($value));
     }
 
-    public function getUserTypeAttribute($value)
-    {
+    // public function getUserTypeAttribute($value)
+    // {
 
-        return str_replace("_"," ",$value);
-    }
+    //     return str_replace("_"," ",$value);
+    // }
 
     public function unitSet()
     {
@@ -50,5 +50,17 @@ class User extends Authenticatable
     public function region()
     {
         return $this->belongsTo('App\Region');
+    }
+     public function calculators()
+    {
+        return $this->belongsToMany('App\Calculator','user_calculators','user_id','calculator_id')->withTimestamps();
+    }
+    public function groupCalculator()
+    {
+        return $this->belongsTo('App\GroupCalculator');
+    }
+     public function userCalculators()
+    {
+        return $this->hasMany('App\UserCalculator');
     }
 }

@@ -94,10 +94,20 @@ Change Password
                                     <th scope="row">Full Name</th>
                                     <td>{{$user->name}}</td>
                                 </tr>
+                                 <tr>
+                                    <th scope="row">Mobile Number</th>
+                                    <td>{{$user->mobile}}</td>
+                                </tr>
                                 <tr>
                                     <th scope="row">User Type</th>
                                     <td>{{$user->user_type}}</td>
                                 </tr>
+                                @if($user->unitset_status == 1)
+                                <tr>
+                                    <th scope="row">Unit Set Create</th>
+                                    <td> <a href="{{ url('/unit-sets') }}" class="btn btn-primary btn-sm">Unit Set Create</a></td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -108,6 +118,20 @@ Change Password
                                 <tr>
                                     <th scope="row">Email</th>
                                     <td><a href="#!">{{$user->email}}</a></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">Region Type</th>
+                                    <td> 
+                                        @if($user->region_type == 1)
+                                            Domestic
+                                        @elseif($user->region_type == 2)
+                                            USA
+                                        @elseif($user->region_type == 3)
+                                            Europe
+                                        @elseif($user->region_type == 4)
+                                            Both
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Unit Set</th>
@@ -151,12 +175,8 @@ Change Password
                                 <tr>
                                     <td>
                                          <div class="input-group">
-                                         <span class="input-group-addon">User Type </span>
-                                        <select name="user_type" id="user_type" required class="form-control">
-                                                <option {{ $user->user_type == 'ADMIN' ? 'selected' : '' }} value="ADMIN">ADMIN</option>
-                                                <option {{ $user->user_type == 'THERMAX_USER' ? 'selected' : '' }} value="THERMAX_USER">Thermax User</option>
-                                                <option {{ $user->user_type == 'NON_THERMAX_USER' ? 'selected' : '' }} value="NON_THERMAX_USER">Non Thermax User</option>
-                                            </select>
+                                            <span class="input-group-addon"> Mobile</span>
+                                             <input id="mobile" name="mobile" type="text" value="{{ $user->mobile }}" placeholder="Enter your Mobile Number" required class="form-control">
                                         </div>
                                     </td>
                                 </tr>
@@ -181,7 +201,11 @@ Change Password
                                     <td>
                                         <div class="input-group">
                                             <span class="input-group-addon"> Unit Set</span>
+                                            @if($user->unitset_status == 0)
+                                            <select name="unit_set_id" id="unit_set_id"  class="form-control" disabled>
+                                            @else
                                             <select name="unit_set_id" id="unit_set_id" required class="form-control">
+                                            @endif
                                                 @foreach ($unit_sets as $unit_set)
                                                     <option {{ $user->unit_set_id == $unit_set->id ? 'selected' : '' }} value="{{ $unit_set->id }}">{{ $unit_set->name }}</option>
                                                 @endforeach

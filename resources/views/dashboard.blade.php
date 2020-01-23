@@ -1,106 +1,122 @@
 @extends('layouts.app') 
 
-@section('styles')	
-	
+@section('styles')
+<style type="text/css">
+	.teimeline-header {
+		text-align: center;
+	}
+	.t-max-content p {
+		text-align: justify;
+		text-indent: 40px;
+	}
+	.t-max-content {
+		width: 80%;
+    margin-left: 10%;
+	}
+
+</style>	
+<!-- Horizontal-Timeline css -->
+<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/css/style.css')}}">
 @endsection
 
 @section('content')
-	<div class="main-body">
-	    <div class="page-wrapper">
-	        <div class="page-header">
-	            <div class="page-header-title">
-	                <h4>Analytic Dashboard</h4>
-	            </div>
-	            <div class="page-header-breadcrumb">
-	                <ul class="breadcrumb-title">
-	                    <li class="breadcrumb-item">
-	                        <a href="index.html">
-	                            <i class="icofont icofont-home"></i>
-	                        </a>
-	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Dasboard</a>
-	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Analytic Dashboard</a>
-	                    </li>
-	                </ul>
-	            </div>
-	        </div>
-	        <div class="page-body">
-	            <div class="col-md-12 col-xl-12">
-	                <div class="card">
-	                    <div class="card-header">
-	                        <h5>LINE CHART</h5>
-	                        <span>Lorem ipsum dolor sit amet, consectetur adipisicing elit</span>
-	                    </div>
-	                    <div class="card-block">
-	                        <div id="linechart" class="nvd-chart"></div>
-	                    </div>
-	                </div>
-	            </div>
+<div class="main-body">
+	<div class="page-wrapper">
+		<div class="page-header">
+			<div class="page-header-title">
+				<h4>Dashboard</h4>
+			</div>
+			<div class="page-header-breadcrumb">
+				<ul class="breadcrumb-title">
+					<li class="breadcrumb-item">
+						<a href="{{url('/dashboard')}}">
+							<i class="icofont icofont-home"></i>
+						</a>
+					</li>
+					<li class="breadcrumb-item"><a href="#!">Dasboard</a>
+					</li>
+					<li class="breadcrumb-item"><a href="#!">Home Dashboard</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!-- Horizontal Timeline start -->
+		<div class="col-md-12 ">
+			<div class="col-sm-12">
+				<!-- Bootstrap slider card start -->
+				<div class="card">
+					<div class="card-header">
+						<h5>Time Line</h5>
+						<div class="card-header-right">
+							
+						</div>
+					</div>
+					<div class="card-block">
+						<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+							<ol class="carousel-indicators">
+								@php($i=1)
+                                @foreach($time_lines as $time_line)	
+                                @if($i==1)
+                                <li data-target="#carouselExampleIndicators" data-slide-to="{{$time_line->id}}" class="active"></li>
+                                @else
+                                	<li data-target="#carouselExampleIndicators" data-slide-to="{{$time_line->id}}"></li>
+                                @endif                  
+                                @php($i++)
+                                @endforeach
 
-	            <!-- Live-chart end -->
-	            <!-- Last activity start -->
-	            <div class="col-xl-12">
-	                <div class="card">
-	                    <div class="card-header">
-	                        <h5>Last Activity</h5>
-	                        <div class="f-right">
-	                            <label class="label label-success">Today</label>
-	                            <label class="label label-danger">Month</label>
-	                        </div>
-	                    </div>
-	                    <div class="card-block table-border-style">
-	                        <div class="table-responsive analytic-table">
-	                            <table class="table">
-	                                <tbody>
-	                                    <tr>
-	                                        <td>
-	                                            <span class="count text-primary">2567</span>
-	                                            <span class="table-msg">Total Message Sent</span>
-	                                        </td>
-	                                        <td>34%</td>
-	                                    </tr>
-	                                    <tr>
-	                                        <td>
-	                                            <span class="count text-success">3058</span>
-	                                            <span class="table-msg">Last Activity</span>
-	                                        </td>
-	                                        <td>56%</td>
-	                                    </tr>
-	                                    <tr>
-	                                        <td>
-	                                            <span class="count text-inverse">6451</span>
-	                                            <span class="table-msg">Total Message Received</span>
-	                                        </td>
-	                                        <td>84%</td>
-	                                    </tr>
-	                                    <tr>
-	                                        <td>
-	                                            <span class="count text-warning">9512</span>
-	                                            <span class="table-msg">Monthly Income</span>
-	                                        </td>
-	                                        <td>79%</td>
-	                                    </tr>
-	                                    <tr>
-	                                        <td>
-	                                            <span class="count text-info">9874</span>
-	                                            <span class="table-msg">Total Transfer</span>
-	                                        </td>
-	                                        <td>81%</td>
-	                                    </tr>
-	                                </tbody>
-	                            </table>
-	                        </div>
-	                    </div>
-	                </div>
-	            </div>
-	            <!-- Last activity end -->
-	        </div>
-	    </div>
+							</ol>
+
+							<div class="carousel-inner" role="listbox">
+								@php($j=1)
+                                @foreach($time_lines as $time_line)
+                                @if($j==1)
+                                <div class="carousel-item active">
+                                @else
+                                <div class="carousel-item ">
+                                @endif
+                                <div class="row">
+                                	<div class="col-md-12">
+								
+								<div class="teimeline-header">
+									<h2>{{$time_line->name}}</h2>
+									<em>{{date("F jS,Y ", strtotime($time_line->created_at))}} </em>
+								</div>
+								<div class="t-max-content">
+								   <p>
+                                           {{$time_line->description}}
+                                        </p>
+							</div>
+						</div>
+						</div>                                        
+                                     
+								</div>
+								@php($j++)
+                                @endforeach
+							</div>
+							<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+								<span class="sr-only">Previous</span>
+							</a>
+							<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+								<span class="carousel-control-next-icon" aria-hidden="true"></span>
+								<span class="sr-only">Next</span>
+							</a>
+						</div>
+					</div>
+				</div>
+				<!-- Bootstrap slider card end -->
+			</div>
+		</div>
+		<!-- Horizontal Timeline end -->
 	</div>
+</div>
 @endsection
-	
-@section('scripts')	
-	<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/analytic-dashboard.js')}}"></script>
 
+@section('scripts')	
+<script type="text/javascript">
+	
+</script>
+<!-- Horizontal-Timeline js -->
+<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/js/main.js')}}"></script>
+<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/project-dashboard.js')}}"></script>
 @endsection
