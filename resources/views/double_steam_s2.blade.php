@@ -1655,9 +1655,9 @@
 		}
 
 
-	</script>
+</script>
 	
-	<script>
+<script>
 $(document).ready(function(){
 	$('.ss-steam-label input').tooltip();
 });
