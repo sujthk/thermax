@@ -337,7 +337,7 @@
 												</select>
 											</div>
 											<div class="col-lg-1">
-<!--                                                  <label id="model_name"></label> -->
+
 											</div>
 
 											<div class="col-lg-3">
@@ -354,11 +354,7 @@
 											 </div>
 										 </div>
 									 </div>
-<!--
-									<div class="card-header">
-										 <h5>Chilled Water</h5>
-									</div>
--->
+
 									<div class="">
 										<div class="row">
 											<div class="col-lg-3">
@@ -507,90 +503,89 @@
 						<div class="row">
 							<div class="col-lg-3">
                                 <p><label class=" col-form-label">Evaporator</label></p>
-							<div class="row">
-								<div class="col-lg-12">
-									<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
-										 @foreach($evaporator_options as $evaporator_option)
-										 <option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
-										 @endforeach
-									 </select>
+								<div class="row">
+									<div class="col-lg-12">
+										<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
+											 @foreach($evaporator_options as $evaporator_option)
+											 <option value="{{ $evaporator_option->value }}">{{ $evaporator_option->metallurgy->display_name }}</option>
+											 @endforeach
+										</select>
+		                            </div>
+									<div class="col-lg-12 range-hide">
+										<div class="row">
+										    <div class="col-md-8">
+												<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" title="">
+
+												<span class="messages emsg hidden" id="evaporator_thickness_error">
+												 <p class="text-danger error">Please Enter a Valid Evaporator Thickness</p>
+											 	</span>
+											 	<span class="" id="evaporator_range"></span>
+											</div>
+											<div class="col-lg-4">
+											 	<label class="padd-mm"> (mm) </label>
+										    </div>
+									 	</div>
+						         	</div>							
+								</div>
+							</div>                           
+
+							<div class="col-lg-3">
+	                            <p><label class=" col-form-label">Absorber</label></p>
+								<div class="row">
+									<div class="col-lg-12">								
+										<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
+											@foreach($absorber_options as $absorber_option)
+											<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
+											@endforeach
+										</select>
+									</div>
+									<div class="col-lg-12 range-hide">
+										<div class="row">
+											<div class="col-md-8">
+												<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
+
+												<span class="messages emsg hidden" id="absorber_thickness_error">
+													 <p class="text-danger error">Please Enter a Valid Absorber Thickness</p>
+												</span>
+												<span class="metallurgy_standard_span" id="absorber_range"></span>
+											</div>
+											<div class="col-lg-4">
+												<label class="padd-mm"> (mm) </label>
+											</div>
+										</div>
+	                                </div>
 	                            </div>
-								<div class="col-lg-12 range-hide">
-									<div class="row">
-									    <div class="col-md-8">
-											<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" title="">
-
-											<span class="messages emsg hidden" id="evaporator_thickness_error">
-											 <p class="text-danger error">Please Enter a Valid Evaporator Thickness</p>
-										 	</span>
-										 	<span class="" id="evaporator_range"></span>
-										</div>
-										<div class="col-lg-4">
-										 	<label class="padd-mm"> (mm) </label>
-									    </div>
-								 	</div>
-					         	</div>							
-							</div>
-						</div>                           
-
-						<div class="col-lg-3">
-                            <p><label class=" col-form-label">Absorber</label></p>
-							<div class="row">
-								<div class="col-lg-12">								
-									<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
-										@foreach($absorber_options as $absorber_option)
-										<option value="{{ $absorber_option->value }}">{{ $absorber_option->metallurgy->display_name }}</option>
-										@endforeach
-									</select>
-								</div>
-								<div class="col-lg-12 range-hide">
-									<div class="row">
-										<div class="col-md-8">
-											<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
-
-											<span class="messages emsg hidden" id="absorber_thickness_error">
-												 <p class="text-danger error">Please Enter a Valid Absorber Thickness</p>
-											</span>
-											<span class="metallurgy_standard_span" id="absorber_range"></span>
-										</div>
-										<div class="col-lg-4">
-										<label class="padd-mm"> (mm) </label>
-										</div>
-									</div>
-                                </div>
-                            </div>
-                        </div>
+	                        </div>
 							
-
-						<div class="col-lg-3">
-                            <p> <label class=" col-form-label">Condenser</label></p>
-							<div class="row">
-								<div class="col-lg-12">		
-									<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
-										 @foreach($condenser_options as $condenser_option)
-										 <option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
-										 @endforeach
-									</select>
-								</div>
-								<div class="col-lg-12 range-hide">
-									<div class="row">
-										<div class="col-md-8">
-											<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
-											<span class="messages emsg hidden" id="condenser_thickness_error">
-												 <p class="text-danger error">Please Enter a Valid Condenser Thickness</p>
-											</span>
-											<span class="metallurgy_standard_span" id="condenser_range"></span>
-										</div>
-										<div class="col-lg-4">
-										  	<label class="padd-mm"> (mm) </label>
-										</div>
+							<div class="col-lg-3">
+	                            <p> <label class=" col-form-label">Condenser</label></p>
+								<div class="row">
+									<div class="col-lg-12">		
+										<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
+											 @foreach($condenser_options as $condenser_option)
+											 <option value="{{ $condenser_option->value }}">{{ $condenser_option->metallurgy->display_name }}</option>
+											 @endforeach
+										</select>
 									</div>
-                                </div>
-                            </div>
-						</div>
-                       	<div class="col-lg-3">
-                        </div>
-                        </div>
+									<div class="col-lg-12 range-hide">
+										<div class="row">
+											<div class="col-md-8">
+												<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
+												<span class="messages emsg hidden" id="condenser_thickness_error">
+													 <p class="text-danger error">Please Enter a Valid Condenser Thickness</p>
+												</span>
+												<span class="metallurgy_standard_span" id="condenser_range"></span>
+											</div>
+											<div class="col-lg-4">
+											  	<label class="padd-mm"> (mm) </label>
+											</div>
+										</div>
+	                                </div>
+	                            </div>
+							</div>
+	                       	<div class="col-lg-3">
+	                        </div>
+                   		</div>
 
 						<div class="row">
 							<div class="col-md-6">
