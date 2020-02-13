@@ -12,29 +12,29 @@
 */
 Route::group(['middleware' => 'guest'], function(){
 
-Route::get('/', function () {
-    return view('login');
+	Route::get('/', function () {
+	    return view('login');
+	});
+	Route::get('/login', function () {
+	    return view('login');
+	})->name('login');
+
+	Route::get('/forgot-password', function () 
+	{
+		return view('forgot_password');
+	});
+	Route::post('/forgot-password', 'UserController@forgotPassword');
+	Route::post('/password-reset', 'UserController@resetAdminPassword');
+	Route::get('/password_verification/{token}', 'UserController@verifyCustomerToken');
+
+	Route::post('/login', 'UserController@loginUser');
+	Route::post('/user-send-otp', 'UserController@sendUserOtp');
+
 });
-Route::get('/login', function () {
-    return view('login');
-})->name('login');
 
-Route::get('/forgot-password', function () 
-{
-	return view('forgot_password');
-});
-Route::post('/forgot-password', 'UserController@forgotPassword');
-Route::post('/password-reset', 'UserController@resetAdminPassword');
-Route::get('/password_verification/{token}', 'UserController@verifyCustomerToken');
-
-Route::post('/login', 'UserController@loginUser');
-Route::post('/user-send-otp', 'UserController@sendUserOtp');
-
-});
-
-Route::get('/data', 'DoubleSteamController@getChillerData');
-Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
-Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2')->middleware('auth');
+	Route::get('/data', 'DoubleSteamController@getChillerData');
+	Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
+	Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2')->middleware('auth');
 
 Route::group(['middleware' => ['auth','revalidate']], function(){
 
@@ -56,7 +56,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/user_profile/edit/{user_id}', 'UserController@updateUserProfile');
 	Route::post('/password_change', 'UserController@postPasswordChange');
 
-
 	/*Regions*/
 	Route::get('/region', 'RegionController@getRegion')->name('region');
 	Route::post('/region/add', 'RegionController@postRegion');
@@ -77,7 +76,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/group-calcluation/edit/{id}', 'GroupCalculatorController@editGroupCalcluation');
 
 	Route::post('/group-calcluation/update/{id}', 'GroupCalculatorController@GroupCalcluationUpdate');
-
 	/*End Group Calculations*/
 
 
@@ -119,9 +117,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/calculators/double-effect-g2', 'DoubleG2SteamController@getDoubleEffectG2')->name('calculators/double-effect-g2');
 	Route::post('/calculators/double-effect-g2', 'DoubleG2SteamController@calculateDoubleEffectG2');
 	Route::post('/calculators/double-effect-g2/ajax-calculate', 'DoubleG2SteamController@postAjaxDoubleEffectG2');
-
 	Route::post('/calculators/double-effect-g2/ajax-calculate-region', 'DoubleG2SteamController@postAjaxDoubleEffectG2Region');
-
 	Route::post('/calculators/double-effect-g2/submit-calculate', 'DoubleG2SteamController@postDoubleEffectG2');
 	Route::post('/calculators/double-effect-g2/reset-calculate', 'DoubleG2SteamController@postResetDoubleEffectG2');
 	//report

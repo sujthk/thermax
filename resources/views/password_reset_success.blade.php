@@ -53,7 +53,7 @@
 								<div class="text-center">
 									<img src="{{asset('assets/images/thermax-logo.png')}}" alt="logo.png">
 								</div>
-					                <div class="auth-box">
+					            <div class="auth-box">
                                 <div class="row m-b-20">
                                     <div class="col-md-12">
                                         <h3 class="text-left">You Change your Password </h3>

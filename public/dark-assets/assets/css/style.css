@@ -25,7 +25,8 @@ p {
 .main-body .page-wrapper {
 	padding: 0.8rem;
 	margin-left: 240px;
-	transition: all ease-in .3s
+	transition: all ease-in .3s;
+	height:94vh;
 }
 .main-body .page-wrapper .page-header {
 	margin-bottom: 20px
@@ -4780,7 +4781,7 @@ table tbody .border-bottom-info td {
 .main-menu .main-menu-content .nav-item .tree-3 a i,
 .main-menu .main-menu-content .nav-item .tree-4 a i {
 	margin-right: 10px;
-	font-size: 15px;
+	font-size: 25px;
 	vertical-align: middle
 }
 .main-menu .main-menu-content .nav-item .icon-arrow-down,
@@ -7937,7 +7938,7 @@ body.menu-sidebar .navbar-wrapper {
 .btn-primary,
 .sweet-alert button.confirm,
 .wizard>.actions a {
-	background-color: #e10010;
+	background-color: #e10010 !important;
 	border-color: #e10010;
 	color: #fff;
 	cursor: pointer;
@@ -17759,7 +17760,7 @@ body.dark-layout #task-container li {
 	background-color: #1b1b1b
 }
 body.dark-layout .main-menu {
-	background: #242424
+	background: #333333
 }
 body.dark-layout .main-menu .main-menu-header,
 body.dark-layout .nav-tabs .nav-link.active,
@@ -17866,7 +17867,8 @@ body.dark-layout .footable.table>thead>tr>td,
 body.dark-layout .footable.table>thead>tr>th,
 body.dark-layout .write-msg,
 body.dark-layout .version .nav li:first-child {
-	border-top-color: #555
+	border-top-color: #555;
+	font-size:11px;
 }
 body.dark-layout .p-chat-user,
 body.dark-layout .showChat_inner,
@@ -18299,4 +18301,41 @@ body.dark-layout .chat-bg {
     background: #ffff;
     padding: 4px;
     margin-right: 10px;
+}
+
+
+@media (min-width:768px) and (max-width:1366px) {
+	.ss-steam-label .form-control, .ss-steam-label label{
+		font-size: 11px !important;
+	}
+	.ss-steam-label label{
+		margin-bottom: 5px !important;
+	}
+	#double_steam_s2 label{
+		margin-bottom: 10px !important;
+	}
+
+	.main-menu .main-menu-content .nav-item i, .main-menu .main-menu-content .nav-item .tree-1 a i, .main-menu .main-menu-content .nav-item .tree-2 a i, .main-menu .main-menu-content .nav-item .tree-3 a i, .main-menu .main-menu-content .nav-item .tree-4 a i{
+
+    font-size: 18px !important;;
+	}
+	.max-calculator .form-control, .max-calculator select.form-control {
+    height: 20px !important;
+    padding: 0px .5rem;
+}
+.ss-steam-label .card-header{
+	padding: 5px 0 !important;
+}
+.main-body .page-wrapper{
+	height: 91vh !important;
+}
+.scrollbar-right{
+	height: 75vh !important; 
+}
+.main-menu .main-menu-content .nav-item a, .main-menu .main-menu-content .nav-item .tree-1 a a, .main-menu .main-menu-content .nav-item .tree-2 a a, .main-menu .main-menu-content .nav-item .tree-3 a a, .main-menu .main-menu-content .nav-item .tree-4 a a{
+	font-size: 13px !important;
+}
+.padd-2 input, select {
+    margin-bottom: 0 !important;
+}
 }

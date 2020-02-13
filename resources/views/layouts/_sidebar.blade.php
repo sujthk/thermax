@@ -112,6 +112,7 @@
                         <span data-i18n="nav.widget.main">Double Effect G2 Steam</span>
                     </a>
                 </li>
+                
                 @else
                 @foreach(Auth::guard()->user()->userCalculators as $userCalculator)
                     <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >

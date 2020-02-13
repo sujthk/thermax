@@ -25,7 +25,7 @@
 
  	.max-calculator .form-control,
  	.max-calculator select.form-control {
- 		height: 26px !important;
+ 		height: 26px;
  		padding: 3px .5rem;
  	}
 
@@ -39,7 +39,7 @@
  	}
 
  	.max-calculator .card-header h5 {
- 		font-size: 15px;
+ 		font-size: 11px;
  		font-weight: 700;
  	}
 
@@ -88,9 +88,8 @@
  		padding: 20px 15px;
  	}
 
- 	.ss-steam-label label {
- 		font-size: 11px;
- 		margin-bottom: 9px;
+ 	.ss-steam-label label { 		 
+ 		margin-bottom: 10%;
  		font-weight: 600;
  		color: #656565;
  	}
@@ -98,18 +97,11 @@
  	.ss-steam-label .page-wrapper .page-header {
  		margin-bottom: 0px;
  	}
-
- 	.ss-steam-label .max-calculator .card-header h5 {
- 		font-size: 11px;
- 	}
- 	.show-div{
- 		font-size: 11px;
- 	}
-
  	.ss-steam-label .card-header{
- 		padding: 3px 10px;
- 		margin-bottom: 4px;
- 		margin-top: 2px;
+		padding: 15px 0;
+		margin-bottom: 4px;
+		margin-top: 2px;
+		background: #fff;
  	}
 
  	body.dark-layout .ss-steam-label .form-control{
@@ -118,7 +110,7 @@
  		border: none;
  		border-bottom: 1px solid #c5c5c5;
  		border-radius: 1px;
- 		font-size: 11px;
+ 		 
  		text-align-last: center;
  	}
  	body.dark-layout .ss-steam-label select option{
@@ -127,12 +119,6 @@
 
  	.ss-steam-label .form-control{
  		text-align: center;
- 	}
-
- 	.ss-steam-label .btn-primary{
- 		padding: 4px 20px;
- 		width: 100px;
- 		font-size: 11px;
  	}
 
  	.notes-content{
@@ -178,6 +164,7 @@
 		border-radius: 4px;
 		background-color: #F5F5F5;
 	}
+
 
 	#scroll-right::-webkit-scrollbar
 	{
