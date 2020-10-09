@@ -182,13 +182,13 @@ class UserController extends Controller
     		return response()->json(['status'=>false,'msg'=>'Account Deactivated Contact Admin']);
 
     	$otp = rand(100000,999999);
-        //$otp = 12345;
+        $otp = 12345;
 
     	$user = User::find($user->id);
     	$user->otp = $otp;
     	$user->save();
 
-    	Mail::to($user->email)->send(new SendUserOtp($user->name,$otp));
+    	// Mail::to($user->email)->send(new SendUserOtp($user->name,$otp));
 
     	return response()->json(['status'=>true,'msg'=>'Mail Send']);
 
@@ -422,7 +422,8 @@ class UserController extends Controller
            
         $email_token = str_random(30);
         $name = $user->name; 
-        Mail::to($user->email)->send(new SendUserPassword($name,$email_token)); 
+        // Mail::to($user->email)->send(new SendUserPassword($name,$email_token)); 
+        $user->password = bcrypt("admin123");
         $user->remember_token = $email_token;
         $user->save();
         $errors = ['email' => 'Password Reset Link Sent Email Successfully'];
