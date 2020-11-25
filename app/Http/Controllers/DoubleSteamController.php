@@ -138,7 +138,7 @@ class DoubleSteamController extends Controller
         $name = $request->input('name',"");
         $project = $request->input('project',"");
         $phone = $request->input('phone',"");
-       // Log::info($model_values);
+       Log::info($model_values);
         // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
