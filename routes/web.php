@@ -159,4 +159,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/unit-sets/edit/{unit_set_id}', 'UnitsetController@editUnitset');
 	Route::post('/unit-sets/edit/{unit_set_id}', 'UnitsetController@updateUnitset');
 
+	Route::get('/auto-testing', 'CalculatorTestingController@getAutoTesting')->name('auto-testing');
+	Route::post('auto-testing/export', 'CalculatorTestingController@exportCalculatorForamt');
+	Route::post('auto-testing/import', 'CalculatorTestingController@importCalculatorForamt');
+
 });

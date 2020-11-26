@@ -55,7 +55,6 @@ class DoubleSteamController extends Controller
     	$absorber_options = $chiller_options->where('type', 'abs');
     	$condenser_options = $chiller_options->where('type', 'con');
 
-        // Log::info($default_values);
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
 
@@ -100,7 +99,7 @@ class DoubleSteamController extends Controller
 
 		$model_values = $request->input('values');
 		$changed_value = $request->input('changed_value');
-		//Log::info($model_values);
+
 		// update user values with model values
 
         $unit_conversions = new UnitConversionController;
@@ -112,23 +111,20 @@ class DoubleSteamController extends Controller
 
 		$this->model_values = $model_values;
         $this->castToBoolean();
-        // Log::info($this->model_values);
+
         //$this->model_values = $this->calculation_values;
 		$attribute_validator = $this->validateChillerAttribute($this->changed_value);
-        //Log::info($this->model_values);
+
         
 		if(!$attribute_validator['status'])
 			return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'changed_value'=>$this->changed_value]);
 
-        // Log::info($this->model_values);
         $this->updateInputs();
         $this->loadSpecSheetData();
 
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
        
 
-        // Log::info("converted".print_r($converted_values,true));
-		// Log::info("metallurgy updated = ".print_r($this->model_values,true));
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'changed_value'=>$this->changed_value]);
 	}
     
@@ -138,13 +134,14 @@ class DoubleSteamController extends Controller
         $name = $request->input('name',"");
         $project = $request->input('project',"");
         $phone = $request->input('phone',"");
-       Log::info($model_values);
+
         // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
         $converted_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
 
 		$this->model_values = $converted_values;
+
         $this->castToBoolean();
 
 		$validate_attribute =  $this->validateAllChillerAttributes();  
@@ -164,7 +161,7 @@ class DoubleSteamController extends Controller
 		$this->castToBoolean();
 
 		$this->updateInputs();
-        //Log::info("Calculaion starts = ".print_r($this->calculation_values,true));
+
         
 
         try {
@@ -172,12 +169,10 @@ class DoubleSteamController extends Controller
             $velocity_status = $this->VELOCITY();
         } 
         catch (\Exception $e) {
-             Log::info($e);
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
-       
-    // Log::info(print_r($this->calculation_values,true));
+    
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
@@ -193,7 +188,7 @@ class DoubleSteamController extends Controller
             $this->loadSpecSheetData();
         }
         catch (\Exception $e) {
-             Log::info($e);
+
 
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
@@ -219,7 +214,7 @@ class DoubleSteamController extends Controller
 
         $model_number =(int)$model_values['model_number'];
         $chiller_form_values = $this->getFormValues($model_number);
-        // log::info($model_values);
+
         $unit_conversions = new UnitConversionController;
         // $model_values = $unit_conversions->calculationUnitConversion($model_values);
 
@@ -246,16 +241,14 @@ class DoubleSteamController extends Controller
         $default_values = collect($chiller_form_values)->union($standard_values);
         $this->model_values = $default_values;
         // $this->castToBoolean();
-        // Log::info($this->model_values);
+
         $range_calculation = $this->RANGECAL();
         
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
 
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
         $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
-        //Log::info($model_values);
-        // Log::info("converted".print_r($converted_values,true));
-        // Log::info("metallurgy updated = ".print_r($this->model_values,true));
+
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
     }
 
@@ -304,13 +297,12 @@ class DoubleSteamController extends Controller
             
         $this->model_values = $chiller_form_values;
 
-        // log::info($this->model_values);
         $this->castToBoolean();
         $range_calculation = $this->RANGECAL();
-        //log::info($this->model_values);
+
         $unit_conversions = new UnitConversionController;
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
-        // log::info($converted_values);
+ 
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
         $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
 
@@ -327,7 +319,7 @@ class DoubleSteamController extends Controller
             // $this->model_values['condenser_material_value']=$model_values['condenser_material_value'];
 
             $this->model_values['metallurgy_standard'] = false;
-            //Log::info("Metallurgy Standard false");
+            
         }
         else{
             
@@ -342,7 +334,7 @@ class DoubleSteamController extends Controller
             $this->model_values['absorber_thickness_change'] = true;
             $this->model_values['condenser_thickness_change'] = true;
 
-            //Log::info("Metallurgy Standard true");
+           
         }
     }
 
@@ -370,7 +362,7 @@ class DoubleSteamController extends Controller
 
         $units_data = $this->getUnitsData();
 
-        //Log::info($calculation_values);
+        
         $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data])->render();
 
         return $view;
@@ -421,7 +413,7 @@ class DoubleSteamController extends Controller
         }
 
         $calculation_values = json_decode($user_report->calculation_values,true);
-        // Log::info($calculation_values);
+        
         $name = $user_report->name;
         $project = $user_report->project;
         $phone = $user_report->phone;
@@ -501,7 +493,7 @@ class DoubleSteamController extends Controller
         // $this->calculation_values['AHR'] = $default_values['AHR'];
         // $this->calculation_values['KCON'] = $default_values['KCON'];
 
-        // log::info("update inputs = ".print_r($this->calculation_values,true));
+        
         // $constant_data = $this->getConstantData();
         // $this->calculation_values = array_merge($this->calculation_values,$constant_data);
 
@@ -511,7 +503,7 @@ class DoubleSteamController extends Controller
         $this->calculation_values['PODA'] = $pid_ft3['PODA'];
         $this->calculation_values['THPA'] = $pid_ft3['THPA'];
 
-        // Log::info(print_r($this->calculation_values,true));
+        
         $this->calculation_values['PSL1'] = $this->calculation_values['PSLI'] + $this->calculation_values['PSLO'];
         $this->calculation_values['KM2'] = 0;
 
@@ -895,7 +887,7 @@ class DoubleSteamController extends Controller
                 $this->modulNumberDoubleEffectS2();
                 
                 $range_calculation = $this->RANGECAL();
-                //log::info($range_calculation);
+                
                 if(!$range_calculation['status']){
                     return array('status'=>false,'msg'=>$range_calculation['msg']);
                 }
@@ -1140,7 +1132,7 @@ class DoubleSteamController extends Controller
            		
            	break;
            	case "FOULING_COOLING_VALUE":
-           		// Log::info(print_r($this->model_values,true));
+           		
            		if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
            			if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
            				return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
@@ -1318,7 +1310,7 @@ class DoubleSteamController extends Controller
            
 
          // "FOULING_COOLING_VALUE":
-        // Log::info(print_r($this->model_values,true));
+       
         if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
             if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
                 return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
@@ -1384,7 +1376,7 @@ class DoubleSteamController extends Controller
 	}
 
 	public function metallurgyValidating(){
-		// Log::info("metallurgy = ".print_r($this->model_values,true));
+		
 		if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
 		{
             $this->model_values['tube_metallurgy_standard'] = 'false';
@@ -1405,14 +1397,14 @@ class DoubleSteamController extends Controller
 		if(!$evaporator_validator['status'])
 			return array('status'=>false,'msg'=>$evaporator_validator['msg']);
 
-		// Log::info("metallurgy updated = ".print_r($this->model_values,true));
+		
 		$this->onChangeMetallurgyOption();
 
 		return  array('status' => true,'msg' => "process run successfully");
 	}
 
     public function VELOCITY(){
-        // Log::info(print_r($this->calculation_values,true));    
+           
 
         $IDA = floatval($this->calculation_values['IDA']);
         $TNAA = floatval($this->calculation_values['TNAA']);
@@ -3236,11 +3228,10 @@ class DoubleSteamController extends Controller
 	    $capacity = $this->model_values['capacity'];
 
 	    $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
-	    // Log::info("Range");
+	   
         $this->updateInputs();
       
-        // Log::info("calculation = ".print_r($this->calculation_values,true));
-
+      
 	    // $chiller_data = $this->getChillerData();
 
 	    $IDC = floatval($this->calculation_values['IDC']);
@@ -3265,8 +3256,7 @@ class DoubleSteamController extends Controller
         $VAMAX = $absorber_option->metallurgy->abs_max_velocity;
         $VCMIN = $condenser_option->metallurgy->con_min_velocity;
         $VCMAX = $condenser_option->metallurgy->con_max_velocity;
-        // Log::info($absorber_option->id);
-        // Log::info($VAMIN);
+ 
 
 
 	    // if ($model_number < 1200)
@@ -3292,10 +3282,6 @@ class DoubleSteamController extends Controller
 	    //     $VCMAX = 2.78;
 	    // }
 
-        // Log::info("vamin=".$VAMIN);
-        // Log::info("vamax=".$VAMAX);
-        // Log::info("vcmin=".$VCMIN);
-        // Log::info("vcamx=".$VCMAX);
 
 	    $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;		//min required flow in condenser
 	    $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / $TCP;
@@ -3387,7 +3373,6 @@ class DoubleSteamController extends Controller
 
 	   
 
-	   	// Log::info("init = ".$INIT);
 	   	$range_values = array();
 	   	foreach ($FLOWMN as $key => $min) {
 	   		if(!empty($FLOWMX[$key])){
@@ -3403,14 +3388,13 @@ class DoubleSteamController extends Controller
 
 	   	// $range_values = array_sort($range_values);
 
-	   	 //Log::info($range_values);
+
 	   	// for ($i=0; $i < $INIT; $i++) { 
 	   	// 	$range_values .= "(".$FMIN[$i]." - ".$FMAX[$i].")<br>";
 	   	// }
 
 	   	$this->model_values['cooling_water_ranges'] = $range_values;
 
-        //log::info($this->model_values['cooling_water_ranges']);
 	    return array('status' => true,'msg' => "process run successfully");
 	}
 
@@ -3771,7 +3755,7 @@ class DoubleSteamController extends Controller
     {
         if (!isset($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
         {
-            //Log::info($this->calculation_values['LMTDEVAH']);
+
             return false;
         }
         else if (!isset($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
@@ -6690,6 +6674,50 @@ class DoubleSteamController extends Controller
         ]);
 
         return $calculation_values;
+    }
+
+    public function testingS2Calculation($datas){
+
+        $this->model_values = $datas;
+
+        $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
+        $this->updateInputs();
+
+       
+
+        try {
+            $this->WATERPROP();
+            $velocity_status = $this->VELOCITY();
+        } 
+        catch (\Exception $e) {
+             Log::info($e);
+
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
+       
+
+        if(!$velocity_status['status'])
+            return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
+
+
+        try {
+            $this->CALCULATIONS();
+
+            $this->CONVERGENCE();
+
+            $this->RESULT_CALCULATE();
+    
+            $this->loadSpecSheetData();
+        }
+        catch (\Exception $e) {
+             Log::info($e);
+
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
+
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
+
+  
     }
 
 
