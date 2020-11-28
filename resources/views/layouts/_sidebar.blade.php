@@ -94,6 +94,12 @@
                         <span data-i18n="nav.widget.main">Region</span>
                     </a>
                 </li>
+                <li data-placement="bottom" title="Testing" class="nav-item single-item {{ Nav::isRoute('auto-testing','has-class') }}" >
+                    <a href="{{ url('/auto-testing') }}">
+                        <i class="ti-eye"></i>
+                        <span data-i18n="nav.widget.main">Auto Testing</span>
+                    </a>
+                </li>
                  <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-s2','has-class') }}" >
                     <a href="{{ url('/calculators/double-effect-s2') }}">
                         <i class="ti-package"></i>

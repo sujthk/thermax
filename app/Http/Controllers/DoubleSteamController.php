@@ -38,6 +38,8 @@ class DoubleSteamController extends Controller
         $combined = $notes_key->combine($notes_value);
 
         $this->notes = $combined;
+
+        error_reporting(-1);
     }
 
     public function getDoubleEffectS2(){
@@ -135,12 +137,15 @@ class DoubleSteamController extends Controller
         $project = $request->input('project',"");
         $phone = $request->input('phone',"");
 
+
         // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
         $converted_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
 
 		$this->model_values = $converted_values;
+
+        Log::info($this->model_values);
 
         $this->castToBoolean();
 
@@ -6677,48 +6682,54 @@ class DoubleSteamController extends Controller
     }
 
     public function testingS2Calculation($datas){
-
+        
         $this->model_values = $datas;
 
         $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
         $this->updateInputs();
 
+        $this->calculation_values['msg'] = '';
+       try {
+           $this->WATERPROP();
+           $velocity_status = $this->VELOCITY();
+       } 
+       catch (\Exception $e) {
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
        
 
-        try {
-            $this->WATERPROP();
-            $velocity_status = $this->VELOCITY();
-        } 
-        catch (\Exception $e) {
-             Log::info($e);
+       if(isset($velocity_status['status']) && !$velocity_status['status']){
+            $this->calculation_values['msg'] = $velocity_status['msg'];
+       }
 
-            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        }
+
+
+       try {
+           $this->CALCULATIONS();
+
+           $this->CONVERGENCE();
+
+           $this->RESULT_CALCULATE();
        
+           $this->loadSpecSheetData();
+       }
+       catch (\Exception $e) {
 
-        if(!$velocity_status['status'])
-            return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
 
+        
 
-        try {
-            $this->CALCULATIONS();
-
-            $this->CONVERGENCE();
-
-            $this->RESULT_CALCULATE();
-    
-            $this->loadSpecSheetData();
-        }
-        catch (\Exception $e) {
-             Log::info($e);
-
-            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        }
-
-        return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
+        // Log::info($this->calculation_values);
+        return $this->calculation_values;
+        // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
 
   
     }
+
+    
 
 
 

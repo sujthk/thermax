@@ -161,6 +161,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
 	Route::get('/auto-testing', 'CalculatorTestingController@getAutoTesting')->name('auto-testing');
 	Route::post('auto-testing/export', 'CalculatorTestingController@exportCalculatorForamt');
-	Route::post('auto-testing/import', 'CalculatorTestingController@importCalculatorForamt');
+    Route::post('auto-testing/import', 'CalculatorTestingController@importCalculatorForamt');
+    Route::post('auto-testing/calculator', 'CalculatorTestingController@testingCalculator');
+	Route::post('auto-testing/download', 'CalculatorTestingController@downloadTestedCalculator');
 
 });

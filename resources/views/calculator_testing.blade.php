@@ -25,7 +25,7 @@
 	        </div>
 	        <div class="page-body">
 	            <div class="row">
-	                <div class="col-sm-12">
+	                <div class="col-sm-6">
 	                    <!-- Zero config.table start -->
 	                    @if ($errors->any())
 	                        <div class="alert alert-danger">
@@ -40,9 +40,11 @@
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Export Testing Format</h5>
+                                    <br>
+                                    <br>
 		                            <div class="card-body">
 		                            	<div class="row">
-								            <div class="col-sm-6">
+								            <div class="col-sm-12">
 								            	<form action="{{url('auto-testing/export')}}" method="POST" enctype="multipart/form-data">
 									                {{ csrf_field() }}
 									            	<select name="code" id="code" class="form-control"  required="">
@@ -53,7 +55,7 @@
 			 											@endforeach
 		 											</select>
 		 											<br>
-									            	 <button class="btn btn-warning" type="submit">Export Testing Format</button>
+									            	 <button class="btn btn-primary m-b-0" type="submit">Export Testing Format</button>
 									            </form>	 
 								            </div>
 							            </div>
@@ -66,9 +68,11 @@
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Import Testing Format</h5>
+                                    <br>
+                                    <br>
 		                            <div class="card-body">
 		                            	<div class="row">
-								            <div class="col-sm-6">
+								            <div class="col-sm-12">
 								            	<form action="{{url('auto-testing/import')}}" method="POST" enctype="multipart/form-data">
 									                {{ csrf_field() }}
 									            	<select name="code" id="code" class="form-control"  required="">
@@ -81,7 +85,7 @@
 		 											<br>
 		 											<input type="file" name="data_file" class="form-control" required="">
 		 											<br>
-									            	 <button class="btn btn-warning" type="submit">Import Testing Format</button>
+									            	 <button class="btn btn-primary m-b-0" type="submit">Import Testing Format</button>
 									            </form>	 
 								            </div>
 							            </div>

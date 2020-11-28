@@ -1507,6 +1507,9 @@
 					}	
 
 				},
+                error: function (jqXHR, status, err) {
+                    swal("Sorry Something Went Wrong", "", "error");
+                },
 			});
 		});
 
