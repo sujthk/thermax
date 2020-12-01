@@ -145,7 +145,7 @@ class DoubleSteamController extends Controller
 
 		$this->model_values = $converted_values;
 
-        Log::info($this->model_values);
+        // Log::info($this->model_values);
 
         $this->castToBoolean();
 
