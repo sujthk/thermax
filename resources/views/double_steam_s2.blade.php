@@ -1509,7 +1509,7 @@
 
 				},
                 error: function (jqXHR, status, err) {
-                    swal("Sorry Something Went Wrong", "", "error");
+                    alert("Sorry Something Went Wrong", "", "error");
                 },
 			});
 		});
