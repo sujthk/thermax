@@ -1293,6 +1293,7 @@
 
 		function updateModelValues(input_type){
 			var validate = false;
+            $("#ajax-loader").hide();
 			switch(input_type) {
 				case 'model_number':
 				model_values.model_number = $("#model_number").val();
