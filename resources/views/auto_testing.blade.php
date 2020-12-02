@@ -55,7 +55,6 @@
 	                                        	<th>Model Name</th>
 	                                            <th>Model</th>
 	                                            <th>Result</th>
-	                                            <th>Notes</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody id="result_table">
@@ -118,7 +117,7 @@
 
 
 		function sendCalculationValues(values){
-			
+			values.calculator_code = code;
 			var tr_row = '<tr><td>'+values.model_name+'</td><td>'+values.model_number+'</td>';
 			var error = 1;
 			$.ajax({
@@ -133,7 +132,7 @@
 					
 					if(response.status){
 						console.log(response.result);
-						tr_row = tr_row+'<td>'+response.result.Result+'</td><td>'+response.result.Notes+'</td></tr>';
+						tr_row = tr_row+'<td>'+response.result.Result+'</td></tr>';
 						error = 0;
 					}
 					else{
@@ -148,7 +147,7 @@
 			});
 
 			if(error){
-				tr_row = tr_row+'<td>Error</td><td>System Error</td></tr>';
+				tr_row = tr_row+'<td>Error</td></tr>';
 			}
 			
 			$('#result_table').append(tr_row);
