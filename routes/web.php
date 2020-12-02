@@ -10,6 +10,13 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+// Delete Routes strictly for developer access
+
+Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
+
+
+
 Route::group(['middleware' => 'guest'], function(){
 
 	Route::get('/', function () {
