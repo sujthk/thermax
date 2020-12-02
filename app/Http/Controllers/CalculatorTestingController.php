@@ -76,6 +76,7 @@ class CalculatorTestingController extends Controller
         $path = Input::file('data_file')->getRealPath();
         $data = Excel::load($path, function($reader) {})->get();
         $datas = collect($data)->toArray();
+        
 
         DB::table('auto_testing')->where('user_id',Auth::user()->id)->delete();
 
