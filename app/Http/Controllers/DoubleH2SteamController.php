@@ -125,7 +125,7 @@ class DoubleH2SteamController extends Controller
          $name = $request->input('name',"");
         $project = $request->input('project',"");
         $phone = $request->input('phone',"");
-//Log::info($model_values);
+        Log::info($model_values);
 // ini_set('memory_limit' ,'-1');
         $unit_conversions = new UnitConversionController;
 
@@ -149,7 +149,7 @@ class DoubleH2SteamController extends Controller
         // }                                   
 
         $this->model_values = $converted_values;
-//log::info($this->model_values);
+log::info($this->model_values);
         $this->castToBoolean();
 
         $this->updateInputs();
@@ -187,7 +187,7 @@ class DoubleH2SteamController extends Controller
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
-        //log::info($calculated_values);
+        log::info($this->calculation_values);
 
         if($calculated_values['Result'] =="FAILED")
         {
@@ -5980,5 +5980,54 @@ class DoubleH2SteamController extends Controller
         ]);
 
         return $calculation_values;
+    }
+
+
+    public function testingH2Calculation($datas){
+     
+        $this->model_values = $datas;
+
+        $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
+        $this->updateInputs();
+
+        $this->calculation_values['msg'] = '';
+       try {
+           $this->WATERPROP();
+           $velocity_status = $this->VELOCITY();
+       } 
+       catch (\Exception $e) {
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
+       
+
+       if(isset($velocity_status['status']) && !$velocity_status['status']){
+            $this->calculation_values['msg'] = $velocity_status['msg'];
+       }
+
+
+
+       try {
+           $this->CALCULATIONS();
+
+           $this->CONVERGENCE();
+
+           $this->RESULT_CALCULATE();
+       
+           $this->loadSpecSheetData();
+       }
+       catch (\Exception $e) {
+
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
+
+        
+
+        // Log::info($this->calculation_values);
+        return $this->calculation_values;
+        // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
+
+  
     }
 }
