@@ -164,6 +164,16 @@
 										</div>
 										<div class="col-md-6">
 											<div class="form-group row">
+												<label class="col-sm-3 col-form-label">Language</label>
+												<div class="col-sm-8">
+													<select name="language" id="language" required class="form-control">
+														<option value="">-- Select Language --</option>
+														<option selected value="english">English</option>
+														<option value="chinese">Chinese</option>
+													</select>
+												</div>
+											</div>
+											<div class="form-group row">
 												<label class="col-sm-3 col-form-label">Unit Set Type</label>
 												<div class="col-sm-8" style="padding: 10px;">
 												

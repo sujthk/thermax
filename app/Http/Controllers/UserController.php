@@ -51,6 +51,7 @@ class UserController extends Controller
 		    'unit_set_id' => 'required',
             'region_type' => 'required',
             'mobile' => 'required',
+            'language' => 'required',
 		]);
 
         if($request->user_type =='THERMAX_USER' || $request->user_type == 'NON_THERMAX_USER')
@@ -78,6 +79,7 @@ class UserController extends Controller
 
         $user->min_chilled_water_out = $request->min_chilled_water_out;
         $user->unitset_status = $request->unitset_type;
+        $user->language = $request->language;
 		$user->status = 1;
 		$user->save();
 
@@ -108,6 +110,7 @@ class UserController extends Controller
             'unit_set_id' => 'required',
             'region_type' => 'required',
             'mobile' => 'required',
+            'language' => 'required',
 		]);
 
         //return $request->all();
@@ -131,6 +134,7 @@ class UserController extends Controller
         $user->region_id = $request->region_id;
         $user->min_chilled_water_out = $request->min_chilled_water_out;
         $user->unitset_status = $request->unitset_type;
+        $user->language = $request->language;
 
 		if ($request->has('password') && !empty($request->password)) {
 		    $hashed_password = Hash::make($request->password);
@@ -244,6 +248,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|unique:users,email,'.$user_id,
             'unit_set_id' => 'required',
+            'language' => 'required',
         ]);
 
         // Log::info($request->all());
@@ -253,6 +258,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->mobile = $request->mobile;
         $user->unit_set_id = $request->unit_set_id;
+        $user->language = $request->language;
         $user->save();
 
         return redirect('profile')->with('message','Profile Updated')

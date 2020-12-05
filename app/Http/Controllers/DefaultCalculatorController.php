@@ -10,6 +10,7 @@ use App\ChillerCalculationValue;
 use App\NotesAndError;
 use App\Metallurgy;
 use App\CalculationKey;
+use App\Language;
 use Log;
 use Excel;
 class DefaultCalculatorController extends Controller
@@ -222,12 +223,14 @@ class DefaultCalculatorController extends Controller
 
         $this->validate($request, [
             'note_name' => 'required',
-            'note_value' => 'required'
+            'note_value' => 'required',
+            'chinese_value' => 'required'
         ]);
 
         $notes_error = new NotesAndError;
         $notes_error->name = $request->note_name;
         $notes_error->value = $request->note_value;
+        $notes_error->chinese_value = $request->chinese_value;
         $notes_error->save();
 
         return redirect('error-notes')->with('message','Notes Added')
@@ -240,13 +243,16 @@ class DefaultCalculatorController extends Controller
 
         $this->validate($request, [
             'note_name' => 'required',
-            'note_value' => 'required'
+            'note_value' => 'required',
+            'chinese_value' => 'required'
+
         ]);
 
 
         $notes_error = NotesAndError::find($error_notes_id);
         $notes_error->name = $request->note_name;
         $notes_error->value = $request->note_value;
+        $notes_error->chinese_value = $request->chinese_value;
         $notes_error->save();
 
         return redirect('error-notes')->with('message','Notes Updated')
@@ -427,6 +433,56 @@ class DefaultCalculatorController extends Controller
         $calculator_key->save();
 
         return redirect('calculation-keys')->with('message','Calculator Key Updated')
+                        ->with('status','success');
+
+    }
+
+    public function getLanguages(){
+
+        $languages = Language::get();
+
+
+        return view('languages')->with('languages',$languages);
+    }
+
+    public function postLanguage(Request $request){
+        // return $request->all();
+
+
+        $this->validate($request, [
+            'note_name' => 'required',
+            'english_value' => 'required',
+            'chinese_value' => 'required'
+        ]);
+
+        $language = new Language;
+        $language->name = $request->note_name;
+        $language->english = $request->english_value;
+        $language->chinese = $request->chinese_value;
+        $language->save();
+
+        return redirect('languages')->with('message','Notes Added')
+                        ->with('status','success');
+
+    }
+
+    public function updateLanguage(Request $request,$language_id){
+        // return $request->all();
+
+        $this->validate($request, [
+            'note_name' => 'required',
+            'english_value' => 'required',
+            'chinese_value' => 'required'
+
+        ]);
+
+
+        $language = Language::find($language_id);
+        $language->english = $request->english_value;
+        $language->chinese = $request->chinese_value;
+        $language->save();
+
+        return redirect('languages')->with('message','Notes Updated')
                         ->with('status','success');
 
     }

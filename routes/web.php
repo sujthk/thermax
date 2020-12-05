@@ -150,6 +150,9 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/error-notes/edit/{error_notes_id}', 'DefaultCalculatorController@updateErrorNote');
 	Route::post('/error-notes/add', 'DefaultCalculatorController@postErrorNote');
 	Route::get('/error-notes/delete/{error_notes_id}', 'DefaultCalculatorController@DeleteErrorNote');
+	Route::get('/languages', 'DefaultCalculatorController@getLanguages')->name('languages');
+	Route::post('/languages/edit/{language_id}', 'DefaultCalculatorController@updateLanguage');
+	Route::post('/languages/add', 'DefaultCalculatorController@postLanguage');
 
 
 	Route::get('/tube-metallurgy/calculators', 'DefaultCalculatorController@getMetallurgyCalculators')->name('tube-metallurgy/calculators');

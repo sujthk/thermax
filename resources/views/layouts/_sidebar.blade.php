@@ -82,6 +82,12 @@
                         <span data-i18n="nav.widget.main"> Notes</span>
                     </a>
                 </li>
+                <li data-placement="bottom" title="Notes" class="nav-item single-item {{ Nav::isRoute('languages','has-class') }}" >
+                    <a href="{{ url('/languages') }}">
+                        <i class="ti-layout-menu-v"></i>
+                        <span data-i18n="nav.widget.main">Language Notes</span>
+                    </a>
+                </li>
                 <li data-placement="bottom" title="Unit Sets" class="nav-item single-item {{ Nav::isRoute('unit-sets','has-class') }}" >
                     <a href="{{ url('/unit-sets') }}">
                        <i class="ti-id-badge"></i>

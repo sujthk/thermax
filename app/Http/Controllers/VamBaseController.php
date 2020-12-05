@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\NotesAndError;
+use App\Language;
+
 
 class VamBaseController extends Controller
 {
@@ -1085,6 +1089,56 @@ class VamBaseController extends Controller
         $PS = $PPS - 1.03323;      //IN kg/cm2 .g
         return $PS;
     }
+
+
+    public function getNotesError()
+    {
+        $notes_errors = NotesAndError::all();
+        $notes_key = $notes_errors->pluck('name');
+
+        $language = Auth::user()->language;
+        // Log::info($language);
+        if($language == "chinese"){
+            $notes_value = $notes_errors->pluck('chinese_value');
+        }
+        else{
+            $notes_value = $notes_errors->pluck('value');
+        }
+        
+
+        $combined = $notes_key->combine($notes_value);
+
+        return $combined;
+
+        // $this->notes = $combined;
+
+        // error_reporting(-1);
+    }
+
+    public function getLanguageDatas()
+    {
+        $language_datas = Language::all();
+        $language_key = $language_datas->pluck('name');
+
+        $language = Auth::user()->language;
+        // Log::info($language);
+        if($language == "chinese"){
+            $language_value = $language_datas->pluck('chinese');
+        }
+        else{
+            $language_value = $language_datas->pluck('english');
+        }
+        
+
+        $combined = $language_key->combine($language_value);
+
+        return $combined;
+
+        // $this->notes = $combined;
+
+        // error_reporting(-1);
+    }
+
 
 
 }

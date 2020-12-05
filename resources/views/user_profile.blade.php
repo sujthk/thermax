@@ -137,6 +137,10 @@ Change Password
                                     <th scope="row">Unit Set</th>
                                     <td>{{$user->unitSet->name}}</td>
                                 </tr>
+                                <tr>
+                                    <th scope="row">Language</th>
+                                    <td>{{ ucwords($user->language) }}</td>
+                                </tr>
                                 
                             </tbody>
                         </table>
@@ -177,6 +181,17 @@ Change Password
                                          <div class="input-group">
                                             <span class="input-group-addon"> Mobile</span>
                                              <input id="mobile" name="mobile" type="text" value="{{ $user->mobile }}" placeholder="Enter your Mobile Number" required class="form-control">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                         <div class="input-group">
+                                            <span class="input-group-addon"> Language</span>
+                                             <select name="language" id="language" required class="form-control">
+                                                <option value="english"  {{ $user->language == 'english' ? 'selected' : '' }}>English</option>
+                                                <option  value="chinese" {{ $user->language == 'chinese' ? 'selected' : '' }}>Chinese</option>
+                                             </select>
                                         </div>
                                     </td>
                                 </tr>

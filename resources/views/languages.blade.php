@@ -12,7 +12,7 @@
 	    <div class="page-wrapper">
 	        <div class="page-header">
 	            <div class="page-header-title">
-	                <h4>Notes</h4>
+	                <h4>Languages</h4>
 	            </div>
 	            <div class="page-header-breadcrumb">
 	                <ul class="breadcrumb-title">
@@ -21,7 +21,7 @@
 	                            <i class="icofont icofont-home"></i>
 	                        </a>
 	                    </li>
-	                    <li class="breadcrumb-item"><a href="#!">Notes</a>
+	                    <li class="breadcrumb-item"><a href="#!">Languages</a>
 	                    </li>
 	                </ul>
 	            </div>
@@ -43,7 +43,7 @@
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Add Note</h5>
-		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#new_note">New Note +</button>
+		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#new_note">New Language Note +</button>
                             	</div>
 	                        </div>
 	                        <div class="card-block">
@@ -58,33 +58,31 @@
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
-	                                    	@foreach ($notes_errors as $notes_error) 
+	                                    	@foreach ($languages as $language) 
 	                                    		<tr>
-	                                    		    <td>{{ $notes_error->name }}</td>
-	                                    		    <td>{{ $notes_error->value }}</td>  
-	                                    		    <td>{{ $notes_error->chinese_value }}</td>  
+	                                    		    <td>{{ $language->name }}</td>
+	                                    		    <td>{{ $language->english }}</td>  
+	                                    		    <td>{{ $language->chinese }}</td>  
 		                                            <td>
-		                                                <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#edit_note{{ $notes_error->id }}">Edit</button>
-		                                                <a href="{{ url('error-notes/delete',[$notes_error->id]) }}" class="btn btn-danger btn-sm">Delete</a>
-
-
-		                                                <div class="modal fade" id="edit_note{{ $notes_error->id }}" tabindex="-1">
+		                                                <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#edit_note{{ $language->id }}">Edit</button>
+		                                                
+		                                                <div class="modal fade" id="edit_note{{ $language->id }}" tabindex="-1">
 		                                                    <div class="modal-dialog" role="document">
 		                                                        <div class="modal-content">
 		                                                            <div class="modal-header">
-		                                                                <h5 class="modal-title">Edit Note</h5>
+		                                                                <h5 class="modal-title">Edit Language Note</h5>
 		                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		                                                                    <span aria-hidden="true">&times;</span>
 		                                                                </button>
 		                                                            </div>
-		                                                            <form id="add_user" method="post" action="{{ url('error-notes/edit',[$notes_error->id]) }}" enctype="multipart/form-data">
+		                                                            <form id="add_user" method="post" action="{{ url('languages/edit',[$language->id]) }}" enctype="multipart/form-data">
 			                                                            <div class="modal-body p-b-0">
 		                                                                	{{ csrf_field() }}
 		                                                                    <div class="row">
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
 		                                                                                <label class="col-form-label">Name</label>
-		                                                                                <input type="text" class="form-control" name="note_name" value="{{ $notes_error->name }}" required placeholder="Name">
+		                                                                                <input type="text" class="form-control" name="note_name" value="{{ $language->name }}" required placeholder="Name">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>
@@ -92,7 +90,7 @@
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
 		                                                                                <label class="col-form-label">English Value</label>
-		                                                                                <input type="text" class="form-control" name="note_value" value="{{ $notes_error->value }}" required placeholder="Value">
+		                                                                                <input type="text" class="form-control" name="note_value" value="{{ $language->english }}" required placeholder="Value">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>
@@ -100,7 +98,7 @@
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
 		                                                                                <label class="col-form-label">Chinese Value</label>
-		                                                                                <input type="text" class="form-control" name="chinese_value" value="{{ $notes_error->chinese_value }}" required placeholder="Value">
+		                                                                                <input type="text" class="form-control" name="chinese_value" value="{{ $language->chinese }}" required placeholder="Value">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>                                                           
@@ -133,12 +131,12 @@
 	    <div class="modal-dialog" role="document">
 	        <div class="modal-content">
 	            <div class="modal-header">
-	                <h5 class="modal-title">Add Note</h5>
+	                <h5 class="modal-title">Add Language Note</h5>
 	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	                    <span aria-hidden="true">&times;</span>
 	                </button>
 	            </div>
-	            <form id="add_note" method="post" action="{{ url('error-notes/add') }}" enctype="multipart/form-data">
+	            <form id="add_note" method="post" action="{{ url('languages/add') }}" enctype="multipart/form-data">
 	            	<div class="modal-body p-b-0">
 	                
 	                	{{ csrf_field() }}
@@ -154,7 +152,7 @@
 	                        <div class="col-sm-12">
 	                            <div class="input-group">
 	                                <label class="col-form-label">English Value</label>
-	                                <input type="text" class="form-control" name="note_value" required placeholder="Value">
+	                                <input type="text" class="form-control" name="english_value" required placeholder="Value">
 	                            </div>
 	                        </div>
 	                    </div>

@@ -29,19 +29,7 @@ class DoubleSteamController extends Controller
     private $notes;
     private $changed_value;
 
-    public function __construct()
-    {
-        $notes_errors = NotesAndError::all();
-        $notes_key = $notes_errors->pluck('name');
-        $notes_value = $notes_errors->pluck('value');
-
-        $combined = $notes_key->combine($notes_value);
-
-        $this->notes = $combined;
-
-        error_reporting(-1);
-    }
-
+    
     public function getDoubleEffectS2(){
 
         $chiller_form_values = $this->getFormValues(130);
@@ -83,13 +71,20 @@ class DoubleSteamController extends Controller
   
         $regions = Region::all();
     	// return $evaporator_options;
+
+
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+
+
 		return view('double_steam_s2')->with('default_values',$converted_values)
                                         ->with('unit_set',$unit_set)
                                         ->with('units_data',$units_data)
 										->with('evaporator_options',$evaporator_options)
 										->with('absorber_options',$absorber_options)
 										->with('condenser_options',$condenser_options)
-										->with('chiller_metallurgy_options',$chiller_metallurgy_options) 
+                                        ->with('chiller_metallurgy_options',$chiller_metallurgy_options) 
+										->with('language_datas',$language_datas) 
                                         ->with('regions',$regions);
 	}
 
@@ -113,6 +108,9 @@ class DoubleSteamController extends Controller
 
 		$this->model_values = $model_values;
         $this->castToBoolean();
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
 
         //$this->model_values = $this->calculation_values;
 		$attribute_validator = $this->validateChillerAttribute($this->changed_value);
@@ -148,6 +146,9 @@ class DoubleSteamController extends Controller
         // Log::info($this->model_values);
 
         $this->castToBoolean();
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
 
 		$validate_attribute =  $this->validateAllChillerAttributes();  
         if(!$validate_attribute['status'])

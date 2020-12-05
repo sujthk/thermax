@@ -290,7 +290,7 @@
 									<div class="modl-title">
 										<div class="row">
 											<div class="col-lg-3">
-												 <label>Model</label>
+												 <label>{{ $language_datas['model'] }}</label>
 											</div>
 											<div class="col-lg-2">
 												<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
@@ -326,7 +326,7 @@
 											</div>
 
 											<div class="col-lg-3">
-												 <label>Capacity</label></div>
+												 <label>{{ $language_datas['capacity'] }}</label></div>
 											<div class="col-lg-2">          
 												<input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
 
@@ -343,7 +343,7 @@
 									<div class="">
 										<div class="row">
 											<div class="col-lg-3">
-												 <label>Chilled Water In</label>
+												 <label>{{ $language_datas['chilled_water_in'] }}</label>
 											</div>
 											<div class="col-lg-2">
 												<input type="text" id="chilled_water_in" name="chilled_water_in" onchange="updateModelValues('chilled_water_in')" value="" class="form-control">
@@ -357,7 +357,7 @@
 											</div>
 										 
 											<div class="col-lg-3">
-												<label>Chilled Water Out </label>
+												<label>{{ $language_datas['chilled_water_out'] }} </label>
 											</div>
 											<div class="col-lg-2">
 												<input type="text" class="form-control min_chilled_water_out" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="" data-placement="bottom" title="">
@@ -375,7 +375,7 @@
 						</div>   
 						<div class="row">
 							<div class="col-lg-3">
-								<label>Cooling Water In </label>
+								<label>{{ $language_datas['cooling_water_in'] }} </label>
 							</div>
 							<div class="col-lg-2">
 								 <input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-toggle="tooltip" data-placement="bottom" data-original-title>
@@ -389,7 +389,7 @@
 							</div>
 						
 							<div class="col-lg-3">
-								<label>Cooling Water Flow</label>
+								<label>{{ $language_datas['cooling_water_flow'] }}</label>
 							</div>
 							<div class="col-lg-2">
 
@@ -412,7 +412,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="card-header">
-								 <h5>Glycol Content % (By Vol)</h5>
+								 <h5>{{ $language_datas['glycol_content'] }} % (By Vol)</h5>
 								</div>
 							</div>
 							<div class="col-md-6 form-radio">
@@ -439,7 +439,7 @@
 							<div class="col-md-12">
 								<div class="row">
 									 <div class="col-md-3">
-										 <label>Chilled Water </label>
+										 <label>{{ $language_datas['chilled_water'] }} </label>
 									 </div>
 									<div class="col-md-3">
 										 <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
@@ -450,7 +450,7 @@
 									</div>
 							
 									<div class="col-md-3">
-										 <label>Cooling Water </label>
+										 <label>{{ $language_datas['cooling_water'] }} </label>
 									</div>
 									<div class="col-md-3">
 										 <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
@@ -466,7 +466,7 @@
 						<div class="row">
 							<div class="col-md-6">                      
 								<div class="card-header">
-									 <h5>Tube Metallurgy</h5>
+									 <h5>{{ $language_datas['tube_metallurgy'] }}</h5>
 								</div>
 							</div>
 									
@@ -487,7 +487,7 @@
 						</div>
 						<div class="row">
 							<div class="col-lg-3">
-                                <p><label class=" col-form-label">Evaporator</label></p>
+                                <p><label class=" col-form-label">{{ $language_datas['evaporator'] }}</label></p>
 								<div class="row">
 									<div class="col-lg-12">
 										<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
@@ -515,7 +515,7 @@
 							</div>                           
 
 							<div class="col-lg-3">
-	                            <p><label class=" col-form-label">Absorber</label></p>
+	                            <p><label class=" col-form-label">{{ $language_datas['absorber'] }}</label></p>
 								<div class="row">
 									<div class="col-lg-12">								
 										<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
@@ -543,7 +543,7 @@
 	                        </div>
 							
 							<div class="col-lg-3">
-	                            <p> <label class=" col-form-label">Condenser</label></p>
+	                            <p> <label class=" col-form-label">{{ $language_datas['condenser'] }}</label></p>
 								<div class="row">
 									<div class="col-lg-12">		
 										<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
@@ -575,7 +575,7 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="card-header">
-									<h5>Fouling Factor</h5>
+									<h5>{{ $language_datas['fouling_factor'] }}</h5>
 								</div>
 							</div>
 						  	<div class="col-md-6">
@@ -609,7 +609,7 @@
 										 	<input type="checkbox" class="fouling_standard " name="fouling_chilled_water" id="fouling_chilled_water" value="" data-placement="bottom" title="">
 										 	<span class="cr">
 											 <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-										 	</span><span>Chilled Water</span><span id=""></span>
+										 	</span><span>{{ $language_datas['chilled_water'] }}</span><span id=""></span>
 									 	</label>
 								 	</div>
 
@@ -629,7 +629,7 @@
 										 	<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="" data-placement="bottom" title="0.00005">
 										 	<span class="cr">
 											 <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-										 	</span><span>Cooling Water</span><span id=""></span>
+										 	</span><span>{{ $language_datas['cooling_water'] }}</span><span id=""></span>
 									 	</label>
 								 	</div>
 
@@ -650,13 +650,13 @@
 						<div class="row">
 							<div class="col-md-6">
 								<div class="card-header">
-									 <h5>Steam</h5>
+									 <h5>{{ $language_datas['steam'] }}</h5>
 								</div>
 							</div>
 							<div class="col-md-12">
 								<div class="row">
 									<div class="col-lg-4">
-										 <label>Pressure : </label>
+										 <label>{{ $language_datas['pressure'] }} : </label>
 									</div>
 									<div class="col-lg-4">
 										<input type="text" name="steam_pressure" id="steam_pressure" onchange="updateModelValues('steam_pressure')" value="" class="form-control steam_pressure_range" data-placement="bottom" title="3.5-10">
