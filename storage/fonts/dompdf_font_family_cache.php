@@ -92,4 +92,10 @@
   'icofont' => array(
     'normal' => $fontDir . '/03446c9c5b92d7f7447131b260431824',
   ),
+  'wts11' => array(
+    'normal' => $fontDir . '\c395d25f9b610ba1bedf7817882d8f61',
+  ),
+  'simhei' => array(
+    'normal' => $fontDir . '\6e23a1a9d7375c0b8c1a31d9991d5a00',
+  ),
 ) ?>

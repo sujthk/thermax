@@ -12,12 +12,29 @@
 		<!-- Meta -->
 
 		<style>
+            @if($language == 'chinese')
+
+                @font-face {
+                   font-family: SimHei;
+                   src: url('{{base_path().'/public/'}}fonts/SimHei.ttf') format('truetype');
+                }
+
+               .font-class{
+                  font-family: SimHei;
+                }
+
+            @endif    
 
 
 	        .report-table .table>thead>tr>th{
 	        	background: #676767;
 	        	color: #fff;
 	        }
+
+            .dark-cell{
+                background: #676767;
+                color: #fff;
+            }
 
 	        .report-table .table th{
 	        	background: #676767;
@@ -31,7 +48,7 @@
 	        .report-top{
 	        	margin-bottom:0;
 	        }
-	        .report-end h4{
+	        .caption-notes{
 	            padding: .75rem;
 	            background: #676767;
 	            color: #fff;
@@ -73,16 +90,17 @@
 		      			    <table class="table table-bordered" style="width: 100%;">
 		      			  		<thead class="thead-dark">
 		      			    		<tr>
-										<th scope="col" style="padding-right: 40px;">Client <span class="cn">:</span> {{ $name }}</th>
-										<th scope="col">Version : 5.1.2.0</th>     
+										<td class="dark-cell font-class" scope="col" style="padding-right: 40px;">{{ $language_datas['client'] }} <span class="cn">:</span> {{ $name }}</td>
+										<td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : 5.1.2.0</td>     
 		  			    			</tr>
 		      			     		<tr>
-		      			      			<th scope="col">Enquiry : {{ $phone }}</th>
-		      			      			<th scope="col">Date <span class="dn">:</span> {{ date('m/d/Y, h:i A') }}</th>     
+		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['enquiry'] }} : {{ $phone }}</td>
+		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['date'] }} <span class="dn">:</span> {{ date('m/d/Y, h:i A') }}</td>     
 		      			    		</tr>
 		  			     			<tr>
-		      			      			<th scope="col">Project <span class="pn">:</span> {{ $project }}</th>
-		      			      			<th scope="col">Model <span class="mn">:</span> {{ $calculation_values['model_name'] }}</th>     
+
+		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['project'] }} <span class="pn">:</span> {{ $project }}</td>
+		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['model'] }}<span class="mn">:</span> {{ $calculation_values['model_name'] }}</td>     
 		      			    		</tr>
 		      			  		</thead>  
 		      				</table>
@@ -94,66 +112,66 @@
 		      			  		</thead>
 			      			  	<tbody>
 			      			  		<tr>
-			      			  			<th scope="col">Sr.</th>
-			      			  			<th scope="col">Description</th>
-			      			  			<th class="optimal-r1" scope="col">Unit</th>
-			      			  			<th  class="optimal-r1" scope="col"> Cooling Mode</th>      
+			      			  			<td class="dark-cell" scope="col">Sr.</td>
+			      			  			<td class="dark-cell font-class" scope="col">{{ $language_datas['description'] }}</td>
+			      			  			<td class="dark-cell font-class" class="optimal-r1" scope="col">{{ $language_datas['unit'] }}</td>
+			      			  			<td class="dark-cell font-class"  class="optimal-r1" scope="col"> {{ $language_datas['cooling_mode'] }}</td>      
 			      			  		</tr>
 
 			      			  		<tr>
-			      			  			<th scope="col"></th>
-			      			  			<th scope="col"> Capacity(+/-3%)</th>
-			      			  			<th class="optimal-r1" scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </th>
-			      			  			<th class="optimal-r1" scope="col"> {{ $calculation_values['TON'] }}</th>      
+			      			  			<td class="dark-cell" scope="col"></td>
+			      			  			<td class="dark-cell font-class" scope="col"> {{ $language_datas['capacity'] }}(+/-3%)</td>
+			      			  			<td class="dark-cell" class="optimal-r1" scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </td>
+			      			  			<td class="dark-cell" class="optimal-r1" scope="col"> {{ $calculation_values['TON'] }}</td>      
 			      			  		</tr>
 			      			  		<tr>
 			      			  			<td colspan="4"></td>
 			      			  		</tr>
 									<tr>
-										<th scope="col"> A  </th>
-										<th scope="col"> Chilled Water Circuit</th>
-										<th scope="col"> </th>
-										<th scope="col"> </th>      
+										<td class="dark-cell" scope="col"> A  </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['chilled_water_circuit'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" scope="col"> </td>      
 									</tr>
 									<tr>
 										<td> 1 </td>
-										<td> Chilled water flow</td>
+										<td class="font-class">{{ $language_datas['chilled_water_flow'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['ChilledWaterFlow'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
-										<td > Chilled water inlet temperature</td>
+										<td class="font-class"> {{ $language_datas['chilled_inlet_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['TCHW11'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td> 
-										<td> Chilled water outlet temperature</td>
+										<td class="font-class"> {{ $language_datas['chilled_outlet_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['TCHW12'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 4 </td>
-										<td> Evaporate passes</td>
+										<td class="font-class"> {{ $language_datas['evaporate_pass'] }}</td>
 										<td class="optimal-r1"> No.</td>
 										<td class="optimal-r1"> {{ $calculation_values['EvaporatorPasses'] }}</td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
-										<td> Chilled water circuit pressure loss </td>
+										<td class="font-class"> {{ $language_datas['chilled_pressure_loss'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['ChilledFrictionLoss'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
-										<td> Chilled water Connection diameter </td>
+										<td class="font-class"> {{ $language_datas['chilled_connection_diameter'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['ChilledConnectionDiameter'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
-										<td > Glycol type </td>
+										<td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
 										<td > </td>
 										@if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
 											<td class="optimal-r1"> NA </td>
@@ -165,13 +183,13 @@
 									</tr>
 									<tr>     
 										<td> 8 </td>
-										<td> Chilled water glycol %  </td>
+										<td class="font-class"> {{ $language_datas['chilled_gylcol'] }} %  </td>
 										<td class="optimal-r1"> %</td>
 										<td class="optimal-r1"> {{ $calculation_values['CHGLY'] }} </td>
 									</tr>
 									<tr>     
 										<td> 9 </td>
-										<td> Chilled water fouling factor </td>
+										<td class="font-class"> {{ $language_datas['chilled_fouling_factor'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
 										@if($calculation_values['TUU'] == "standard")
 											<td class="optimal-r1"> {{ $calculation_values['TUU'] }} </td>
@@ -181,43 +199,43 @@
 									</tr>
 									<tr>     
 										<td> 10 </td>
-										<td> Maximum working pressure </td>
+										<td class="font-class"> {{ $language_datas['max_working_pressure'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
 										<td class="optimal-r1">  {{ ceil($calculation_values['m_maxCHWWorkPressure']) }}</td>
 									</tr>
 									<tr>
-										<th scope="col"> B  </th>
-										<th scope="col"> Cooling Water Circuit</th>
-										<th scope="col"> </th>
-										<th scope="col"> </th>      
+										<td class="dark-cell" scope="col"> B  </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['cooling_water_circuit'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" scope="col"> </td>      
 									</tr>
 									<tr>
 										<td> 1 </td>
-										<td> Cooling water flow</td>
+										<td class="font-class"> {{ $language_datas['cooling_water_flow'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['GCW'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
-										<td> Cooling water inlet temperature</td>
+										<td class="font-class"> {{ $language_datas['cooling_inlet_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['TCW11'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
-										<td> Cooling water outlet temperature</td>
+										<td class="font-class"> {{ $language_datas['cooling_outlet_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['CoolingWaterOutTemperature'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
-										<td> Absorber / Condenser passes</td>
+										<td class="font-class"> {{ $language_datas['absorber_condenser_pass'] }}</td>
 										<td class="optimal-r1"> No.</td>
 										<td class="optimal-r1"> {{ $calculation_values['AbsorberPasses'] }}/{{ $calculation_values['CondenserPasses'] }} </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
-										<td> Cooling water Bypass Flow</td>
+										<td class="font-class"> {{ $language_datas['cooling_bypass_flow'] }}</td>
 										<td class="optimal-r1">{{ $units_data[$unit_set->FlowRateUnit] }} </td>
 										@if(empty($calculation_values['BypassFlow']))
 											<td class="optimal-r1"> - </td>
@@ -227,19 +245,19 @@
 									</tr>
 									<tr>     
 										<td> 6 </td>
-										<td> Cooling water circuit pressure loss </td>
+										<td class="font-class"> {{ $language_datas['cooling_pressure_loss'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['CoolingFrictionLoss'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
-										<td> Cooling water Connection diameter </td>
+										<td class="font-class"> {{ $language_datas['cooling_connection_diameter'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['CoolingConnectionDiameter'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 8 </td>
-										<td> Glycol type </td>
+										<td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
 										<td > </td>
 										@if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
 											<td class="optimal-r1"> NA </td>
@@ -251,13 +269,13 @@
 									</tr>
 									<tr>     
 										<td> 9 </td>
-										<td> Cooling water glycol %  </td>
+										<td class="font-class"> {{ $language_datas['cooling_gylcol'] }} %  </td>
 										<td class="optimal-r1"> %</td>
 										<td class="optimal-r1"> {{ $calculation_values['COGLY'] }} </td>
 									</tr>
 									<tr>     
 										<td> 10 </td>
-										<td> Cooling water fouling factor </td>
+										<td class="font-class"> {{ $language_datas['cooling_fouling_factor'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
 										@if($calculation_values['TUU'] == "standard")
 											<td class="optimal-r1"> {{ $calculation_values['TUU'] }} </td>
@@ -268,206 +286,207 @@
 									</tr>
 									<tr>     
 										<td> 11 </td>
-										<td> Maximum working pressure </td>
+										<td class="font-class"> {{ $language_datas['max_working_pressure'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
 										<td class="optimal-r1"> {{ ceil($calculation_values['m_maxCOWWorkPressure']) }} </td>
 									</tr>
 									<tr>
-										<th scope="col"> C </th>
-										<th scope="col"> Steam Circuit</th>
-										<th scope="col"> </th>
-										<th scope="col"> </th>      
+										<td class="dark-cell" scope="col"> C </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['steam_circuit'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" scope="col"> </td>      
 									</tr>
 									<tr>
 										<td> 1 </td>
-										<td> Steam pressure</td>
+										<td class="font-class"> {{ $language_datas['steam_pressure'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['PST1'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
-										<td> Steam Consumption(+/-3%)</td>
+										<td class="font-class"> {{ $language_datas['steam_consumption'] }}(+/-3%)</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->SteamConsumptionUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['SteamConsumption'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
-										<td> Condensate drain temperature</td>
+										<td class="font-class"> {{ $language_datas['condensate_drain_temperature'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
 										<td class="optimal-r1"> {{ ceil($calculation_values['m_dMinCondensateDrainTemperature']) }} - {{ ceil($calculation_values['m_dMaxCondensateDrainTemperature']) }} </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
-										<td> Condensate drain pressure</td>
+										<td class="font-class"> {{ $language_datas['condensate_drain_pressure'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['m_dCondensateDrainPressure'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
-										<td> Connection - Inlet diameter</td>
+										<td class="font-class"> {{ $language_datas['connection_inlet_dia'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['SteamConnectionDiameter'],1) }}</td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
-										<td> Connection - Drain diameter </td>
+										<td class="font-class"> {{ $language_datas['connection_drain_dia'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['SteamDrainDiameter'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
-										<td> Design Pressure </td>
+										<td class="font-class"> {{ $language_datas['design_pressure'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['m_DesignPressure'],1) }} </td>
 									</tr>
 									<tr>
-										<th scope="col"> D  </th>
-										<th scope="col"> Electrical Data</th>
-										<th scope="col"> </th>
-										<th scope="col"> </th>      
+										<td class="dark-cell" scope="col"> D  </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['electrical_data'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" scope="col"> </td>      
 									</tr>
 									<tr>
 										<td> 1 </td>
-										<td> Power supply</td>
+										<td class="font-class"> {{ $language_datas['power_supply'] }}</td>
 										<td> </td>
 										<td class="optimal-r1"> {{ $calculation_values['PowerSupply'] }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
-										<td> Power consumption</td>
+										<td class="font-class"> {{ $language_datas['power_consumption'] }}</td>
 										<td class="optimal-r1">kVA</td>
 										<td class="optimal-r1"> {{ round($calculation_values['TotalPowerConsumption'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
-										<td> Absorbent pump rating</td>
+										<td class="font-class"> {{ $language_datas['absorbent_pump_rating'] }}</td>
 										<td class="optimal-r1"> kW (A)</td>
 										<td class="optimal-r1"> {{ round($calculation_values['AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['AbsorbentPumpMotorAmp'],2) }} ) </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
-										<td> Refrigerant pump rating</td>
+										<td class="font-class"> {{ $language_datas['refrigerant_pump_rating'] }}</td>
 										<td class="optimal-r1"> kW (A)</td>
 										<td class="optimal-r1"> {{ round($calculation_values['RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['RefrigerantPumpMotorAmp'],2) }}) </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
-										<td> Vacuum pump rating</td>
+										<td class="font-class"> {{ $language_datas['vaccum_pump_rating'] }}</td>
 										<td class="optimal-r1"> kW (A)</td>
 										<td class="optimal-r1"> {{ round($calculation_values['PurgePumpMotorKW'],2) }}({{ round($calculation_values['PurgePumpMotorAmp'],2) }}) </td>
 									</tr>
 									<tr>
-										<th scope="col"> E  </th>
-										<th scope="col"> Physical Data</th>
-										<th scope="col"> </th>
-										<th scope="col"> </th>      
+										<td class="dark-cell" scope="col"> E  </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['physical_data'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" scope="col"> </td>      
 									</tr>
 									<tr>
 										<td> 1 </td>
-										<td> Length</td>
+										<td class="font-class"> {{ $language_datas['length'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td class="optimal-r1"> {{ ceil($calculation_values['Length']) }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
-										<td> width</td>
+										<td class="font-class"> {{ $language_datas['width'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td class="optimal-r1">  {{ ceil($calculation_values['Width']) }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
-										<td> Height</td>
+										<td class="font-class"> {{ $language_datas['height'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td class="optimal-r1"> {{ ceil($calculation_values['Height']) }} </td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
-										<td> Operating weight</td>
+										<td class="font-class"> {{ $language_datas['operating_weight'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['OperatingWeight'],1) }}</td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
-										<td> Shipping weight</td>
+										<td class="font-class"> {{ $language_datas['shipping_weight'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['MaxShippingWeight'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
-										<td> Flooded weight </td>
+										<td class="font-class"> {{ $language_datas['flooded_weight'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['FloodedWeight'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
-										<td> Dry weight </td>
+										<td class="font-class"> {{ $language_datas['dry_weight'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['DryWeight'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 8 </td>
-										<td> Tube cleaning space (any one side length-wise) </td>
+										<td class="font-class"> {{ $language_datas['tube_clearing_space'] }} ({{ $language_datas['one_side_length_wise'] }}) </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['ClearanceForTubeRemoval'],1) }} </td>
 									</tr>
 									<tr>
-										<th scope="col"> F  </th>
-										<th scope="col"> Tube Metallurgy</th>
-										<th scope="col"> </th>
-										<th scope="col"> </th>      
+										<td class="dark-cell" scope="col"> F  </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['tube_metallurgy'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" scope="col"> </td>      
 									</tr>
 									<tr>
 										<td> 1 </td>
-										<td> Evaporator tube material</td>
+										<td class="font-class"> {{ $language_datas['evaporator_tube_material'] }}</td>
 										<td> </td>
 										<td class="optimal-r1"> {{ $evaporator_name }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
-										<td> Absorber tube material</td>
+										<td class="font-class"> {{ $language_datas['absorber_tube_material'] }}</td>
 										<td> </td>
 										<td class="optimal-r1"> {{ $absorber_name }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
-										<td> Condenser tube material</td>
+										<td class="font-class"> {{ $language_datas['condenser_tube_material'] }}</td>
 										<td> </td>
 										<td class="optimal-r1"> {{ $condenser_name }} </td>
 									</tr>
 									@if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true')
 										<tr>
 											<td> 4 </td> 
-											<td> Evaporator tube thickness</td>
+											<td class="font-class"> {{ $language_datas['evaporator_tube_thickness'] }}</td>
 											<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 											<td class="optimal-r1"> {{ $calculation_values['TU3'] }}</td>
 										</tr>
 										<tr>     
 											<td> 5 </td>
-											<td> Absorber tube thickness</td>
+											<td class="font-class"> {{ $language_datas['absorber_tube_thickness'] }}</td>
 											<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 											<td class="optimal-r1"> {{ $calculation_values['TU6'] }} </td>
 										</tr>
 										<tr>     
 											<td> 6 </td>
-											<td> Condenser tube thickness </td>
+											<td class="font-class"> {{ $language_datas['condenser_tube_thickness'] }} </td>
 											<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 											<td class="optimal-r1"> {{ $calculation_values['TV6'] }} </td>
 										</tr>
 									@endif	
 									<tr>
-										<th scope="col"> G </th>
-										<th scope="col"> Low Temperature Heat exchanger Type</th>
-										<th scope="col"> </th>
-										<th class="optimal-r1" scope="col">{{ $calculation_values['HHType'] }} </th>      
+										<td class="dark-cell" scope="col"> G </td>
+										<td class="dark-cell font-class" scope="col"> {{ $language_datas['low_temp_heat_exchange'] }}</td>
+										<td class="dark-cell" scope="col"> </td>
+										<td class="dark-cell" class="optimal-r1" scope="col">{{ $calculation_values['HHType'] }} </td>      
 									</tr>				
 								</tbody>
 
 		      				</table>
 		      				<div class="report-end">
-								<h4> Caption Notes: </h4>
+								<p class="caption-notes font-class"> {{ $language_datas['caption_notes'] }}: </p>
 								@foreach($calculation_values['notes'] as $note)
-									<p>{{ $note }}</p>
+									<p class="font-class">{{ $note }}</p>
 								@endforeach
+                                
 							</div>
 		      			</div>
 		     		</div>

@@ -368,8 +368,12 @@ class DoubleSteamController extends Controller
 
         $units_data = $this->getUnitsData();
 
+
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+
         
-        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data])->render();
+        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas])->render();
 
         return $view;
     
@@ -440,11 +444,20 @@ class DoubleSteamController extends Controller
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
 
+        $language = Auth::user()->language;
+
         $units_data = $this->getUnitsData();
 
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
 
-        $pdf = PDF::loadView('report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data]);
-        return $pdf->download('s2.pdf');
+
+
+
+
+        $pdf = PDF::loadView('report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
+
+        return $pdf->stream('s2.pdf');
 
     }
     
@@ -6062,6 +6075,8 @@ class DoubleSteamController extends Controller
         $absorber_name = $absorber_option->metallurgy->display_name;
         $condenser_name = $condenser_option->metallurgy->display_name;
 
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
 
         $phpWord = new \PhpOffice\PhpWord\PhpWord();
 
@@ -6106,7 +6121,7 @@ class DoubleSteamController extends Controller
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars("Project"),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->project),$header);
-        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars("Model"),$header);
+        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['model']),$header);
         $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['model_name']),$header);
 
         $section->addTextBreak(1);
