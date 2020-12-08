@@ -76,7 +76,7 @@
 		      			  		<thead>
 								<tr>
 									
-									<th scope="col">{{ $language_datas['model_name'] }}</th>
+									<th scope="col">{{ $language_datas['description'] }}</th>
 									<th class="optimal-r1" scope="col">{{ $language_datas['unit'] }}</th>
 									<th class="optimal-r1" scope="col">{{ $language_datas['value'] }}</th>      
 								</tr>
@@ -148,7 +148,7 @@
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['chilled_gylcol'] }} %  </td>
+										<td> {{ $language_datas['chilled_gylcol'] }} ( % ) </td>
 										<td class="optimal-r1"> %</td>
 										<td class="optimal-r1"> {{ $calculation_values['CHGLY'] }} </td>
 									</tr>
@@ -234,7 +234,7 @@
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['cooling_gylcol'] }} %  </td>
+										<td> {{ $language_datas['cooling_gylcol'] }} ( % )  </td>
 										<td class="optimal-r1"> %</td>
 										<td class="optimal-r1"> {{ $calculation_values['COGLY'] }} </td>
 									</tr>

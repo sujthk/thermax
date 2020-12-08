@@ -1,0 +1,140 @@
+StartFontMetrics 4.1
+Notice Converted by PHP-font-lib
+Comment https://github.com/PhenX/php-font-lib
+EncodingScheme FontSpecific
+Copyright © 2001 Microsoft Corporation. All rights reserved.
+FontName LathaRegular
+FontSubfamily Regular
+UniqueID Latha Regular
+FullName Latha
+Version Version 1.21
+PostScriptName LathaRegular
+Designer Raghunath Joshi (Type Director), Vikram Gaikwad
+Description Latha is a font for the Indic script-Tamil. It has been designed for use as a UI font. It is an OpenType font, based on Unicode and contains TrueType outlines.
+FontDesignerURL http://www.ncst.ernet.in/~rkjoshi
+Weight Medium
+ItalicAngle 0
+IsFixedPitch false
+UnderlineThickness 59
+UnderlinePosition -156
+FontHeightOffset 0
+Ascender 1000
+Descender -660
+FontBBox -539 -428 2123 1084
+StartCharMetrics 193
+U 32 ; WX 578 ; N space ; G 3
+U 33 ; WX 288 ; N exclam ; G 4
+U 34 ; WX 520 ; N quotedbl ; G 5
+U 35 ; WX 709 ; N numbersign ; G 6
+U 37 ; WX 695 ; N percent ; G 7
+U 38 ; WX 730 ; N ampersand ; G 8
+U 39 ; WX 289 ; N quotesingle ; G 9
+U 40 ; WX 391 ; N parenleft ; G 10
+U 41 ; WX 391 ; N parenright ; G 11
+U 42 ; WX 539 ; N asterisk ; G 12
+U 43 ; WX 660 ; N plus ; G 13
+U 44 ; WX 289 ; N comma ; G 14
+U 45 ; WX 578 ; N hyphen ; G 15
+U 46 ; WX 270 ; N period ; G 16
+U 47 ; WX 539 ; N slash ; G 17
+U 48 ; WX 680 ; N zero ; G 18
+U 49 ; WX 449 ; N one ; G 19
+U 50 ; WX 617 ; N two ; G 20
+U 51 ; WX 605 ; N three ; G 21
+U 52 ; WX 660 ; N four ; G 22
+U 53 ; WX 629 ; N five ; G 23
+U 54 ; WX 631 ; N six ; G 24
+U 55 ; WX 582 ; N seven ; G 25
+U 56 ; WX 621 ; N eight ; G 26
+U 57 ; WX 654 ; N nine ; G 27
+U 58 ; WX 270 ; N colon ; G 28
+U 59 ; WX 289 ; N semicolon ; G 29
+U 60 ; WX 730 ; N less ; G 30
+U 61 ; WX 539 ; N equal ; G 31
+U 62 ; WX 730 ; N greater ; G 32
+U 63 ; WX 602 ; N question ; G 33
+U 64 ; WX 914 ; N at ; G 34
+U 91 ; WX 375 ; N bracketleft ; G 35
+U 92 ; WX 602 ; N backslash ; G 36
+U 93 ; WX 375 ; N bracketright ; G 37
+U 94 ; WX 574 ; N asciicircum ; G 38
+U 95 ; WX 543 ; N underscore ; G 39
+U 123 ; WX 555 ; N braceleft ; G 40
+U 124 ; WX 382 ; N bar ; G 41
+U 125 ; WX 555 ; N braceright ; G 42
+U 126 ; WX 730 ; N asciitilde ; G 43
+U 215 ; WX 626 ; N Oslash ; G 44
+U 247 ; WX 626 ; N Odieresis ; G 45
+U 2946 ; WX 682 ; N uni0B82 ; G 46
+U 2947 ; WX 682 ; N u0B83 ; G 47
+U 2949 ; WX 1133 ; N u0B85 ; G 48
+U 2950 ; WX 1352 ; N u0B86 ; G 49
+U 2951 ; WX 1086 ; N u0B87 ; G 50
+U 2952 ; WX 840 ; N u0B88 ; G 51
+U 2953 ; WX 1070 ; N u0B89 ; G 52
+U 2954 ; WX 1363 ; N u0B8A ; G 53
+U 2958 ; WX 824 ; N u0B8E ; G 54
+U 2959 ; WX 824 ; N u0B8F ; G 55
+U 2960 ; WX 965 ; N u0B90 ; G 56
+U 2962 ; WX 1098 ; N u0B92 ; G 57
+U 2963 ; WX 1098 ; N u0B93 ; G 58
+U 2964 ; WX 2109 ; N u0B94 ; G 59
+U 2965 ; WX 797 ; N u0B95 ; G 60
+U 2969 ; WX 1035 ; N u0B99 ; G 61
+U 2970 ; WX 742 ; N u0B9A ; G 62
+U 2972 ; WX 973 ; N u0B9C ; G 63
+U 2974 ; WX 1234 ; N u0B9E ; G 64
+U 2975 ; WX 930 ; N u0B9F ; G 65
+U 2979 ; WX 1535 ; N u0BA3 ; G 66
+U 2980 ; WX 836 ; N u0BA4 ; G 67
+U 2984 ; WX 746 ; N u0BA8 ; G 68
+U 2985 ; WX 1184 ; N u0BA9 ; G 69
+U 2986 ; WX 738 ; N u0BAA ; G 70
+U 2990 ; WX 965 ; N u0BAE ; G 71
+U 2991 ; WX 1016 ; N u0BAF ; G 72
+U 2992 ; WX 621 ; N u0BB0 ; G 73
+U 2993 ; WX 910 ; N u0BB1 ; G 74
+U 2994 ; WX 1105 ; N u0BB2 ; G 75
+U 2995 ; WX 1051 ; N u0BB3 ; G 76
+U 2996 ; WX 828 ; N u0BB4 ; G 77
+U 2997 ; WX 1117 ; N u0BB5 ; G 78
+U 2999 ; WX 1414 ; N u0BB7 ; G 79
+U 3000 ; WX 1563 ; N u0BB8 ; G 80
+U 3001 ; WX 1848 ; N u0BB9 ; G 81
+U 3006 ; WX 617 ; N u0BBE ; G 82
+U 3007 ; WX 188 ; N u0BBF ; G 83
+U 3008 ; WX 0 ; N u0BC0 ; G 84
+U 3009 ; WX 496 ; N u0BC1 ; G 85
+U 3010 ; WX 832 ; N u0BC2 ; G 86
+U 3014 ; WX 828 ; N u0BC6 ; G 87
+U 3015 ; WX 785 ; N u0BC7 ; G 88
+U 3016 ; WX 1202 ; N u0BC8 ; G 89
+U 3018 ; WX 1479 ; N u0BCA ; G 90
+U 3019 ; WX 1458 ; N u0BCB ; G 91
+U 3020 ; WX 1906 ; N u0BCC ; G 92
+U 3021 ; WX 0 ; N u0BCD ; G 93
+U 3031 ; WX 1051 ; N u0BD7 ; G 94
+U 3047 ; WX 797 ; N u0BE7 ; G 95
+U 3048 ; WX 930 ; N u0BE8 ; G 96
+U 3049 ; WX 918 ; N u0BE9 ; G 97
+U 3050 ; WX 852 ; N u0BEA ; G 98
+U 3051 ; WX 1152 ; N u0BEB ; G 99
+U 3052 ; WX 1285 ; N u0BEC ; G 100
+U 3053 ; WX 824 ; N u0BED ; G 101
+U 3054 ; WX 1133 ; N u0BEE ; G 102
+U 3055 ; WX 1258 ; N u0BEF ; G 103
+U 3056 ; WX 973 ; N u0BF0 ; G 104
+U 3057 ; WX 926 ; N u0BF1 ; G 105
+U 3058 ; WX 1102 ; N u0BF2 ; G 106
+U 8203 ; WX 0 ; N .null ; G 1
+U 8204 ; WX 0 ; N afii61664 ; G 107
+U 8205 ; WX 0 ; N afii301 ; G 108
+U 8211 ; WX 543 ; N Eth ; G 109
+U 8212 ; WX 887 ; N Ntilde ; G 110
+U 8216 ; WX 285 ; N Otilde ; G 111
+U 8220 ; WX 520 ; N Ocircumflex ; G 112
+U 8230 ; WX 885 ; N Eacute ; G 113
+U 8722 ; WX 626 ; N multiply ; G 114
+U 9676 ; WX 761 ; N uni25CC ; G 115
+EndCharMetrics
+EndFontMetrics

@@ -82,7 +82,7 @@
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
 		                                                                                <label class="col-form-label">Name</label>
-		                                                                                <input type="text" class="form-control" name="note_name" value="{{ $language->name }}" required placeholder="Name">
+		                                                                                <input type="text" class="form-control" readonly name="note_name" value="{{ $language->name }}" required placeholder="Name">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>
@@ -90,7 +90,7 @@
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
 		                                                                                <label class="col-form-label">English Value</label>
-		                                                                                <input type="text" class="form-control" name="note_value" value="{{ $language->english }}" required placeholder="Value">
+		                                                                                <input type="text" class="form-control" name="english_value" value="{{ $language->english }}" required placeholder="Value">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>

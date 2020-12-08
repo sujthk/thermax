@@ -400,6 +400,7 @@ class DoubleSteamController extends Controller
         $user_report->report_type = $report_type;
         $user_report->region_type = $calculation_values['region_type'];
         $user_report->calculation_values = json_encode($calculation_values);
+        $user_report->language = Auth::user()->language;
         $user_report->save();
 
         $redirect_url = route('download.report', ['user_report_id' => $user_report->id,'type' => $report_type]);
@@ -444,7 +445,7 @@ class DoubleSteamController extends Controller
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
 
-        $language = Auth::user()->language;
+        $language = $user_report->language;
 
         $units_data = $this->getUnitsData();
 
@@ -457,7 +458,7 @@ class DoubleSteamController extends Controller
 
         $pdf = PDF::loadView('report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
 
-        return $pdf->stream('s2.pdf');
+        return $pdf->download('s2.pdf');
 
     }
     

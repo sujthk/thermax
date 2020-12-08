@@ -98,4 +98,7 @@
   'simhei' => array(
     'normal' => $fontDir . '\6e23a1a9d7375c0b8c1a31d9991d5a00',
   ),
+  'latha' => array(
+    'normal' => $fontDir . '\1e1f14fc51e60adac33c4e24e398c380',
+  ),
 ) ?>

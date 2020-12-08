@@ -294,7 +294,7 @@
 												<div class="modl-title">
 													<div class="row">
 														<div class="col-lg-3">
-															<label>Model</label>
+															<label>{{ $language_datas['model'] }}</label>
 														</div>
 														<div class="col-lg-2">
 															<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
@@ -330,13 +330,13 @@
 														</div>
 
 														<div class="col-lg-3">
-															<label>Capacity</label></div>
+															<label>{{ $language_datas['capacity'] }}</label></div>
 															<div class="col-lg-2">          
 																<input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
 
-																<span class="messages emsg hidden" id="capacity_error">
+																<!-- <span class="messages emsg hidden" id="capacity_error">
 																	<p class="text-danger error">Please Enter a Valid Capacity</p>
-																</span>
+																</span> -->
 															</div>
 															<div class="col-lg-1">
 																<label>({{ $units_data[$unit_set->CapacityUnit] }})</label>
@@ -351,27 +351,27 @@
 								<div class="">
 									<div class="row">
 										<div class="col-lg-3">
-											<label>Chilled Water In</label>
+											<label>{{ $language_datas['chilled_water_in'] }}</label>
 										</div>
 										<div class="col-lg-2">
 											<input type="text" id="chilled_water_in" name="chilled_water_in" onchange="updateModelValues('chilled_water_in')" value="" class="form-control">
 
-											<span class="messages emsg hidden" id="chilled_water_in_error">
+											<!-- <span class="messages emsg hidden" id="chilled_water_in_error">
 												<p class="text-danger error">Please Enter a Valid Chilled Water In</p>
-											</span>
+											</span> -->
 										</div>
 										<div class="col-lg-1">
 											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
 										</div>
 
 										<div class="col-lg-3">
-											<label>Chilled Water Out </label>
+											<label>{{ $language_datas['chilled_water_out'] }} </label>
 										</div>
 										<div class="col-lg-2">
 											<input type="text" class="form-control min_chilled_water_out" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="" data-placement="bottom" title="">
-											<span class="messages emsg hidden" id="chilled_water_out_error">
+											<!-- <span class="messages emsg hidden" id="chilled_water_out_error">
 												<p class="text-danger error">Please Enter a Valid Chilled Water Out</p>
-											</span>
+											</span> -->
 										</div>
 										<div class="col-lg-1">
 											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -383,29 +383,29 @@
 					</div>   
 					<div class="row">
 						<div class="col-lg-3">
-							<label>Cooling Water In </label>
+							<label>{{ $language_datas['cooling_water_in'] }} </label>
 						</div>
 						<div class="col-lg-2">
 							<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-toggle="tooltip" data-placement="bottom" data-original-title>
 
-							<span class="messages emsg hidden" id="cooling_water_in_error">
+							<!-- <span class="messages emsg hidden" id="cooling_water_in_error">
 								<p class="text-danger error">Please Enter a Valid Cooling Water In</p>
-							</span>
+							</span> -->
 						</div>
 						<div class="col-lg-1">
 							<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
 						</div>
 						
 						<div class="col-lg-3">
-							<label>Cooling Water Flow</label>
+							<label>{{ $language_datas['cooling_water_flow'] }}</label>
 						</div>
 						<div class="col-lg-2">
 
 							<input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control cooling_water_ranges " data-placement="bottom" data-original-title>
 
-							<span class="messages emsg hidden" id="cooling_water_flow_error">
+							<!-- <span class="messages emsg hidden" id="cooling_water_flow_error">
 								<p class="text-danger error">Please Enter a Valid Cooling Water Flow</p>
-							</span>
+							</span> -->
 						</div>
 						<div class="col-lg-1">
 							<label>({{ $units_data[$unit_set->FlowRateUnit] }})</label>
@@ -420,7 +420,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="card-header">
-								<h5>Glycol Content % (By Vol)</h5>
+								<h5>{{ $language_datas['glycol_content'] }} % (By Vol)</h5>
 							</div>
 						</div>
 						<div class="col-md-6 form-radio">
@@ -447,25 +447,25 @@
 						<div class="col-md-12">
 							<div class="row">
 								<div class="col-md-3">
-									<label>Chilled Water </label>
+									<label>{{ $language_datas['chilled_water'] }} </label>
 								</div>
 								<div class="col-md-3">
 									<input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
 
-									<span class="messages emsg hidden" id="glycol_chilled_water_error">
+									<!-- <span class="messages emsg hidden" id="glycol_chilled_water_error">
 										<p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p>
-									</span>
+									</span> -->
 								</div>
 
 								<div class="col-md-3">
-									<label>Cooling Water </label>
+									<label>{{ $language_datas['cooling_water'] }} </label>
 								</div>
 								<div class="col-md-3">
 									<input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
 
-									<span class="messages emsg hidden" id="glycol_cooling_water_error">
+									<!-- <span class="messages emsg hidden" id="glycol_cooling_water_error">
 										<p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p>
-									</span>
+									</span> -->
 								</div>
 							</div>
 						</div>
@@ -474,7 +474,7 @@
 					<div class="row">
 						<div class="col-md-6">                      
 							<div class="card-header">
-								<h5>Tube Metallurgy</h5>
+								<h5>{{ $language_datas['tube_metallurgy'] }}</h5>
 							</div>
 						</div>
 
@@ -495,7 +495,7 @@
 					</div>
 					<div class="row">
 						<div class="col-lg-3">
-							<p><label class=" col-form-label">Evaporator</label></p>
+							<p><label class=" col-form-label">{{ $language_datas['evaporator'] }}</label></p>
 							<div class="row">
 								<div class="col-lg-12">
 									<select name="evaporator_material" id="evaporator_material" onchange="updateModelValues('evaporator_tube_type');" class="form-control metallurgy_standard">
@@ -509,9 +509,9 @@
 										<div class="col-md-8">
 											<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" title="">
 
-											<span class="messages emsg hidden" id="evaporator_thickness_error">
+											<!-- <span class="messages emsg hidden" id="evaporator_thickness_error">
 												<p class="text-danger error">Please Enter a Valid Evaporator Thickness</p>
-											</span>
+											</span> -->
 											<span class="" id="evaporator_range"></span>
 										</div>
 										<div class="col-lg-4">
@@ -523,7 +523,7 @@
 						</div>                           
 
 						<div class="col-lg-3">
-							<p><label class=" col-form-label">Absorber</label></p>
+							<p><label class=" col-form-label">{{ $language_datas['absorber'] }}</label></p>
 							<div class="row">
 								<div class="col-lg-12">								
 									<select name="absorber_material" id="absorber_material" onchange="updateModelValues('absorber_tube_type');" class="form-control metallurgy_standard">
@@ -537,9 +537,9 @@
 										<div class="col-md-8">
 											<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
 
-											<span class="messages emsg hidden" id="absorber_thickness_error">
+											<!-- <span class="messages emsg hidden" id="absorber_thickness_error">
 												<p class="text-danger error">Please Enter a Valid Absorber Thickness</p>
-											</span>
+											</span> -->
 											<span class="metallurgy_standard_span" id="absorber_range"></span>
 										</div>
 										<div class="col-lg-4">
@@ -552,7 +552,7 @@
 
 
 						<div class="col-lg-3">
-							<p> <label class=" col-form-label">Condenser</label></p>
+							<p> <label class=" col-form-label">{{ $language_datas['condenser'] }}</label></p>
 							<div class="row">
 								<div class="col-lg-12">		
 									<select name="condenser_material" id="condenser_material" onchange="updateModelValues('condenser_tube_type');" class="form-control metallurgy_standard">
@@ -565,9 +565,9 @@
 									<div class="row">
 										<div class="col-md-8">
 											<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
-											<span class="messages emsg hidden" id="condenser_thickness_error">
+											<!-- <span class="messages emsg hidden" id="condenser_thickness_error">
 												<p class="text-danger error">Please Enter a Valid Condenser Thickness</p>
-											</span>
+											</span> -->
 											<span class="metallurgy_standard_span" id="condenser_range"></span>
 										</div>
 										<div class="col-lg-4">
@@ -584,7 +584,7 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="card-header">
-								<h5>Fouling Factor</h5>
+								<h5>{{ $language_datas['fouling_factor'] }}</h5>
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -618,16 +618,16 @@
 										<input type="checkbox" class="fouling_standard " name="fouling_chilled_water" id="fouling_chilled_water" value="" data-placement="bottom" title="">
 										<span class="cr">
 											<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-										</span><span>Chilled Water</span><span id=""></span>
+										</span><span>{{ $language_datas['chilled_water'] }}</span><span id=""></span>
 									</label>
 								</div>
 
 								<div class="col-lg-2">
 									<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')" class="form-control fouling_standard fouling_chilled_min" data-placement="bottom" title="">
 
-									<span class="messages emsg hidden" id="fouling_chilled_value_error">
+									<!-- <span class="messages emsg hidden" id="fouling_chilled_value_error">
 										<p class="text-danger error">Please Enter a Valid Fouling Chilled Water</p>
-									</span>
+									</span> -->
 								</div>
 								<div class="col-lg-2 padding-0">
 									<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
@@ -638,16 +638,16 @@
 										<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="" data-placement="bottom" title="0.00005">
 										<span class="cr">
 											<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
-										</span><span>Cooling Water</span><span id=""></span>
+										</span><span>{{ $language_datas['cooling_water'] }}</span><span id=""></span>
 									</label>
 								</div>
 
 								<div class="col-lg-2">
 									<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard fouling_cooling_min" data-placement="bottom" title="">
 
-									<span class="messages emsg hidden" id="fouling_cooling_value_error">
+									<!-- <span class="messages emsg hidden" id="fouling_cooling_value_error">
 										<p class="text-danger error">Please Enter a Valid Fouling Cooling Water</p>
-									</span>
+									</span> -->
 								</div>
 								<div class="col-lg-2 padding-0">
 									<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
@@ -659,14 +659,14 @@
 					<div class="row">
 						<div class="col-md-6">
 							<div class="card-header">
-								<h5>Hot Water</h5>
+								<h5>{{ $language_datas['hot_water'] }}</h5>
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="row">
 
 								<div class="col-lg-2">
-									<label>Water In </label>
+									<label>{{ $language_datas['water_in'] }} </label>
 								</div>
 								<div class="col-lg-2">
 									<input type="text" name="hot_water_in" id="hot_water_in" onchange="updateModelValues('hot_water_in')" value="" class="form-control hot_water_in_range" data-placement="bottom" data-original-title>
@@ -678,12 +678,12 @@
 								</div>
 
 								<div class="col-lg-2">
-									<label>Water Out</label>
+									<label>{{ $language_datas['water_out'] }}</label>
 								</div>
 								<div class="col-lg-2">
 									<input type="text" name="hot_water_out" id="hot_water_out" onchange="updateModelValues('hot_water_out')" value="" class="form-control hot_water_out_range" data-placement="bottom" data-original-title>
 
-									<span class="messages emsg hidden" id="hot_water_out_error"><p class="text-danger error">Please Enter a Valid Hot Water Out</p></span>
+									<!-- <span class="messages emsg hidden" id="hot_water_out_error"><p class="text-danger error">Please Enter a Valid Hot Water Out</p></span> -->
 								</div>
 								<div class="col-lg-2">
 									<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -693,7 +693,7 @@
 						<div class="col-md-12">
 							<div class="row">
 								<div class="col-lg-6">
-									<label>Maximum Working Pressure in Hot Water </label>
+									<label>{{ $language_datas['max_working_pressure'] }} </label>
 								</div>
 								<div class="col-lg-4">
 									<input type="text" name="all_work_pr_hw" id="all_work_pr_hw" onchange="updateModelValues('all_work_pr_hw')" value="" class="form-control" data-placement="bottom" data-original-title>
@@ -1338,34 +1338,34 @@
 				case 'capacity':
 				var capacity = $("#capacity").val();
 				model_values.capacity = capacity;
-				validate = inputValidation(capacity,"positive_decimals","capacity_error","Please Enter a Valid Capacity");
+				validate = inputValidation(capacity,"positive_decimals","capacity_error","{!! $language_datas['valid_capacity'] !!}");
 				break;
 				case 'chilled_water_in':
 				model_values.chilled_water_in = $("#chilled_water_in").val();
-				validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error","Please Enter a Valid Chilled Water In");
+				validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error","{!! $language_datas['valid_chilled_water_in'] !!}");
 				break;	
 				case 'chilled_water_out':
 				model_values.chilled_water_out = $("#chilled_water_out").val();
-				validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error","Please Enter a Valid Chilled Water Out");
+				validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error","{!! $language_datas['valid_chilled_water_out'] !!}");
 				break;
 				case 'glycol_type_changed':
 				validate = true;
 				break;	
 				case 'glycol_chilled_water':
 				model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
-				validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error","Please Enter a Valid Glycol Chilled Water");
+				validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error","{!! $language_datas['valid_glycol_chilled_water'] !!}");
 				break;
 				case 'glycol_cooling_water':
 				model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
-				validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error","Please Enter a Valid Glycol Cooling Water");
+				validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error","{!! $language_datas['valid_glycol_cooling_water'] !!}");
 				break;
 				case 'cooling_water_in':
 				model_values.cooling_water_in = $("#cooling_water_in").val();
-				validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error","Please Enter a Valid Cooling Water In");
+				validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error","{!! $language_datas['valid_cooling_water_in'] !!}");
 				break;
 				case 'cooling_water_flow':
 				model_values.cooling_water_flow = $("#cooling_water_flow").val();
-				validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error","Please Enter a Valid Cooling Water Flow");
+				validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error","{!! $language_datas['valid_cooling_water_flow'] !!}");
 				break;					
 				case 'evaporator_tube_type':
 				model_values.evaporator_material_value = $("#evaporator_material").val();
@@ -1385,35 +1385,35 @@
 					break;
 					case 'evaporator_thickness':
 					model_values.evaporator_thickness = $("#evaporator_thickness").val();
-					validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error","Please Enter a Valid Evaporator Thickness");
+					validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error","{!! $language_datas['valid_evaporator_thickness'] !!}");
 					break;
 					case 'absorber_thickness':
 					model_values.absorber_thickness = $("#absorber_thickness").val();
-					validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error","Please Enter a Valid Absorber Thickness");
+					validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error","{!! $language_datas['valid_absorber_thickness'] !!}");
 					break;
 					case 'condenser_thickness':
 					model_values.condenser_thickness = $("#condenser_thickness").val();
-					validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error","Please Enter a Valid Condenser Thickness");
+					validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error","{!! $language_datas['valid_condenser_thickness'] !!}");
 					break;	
 					case 'fouling_chilled_value':
 					model_values.fouling_chilled_water_value = $("#fouling_chilled_value").val();
-					validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error","Please Enter a Valid Fouling Chilled Water");
+					validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error","{!! $language_datas['valid_fouling_chilled_water'] !!}");
 					break;	
 					case 'fouling_cooling_value':
 					model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
-					validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","Please Enter a Valid Fouling Cooling Water");
+					validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","{!! $language_datas['valid_fouling_cooling_water'] !!}");
 					break;
 					case 'hot_water_in':
 					model_values.hot_water_in = $("#hot_water_in").val();
-					validate = inputValidation(model_values.hot_water_in,"positive_decimals","hot_water_in_error","Please Enter a Valid Hot Water In");
+					validate = inputValidation(model_values.hot_water_in,"positive_decimals","hot_water_in_error","{!! $language_datas['valid_hot_water_in'] !!}");
 					break;
 					case 'hot_water_out':
 					model_values.hot_water_out = $("#hot_water_out").val();
-					validate = inputValidation(model_values.hot_water_out,"positive_decimals","hot_water_out_error","Please Enter a Valid Hot Water Out");
+					validate = inputValidation(model_values.hot_water_out,"positive_decimals","hot_water_out_error","{!! $language_datas['valid_hot_water_out'] !!}");
 					break;
 					case 'all_work_pr_hw':
 					model_values.all_work_pr_hw = $("#all_work_pr_hw").val();
-					validate = inputValidation(model_values.all_work_pr_hw,"positive_decimals","all_work_pr_hw_error","Please Enter a Valid AllWorkPrHWUnit");
+					validate = inputValidation(model_values.all_work_pr_hw,"positive_decimals","all_work_pr_hw_error","{!! $language_datas['valid_all_work_pr'] !!}");
 					break;										
 					default:
 			    	// code block
@@ -1503,32 +1503,32 @@
 
 	  						$("#notes_head_div").html('<h4>'+calculation_values.Result+'</h4>');
 
-	  						$('#capacity_span').html(calculation_values.TON);
-	  						$('#chilled_water_flow_span').html(calculation_values.ChilledWaterFlow);
-	  						$('#chilled_inlet_span').html(calculation_values.TCHW11);
-	  						$('#chilled_outlet_span').html(calculation_values.TCHW12);
-	  						$('#evaporator_pass').html(calculation_values.EvaporatorPasses);
-	  						$('#chilled_wa').html(calculation_values.EvaporatorPasses);
-	  						$('#evaporator_pass').html(calculation_values.EvaporatorPasses);
-	  						$('#chilled_pressure_loss_span').html((calculation_values.ChilledFrictionLoss).toFixed(2));
-	  						$('#cooling_water_flow_span').html(calculation_values.GCW);
-	  						$('#cooling_water_inlet_span').html(calculation_values.TCW11);
-	  						$('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature.toFixed(2));
+	  						// $('#capacity_span').html(calculation_values.TON);
+	  						// $('#chilled_water_flow_span').html(calculation_values.ChilledWaterFlow);
+	  						// $('#chilled_inlet_span').html(calculation_values.TCHW11);
+	  						// $('#chilled_outlet_span').html(calculation_values.TCHW12);
+	  						// $('#evaporator_pass').html(calculation_values.EvaporatorPasses);
+	  						// $('#chilled_wa').html(calculation_values.EvaporatorPasses);
+	  						// $('#evaporator_pass').html(calculation_values.EvaporatorPasses);
+	  						// $('#chilled_pressure_loss_span').html((calculation_values.ChilledFrictionLoss).toFixed(2));
+	  						// $('#cooling_water_flow_span').html(calculation_values.GCW);
+	  						// $('#cooling_water_inlet_span').html(calculation_values.TCW11);
+	  						// $('#cooling_water_outlet_span').html(calculation_values.CoolingWaterOutTemperature.toFixed(2));
 
-	  						var absorber_condenser_pass = calculation_values.AbsorberPasses+"/"+calculation_values.CondenserPasses
-	  						$('#absorber_pass').html(absorber_condenser_pass);
+	  						// var absorber_condenser_pass = calculation_values.AbsorberPasses+"/"+calculation_values.CondenserPasses
+	  						// $('#absorber_pass').html(absorber_condenser_pass);
 	  						
-	  						$('#cooling_pressure_loss_span').html((calculation_values.CoolingFrictionLoss).toFixed(2));
-	  						$('#hot_water_flow_span').html((calculation_values.HotWaterFlow).toFixed(2));
+	  						// $('#cooling_pressure_loss_span').html((calculation_values.CoolingFrictionLoss).toFixed(2));
+	  						// $('#hot_water_flow_span').html((calculation_values.HotWaterFlow).toFixed(2));
 
-	  						$('#hw_inlet_span').html((calculation_values.hot_water_in));
-	  						$('#hw_outlet_span').html((calculation_values.hot_water_out));
+	  						// $('#hw_inlet_span').html((calculation_values.hot_water_in));
+	  						// $('#hw_outlet_span').html((calculation_values.hot_water_out));
 
-	  						$('#generator_passes_span').html((calculation_values.GeneratorPasses));
-	  						$('#hw_circuit_pressure_span').html((calculation_values.HotWaterFrictionLoss).toFixed(2));
+	  						// $('#generator_passes_span').html((calculation_values.GeneratorPasses));
+	  						// $('#hw_circuit_pressure_span').html((calculation_values.HotWaterFrictionLoss).toFixed(2));
 	  						
 	  						
-	  						$('#result_span').html(calculation_values.Result);
+	  						// $('#result_span').html(calculation_values.Result);
 
 
 	  						$("#showreportlist").html(response.report);	
@@ -1545,6 +1545,9 @@
 	  					
 	  				}	
 	  			},
+                error: function (jqXHR, status, err) {
+                    alert("Sorry Something Went Wrong", "", "error");
+                },
 	  		});
 	  	});
 
