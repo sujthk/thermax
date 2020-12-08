@@ -323,9 +323,10 @@ class UserController extends Controller
 
         $units_data = $this->getUnitsData();
 
-        $vam_base = new VamBaseController();
-        $language_datas = $vam_base->getLanguageDatas();
         $language = $user_report->language;
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas($language);
+        
 
         if($user_report->calculator_code == 'D_S2')
         {

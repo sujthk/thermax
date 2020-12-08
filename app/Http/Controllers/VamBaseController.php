@@ -1115,12 +1115,15 @@ class VamBaseController extends Controller
         // error_reporting(-1);
     }
 
-    public function getLanguageDatas()
+    public function getLanguageDatas($language='default')
     {
         $language_datas = Language::all();
         $language_key = $language_datas->pluck('name');
 
-        $language = Auth::user()->language;
+        if($language == 'default')
+            $language = Auth::user()->language;
+        
+        
         // Log::info($language);
         if($language == "chinese"){
             $language_value = $language_datas->pluck('chinese');
