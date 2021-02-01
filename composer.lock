@@ -1,11 +1,124 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d50aed5fff80e197125b5b59bd1e4d32",
+    "content-hash": "f964918b0d6faa2ecae8479d520421c0",
     "packages": [
+        {
+            "name": "adldap2/adldap2",
+            "version": "v10.3.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Adldap2/Adldap2.git",
+                "reference": "936a4e2eb925d005198f716a75bb78068c4de94d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Adldap2/Adldap2/zipball/936a4e2eb925d005198f716a75bb78068c4de94d",
+                "reference": "936a4e2eb925d005198f716a75bb78068c4de94d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-ldap": "*",
+                "illuminate/contracts": "~5.0|~6.0|~7.0|~8.0",
+                "php": ">=7.0",
+                "psr/log": "~1.0",
+                "psr/simple-cache": "~1.0",
+                "tightenco/collect": "~5.0|~6.0|~7.0|~8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "phpunit/phpunit": "~6.0|~7.0|~8.0"
+            },
+            "suggest": {
+                "ext-fileinfo": "fileinfo is required when retrieving user encoded thumbnails"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Adldap\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Steve Bauman",
+                    "email": "steven_bauman@outlook.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A PHP LDAP Package for humans.",
+            "keywords": [
+                "active directory",
+                "ad",
+                "adLDAP",
+                "adldap2",
+                "directory",
+                "ldap",
+                "windows"
+            ],
+            "time": "2020-09-09T12:55:51+00:00"
+        },
+        {
+            "name": "adldap2/adldap2-laravel",
+            "version": "v6.1.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Adldap2/Adldap2-Laravel.git",
+                "reference": "68bb7802e59096de4161b4addf5c48e2e7d2aaae"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Adldap2/Adldap2-Laravel/zipball/68bb7802e59096de4161b4addf5c48e2e7d2aaae",
+                "reference": "68bb7802e59096de4161b4addf5c48e2e7d2aaae",
+                "shasum": ""
+            },
+            "require": {
+                "adldap2/adldap2": "^10.1",
+                "illuminate/support": "~5.5|~6.0|~7.0|~8.0",
+                "php": ">=7.1"
+            },
+            "require-dev": {
+                "mockery/mockery": "~1.0",
+                "orchestra/testbench": "~3.7|~4.0",
+                "phpunit/phpunit": "~7.0|~8.0"
+            },
+            "type": "project",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Adldap\\Laravel\\AdldapServiceProvider",
+                        "Adldap\\Laravel\\AdldapAuthServiceProvider"
+                    ],
+                    "aliases": {
+                        "Adldap": "Adldap\\Laravel\\Facades\\Adldap"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Adldap\\Laravel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "LDAP Authentication & Management for Laravel.",
+            "keywords": [
+                "adLDAP",
+                "adldap2",
+                "laravel",
+                "ldap"
+            ],
+            "time": "2020-11-12T14:26:46+00:00"
+        },
         {
             "name": "barryvdh/laravel-dompdf",
             "version": "v0.8.5",
@@ -781,6 +894,7 @@
                     "email": "jakub.onderka@gmail.com"
                 }
             ],
+            "abandoned": "php-parallel-lint/php-console-color",
             "time": "2018-09-29T17:23:10+00:00"
         },
         {
@@ -827,6 +941,7 @@
                 }
             ],
             "description": "Highlight PHP code in terminal",
+            "abandoned": "php-parallel-lint/php-console-highlighter",
             "time": "2018-09-29T18:48:56+00:00"
         },
         {
@@ -885,6 +1000,7 @@
                 "serialize",
                 "tokenizer"
             ],
+            "abandoned": "opis/closure",
             "time": "2018-03-21T22:21:57+00:00"
         },
         {
@@ -1411,6 +1527,7 @@
                 "cron",
                 "schedule"
             ],
+            "abandoned": "dragonmantank/cron-expression",
             "time": "2017-01-23T04:29:33+00:00"
         },
         {
@@ -3747,6 +3864,7 @@
                 "escaper",
                 "zf"
             ],
+            "abandoned": "laminas/laminas-escaper",
             "time": "2019-09-05T20:03:20+00:00"
         }
     ],

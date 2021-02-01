@@ -6,6 +6,7 @@
     "type": "project",
     "require": {
         "php": ">=7.0.0",
+        "adldap2/adldap2-laravel": "^6.1",
         "barryvdh/laravel-dompdf": "^0.8.5",
         "devmarketer/easynav": "^1.0",
         "doctrine/dbal": "^2.9",
