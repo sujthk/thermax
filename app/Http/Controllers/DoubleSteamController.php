@@ -32,13 +32,16 @@ class DoubleSteamController extends Controller
     
     public function getDoubleEffectS2(){
 
-        $chiller_form_values = $this->getFormValues(130);
+        // $min_model_value = ChillerCalculationValue::where('code',$this->model_code)->pluck('min_model');
+        // Log::info($min_model_value);
+        $chiller_form_values = $this->getFormValues(60);
 
 
     	$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
                                         ->where('code',$this->model_code)
-    									->where('min_model','<',130)->where('max_model','>',130)->first();
+    									->where('min_model','<=',60)->where('max_model','>',60)->first();
 
+        // Log::info($chiller_metallurgy_options);                                
     	$chiller_options = $chiller_metallurgy_options->chillerOptions;
     	
     	$evaporator_options = $chiller_options->where('type', 'eva');
@@ -67,7 +70,8 @@ class DoubleSteamController extends Controller
         $converted_values = $unit_conversions->formUnitConversion($default_values,$this->model_code);
 
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
-        $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
+        if($min_chilled_water_out > $converted_values['min_chilled_water_out'])
+            $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
   
         $regions = Region::all();
     	// return $evaporator_options;
@@ -281,7 +285,7 @@ class DoubleSteamController extends Controller
         }
 
 
-		$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+		$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
         //$queries = DB::getQueryLog();
 
 
@@ -310,7 +314,9 @@ class DoubleSteamController extends Controller
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
  
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
-        $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
+        if($min_chilled_water_out > $converted_values['min_chilled_water_out'])
+            $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
+       
 
 		return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
 
@@ -329,7 +335,7 @@ class DoubleSteamController extends Controller
         }
         else{
             
-            $chiller_metallurgy_options = ChillerMetallurgyOption::where('code',$this->model_code)->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+            $chiller_metallurgy_options = ChillerMetallurgyOption::where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
 
             $this->model_values['evaporator_material_value']=$chiller_metallurgy_options->eva_default_value;
             $this->model_values['absorber_material_value']=$chiller_metallurgy_options->abs_default_value;
@@ -351,7 +357,7 @@ class DoubleSteamController extends Controller
         
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',(int)$calculation_values['MODEL'])->where('max_model','>',(int)$calculation_values['MODEL'])->first();
+                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>',(int)$calculation_values['MODEL'])->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
@@ -430,7 +436,7 @@ class DoubleSteamController extends Controller
         $phone = $user_report->phone;
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
+                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
@@ -536,7 +542,7 @@ class DoubleSteamController extends Controller
 		if($this->model_values['metallurgy_standard']){
 
             $chiller_metallurgy_option = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
+                                        ->where('min_model','<=',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
 
 
             $chiller_options = $chiller_metallurgy_option->chillerOptions; 
@@ -570,6 +576,7 @@ class DoubleSteamController extends Controller
 
 		$this->calculation_values['TCW11'] = $this->model_values['cooling_water_in']; 
 		// Glycol Selected = (1 = none, 2 = 'ethylene', 3 = 'Propylene' 
+
 		$this->calculation_values['GL'] = $this->model_values['glycol_selected']; 
 		$this->calculation_values['CHGLY'] = $this->model_values['glycol_chilled_water']; 
 		$this->calculation_values['COGLY'] = $this->model_values['glycol_cooling_water']; 
@@ -973,7 +980,7 @@ class DoubleSteamController extends Controller
 		    	$this->model_values['evaporator_thickness_change'] = true;
                 if (floatval($this->model_values['chilled_water_out']) < 3.5 && floatval($this->model_values['glycol_chilled_water']) == 0)
                 {
-                    if (floatval($this->model_values['evaporator_material_value']) != 3)
+                    if (floatval($this->model_values['evaporator_material_value']) != 4)
                     {
 
                         return array('status' => false,'msg' => $this->notes['NOTES_EVA_TUBETYPE']);
@@ -1359,7 +1366,7 @@ class DoubleSteamController extends Controller
 	public function onChangeMetallurgyOption(){
 		if($this->model_values['metallurgy_standard']){
 			$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-    									->where('min_model','<',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
+    									->where('min_model','<=',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
 
 			$this->model_values['evaporator_material_value'] = $chiller_metallurgy_options->eva_default_value;
 			// $this->model_values['evaporator_thickness'] = $this->default_model_values['evaporator_thickness'];
@@ -1401,7 +1408,7 @@ class DoubleSteamController extends Controller
 		{
             $this->model_values['tube_metallurgy_standard'] = 'false';
 			$this->model_values['metallurgy_standard'] = false;
-			$this->model_values['evaporator_material_value'] = 3;
+			$this->model_values['evaporator_material_value'] = 4;
 			// $this->model_values['evaporator_thickness'] = 0.8;
 			$this->model_values['evaporator_thickness_change'] = true;
 			// $this->chillerAttributesChanged("EVAPORATORTUBETYPE");
@@ -1434,7 +1441,7 @@ class DoubleSteamController extends Controller
         $model_number =(int)$this->calculation_values['MODEL'];
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+                                        ->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
@@ -1486,7 +1493,36 @@ class DoubleSteamController extends Controller
         else
             $this->calculation_values['GCWC'] = $GCW;
 
-        $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
+        if($this->calculation_values['MODEL'] < 300){
+            do
+                {
+                    $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
+
+ 
+
+                    if ($this->calculation_values['VC'] < 1.4)
+                    {
+                        $this->calculation_values['TCP'] = $this->calculation_values['TCP'] + 1;
+                    }
+
+ 
+
+                    if ($this->calculation_values['TCP'] > 2)
+                    {
+                        $this->calculation_values['TCP'] = 2;
+                        $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
+                        break;
+                    }
+
+ 
+
+                } while ($this->calculation_values['VC'] < 1.4);
+        }
+        else{
+            $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
+        }
+
+        
 
         /********************* EVAPORATOR VELOCITY ********************/
         $this->calculation_values['GCHW'] = $this->calculation_values['TON'] * 3024 / (($this->calculation_values['TCHW11'] - $this->calculation_values['TCHW12']) * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] / 4187);
@@ -1612,8 +1648,17 @@ class DoubleSteamController extends Controller
         $this->calculation_values['F'] = 0;
 
         $this->calculation_values['VPE1'] = ($this->calculation_values['GCHW'] * 4) / (3.141593 * $this->calculation_values['PIDE1'] * $this->calculation_values['PIDE1'] * 3600);
-        $this->calculation_values['VPE2'] = (0.5 * $this->calculation_values['GCHW'] * 4) / (3.141593 * $this->calculation_values['PIDE2'] * $this->calculation_values['PIDE2'] * 3600);
-        $this->calculation_values['VPBR'] = (0.5 * $this->calculation_values['GCHW'] * 4) / (3.141593 * $this->calculation_values['PIDE1'] * $this->calculation_values['PIDE1'] * 3600);
+
+        if($this->calculation_values['MODEL'] > 300){
+            $this->calculation_values['VPE2'] = (0.5 * $this->calculation_values['GCHW'] * 4) / (3.141593 * $this->calculation_values['PIDE2'] * $this->calculation_values['PIDE2'] * 3600);
+            $this->calculation_values['VPBR'] = (0.5 * $this->calculation_values['GCHW'] * 4) / (3.141593 * $this->calculation_values['PIDE1'] * $this->calculation_values['PIDE1'] * 3600);
+        }
+        else{
+            $this->calculation_values['VPE2'] = 0;
+            $this->calculation_values['VPBR'] = 0;
+
+        }
+        
 
        //PIPE1
        
@@ -1632,19 +1677,45 @@ class DoubleSteamController extends Controller
        }
 
        $this->calculation_values['REPE1'] = ($this->calculation_values['PIDE1'] * $this->calculation_values['VPE1'] * $this->calculation_values['CHGLY_ROW22']) / $this->calculation_values['CHGLY_VIS22'];
-       $this->calculation_values['REPE2'] = ($this->calculation_values['PIDE2'] * $this->calculation_values['VPE2'] * $this->calculation_values['CHGLY_ROW22']) / $this->calculation_values['CHGLY_VIS22'];
-       $this->calculation_values['REBR'] = ($this->calculation_values['PIDE1'] * $this->calculation_values['VPBR'] * $this->calculation_values['CHGLY_ROW22']) / $this->calculation_values['CHGLY_VIS22'];           //REYNOLDS NO IN PIPE1
+       if($this->calculation_values['MODEL'] > 300){
+            $this->calculation_values['REPE2'] = ($this->calculation_values['PIDE2'] * $this->calculation_values['VPE2'] * $this->calculation_values['CHGLY_ROW22']) / $this->calculation_values['CHGLY_VIS22'];
+            $this->calculation_values['REBR'] = ($this->calculation_values['PIDE1'] * $this->calculation_values['VPBR'] * $this->calculation_values['CHGLY_ROW22']) / $this->calculation_values['CHGLY_VIS22'];
+       }
+       else{
+            $this->calculation_values['REPE2'] = 0;
+            $this->calculation_values['REBR'] = 0;
+       }    
+                  //REYNOLDS NO IN PIPE1
        
        $this->calculation_values['FF1'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE1'] * 1000)) + (5.74 / pow($this->calculation_values['REPE1'], 0.9))), 2);       //FRICTION FACTOR CAL
-       $this->calculation_values['FF2'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE2'] * 1000)) + (5.74 / pow($this->calculation_values['REPE2'], 0.9))), 2);
-       $this->calculation_values['FF3'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE1'] * 1000)) + (5.74 / pow($this->calculation_values['REBR'], 0.9))), 2);
+
+       if($this->calculation_values['MODEL'] > 300){
+            $this->calculation_values['FF2'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE2'] * 1000)) + (5.74 / pow($this->calculation_values['REPE2'], 0.9))), 2);
+            $this->calculation_values['FF3'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE1'] * 1000)) + (5.74 / pow($this->calculation_values['REBR'], 0.9))), 2);
+       }
+       else{
+            $this->calculation_values['FF2'] = 0;
+            $this->calculation_values['FF3'] = 0;
+       }
+       
 
 
        $this->calculation_values['FL1'] = ($this->calculation_values['FF1'] * ($this->calculation_values['SL1'] + $this->calculation_values['SL8']) / $this->calculation_values['PIDE1']) * ($this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81));
-       $this->calculation_values['FL2'] = ($this->calculation_values['FF2'] * ($this->calculation_values['SL3'] + $this->calculation_values['SL4'] + $this->calculation_values['SL5'] + $this->calculation_values['SL6']) / $this->calculation_values['PIDE2']) * ($this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81));
-       $this->calculation_values['FL3'] = ($this->calculation_values['FF3'] * ($this->calculation_values['SL2'] + $this->calculation_values['SL7']) / $this->calculation_values['PIDE1']) * ($this->calculation_values['VPBR'] * $this->calculation_values['VPBR'] / (2 * 9.81));
-       $this->calculation_values['FL4'] = (2 * $this->calculation_values['FT1'] * 20 * $this->calculation_values['VPBR'] * $this->calculation_values['VPBR'] / (2 * 9.81)) + (2 * $this->calculation_values['FT2'] * 60 * $this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81)) + (2 * $this->calculation_values['FT2'] * 14 * $this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81));
-       $this->calculation_values['FL5'] = ($this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81));
+
+       if($this->calculation_values['MODEL'] > 300){
+            $this->calculation_values['FL2'] = ($this->calculation_values['FF2'] * ($this->calculation_values['SL3'] + $this->calculation_values['SL4'] + $this->calculation_values['SL5'] + $this->calculation_values['SL6']) / $this->calculation_values['PIDE2']) * ($this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81));
+           $this->calculation_values['FL3'] = ($this->calculation_values['FF3'] * ($this->calculation_values['SL2'] + $this->calculation_values['SL7']) / $this->calculation_values['PIDE1']) * ($this->calculation_values['VPBR'] * $this->calculation_values['VPBR'] / (2 * 9.81));
+           $this->calculation_values['FL4'] = (2 * $this->calculation_values['FT1'] * 20 * $this->calculation_values['VPBR'] * $this->calculation_values['VPBR'] / (2 * 9.81)) + (2 * $this->calculation_values['FT2'] * 60 * $this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81)) + (2 * $this->calculation_values['FT2'] * 14 * $this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81));
+           $this->calculation_values['FL5'] = ($this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VPE2'] * $this->calculation_values['VPE2'] / (2 * 9.81));
+       }
+       else{
+            $this->calculation_values['FL2'] = 0;
+            $this->calculation_values['FL3'] = 0;
+            $this->calculation_values['FL4'] = 0;
+            $this->calculation_values['FL5'] = ($this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81));
+       }
+
+       
 
        $this->calculation_values['FLP'] = $this->calculation_values['FL1'] + $this->calculation_values['FL2'] + $this->calculation_values['FL3'] + $this->calculation_values['FL4'] + $this->calculation_values['FL5'];      //EVAPORATOR PIPE LOSS
 
@@ -1791,7 +1862,7 @@ class DoubleSteamController extends Controller
         $FC1 = 2 * $F * $this->calculation_values['LE'] * $this->calculation_values['VC'] * $this->calculation_values['VC'] / (9.81 * $this->calculation_values['IDC']);
         $FC2 = $this->calculation_values['VC'] * $this->calculation_values['VC'] / (4 * 9.81);
         $FC3 = $this->calculation_values['VC'] * $this->calculation_values['VC'] / (2 * 9.81);
-        $this->calculation_values['FC4'] = ($FC1 + $FC2 + $FC3);                        //FRICTION LOSS IN CONDENSER TUBES
+        $this->calculation_values['FC4'] = ($FC1 + $FC2 + $FC3) * $this->calculation_values['TCP'];                        //FRICTION LOSS IN CONDENSER TUBES
         $FLC = $this->calculation_values['FC4'];
 
     
@@ -1883,6 +1954,7 @@ class DoubleSteamController extends Controller
             }
         }
         $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TP']));
+
         $this->calculation_values['VC'] = ($this->calculation_values['GCWC'] * 4) / (3.141593 * $this->calculation_values['IDC'] * $this->calculation_values['IDC'] * $this->calculation_values['TNC'] * 3600 / $this->calculation_values['TCP']);
 
         if ($this->calculation_values['TAP'] == 3)
@@ -1916,7 +1988,7 @@ class DoubleSteamController extends Controller
 
         if ($this->calculation_values['MODEL'] < 3500)
         {
-            if ($this->calculation_values['TCHW12'] < 3.499)
+            if ($this->calculation_values['TCHW12'] < 3.499 || ($this->calculation_values['MODEL'] < 300 && $this->calculation_values['TCHW12'] <= 5.0))
             {
                 $KM3 = (0.0343 * $this->calculation_values['TCHW12']) + 0.82;
             }
@@ -2849,7 +2921,7 @@ class DoubleSteamController extends Controller
         /********** SFACTOR - STEAM *******/
         $SFACTOR1 = 0; $SFACTOR2 = 0; $SFACTOR3 = 0;
 
-        if ($this->calculation_values['TCHW12'] < 5)
+        if ($this->calculation_values['TCHW12'] < 5 || ($this->calculation_values['MODEL'] < 300 && $this->calculation_values['TCHW12'] < 6.7))
         {
             $SFACTOR1 = 1.0738 - 0.0068 * $this->calculation_values['TCHW12'];
         }
@@ -3263,7 +3335,7 @@ class DoubleSteamController extends Controller
 
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',$model_number)->where('max_model','>',$model_number)->first();
+                                        ->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
@@ -3271,7 +3343,15 @@ class DoubleSteamController extends Controller
         $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->calculation_values['TU5'])->first();
         $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->calculation_values['TV5'])->first();
 
-	    $TCP = 1;
+
+        if($this->calculation_values['MODEL'] < 300){
+            $TCP = 2;
+        }
+        else{
+            $TCP = 1;
+        }
+
+	    
         $VAMIN = $absorber_option->metallurgy->abs_min_velocity;          
         $VAMAX = $absorber_option->metallurgy->abs_max_velocity;
         $VCMIN = $condenser_option->metallurgy->con_min_velocity;
@@ -3304,7 +3384,7 @@ class DoubleSteamController extends Controller
 
 
 	    $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;		//min required flow in condenser
-	    $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / $TCP;
+	    $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / 1;
 
 	    
 
@@ -3323,6 +3403,7 @@ class DoubleSteamController extends Controller
 	    $FMAX[$TAPMAX] = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA / $TAPMAX * $VAMAX;
 
 	    $GCWMAX = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA * $VAMAX;
+        
 	    $INIT = 1;
 	    if ($FMIN[$TAPMAX] > $GCWMAX)
 	    {
@@ -3378,7 +3459,6 @@ class DoubleSteamController extends Controller
 	    //{
 	    //    $FMAX1 = GCWCMAX;
 	    //}
-
 
 	    if ($FMIN1 < $FMAX1)
 	    {
@@ -3671,7 +3751,7 @@ class DoubleSteamController extends Controller
     public function CONCHECK()
     {
 
-        if ($this->calculation_values['MODEL'] < 275)
+        if ($this->calculation_values['MODEL'] < 130)
         {
             if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
                 $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
@@ -3688,7 +3768,7 @@ class DoubleSteamController extends Controller
                 }
             }
         }
-        else if ($this->calculation_values['MODEL'] > 275)
+        else if ($this->calculation_values['MODEL'] > 130)
         {
             if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
                 $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
@@ -3829,22 +3909,55 @@ class DoubleSteamController extends Controller
     {
 
         $this->calculation_values['HIGHCAP'] = 0;
-        
-        if ($this->calculation_values['MODEL'] == 130)
+
+
+        if ($this->calculation_values['MODEL'] == 60)
         {
-            $this->calculation_values['HIGHCAP'] = 150;
+
+            $this->calculation_values['HIGHCAP'] = 70;
+
         }
-        else if ($this->calculation_values['MODEL'] == 160)
+        else if ($this->calculation_values['MODEL'] == 75)
         {
-            $this->calculation_values['HIGHCAP'] = 190;
+
+            $this->calculation_values['HIGHCAP'] = 88;
+
+        }
+        else if ($this->calculation_values['MODEL'] == 90)
+        {
+
+            $this->calculation_values['HIGHCAP'] = 105;
+
+        }
+        else if ($this->calculation_values['MODEL'] == 110)
+        {
+
+            $this->calculation_values['HIGHCAP'] = 128;
+
+        }
+        else if ($this->calculation_values['MODEL'] == 150)
+        {
+
+            $this->calculation_values['HIGHCAP'] = 174;
+
+        }
+        else if ($this->calculation_values['MODEL'] == 175)
+        {
+
+            $this->calculation_values['HIGHCAP'] = 203;
+
         }
         else if ($this->calculation_values['MODEL'] == 210)
         {
-            $this->calculation_values['HIGHCAP'] = 240;
+
+            $this->calculation_values['HIGHCAP'] = 244;
+
         }
         else if ($this->calculation_values['MODEL'] == 250)
         {
+
             $this->calculation_values['HIGHCAP'] = 290;
+
         }
         else if ($this->calculation_values['MODEL'] == 310)
         {
@@ -3955,14 +4068,41 @@ class DoubleSteamController extends Controller
         $this->calculation_values['HTG_HSEP_DS'] = 0; $this->calculation_values['HTG_HSEP_DS_REQ'] = 0; 
 
 
-        if ($this->calculation_values['MODEL'] == 130 || $this->calculation_values['MODEL'] == 160)
+        if ($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 90)
         {
-            $this->calculation_values['HTG_HSEP_DS'] = 162.0 / 326;
+
+            $this->calculation_values['HTG_HSEP_DS'] = 229.95 / 288.56;
+
         }
-        if ($this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250)
+
+        if ($this->calculation_values['MODEL'] == 75 || $this->calculation_values['MODEL'] == 110)
         {
-            $this->calculation_values['HTG_HSEP_DS'] = 253.0 / 326;
+
+            $this->calculation_values['HTG_HSEP_DS'] = 208.95 / 288.56;
+
         }
+
+        if ($this->calculation_values['MODEL'] == 150)
+        {
+
+            $this->calculation_values['HTG_HSEP_DS'] = 237.8 / 319.8;
+
+        }
+
+        if ($this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210)
+        {
+
+            $this->calculation_values['HTG_HSEP_DS'] = 216.8 / 324.4;
+
+        }
+
+        if ($this->calculation_values['MODEL'] == 250)
+        {
+
+            $this->calculation_values['HTG_HSEP_DS'] = 195.8 / 324.4;
+
+        }
+
         if ($this->calculation_values['MODEL'] == 310 || $this->calculation_values['MODEL'] == 350 || $this->calculation_values['MODEL'] == 410)
         {
             $this->calculation_values['HTG_HSEP_DS'] = 237.0 / 377;
@@ -4010,10 +4150,46 @@ class DoubleSteamController extends Controller
         
         $this->calculation_values['LTG_HSEP_DS'] = 0;
 
-        if ($this->calculation_values['MODEL'] == 130 || $this->calculation_values['MODEL'] == 160 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250)
+        if ($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 90)
+
         {
-            $this->calculation_values['LTG_HSEP_DS'] = 196.9 / 338.3;
+
+            $this->calculation_values['LTG_HSEP_DS'] = 192.8 / 228.35;
+
         }
+
+        if ($this->calculation_values['MODEL'] == 75 || $this->calculation_values['MODEL'] == 110)
+
+        {
+
+            $this->calculation_values['LTG_HSEP_DS'] = 173.8 / 228.35;
+
+        }
+
+        if ($this->calculation_values['MODEL'] == 150)
+
+        {
+
+            $this->calculation_values['LTG_HSEP_DS'] = 211.8 / 250.4;
+
+        }
+
+        if ($this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210)
+
+        {
+
+            $this->calculation_values['LTG_HSEP_DS'] = 192.8 / 250.4;
+
+        }
+
+        if ($this->calculation_values['MODEL'] == 250)
+
+        {
+
+            $this->calculation_values['LTG_HSEP_DS'] = 173.8 / 250.4;
+
+        }
+
         if ($this->calculation_values['MODEL'] == 310 || $this->calculation_values['MODEL'] == 350 || $this->calculation_values['MODEL'] == 410)
         {
             $this->calculation_values['LTG_HSEP_DS'] = 205 / 393.2;
@@ -4267,7 +4443,7 @@ class DoubleSteamController extends Controller
 
     public function getMetallurgyValues($type){
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
+                                        ->where('min_model','<=',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
@@ -4368,153 +4544,30 @@ class DoubleSteamController extends Controller
         $model_number = floatval($this->calculation_values['MODEL']);
 
         switch ($model_number) {
-            case 130:
+            case 60:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TZC S2 C3 N";
-                    }
-                    else
-                    {
-
-                        $this->model_values['model_name'] = "TZC S2 C3";
-                        
-                    }
+                    $this->model_values['model_name'] = "TZC S2 M1";
                 }
                 else
                 {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TAC S2 C3 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TAC S2 C3";
-                    }
-                }
-                // $this->calculation_values['ChilledConnectionDiameter'] = 125;
-                // $this->calculation_values['CoolingConnectionDiameter'] = 150;
-                // $this->calculation_values['SteamConnectionDiameter'] = 65;
-                // $this->calculation_values['SteamDrainDiameter'] = 40;
-
-                // //physical props
-                // $this->calculation_values['Length'] = 3140;
-                // $this->calculation_values['Width'] = 2140;
-                // $this->calculation_values['Height'] = 2750;
-                // $this->calculation_values['ClearanceForTubeRemoval'] = 2650;
-
-               if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-               {
-
-                $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                $this->calculation_values['DryWeight'] = $DryWeight1; 
-                $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                    $this->model_values['model_name'] = "TAC S2 M1";
                 }
 
-                // $this->calculation_values['DryWeight'] = 5.5; 
-                // $this->calculation_values['MaxShippingWeight'] = 6.4;
-                // $this->calculation_values['OperatingWeight'] = 6.8;
-                // $this->calculation_values['FloodedWeight'] = 9.4;
-
-                if ($this->calculation_values['PST1'] < 6.01)
-                {
-                    $this->calculation_values['Length'] = 3190;
-                    $this->calculation_values['Width'] = 2190;
-                    $this->calculation_values['Height'] = 2800;
-                    $this->calculation_values['ClearanceForTubeRemoval'] = 2650;
-
-                    $this->calculation_values['DryWeight'] = 5.6;
-                    $this->calculation_values['MaxShippingWeight'] = 6.5;
-                    $this->calculation_values['OperatingWeight'] = 6.9;
-                    $this->calculation_values['FloodedWeight'] = 9.5;
-                }
-
-                //electrical props
-                // $this->calculation_values['AbsorbentPumpMotorKW'] = 2.2;
-                // $this->calculation_values['AbsorbentPumpMotorAmp'] = 6.0;
-
-                // $this->calculation_values['RefrigerantPumpMotorKW'] = 0.3;
-                // $this->calculation_values['RefrigerantPumpMotorAmp'] = 1.4;
-
-                // $this->calculation_values['PurgePumpMotorKW'] = 0.75;
-                // $this->calculation_values['PurgePumpMotorAmp'] = 1.8;
-
-                if($this->calculation_values['region_type'] == 2)
-                {
-                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
-
-                    $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
-                }
-                else
-                {
-                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
-
-                    $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
-
-                }
-                
-             
-                break;
-
-            case 160:
-                if ($this->calculation_values['TCHW12'] < 3.5)
-                {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TZC S2 C4 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TZC S2 C4";
-                    }
-                }
-                else
-                {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                       $this->model_values['model_name'] = "TAC S2 C4 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TAC S2 C4";
-                    }
-                }
-
-               if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                 {
 
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
 
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
 
-               
-                if ($this->calculation_values['PST1'] < 6.01)
-                {
-                    $this->calculation_values['Length'] = 3190;
-                    $this->calculation_values['Width'] = 2190;
-                    $this->calculation_values['Height'] = 2800;
-                    $this->calculation_values['ClearanceForTubeRemoval'] = 2650;
-
-                    $this->calculation_values['DryWeight'] = 5.7;
-                    $this->calculation_values['MaxShippingWeight'] = 6.6;
-                    $this->calculation_values['OperatingWeight'] = 7.1;
-                    $this->calculation_values['FloodedWeight'] = 9.6;  
-                }
-
-                if($this->calculation_values['region_type'] == 2)
+                 if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4529,58 +4582,227 @@ class DoubleSteamController extends Controller
                 }
 
                 break;
+
+            case 75:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC S2 M2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC S2 M2";
+                }
+
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+                {
+
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
+                }
+                else
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
+
+                }
+
+                break;    
+
+            case 90:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC S2 N1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC S2 N1";
+                }
+
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+                {
+
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
+                }
+                else
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
+
+                }
+
+                break;     
+
+            case 110:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC S2 N2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC S2 N2";
+                }
+
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+                {
+
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
+                }
+                else
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
+
+                }
+
+                break;     
+
+            case 150:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC S2 N3";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC S2 N3";
+                }
+
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+                {
+
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
+                }
+                else
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
+
+                }
+
+                break;      
+
+            case 175:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC S2 N4";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC S2 N4";
+                }
+
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+                {
+
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
+                }
+                else
+                {
+                    $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
+
+                    $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
+
+                }
+
+                break;     
+
+
             case 210:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TZC S2 D1 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TZC S2 D1";
-                    }
+                    $this->model_values['model_name'] = "TZC S2 P1";
                 }
                 else
                 {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TAC S2 D1 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TAC S2 D1";
-                    }
+                    $this->model_values['model_name'] = "TAC S2 P1";
                 }
 
-               if($this->calculation_values['region_type'] == 2 ||$this->calculation_values['region_type'] == 3)
-               {
-
-                $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                $this->calculation_values['DryWeight'] = $DryWeight1; 
-                $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-                if ($this->calculation_values['PST1'] < 6.01)
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                 {
-                    
-                    $this->calculation_values['Length'] = 4210;
-                    $this->calculation_values['Width'] = 2190;
-                    $this->calculation_values['Height'] = 2800;
-                    $this->calculation_values['ClearanceForTubeRemoval'] = 3670;
 
-                    $this->calculation_values['DryWeight'] = 6.9;
-                    $this->calculation_values['MaxShippingWeight'] = 8.1;
-                    $this->calculation_values['OperatingWeight'] = 8.6;
-                    $this->calculation_values['FloodedWeight'] = 12.5;  
-                }
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
-                if($this->calculation_values['region_type'] == 2)
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4593,60 +4815,33 @@ class DoubleSteamController extends Controller
                     $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
 
                 }
-                
-                break;
+
+                break;     
+
             case 250:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TZC S2 D2 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TZC S2 D2";
-                    }
+                    $this->model_values['model_name'] = "TZC S2 P2";
                 }
                 else
                 {
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->model_values['model_name'] = "TAC S2 D2 N";
-                    }
-                    else
-                    {
-                        $this->model_values['model_name'] = "TAC S2 D2";
-                    }
+                    $this->model_values['model_name'] = "TAC S2 P2";
                 }
 
-               if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-               {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-                if ($this->calculation_values['PST1'] < 6.01)
+                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                 {
 
-                    $this->calculation_values['Length'] = 4210;
-                    $this->calculation_values['Width'] = 2190;
-                    $this->calculation_values['Height'] = 2800;
-                    $this->calculation_values['ClearanceForTubeRemoval'] = 3670;
+                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
-                    $this->calculation_values['DryWeight'] = 7.0;
-                    $this->calculation_values['MaxShippingWeight'] = 8.3;
-                    $this->calculation_values['OperatingWeight'] = 8.8;
-                    $this->calculation_values['FloodedWeight'] = 12.6;
+                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
 
-                }
-                if($this->calculation_values['region_type'] == 2)
+                     $this->calculation_values['DryWeight'] = $DryWeight1; 
+                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+                 }
+
+                 if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
 
@@ -4660,7 +4855,7 @@ class DoubleSteamController extends Controller
 
                 }
 
-                break;
+                break;  
 
             case 310:
                 if ($this->calculation_values['TCHW12'] < 3.5)
@@ -4685,8 +4880,20 @@ class DoubleSteamController extends Controller
                         $this->model_values['model_name'] = "TAC S2 D3";
                     }
                 }
+
+
                 if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                 {
+
+                    if ($this->calculation_values['TCHW12'] < 3.5)
+                    {
+                        $this->model_values['model_name'] = "TZC S2 D3";                        
+                    }
+                    else
+                    {
+                        $this->model_values['model_name'] = "TAC S2 D3";                        
+                    }    
+
 
                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
@@ -4697,21 +4904,24 @@ class DoubleSteamController extends Controller
                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
+                else{
+                    if ($this->calculation_values['PST1'] < 6.01)
+                    {
+                        $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                        $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                        $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                        // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
+                        $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                        $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                        $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                        $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                if ($this->calculation_values['PST1'] < 6.01)
-                {
-                    $this->calculation_values['Length'] = 4210;
-                    $this->calculation_values['Width'] = 2450;
-                    $this->calculation_values['Height'] = 2950;
-                    $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
-
-                    $this->calculation_values['DryWeight'] = 8.2;
-                    $this->calculation_values['MaxShippingWeight'] = 10.4;
-                    $this->calculation_values['OperatingWeight'] = 10.7;
-                    $this->calculation_values['FloodedWeight'] = 15.4;
-
+                    }
                 }
+
+
+                
                 if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -4750,8 +4960,21 @@ class DoubleSteamController extends Controller
                         $this->model_values['model_name'] = "TAC S2 D4";
                     }
                 }
+
+
                 if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                 {
+
+
+
+                    if ($this->calculation_values['TCHW12'] < 3.5)
+                    {
+                        $this->model_values['model_name'] = "TZC S2 D4";                        
+                    }
+                    else
+                    {
+                        $this->model_values['model_name'] = "TAC S2 D4";                        
+                    }
 
                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
@@ -4762,21 +4985,23 @@ class DoubleSteamController extends Controller
                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
+                else{
+                    if ($this->calculation_values['PST1'] < 6.01)
+                    {
+                        $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                        $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                        $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                        // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-      
+                        $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                        $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                        $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                        $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                if ($this->calculation_values['PST1'] < 6.01)
-                {
-                    $this->calculation_values['Length'] = 4210;
-                    $this->calculation_values['Width'] = 2450;
-                    $this->calculation_values['Height'] = 2950;
-                    $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
-
-                    $this->calculation_values['DryWeight'] = 8.4;
-                    $this->calculation_values['MaxShippingWeight'] = 10.5;
-                    $this->calculation_values['OperatingWeight'] = 10.9;
-                    $this->calculation_values['FloodedWeight'] = 15.5;
+                    }
                 }
+
+
                 if($this->calculation_values['region_type'] == 2)
                 {
                     $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -4816,8 +5041,18 @@ class DoubleSteamController extends Controller
                            $this->model_values['model_name'] = "TAC S2 E1";
                         }
                     }
+
                     if($this->calculation_values['region_type'] == 2|| $this->calculation_values['region_type'] == 3 )
                     {
+
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 E1";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 E1";                        
+                        }
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
@@ -4828,21 +5063,23 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 4820;
-                        $this->calculation_values['Width'] = 2450;
-                        $this->calculation_values['Height'] = 2950;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 4310;
-
-                        $this->calculation_values['DryWeight'] = 9.3;
-                        $this->calculation_values['MaxShippingWeight'] = 11.8;
-                        $this->calculation_values['OperatingWeight'] = 12.2;
-                        $this->calculation_values['FloodedWeight'] = 17.8; 
-
+                        }
                     }
+
+
                    if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -4886,6 +5123,16 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 E2";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 E2";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -4895,19 +5142,20 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 4950;
-                        $this->calculation_values['Width'] = 2650;
-                        $this->calculation_values['Height'] = 3290;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 4680;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] = 11.2;
-                        $this->calculation_values['MaxShippingWeight'] = 14.1;
-                        $this->calculation_values['OperatingWeight'] = 14.8;
-                        $this->calculation_values['FloodedWeight'] = 22.6;
-
+                        }
                     }
 
                     if($this->calculation_values['region_type'] == 2)
@@ -4952,6 +5200,17 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+
+
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 E3";                        
+                        }
+                        else
+                        {
+                           $this->model_values['model_name'] = "TAC S2 E3";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -4961,20 +5220,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 4950;
-                        $this->calculation_values['Width'] = 2650;
-                        $this->calculation_values['Height'] = 3290;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 4680;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] = 11.4;
-                        $this->calculation_values['MaxShippingWeight'] = 14.5;
-                        $this->calculation_values['OperatingWeight'] = 15.3;
-                        $this->calculation_values['FloodedWeight'] = 22.7;
-                       
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5016,6 +5277,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 E4";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 E4";                       
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5025,20 +5295,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 4950;
-                        $this->calculation_values['Width'] = 2650;
-                        $this->calculation_values['Height'] = 3290;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 4680;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] = 11.5;
-                        $this->calculation_values['MaxShippingWeight'] = 14.7;
-                        $this->calculation_values['OperatingWeight'] = 15.7;
-                        $this->calculation_values['FloodedWeight'] = 22.9;
-
+                        }
                     }
+                    
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5081,6 +5353,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 E5";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 E5";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5090,20 +5371,20 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 4980;
-                        $this->calculation_values['Width'] = 2830;
-                        $this->calculation_values['Height'] = 3550;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 4710;
-
-                        $this->calculation_values['DryWeight'] = 13.2;
-                        $this->calculation_values['MaxShippingWeight'] = 16.8;
-                        $this->calculation_values['OperatingWeight'] = 18.1;
-                        $this->calculation_values['FloodedWeight'] = 26.7;
-
+                        }
                     }
 
                     if($this->calculation_values['region_type'] == 2)
@@ -5148,6 +5429,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 E6";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 E6";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5157,21 +5447,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 4980;
-                        $this->calculation_values['Width'] = 2830;
-                        $this->calculation_values['Height'] = 3550;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 4710;
-
-                        $this->calculation_values['DryWeight'] = 13.5;
-                        $this->calculation_values['MaxShippingWeight'] = 17.2;
-                        $this->calculation_values['OperatingWeight'] = 18.6;
-                        $this->calculation_values['FloodedWeight'] = 26.9;
-                  
+                        }
                     }
+
 
                     if($this->calculation_values['region_type'] == 2)
                     {
@@ -5214,6 +5505,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 F1";
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 F1";
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5223,21 +5523,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                  
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 6220;
-                        $this->calculation_values['Width'] = 2900;
-                        $this->calculation_values['Height'] = 3730;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 5530;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] = 17.4;
-                        $this->calculation_values['MaxShippingWeight'] = 22.0;
-                        $this->calculation_values['OperatingWeight'] = 23.1;
-                        $this->calculation_values['FloodedWeight'] = 35.2;
-
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5280,6 +5581,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 F2";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 F2";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5289,21 +5599,20 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                   
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 6220;
-                        $this->calculation_values['Width'] = 2900;
-                        $this->calculation_values['Height'] = 3730;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 5530;
-
-                        $this->calculation_values['DryWeight'] = 17.5;
-                        $this->calculation_values['MaxShippingWeight'] = 22.5;
-                        $this->calculation_values['OperatingWeight'] = 24.2;
-                        $this->calculation_values['FloodedWeight'] = 35.7;
-
+                        }
                     }
 
                     if($this->calculation_values['region_type'] == 2)
@@ -5348,6 +5657,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 F3";                        
+                        }
+                        else
+                        {
+                           $this->model_values['model_name'] = "TAC S2 F3";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5357,21 +5675,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                  
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 6220;
-                        $this->calculation_values['Width'] = 2900;
-                        $this->calculation_values['Height'] = 3730;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 5530;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] = 17.8;
-                        $this->calculation_values['MaxShippingWeight'] = 23.0;
-                        $this->calculation_values['OperatingWeight'] = 24.8;
-                        $this->calculation_values['FloodedWeight'] = 35.9;
-                
+                        }
                     }
+              
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5414,6 +5733,16 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 G1";                       
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 G1";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5423,22 +5752,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                  
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 7680;
-                        $this->calculation_values['Width'] = 2900;
-                        $this->calculation_values['Height'] = 3730;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 6980;
-
-                        $this->calculation_values['DryWeight'] =  21.0;
-                        $this->calculation_values['MaxShippingWeight'] = 27.1;
-                        $this->calculation_values['OperatingWeight'] = 29.1;
-                        $this->calculation_values['FloodedWeight'] = 44.5;
-
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5480,6 +5809,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 G2";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 G2";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5489,21 +5827,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 7680;
-                        $this->calculation_values['Width'] = 2900;
-                        $this->calculation_values['Height'] = 3730;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 6980;
-
-                        $this->calculation_values['DryWeight'] =  21.4;
-                        $this->calculation_values['MaxShippingWeight'] = 27.8;
-                        $this->calculation_values['OperatingWeight'] = 29.9;
-                        $this->calculation_values['FloodedWeight'] = 44.8;
-                        
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5546,6 +5885,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 G3";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 G3";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5555,21 +5903,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                  
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 7880;
-                        $this->calculation_values['Width'] = 3230;
-                        $this->calculation_values['Height'] = 3960;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 6800;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] =  28.0;
-                        $this->calculation_values['MaxShippingWeight'] = 35.4;
-                        $this->calculation_values['OperatingWeight'] = 38.8;
-                        $this->calculation_values['FloodedWeight'] = 58.0;
-
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5612,6 +5961,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 G4";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 G4";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5621,21 +5979,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 7880;
-                        $this->calculation_values['Width'] = 3230;
-                        $this->calculation_values['Height'] = 3960;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 6800;
-
-                        $this->calculation_values['DryWeight'] =  28.4;
-                        $this->calculation_values['MaxShippingWeight'] = 36.1;
-                        $this->calculation_values['OperatingWeight'] = 39.8;
-                        $this->calculation_values['FloodedWeight'] = 58.3;
-
+                        }
                     }
+
 
                    if($this->calculation_values['region_type'] == 2)
                     {
@@ -5680,6 +6039,16 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
                     {
 
+
+                        if ($this->calculation_values['PST1'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 G5";                        
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 G5";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5689,22 +6058,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                   
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 7980;
-                        $this->calculation_values['Width'] = 3800;
-                        $this->calculation_values['Height'] = 4210;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 7220;
-
-                        $this->calculation_values['DryWeight'] =  34.7;
-                        $this->calculation_values['MaxShippingWeight'] = 43.5;
-                        $this->calculation_values['OperatingWeight'] = 49.0;
-                        $this->calculation_values['FloodedWeight'] = 75.1;
-
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5747,6 +6116,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 G6";                       
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 G6";                        
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5756,22 +6134,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                   
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 7980;
-                        $this->calculation_values['Width'] = 3800;
-                        $this->calculation_values['Height'] = 4210;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 7220;
-
-                        $this->calculation_values['DryWeight'] =  35.2;
-                        $this->calculation_values['MaxShippingWeight'] = 44.4;
-                        $this->calculation_values['OperatingWeight'] = 50.1;
-                        $this->calculation_values['FloodedWeight'] = 75.5;
-
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5814,6 +6192,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 H1";
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 H1";
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5823,19 +6210,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 9410;
-                        $this->calculation_values['Width'] = 3800;
-                        $this->calculation_values['Height'] = 4240;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 8500;
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                        $this->calculation_values['DryWeight'] =  39.7;
-                        $this->calculation_values['MaxShippingWeight'] = 50.8;
-                        $this->calculation_values['OperatingWeight'] = 56.6;
-                        $this->calculation_values['FloodedWeight'] = 88.3;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5877,6 +6267,14 @@ class DoubleSteamController extends Controller
                     }
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
                     {
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 H2";
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 H2";
+                        }
 
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
@@ -5887,20 +6285,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 9410;
-                        $this->calculation_values['Width'] = 3800;
-                        $this->calculation_values['Height'] = 4240;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 8500;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] =  40.3;
-                        $this->calculation_values['MaxShippingWeight'] = 51.6;
-                        $this->calculation_values['OperatingWeight'] = 57.7;
-                        $this->calculation_values['FloodedWeight'] = 88.9;
-                  
+                        }
                     }
+
                    if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -5942,6 +6342,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 J1";
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 J1";
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -5951,19 +6360,22 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 11100;
-                        $this->calculation_values['Width'] = 3820;
-                        $this->calculation_values['Height'] = 4340;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 10000;
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                        $this->calculation_values['DryWeight'] =  45.4;
-                        $this->calculation_values['MaxShippingWeight'] = 60.0;
-                        $this->calculation_values['OperatingWeight'] = 66.4;
-                        $this->calculation_values['FloodedWeight'] = 103.4;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
+                        }
                     }
+
                     if($this->calculation_values['region_type'] == 2)
                     {
                         $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
@@ -6005,6 +6417,15 @@ class DoubleSteamController extends Controller
                     if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
                     {
 
+                        if ($this->calculation_values['TCHW12'] < 3.5)
+                        {
+                            $this->model_values['model_name'] = "TZC S2 J2";
+                        }
+                        else
+                        {
+                            $this->model_values['model_name'] = "TAC S2 J2";
+                        }
+
                         $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
 
                         $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
@@ -6014,18 +6435,20 @@ class DoubleSteamController extends Controller
                         $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
                         $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                     }
+                    else{
+                        if ($this->calculation_values['PST1'] < 6.01)
+                        {
+                            $this->calculation_values['Length'] = $this->calculation_values['Length'] + 50;
+                            $this->calculation_values['Width'] = $this->calculation_values['Width'] + 50;
+                            $this->calculation_values['Height'] = $this->calculation_values['Height'] + 50;
+                            // $this->calculation_values['ClearanceForTubeRemoval'] = 3710;
 
-                    if ($this->calculation_values['PST1'] < 6.01)
-                    {
-                        $this->calculation_values['Length'] = 11100;
-                        $this->calculation_values['Width'] = 3820;
-                        $this->calculation_values['Height'] = 4340;
-                        $this->calculation_values['ClearanceForTubeRemoval'] = 10000;
+                            $this->calculation_values['DryWeight'] = $this->calculation_values['DryWeight'] + 0.1;
+                            $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + 0.1;
+                            $this->calculation_values['OperatingWeight'] = $this->calculation_values['OperatingWeight'] + 0.1;
+                            $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + 0.1;
 
-                        $this->calculation_values['DryWeight'] =  46.1;
-                        $this->calculation_values['MaxShippingWeight'] = 60.8;
-                        $this->calculation_values['OperatingWeight'] = 67.6;
-                        $this->calculation_values['FloodedWeight'] = 104.0;
+                        }
                     }
 
                    if($this->calculation_values['region_type'] == 2)
@@ -6064,7 +6487,7 @@ class DoubleSteamController extends Controller
         $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
+                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
@@ -6707,6 +7130,9 @@ class DoubleSteamController extends Controller
     public function testingS2Calculation($datas){
         
         $this->model_values = $datas;
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
 
         $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
         $this->updateInputs();

@@ -174,71 +174,125 @@ class CalculatorTestingController extends Controller
     public function outputExcelFormat($output_values,$calculator_code,$i){
         $data = [];
         $data['Sr.No'] = $i;
-        $data['Capacity (kW)'] = (isset($output_values['TON']) ?  $output_values['TON'] : "")*3.516;
-        $data['Chilled Water Flow'] = isset($output_values['GCHW']) ?  $output_values['GCHW'] : "";
-        $data['Chilled water Velocity'] = isset($output_values['VEA']) ?  $output_values['VEA'] : "";
-        $data['Evap passes'] = isset($output_values['EvaporatorPasses']) ?  $output_values['EvaporatorPasses'] : "";
-        $data['CHW friction loss'] = isset($output_values['ChilledFrictionLoss']) ?  $output_values['ChilledFrictionLoss'] : "";
-        $data['CHW Pressure drop'] = isset($output_values['ChilledPressureDrop']) ?  $output_values['ChilledPressureDrop'] : "";
-        $data['Heat Rejected (kW)'] = isset($output_values['QCW']) ?  $output_values['QCW'] : "";
-        $data['COW Flow'] = isset($output_values['GCW']) ?  $output_values['GCW'] : "";
-        $data['Abs Velocity'] = isset($output_values['VA']) ?  $output_values['VA'] : "";
-        $data['Cond Velocity'] = isset($output_values['VC']) ?  $output_values['VC'] : "";
-        $data['COW In Temp'] = isset($output_values['TCW11']) ?  $output_values['TCW11'] : "";
-        $data['COW Out temp'] = isset($output_values['CoolingWaterOutTemperature']) ?  $output_values['CoolingWaterOutTemperature'] : "";
-        $absorber_passes = isset($output_values['AbsorberPasses']) ?  $output_values['AbsorberPasses'] : "";
-        $condenser_passes = isset($output_values['CondenserPasses']) ?  $output_values['CondenserPasses'] : "";
-        $data['COW passes'] = $absorber_passes."/".$condenser_passes;
-        $data['COW Friction loss'] = isset($output_values['CoolingFrictionLoss']) ?  $output_values['CoolingFrictionLoss'] : "";
-        $data['COW Pressure drop'] = isset($output_values['CoolingPressureDrop']) ?  $output_values['CoolingPressureDrop'] : "";
-        
-        
-        $data['Eva Tube'] = isset($output_values['TU2']) ?  $output_values['TU2'] : "";
-        $data['Abs Tube'] = isset($output_values['TU5']) ?  $output_values['TU5'] : "";
-        $data['Con Tube'] = isset($output_values['TV5']) ?  $output_values['TV5'] : "";
-        $data['Pow Supply'] = isset($output_values['PowerSupply']) ?  $output_values['PowerSupply'] : "";
-        $data['Power Cons'] = isset($output_values['TotalPowerConsumption']) ?  $output_values['TotalPowerConsumption'] : "";
+        $data['Capacity'] = isset($output_values['TON']) ?  $output_values['TON'] : "";
+        $data['model'] = isset($output_values['model_name']) ?  $output_values['model_name'] : "";
 
-        if(intval($output_values['region_type']) == 2){
-            $data['Abs Pump'] = isset($output_values['USA_AbsorbentPumpMotorAmp']) ?  $output_values['USA_AbsorbentPumpMotorAmp'] : "";
-            $data['Ref Pump'] = isset($output_values['USA_RefrigerantPumpMotorAmp']) ?  $output_values['USA_RefrigerantPumpMotorAmp'] : "";
-            $data['Vacuum Pump'] = isset($output_values['USA_PurgePumpMotorAmp']) ?  $output_values['USA_PurgePumpMotorAmp'] : "";
+
+        $data['chilled_water_flow'] = isset($output_values['ChilledWaterFlow']) ?  $output_values['ChilledWaterFlow'] : "";
+        $data['chilled_inlet_temp'] = isset($output_values['TCHW11']) ?  $output_values['TCHW11'] : "";
+        $data['chilled_outlet_temp'] = isset($output_values['TCHW12']) ?  $output_values['TCHW12'] : "";
+        $data['evaporate_pass'] = isset($output_values['EvaporatorPasses']) ?  $output_values['EvaporatorPasses'] : "";
+        $data['chilled_pressure_loss'] = isset($output_values['ChilledFrictionLoss']) ?  $output_values['ChilledFrictionLoss'] : "";
+        $data['chilled_connection_diameter'] = isset($output_values['ChilledConnectionDiameter']) ?  $output_values['ChilledConnectionDiameter'] : "";
+        if($output_values['GL'] == 1){
+            $data['chilled_glycol_type'] = "NA";
+        }
+        else if($output_values['GL'] == 2){
+            $data['chilled_glycol_type'] = "Ethylene";
         }
         else{
-            $data['Abs Pump'] = isset($output_values['AbsorbentPumpMotorAmp']) ?  $output_values['AbsorbentPumpMotorAmp'] : "";
-            $data['Ref Pump'] = isset($output_values['RefrigerantPumpMotorAmp']) ?  $output_values['RefrigerantPumpMotorAmp'] : "";
-            $data['Vacuum Pump'] = isset($output_values['PurgePumpMotorAmp']) ?  $output_values['PurgePumpMotorAmp'] : "";
+            $data['chilled_glycol_type'] = "Proplylene";
         }
-
+        $data['chilled_gylcol'] = isset($output_values['CHGLY']) ?  $output_values['CHGLY'] : ""; 
+        if($output_values['TUU'] == "standard"){
+            $data['chilled_fouling_factor'] = isset($output_values['TUU']) ?  $output_values['TUU'] : ""; 
+        }
+        else{
+            $data['chilled_fouling_factor'] = isset($output_values['FFCHW1']) ?  $output_values['FFCHW1'] : ""; 
+        }
+        $data['chilled_max_working_pressure'] = isset($output_values['m_maxCHWWorkPressure']) ?  $output_values['m_maxCHWWorkPressure'] : "";
         
 
-        $data['MCA'] = isset($output_values['MCA']) ?  $output_values['MCA'] : "";
+
+        $data['cooling_water_flow'] = isset($output_values['GCW']) ?  $output_values['GCW'] : "";
+        $data['cooling_inlet_temp'] = isset($output_values['TCW11']) ?  $output_values['TCW11'] : "";
+        $data['cooling_outlet_temp'] = isset($output_values['CoolingWaterOutTemperature']) ?  $output_values['CoolingWaterOutTemperature'] : "";
+        $absorber_pass = isset($output_values['AbsorberPasses']) ?  $output_values['AbsorberPasses'] : "";
+        $condenser_pass = isset($output_values['CondenserPasses']) ?  $output_values['CondenserPasses'] : "";
+        $data['absorber_condenser_pass'] = $absorber_pass."/".$condenser_pass;
+        if(empty($output_values['BypassFlow'])){
+            $data['cooling_bypass_flow'] = "-";
+        }
+        else{
+            $data['cooling_bypass_flow'] = isset($output_values['BypassFlow']) ?  $output_values['BypassFlow'] : "";
+        }
+        $data['cooling_pressure_loss'] = isset($output_values['CoolingFrictionLoss']) ?  $output_values['CoolingFrictionLoss'] : "";
+        $data['cooling_connection_diameter'] = isset($output_values['CoolingConnectionDiameter']) ?  $output_values['CoolingConnectionDiameter'] : "";
+        $data['cooling_gylcol'] = isset($output_values['COGLY']) ?  $output_values['COGLY'] : "";
+        if($output_values['TUU'] == "standard"){
+            $data['cooling_fouling_factor'] = isset($output_values['TUU']) ?  $output_values['TUU'] : ""; 
+        }
+        else{
+            $data['cooling_fouling_factor'] = isset($output_values['FFCOW1']) ?  $output_values['FFCOW1'] : ""; 
+        }
+        $data['cooling_max_working_pressure'] = isset($output_values['m_maxCOWWorkPressure']) ?  $output_values['m_maxCOWWorkPressure'] : "";
+
+
+        $data['steam_pressure'] = isset($output_values['PST1']) ?  $output_values['PST1'] : "";
+        $data['steam_consumption'] = isset($output_values['SteamConsumption']) ?  $output_values['SteamConsumption'] : "";
+        $data['condensate_drain_temperature'] = isset($output_values['m_dMinCondensateDrainTemperature']) ?  $output_values['m_dMinCondensateDrainTemperature'] : ""." - ".isset($output_values['m_dMaxCondensateDrainTemperature']) ?  $output_values['m_dMaxCondensateDrainTemperature'] : "";
+        $data['condensate_drain_pressure'] = isset($output_values['m_dCondensateDrainPressure']) ?  $output_values['m_dCondensateDrainPressure'] : "";
+        $data['connection_inlet_dia'] = isset($output_values['SteamConnectionDiameter']) ?  $output_values['SteamConnectionDiameter'] : "";
+        $data['connection_drain_dia'] = isset($output_values['SteamDrainDiameter']) ?  $output_values['SteamDrainDiameter'] : "";
+        $data['design_pressure'] = isset($output_values['m_DesignPressure']) ?  $output_values['m_DesignPressure'] : "";
+
+
+        $data['power_supply'] = isset($output_values['PowerSupply']) ?  $output_values['PowerSupply'] : "";
+        $data['power_consumption'] = isset($output_values['TotalPowerConsumption']) ?  $output_values['TotalPowerConsumption'] : "";
+        $data['absorbent_pump_rating'] = isset($output_values['AbsorbentPumpMotorKW']) ?  $output_values['AbsorbentPumpMotorKW'] : ""." ( ".isset($output_values['AbsorbentPumpMotorAmp']) ?  $output_values['AbsorbentPumpMotorAmp'] : ""." )";
+        $data['refrigerant_pump_rating'] = isset($output_values['RefrigerantPumpMotorKW']) ?  $output_values['RefrigerantPumpMotorKW'] : ""." ( ".isset($output_values['RefrigerantPumpMotorAmp']) ?  $output_values['RefrigerantPumpMotorAmp'] : ""." )";
+        $data['vaccum_pump_rating'] = isset($output_values['PurgePumpMotorKW']) ?  $output_values['PurgePumpMotorKW'] : ""." ( ".isset($output_values['PurgePumpMotorAmp']) ?  $output_values['PurgePumpMotorAmp'] : ""." )";
+
+
         $data['MOP'] = isset($output_values['MOP']) ?  $output_values['MOP'] : "";
+        $data['MCA'] = isset($output_values['MCA']) ?  $output_values['MCA'] : "";
+
+
         $data['Length'] = isset($output_values['Length']) ?  $output_values['Length'] : "";
         $data['Width'] = isset($output_values['Width']) ?  $output_values['Width'] : "";
         $data['Height'] = isset($output_values['Height']) ?  $output_values['Height'] : "";
-        $data['Dry Wt'] = isset($output_values['DryWeight']) ?  $output_values['DryWeight'] : "";
-        $data['Oper WT'] = isset($output_values['OperatingWeight']) ?  $output_values['OperatingWeight'] : "";
-        $data['Shipp Wt'] = isset($output_values['MaxShippingWeight']) ?  $output_values['MaxShippingWeight'] : "";
-        $data['Flooded Wt'] = isset($output_values['FloodedWeight']) ?  $output_values['FloodedWeight'] : "";
-        $data['Tube cleaning space'] = isset($output_values['ClearanceForTubeRemoval']) ?  $output_values['ClearanceForTubeRemoval'] : "";
-        $data['Heat Input(kW)'] = isset($output_values['QINPUT']) ?  $output_values['QINPUT'] : "";
+        $data['OperatingWeight'] = isset($output_values['OperatingWeight']) ?  $output_values['OperatingWeight'] : "";
+        $data['MaxShippingWeight'] = isset($output_values['MaxShippingWeight']) ?  $output_values['MaxShippingWeight'] : "";
+        $data['FloodedWeight'] = isset($output_values['FloodedWeight']) ?  $output_values['FloodedWeight'] : "";
+        $data['DryWeight'] = isset($output_values['DryWeight']) ?  $output_values['DryWeight'] : "";
+        $data['ClearanceForTubeRemoval'] = isset($output_values['ClearanceForTubeRemoval']) ?  $output_values['ClearanceForTubeRemoval'] : "";
 
 
-        if($calculator_code == 'D_S2'){
-            $data['Steam Consumption'] = isset($output_values['GSTEAM']) ?  $output_values['GSTEAM'] : "";
-            $data['Steam Pressure'] = isset($output_values['PST1']) ?  $output_values['PST1'] : "";
+        $data['evaporator_tube_material'] = isset($output_values['TU2']) ?  $output_values['TU2'] : "";
+        $data['evaporator_tube_thickness'] = isset($output_values['TU3']) ?  $output_values['TU3'] : "";
+        $data['absorber_tube_material'] = isset($output_values['TU5']) ?  $output_values['TU5'] : "";
+        $data['absorber_tube_thickness'] = isset($output_values['TU6']) ?  $output_values['TU6'] : "";
+        $data['condenser_tube_material'] = isset($output_values['TV5']) ?  $output_values['TV5'] : "";
+        $data['condenser_tube_thickness'] = isset($output_values['TV6']) ?  $output_values['TV6'] : "";
+
+
+        $data['low_temp_heat_exchange'] = isset($output_values['HHType']) ?  $output_values['HHType'] : "";
+        $notes = "";
+        // Log::info($output_values['notes']);
+        if(isset($output_values['notes'])){
+            foreach ($output_values['notes'] as $key => $note) {
+                $notes = $notes.", ".$note;
+            }
         }
+        
+        $data['caption_notes'] = $notes;
 
-        if($calculator_code == 'D_H2'){
-            $data['HotWaterFlow'] = isset($output_values['HotWaterFlow']) ?  $output_values['HotWaterFlow'] : "";
-            $data['hot_water_in'] = isset($output_values['hot_water_in']) ?  $output_values['hot_water_in'] : "";
-            $data['hot_water_out'] = isset($output_values['hot_water_out']) ?  $output_values['hot_water_out'] : "";
-            $data['GeneratorPasses'] = isset($output_values['GeneratorPasses']) ?  $output_values['GeneratorPasses'] : "";
-            $data['HotWaterFrictionLoss'] = isset($output_values['HotWaterFrictionLoss']) ?  $output_values['HotWaterFrictionLoss'] : "";
-            $data['HotWaterConnectionDiameter'] = isset($output_values['HotWaterConnectionDiameter']) ?  $output_values['HotWaterConnectionDiameter'] : "";
-            $data['all_work_pr_hw'] = isset($output_values['all_work_pr_hw']) ?  $output_values['all_work_pr_hw'] : "";
-        }
+
+
+        // if($calculator_code == 'D_S2'){
+        //     $data['Steam Consumption'] = isset($output_values['GSTEAM']) ?  $output_values['GSTEAM'] : "";
+        //     $data['Steam Pressure'] = isset($output_values['PST1']) ?  $output_values['PST1'] : "";
+        // }
+
+        // if($calculator_code == 'D_H2'){
+        //     $data['HotWaterFlow'] = isset($output_values['HotWaterFlow']) ?  $output_values['HotWaterFlow'] : "";
+        //     $data['hot_water_in'] = isset($output_values['hot_water_in']) ?  $output_values['hot_water_in'] : "";
+        //     $data['hot_water_out'] = isset($output_values['hot_water_out']) ?  $output_values['hot_water_out'] : "";
+        //     $data['GeneratorPasses'] = isset($output_values['GeneratorPasses']) ?  $output_values['GeneratorPasses'] : "";
+        //     $data['HotWaterFrictionLoss'] = isset($output_values['HotWaterFrictionLoss']) ?  $output_values['HotWaterFrictionLoss'] : "";
+        //     $data['HotWaterConnectionDiameter'] = isset($output_values['HotWaterConnectionDiameter']) ?  $output_values['HotWaterConnectionDiameter'] : "";
+        //     $data['all_work_pr_hw'] = isset($output_values['all_work_pr_hw']) ?  $output_values['all_work_pr_hw'] : "";
+        // }
         
 
         return $data;

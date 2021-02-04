@@ -294,10 +294,14 @@
 											</div>
 											<div class="col-lg-2">
 												<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-													 <option value="130">S2 C3</option>
-													 <option value="160">S2 C4</option>
-													 <option value="210">S2 D1</option>
-													 <option value="250">S2 D2</option>
+													 <option value="60">S2 M1</option>
+                                                     <option value="75">S2 M2</option>
+                                                     <option value="90">S2 N1</option>
+                                                     <option value="110">S2 N2</option>
+                                                     <option value="150">S2 N3</option>
+													 <option value="175">S2 N4</option>
+													 <option value="210">S2 P1</option>
+													 <option value="250">S2 P2</option>
 													 <option value="310">S2 D3</option>
 													 <option value="350">S2 D4</option>
 													 <option value="410">S2 E1</option>
@@ -738,6 +742,7 @@
 <script type="text/javascript">
 
 	var model_values = {!! json_encode($default_values) !!};
+    // console.log(model_values);
 	var evaporator_options = {!! json_encode($evaporator_options) !!};
 	var absorber_options = {!! json_encode($absorber_options) !!};
 	var condenser_options = {!! json_encode($condenser_options) !!};
@@ -1175,7 +1180,7 @@
 		});
 		$('input:radio[name="region_type"]').change(function() {
 			model_values.region_type = $(this).val();
-			model_values.model_number = 130;
+			model_values.model_number = 60;
 			
 			sendRegionValues();
 		});
