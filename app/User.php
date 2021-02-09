@@ -63,4 +63,9 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\UserCalculator');
     }
+
+    public function language()
+    {
+        return $this->belongsTo('App\Language');
+    }
 }

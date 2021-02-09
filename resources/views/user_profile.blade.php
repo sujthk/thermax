@@ -139,7 +139,7 @@ Change Password
                                 </tr>
                                 <tr>
                                     <th scope="row">Language</th>
-                                    <td>{{ ucwords($user->language) }}</td>
+                                    <td>{{ ucwords($user->language->name) }}</td>
                                 </tr>
                                 
                             </tbody>
@@ -188,9 +188,10 @@ Change Password
                                     <td>
                                          <div class="input-group">
                                             <span class="input-group-addon"> Language</span>
-                                             <select name="language" id="language" required class="form-control">
-                                                <option value="english"  {{ $user->language == 'english' ? 'selected' : '' }}>English</option>
-                                                <option  value="chinese" {{ $user->language == 'chinese' ? 'selected' : '' }}>Chinese</option>
+                                             <select name="language_id" id="language" required class="form-control">
+                                                @foreach ($languages as $language)
+                                                    <option {{ $user->language_id == $language->id ? 'selected' : '' }} value="{{ $language->id }}">{{ $language->name }}</option>
+                                                @endforeach
                                              </select>
                                         </div>
                                     </td>

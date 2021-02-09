@@ -45,27 +45,28 @@
 		                            <h5>Calculators</h5>
 		                            <div class="card-body">
 		                            	<div class="row">
-		                            	<div class="col-sm-6">
+		                            	     <div class="col-sm-6">
 		                            		
-							            <form action="{{url('importExcel')}}" method="POST" enctype="multipart/form-data">
-							                {{ csrf_field() }}
-							                <input type="file" name="file" class="form-control" required="">
-							                <br>
-							                <button class="btn btn-success" type="submit">Import User Data</button>
-							               
-							            </form>
-							            </div>
+        							            <form action="{{url('importExcel')}}" method="POST" enctype="multipart/form-data">
+        							                {{ csrf_field() }}
+        							                <input type="file" name="file" class="form-control" required="">
+        							                <br>
+        							                <button class="btn btn-success" type="submit">Import User Data</button>
+        							               
+        							            </form>
+							                </div>
 							            <div class="col-sm-6">
 							            	<form action="{{url('importExport')}}" method="POST" enctype="multipart/form-data">
-							                {{ csrf_field() }}
-							            	<select name="code" id="code" class="form-control"  required="">
-							            		<option value="">---Select Calculator---</option>
-							            	@foreach($calculator_keys as $calculator_key)
+    							                {{ csrf_field() }}
+    							            	<select name="code" id="code" class="form-control"  required="">
+    							            		<option value="">---Select Calculator---</option>
+    							            	@foreach($calculator_keys as $calculator_key)
 
- 											<option  value="{{$calculator_key->code}}">{{$calculator_key->name}}</option>
- 											@endforeach
- 											</select><br>
-							            	 <button class="btn btn-warning" type="submit">Export User Data</button>
+     											<option  value="{{$calculator_key->code}}">{{$calculator_key->name}}</option>
+     											@endforeach
+     											</select><br>
+    							            	 <button class="btn btn-warning" type="submit">Export User Data</button>
+                                             </form>
 							            </div>
 							            </div>
 							        </div>
@@ -76,7 +77,8 @@
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
 	                                    <thead>
 	                                        <tr>
-	                                            <th>Name</th>
+                                                <th>Name</th>
+	                                            <th>Code</th>
 	                                            <th>Model</th>
 	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
@@ -84,10 +86,12 @@
 	                                    <tbody>
 	                                    	@foreach ($chiller_calculation_values as $chiller_calculation_value) 
 	                                    		<tr>
-	                                    		    <td>{{ $chiller_calculation_value->name }}</td>
+                                                    <td>{{ $chiller_calculation_value->name }}</td>
+	                                    		    <td>{{ $chiller_calculation_value->code }}</td>
 	                                    		    <td>{{ $chiller_calculation_value->min_model }}</td> 
 		                                            <td>
-		                                                <a href="{{ url('chiller/calculation-values/edit',[$chiller_calculation_value->id]) }}" class="btn btn-primary btn-sm">Edit</a>
+		                                                <!-- <a href="{{ url('chiller/calculation-values/edit',[$chiller_calculation_value->id]) }}" class="btn btn-primary btn-sm">Edit</a> -->
+                                                        <a href="{{ url('chiller/calculation-values/delete',[$chiller_calculation_value->id]) }}" class="btn btn-primary btn-sm">Delete</a>
 		                                            </td> 
 	                                    		</tr>
 	                                    	@endforeach

@@ -14,6 +14,7 @@ use App\UnitSet;
 use App\UserReport;
 use App\Region;
 use App\TimeLine;
+use App\Language;
 use Validator;	
 use Hash;
 use Mail;
@@ -36,8 +37,9 @@ class UserController extends Controller
         $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->get();
         $regions = Region::orderBy('created_at', 'desc')->get();
         $group_calculators = GroupCalculator::get();
+        $languages = Language::where('status',1)->get();
 
-    	return view('user_add')->with('unit_sets',$unit_sets)->with('regions',$regions)->with('group_calculators',$group_calculators);
+    	return view('user_add')->with('unit_sets',$unit_sets)->with('regions',$regions)->with('languages',$languages)->with('group_calculators',$group_calculators);
     }
 
     public function postUser(Request $request){
@@ -51,7 +53,7 @@ class UserController extends Controller
 		    'unit_set_id' => 'required',
             'region_type' => 'required',
             'mobile' => 'required',
-            'language' => 'required',
+            'language_id' => 'required',
 		]);
 
         if($request->user_type =='THERMAX_USER' || $request->user_type == 'NON_THERMAX_USER')
@@ -79,7 +81,7 @@ class UserController extends Controller
 
         $user->min_chilled_water_out = $request->min_chilled_water_out;
         $user->unitset_status = $request->unitset_type;
-        $user->language = $request->language;
+        $user->language_id = $request->language_id;
 		$user->status = 1;
 		$user->save();
 
@@ -99,7 +101,9 @@ class UserController extends Controller
         $group_calculators = GroupCalculator::get();
         $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->get();
         $regions = Region::orderBy('created_at', 'desc')->get();
-    	return view('user_edit')->with('user',$user)->with('unit_sets',$unit_sets)->with('regions',$regions)->with('group_calculators',$group_calculators)->with('selected_calculators',$selected_calculators);
+        $languages = Language::where('status',1)->get();
+
+    	return view('user_edit')->with('user',$user)->with('unit_sets',$unit_sets)->with('regions',$regions)->with('group_calculators',$group_calculators)->with('selected_calculators',$selected_calculators)->with('languages',$languages);
     }
 
     public function updateUser(Request $request,$user_id){
@@ -110,7 +114,7 @@ class UserController extends Controller
             'unit_set_id' => 'required',
             'region_type' => 'required',
             'mobile' => 'required',
-            'language' => 'required',
+            'language_id' => 'required',
 		]);
 
         //return $request->all();
@@ -134,7 +138,7 @@ class UserController extends Controller
         $user->region_id = $request->region_id;
         $user->min_chilled_water_out = $request->min_chilled_water_out;
         $user->unitset_status = $request->unitset_type;
-        $user->language = $request->language;
+        $user->language_id = $request->language_id;
 
 		if ($request->has('password') && !empty($request->password)) {
 		    $hashed_password = Hash::make($request->password);
@@ -248,7 +252,7 @@ class UserController extends Controller
             'name' => 'required',
             'email' => 'required|unique:users,email,'.$user_id,
             'unit_set_id' => 'required',
-            'language' => 'required',
+            'language_id' => 'required',
         ]);
 
         // Log::info($request->all());
@@ -258,7 +262,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->mobile = $request->mobile;
         $user->unit_set_id = $request->unit_set_id;
-        $user->language = $request->language;
+        $user->language_id = $request->language_id;
         $user->save();
 
         return redirect('profile')->with('message','Profile Updated')
@@ -307,8 +311,8 @@ class UserController extends Controller
         $phone = $user_report->phone;
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$user_report->calculator_code)
-                                        ->where('min_model','<',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
-
+                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
+                                
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
         $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
@@ -363,6 +367,8 @@ class UserController extends Controller
         $user_id=Auth::user()->id;
         $user =User::where('id',$user_id)->first();
 
+        $languages = Language::where('status',1)->get();
+
         if($user->user_type=='ADMIN')
         {
             $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->get();
@@ -378,7 +384,7 @@ class UserController extends Controller
         }
         //return $unit_sets;
 
-        return view('user_profile')->with('user',$user)->with('unit_sets',$unit_sets);
+        return view('user_profile')->with('user',$user)->with('unit_sets',$unit_sets)->with('languages',$languages);
     }
     public function postPasswordChange(Request $request)
     {

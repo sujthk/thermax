@@ -80,6 +80,7 @@ class DoubleSteamController extends Controller
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
 
+        // return $language_datas;
 
 		return view('double_steam_s2')->with('default_values',$converted_values)
                                         ->with('unit_set',$unit_set)
@@ -406,7 +407,7 @@ class DoubleSteamController extends Controller
         $user_report->report_type = $report_type;
         $user_report->region_type = $calculation_values['region_type'];
         $user_report->calculation_values = json_encode($calculation_values);
-        $user_report->language = Auth::user()->language;
+        $user_report->language = Auth::user()->language_id;
         $user_report->save();
 
         $redirect_url = route('download.report', ['user_report_id' => $user_report->id,'type' => $report_type]);

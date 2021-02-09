@@ -7,10 +7,12 @@ use App\ChillerDefaultValue;
 use App\ChillerOption;
 use App\ChillerMetallurgyOption;
 use App\ChillerCalculationValue;
-use App\NotesAndError;
+use App\NotesError;
 use App\Metallurgy;
 use App\CalculationKey;
 use App\Language;
+use App\LanguageValue;
+use App\LanguageKey;
 use Log;
 use Excel;
 class DefaultCalculatorController extends Controller
@@ -61,6 +63,8 @@ class DefaultCalculatorController extends Controller
                         ->with('status','success');
 
     }
+
+    
 
     public function getMetallurgyCalculators(){
 
@@ -209,12 +213,20 @@ class DefaultCalculatorController extends Controller
 
     }
 
+    public function deleteCalculatorValue($chiller_default_id){
+        $default_calculator = ChillerCalculationValue::destroy($chiller_default_id);
+
+
+        return redirect('chiller/calculation-values')->with('message','Chiller Value Deleted')
+                        ->with('status','success');
+    }
+
     public function getErrorNotes(){
 
-        $notes_errors = NotesAndError::get();
+        $notes_errors = NotesError::get();
+        $languages = Language::where('status',1)->get();
 
-
-        return view('notes_errors')->with('notes_errors',$notes_errors);
+        return view('notes_errors')->with('notes_errors',$notes_errors)->with('languages',$languages);
     }
 
     public function postErrorNote(Request $request){
@@ -223,14 +235,20 @@ class DefaultCalculatorController extends Controller
 
         $this->validate($request, [
             'note_name' => 'required',
-            'note_value' => 'required',
-            'chinese_value' => 'required'
+            'language_id' => 'required',
+            'note_value' => 'required'
         ]);
 
-        $notes_error = new NotesAndError;
-        $notes_error->name = $request->note_name;
+
+        $language_key = new LanguageKey;
+        $language_key->name = $request->note_name;
+        $language_key->type = "NOTES_ERRORS";
+        $language_key->save();
+
+        $notes_error = new NotesError;
+        $notes_error->language_id = $request->language_id;
+        $notes_error->language_key_id = $language_key->id;
         $notes_error->value = $request->note_value;
-        $notes_error->chinese_value = $request->chinese_value;
         $notes_error->save();
 
         return redirect('error-notes')->with('message','Notes Added')
@@ -242,17 +260,12 @@ class DefaultCalculatorController extends Controller
         // return $request->all();
 
         $this->validate($request, [
-            'note_name' => 'required',
-            'note_value' => 'required',
-            'chinese_value' => 'required'
-
+            'key_value' => 'required'
         ]);
 
 
-        $notes_error = NotesAndError::find($error_notes_id);
-        $notes_error->name = $request->note_name;
-        $notes_error->value = $request->note_value;
-        $notes_error->chinese_value = $request->chinese_value;
+        $notes_error = NotesError::find($error_notes_id);
+        $notes_error->value = $request->key_value;
         $notes_error->save();
 
         return redirect('error-notes')->with('message','Notes Updated')
@@ -263,7 +276,7 @@ class DefaultCalculatorController extends Controller
     public function DeleteErrorNote($error_notes_id){
 
 
-        $notes_error = NotesAndError::destroy($error_notes_id);
+        $notes_error = NotesError::destroy($error_notes_id);
 
         return redirect('error-notes')->with('message','Notes Deleted')
                         ->with('status','success');
@@ -353,7 +366,7 @@ class DefaultCalculatorController extends Controller
             //return  $key_datas;
             if(!empty($data) && count($data)){
                 foreach ($data as $value) {
-                   $data1=[];
+                    $data1=[];
                     foreach ($key_datas as $key_data) {
                         //if($value[strtolower($key_data)])
                             $data1[$key_data] = $value[strtolower($key_data)];
@@ -437,10 +450,126 @@ class DefaultCalculatorController extends Controller
 
     }
 
+    public function getLanguageNotes(){
+
+        $language_values = LanguageValue::get();
+        $languages = Language::where('status',1)->get();
+
+        return view('language_notes')->with('languages',$languages)->with('language_values',$language_values);
+    }
+
+    public function postLanguageNote(Request $request){
+        // return $request->all();
+
+
+        $this->validate($request, [
+            'note_name' => 'required',
+            'language_id' => 'required',
+            'key_value' => 'required'
+        ]);
+
+
+        $language_key = new LanguageKey;
+        $language_key->name = $request->note_name;
+        $language_key->type = "FORM_VALUES";
+        $language_key->save();
+
+        $language_value = new LanguageValue;
+        $language_value->language_id = $request->language_id;
+        $language_value->language_key_id = $language_key->id;
+        $language_value->value = $request->key_value;
+        $language_value->save();
+
+        return redirect('languages-notes')->with('message','Language Notes Added')
+                        ->with('status','success');
+
+    }
+
+    public function updateLanguageNote(Request $request,$language_note_id){
+        // return $request->all();
+
+        $this->validate($request, [
+            'key_value' => 'required'
+
+        ]);
+
+
+        $language_value = LanguageValue::find($language_note_id);
+        $language_value->value = $request->key_value;
+        $language_value->save();
+
+        return redirect('languages-notes')->with('message','Notes Updated')
+                        ->with('status','success');
+
+    }
+
+    public function DeleteLanguageNote($language_note_id){
+
+
+        $language_value = LanguageValue::destroy($language_note_id);
+
+        return redirect('languages-notes')->with('message','Language Notes Deleted')
+                        ->with('status','success');
+
+    }
+
+
+    public function exportLanguageExcel(Request $request)
+    {
+
+        $languages = Language::get();
+        $language_datas = array();
+
+        foreach ($languages as $language) {
+            $language_values = LanguageValue::with(['language', 'language_key'])->where('language_id',$language->id)->get();
+
+            $language_key_values = array();
+            $language_key_values['language'] = $language->name;
+            foreach ($language_values as $language_value) {
+                $language_key_values[$language_value->language_key->name] = $language_value->value;
+            }
+
+            $language_datas[] = $language_key_values;
+        }
+
+        
+        // return $language_datas;
+        return Excel::create('language_datas', function($excel) use ($language_datas) {
+            $excel->sheet('mySheet', function($sheet) use ($language_datas)
+            {
+                $sheet->fromArray($language_datas);
+            });
+        })->download('xlsx');
+       
+        
+    }
+
+    public function importLanguageExcel(Request $request)
+    {
+        //return $request->all();
+        if(Input::hasFile('file')){
+            $path = Input::file('file')->getRealPath();
+            $datas = Excel::load($path, function($reader) {
+               
+
+            })->get();
+            $datas = collect($datas)->toArray();
+            Log::info($datas);
+            if(!empty($datas) && count($datas)){
+                foreach ($datas as $data) {
+                                        
+                }
+                return redirect('languages-notes')->with('message','Language Notes updated')
+                        ->with('status','success');
+
+            }
+        }
+        return back();
+    }
+
     public function getLanguages(){
 
         $languages = Language::get();
-
 
         return view('languages')->with('languages',$languages);
     }
@@ -450,18 +579,17 @@ class DefaultCalculatorController extends Controller
 
 
         $this->validate($request, [
-            'note_name' => 'required',
-            'english_value' => 'required',
-            'chinese_value' => 'required'
+            'language_name' => 'required'
         ]);
 
+
         $language = new Language;
-        $language->name = $request->note_name;
-        $language->english = $request->english_value;
-        $language->chinese = $request->chinese_value;
+        $language->name = $request->language_name;
+        $language->status = 1;
         $language->save();
 
-        return redirect('languages')->with('message','Notes Added')
+
+        return redirect('languages')->with('message','Language Added')
                         ->with('status','success');
 
     }
@@ -470,21 +598,28 @@ class DefaultCalculatorController extends Controller
         // return $request->all();
 
         $this->validate($request, [
-            'note_name' => 'required',
-            'english_value' => 'required',
-            'chinese_value' => 'required'
+            'language_name' => 'required'
 
         ]);
 
 
         $language = Language::find($language_id);
-        $language->english = $request->english_value;
-        $language->chinese = $request->chinese_value;
+        $language->name = $request->language_name;
         $language->save();
 
-        return redirect('languages')->with('message','Notes Updated')
+        return redirect('languages')->with('message','Language Updated')
                         ->with('status','success');
 
+    }
+
+    public function changeLanguageStatus($language_id,$status){
+
+        $language = Language::find($language_id);
+        $language->status = $status;
+        $language->save();
+
+        return redirect('languages')->with('message','Langauge Status Changed')
+                        ->with('status','success');
     }
 
 }

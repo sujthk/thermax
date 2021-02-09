@@ -155,7 +155,7 @@ border: #0FA015 1px solid;
 												<select name="region_id" id="region_ids" required class="form-control">
 													<option value="">-- Regions --</option>
 													@foreach ($regions as $region)
-													<option  {{ $user->region_id == $region->id ? 'selected' : '' }} value="{{$region->id}}">{{$region->name}}</option>
+													<option  {{ $user->region_id == $region->id ? 'selected' : '' }} value="{{$region->id}}>{{$region->name}}</option>
 													@endforeach
 												</select>
 											</div>
@@ -165,9 +165,10 @@ border: #0FA015 1px solid;
 										<div class="form-group row">
 											<label class="col-sm-3 col-form-label">Language</label>
 											<div class="col-sm-8">
-												<select name="language" id="language" required class="form-control">
-													<option value="english"  {{ $user->language == 'english' ? 'selected' : '' }}>English</option>
-													<option  value="chinese" {{ $user->language == 'chinese' ? 'selected' : '' }}>Chinese</option>
+												<select name="language_id" id="language" required class="form-control">
+                                                    @foreach ($languages as $language)
+                                                        <option {{ $user->language_id == $language->id ? 'selected' : '' }} value="{{ $language->id }}">{{ $language->name }}</option>
+                                                    @endforeach
 												</select>
 											</div>
 										</div>

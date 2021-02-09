@@ -42,8 +42,8 @@
 	                    <div class="card">
 	                        <div class="card-header">
 	                        	<div class="">
-		                            <h5>Add Note</h5>
-		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#new_note">New Language Note +</button>
+		                            <h5>Add Language</h5>
+		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#new_note">New Language +</button>
                             	</div>
 	                        </div>
 	                        <div class="card-block">
@@ -51,26 +51,30 @@
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
 	                                    <thead>
 	                                        <tr>
-	                                            <th>Name</th>
-	                                            <th>English</th>
-	                                            <th>Chinese</th>
-	                                            <th style="width: 8%">Action</th>
-	                                        </tr>
+                                                <th>Name</th>
+                                                <th style="width: 10%">Status</th>
+                                                <th style="width: 8%">Action</th>
+                                            </tr>
 	                                    </thead>
 	                                    <tbody>
 	                                    	@foreach ($languages as $language) 
 	                                    		<tr>
 	                                    		    <td>{{ $language->name }}</td>
-	                                    		    <td>{{ $language->english }}</td>  
-	                                    		    <td>{{ $language->chinese }}</td>  
+                                                    <td>
+                                                        @if ($language->status)
+                                                            <a href="{{ url('languages/status',[$language->id]) }}/0" class="btn btn-success btn-sm">Active</a>
+                                                        @else    
+                                                            <a href="{{ url('languages/status',[$language->id]) }}/1" class="btn btn-danger btn-sm">Deactivate</a></td>
+                                                        @endif 
+                                                    </td>
 		                                            <td>
 		                                                <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#edit_note{{ $language->id }}">Edit</button>
-		                                                
+		                                                         
 		                                                <div class="modal fade" id="edit_note{{ $language->id }}" tabindex="-1">
 		                                                    <div class="modal-dialog" role="document">
 		                                                        <div class="modal-content">
 		                                                            <div class="modal-header">
-		                                                                <h5 class="modal-title">Edit Language Note</h5>
+		                                                                <h5 class="modal-title">Edit Language</h5>
 		                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		                                                                    <span aria-hidden="true">&times;</span>
 		                                                                </button>
@@ -79,29 +83,13 @@
 			                                                            <div class="modal-body p-b-0">
 		                                                                	{{ csrf_field() }}
 		                                                                    <div class="row">
-		                                                                        <div class="col-sm-8">
-		                                                                            <div class="input-group">
-		                                                                                <label class="col-form-label">Name</label>
-		                                                                                <input type="text" class="form-control" readonly name="note_name" value="{{ $language->name }}" required placeholder="Name">
-		                                                                            </div>
-		                                                                        </div>
-		                                                                    </div>
-		                                                                    <div class="row">
-		                                                                        <div class="col-sm-8">
-		                                                                            <div class="input-group">
-		                                                                                <label class="col-form-label">English Value</label>
-		                                                                                <input type="text" class="form-control" name="english_value" value="{{ $language->english }}" required placeholder="Value">
-		                                                                            </div>
-		                                                                        </div>
-		                                                                    </div>
-		                                                                    <div class="row">
-		                                                                        <div class="col-sm-8">
-		                                                                            <div class="input-group">
-		                                                                                <label class="col-form-label">Chinese Value</label>
-		                                                                                <input type="text" class="form-control" name="chinese_value" value="{{ $language->chinese }}" required placeholder="Value">
-		                                                                            </div>
-		                                                                        </div>
-		                                                                    </div>                                                           
+                                                                                <div class="col-sm-8">
+                                                                                    <div class="input-group">
+                                                                                        <label class="col-form-label">Name</label>
+                                                                                        <input type="text" class="form-control" name="language_name" value="{{ $language->name }}" placeholder="Name">
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>                                                           
 			                                                            </div>
 			                                                            <div class="modal-footer">
 			                                                                <button type="submit" class="btn btn-primary">Update</button>
@@ -131,7 +119,7 @@
 	    <div class="modal-dialog" role="document">
 	        <div class="modal-content">
 	            <div class="modal-header">
-	                <h5 class="modal-title">Add Language Note</h5>
+	                <h5 class="modal-title">Add Language</h5>
 	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 	                    <span aria-hidden="true">&times;</span>
 	                </button>
@@ -141,29 +129,13 @@
 	                
 	                	{{ csrf_field() }}
 	                    <div class="row">
-	                        <div class="col-sm-12">
-	                            <div class="input-group">
-	                                <label class="col-form-label">Name</label>
-	                                <input type="text" class="form-control" name="note_name" required placeholder="Name">
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="row">
-	                        <div class="col-sm-12">
-	                            <div class="input-group">
-	                                <label class="col-form-label">English Value</label>
-	                                <input type="text" class="form-control" name="english_value" required placeholder="Value">
-	                            </div>
-	                        </div>
-	                    </div>
-	                    <div class="row">
-	                        <div class="col-sm-12">
-	                            <div class="input-group">
-	                                <label class="col-form-label">Chinese Value</label>
-	                                <input type="text" class="form-control" name="chinese_value" required placeholder="Value">
-	                            </div>
-	                        </div>
-	                    </div>                          
+                            <div class="col-sm-12">
+                                <div class="input-group">
+                                    <label class="col-form-label">Name</label>
+                                    <input type="text" class="form-control" name="language_name" required placeholder="Name">
+                                </div>
+                            </div>
+                        </div>                        
 	                
 		            </div>
 		            <div class="modal-footer">

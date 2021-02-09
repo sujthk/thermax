@@ -97,6 +97,42 @@
 	                    <!-- Scroll - Vertical, Dynamic Height table end -->
 	                    <!-- Language - Comma Decimal Place table end -->
 	                </div>
+                    <div class="col-sm-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <div class="">
+                                    <h5>Data Options</h5>
+                                    <br>
+                                    <br>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">1. Region Type - 1(Domestic), 2(USA), 3(Europe)</label> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">2. Glycol Content - 1(None), 2(Ethylene), 3(Propylene)</label> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">3. Metallurgy Standard - standard, non_standard</label> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">4. Fouling Factor - standard, non_standard, ari</label> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scroll - Vertical, Dynamic Height table end -->
+                        <!-- Language - Comma Decimal Place table end -->
+                    </div>
 	            </div>
 	        </div>
 	    </div>

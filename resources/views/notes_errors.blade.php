@@ -51,18 +51,18 @@
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
 	                                    <thead>
 	                                        <tr>
-	                                            <th>Name</th>
-	                                            <th>English</th>
-	                                            <th>Chinese</th>
+	                                            <th>Key Name</th>
+	                                            <th>Language</th>
+	                                            <th>Value</th>
 	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
 	                                    <tbody>
 	                                    	@foreach ($notes_errors as $notes_error) 
 	                                    		<tr>
-	                                    		    <td>{{ $notes_error->name }}</td>
+	                                    		    <td>{{ $notes_error->language_key->name }}</td>
+	                                    		    <td>{{ $notes_error->language->name }}</td>  
 	                                    		    <td>{{ $notes_error->value }}</td>  
-	                                    		    <td>{{ $notes_error->chinese_value }}</td>  
 		                                            <td>
 		                                                <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#edit_note{{ $notes_error->id }}">Edit</button>
 		                                                <a href="{{ url('error-notes/delete',[$notes_error->id]) }}" class="btn btn-danger btn-sm">Delete</a>
@@ -83,24 +83,24 @@
 		                                                                    <div class="row">
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
-		                                                                                <label class="col-form-label">Name</label>
-		                                                                                <input type="text" class="form-control" name="note_name" value="{{ $notes_error->name }}" required placeholder="Name">
+		                                                                                <label class="col-form-label">Key Name</label>
+		                                                                                <input type="text" class="form-control" name="note_name" value="{{ $notes_error->language_key->name }}" readonly placeholder="Name">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>
 		                                                                    <div class="row">
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
-		                                                                                <label class="col-form-label">English Value</label>
-		                                                                                <input type="text" class="form-control" name="note_value" value="{{ $notes_error->value }}" required placeholder="Value">
+		                                                                                <label class="col-form-label">Language</label>
+		                                                                                <input type="text" class="form-control" name="note_value" value="{{ $notes_error->language->name }}" readonly placeholder="Value">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>
 		                                                                    <div class="row">
 		                                                                        <div class="col-sm-8">
 		                                                                            <div class="input-group">
-		                                                                                <label class="col-form-label">Chinese Value</label>
-		                                                                                <input type="text" class="form-control" name="chinese_value" value="{{ $notes_error->chinese_value }}" required placeholder="Value">
+		                                                                                <label class="col-form-label">Value</label>
+		                                                                                <input type="text" class="form-control" name="key_value" value="{{ $notes_error->value }}" required placeholder="Value">
 		                                                                            </div>
 		                                                                        </div>
 		                                                                    </div>                                                           
@@ -145,7 +145,7 @@
 	                    <div class="row">
 	                        <div class="col-sm-12">
 	                            <div class="input-group">
-	                                <label class="col-form-label">Name</label>
+	                                <label class="col-form-label">Key Name</label>
 	                                <input type="text" class="form-control" name="note_name" required placeholder="Name">
 	                            </div>
 	                        </div>
@@ -153,16 +153,21 @@
 	                    <div class="row">
 	                        <div class="col-sm-12">
 	                            <div class="input-group">
-	                                <label class="col-form-label">English Value</label>
-	                                <input type="text" class="form-control" name="note_value" required placeholder="Value">
+	                                <label class="col-form-label">Language</label>
+	                                <select name="language_id" id="language" required class="form-control">
+                                        <option value="">-- Select Language --</option>
+                                        @foreach ($languages as $language)
+                                            <option  value="{{$language->id}}">{{$language->name}}</option>
+                                        @endforeach
+                                    </select>
 	                            </div>
 	                        </div>
 	                    </div>
 	                    <div class="row">
 	                        <div class="col-sm-12">
 	                            <div class="input-group">
-	                                <label class="col-form-label">Chinese Value</label>
-	                                <input type="text" class="form-control" name="chinese_value" required placeholder="Value">
+	                                <label class="col-form-label">Value</label>
+	                                <input type="text" class="form-control" name="note_value" required placeholder="Value">
 	                            </div>
 	                        </div>
 	                    </div>                          

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRegionTypeToUsersTable extends Migration
+class CreateLanguageKeysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddRegionTypeToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-             $table->tinyInteger('region_type')->default(1)->comment('1 = Domestic, 2 = USA,3 = Europe,4 =Both')->after('unit_set_id'); 
+        Schema::create('language_keys', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->string('type');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +28,6 @@ class AddRegionTypeToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('language_keys');
     }
 }

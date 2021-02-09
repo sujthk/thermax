@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddRegionTypeToUsersTable extends Migration
+class AlterUsersChangeLanguageColumnTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddRegionTypeToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-             $table->tinyInteger('region_type')->default(1)->comment('1 = Domestic, 2 = USA,3 = Europe,4 =Both')->after('unit_set_id'); 
+            $table->renameColumn('language', 'language_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddRegionTypeToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->renameColumn('language', 'language_id');
         });
     }
 }

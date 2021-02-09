@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\NotesAndError;
-use App\Language;
-
+use App\NotesError;
+use App\LanguageValue;
+use Log;
 
 class VamBaseController extends Controller
 {
@@ -1093,22 +1093,19 @@ class VamBaseController extends Controller
 
     public function getNotesError()
     {
-        $notes_errors = NotesAndError::all();
-        $notes_key = $notes_errors->pluck('name');
 
-        $language = Auth::user()->language;
-        // Log::info($language);
-        if($language == "chinese"){
-            $notes_value = $notes_errors->pluck('chinese_value');
-        }
-        else{
-            $notes_value = $notes_errors->pluck('value');
-        }
         
+        $language = Auth::user()->language_id;
 
-        $combined = $notes_key->combine($notes_value);
+        $notes_errors = NotesError::with(['language', 'language_key'])->where('language_id',$language)->get();
 
-        return $combined;
+        $notes_error_values = array();
+
+        foreach ($notes_errors as $notes_error) {
+            $notes_error_values[$notes_error->language_key->name] = $notes_error->value;
+        }
+
+        return $notes_error_values;
 
         // $this->notes = $combined;
 
@@ -1117,25 +1114,40 @@ class VamBaseController extends Controller
 
     public function getLanguageDatas($language='default')
     {
-        $language_datas = Language::all();
-        $language_key = $language_datas->pluck('name');
 
         if($language == 'default')
-            $language = Auth::user()->language;
+            $language = Auth::user()->language_id;
+
+        $language_datas = LanguageValue::with(['language', 'language_key'])->where('language_id',$language)->get();
+
+        $language_values = array();
+
+        foreach ($language_datas as $language_data) {
+            $language_values[$language_data->language_key->name] = $language_data->value;
+        }
+
+        return $language_values;
+
+        // $language_key = $language_datas->pluck('name');
+
+        // Log::info($language_key);
+
+        // if($language == 'default')
+        //     $language = Auth::user()->language;
         
         
-        // Log::info($language);
-        if($language == "chinese"){
-            $language_value = $language_datas->pluck('chinese');
-        }
-        else{
-            $language_value = $language_datas->pluck('english');
-        }
+        // // Log::info($language);
+        // if($language == "chinese"){
+        //     $language_value = $language_datas->pluck('chinese');
+        // }
+        // else{
+        //     $language_value = $language_datas->pluck('english');
+        // }
         
 
-        $combined = $language_key->combine($language_value);
+        // $combined = $language_key->combine($language_value);
 
-        return $combined;
+        // return $combined;
 
         // $this->notes = $combined;
 

@@ -166,10 +166,11 @@
 											<div class="form-group row">
 												<label class="col-sm-3 col-form-label">Language</label>
 												<div class="col-sm-8">
-													<select name="language" id="language" required class="form-control">
+													<select name="language_id" id="language" required class="form-control">
 														<option value="">-- Select Language --</option>
-														<option selected value="english">English</option>
-														<option value="chinese">Chinese</option>
+														@foreach ($languages as $language)
+                                                            <option  value="{{$language->id}}">{{$language->name}}</option>
+                                                        @endforeach
 													</select>
 												</div>
 											</div>
