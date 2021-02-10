@@ -282,6 +282,78 @@ class DefaultCalculatorController extends Controller
                         ->with('status','success');
 
     }
+
+
+    public function exportErrorExcel(Request $request)
+    {
+
+        $languages = Language::get();
+        $error_datas = array();
+
+        foreach ($languages as $language) {
+            $error_values = NotesError::with(['language', 'language_key'])->where('language_id',$language->id)->get();
+
+            $error_key_values = array();
+            $error_key_values['language'] = $language->name;
+            foreach ($error_values as $error_value) {
+                $error_key_values[$error_value->language_key->name] = $error_value->value;
+            }
+
+            $error_datas[] = $error_key_values;
+        }
+
+        
+        // return $language_datas;
+        return Excel::create('error_datas', function($excel) use ($error_datas) {
+            $excel->sheet('mySheet', function($sheet) use ($error_datas)
+            {
+                $sheet->fromArray($error_datas);
+            });
+        })->download('xlsx');
+       
+        
+    }
+
+    public function importErrorExcel(Request $request)
+    {
+        //return $request->all();
+        if(Input::hasFile('file')){
+            $path = Input::file('file')->getRealPath();
+            $datas = Excel::load($path, function($reader) {
+               
+
+            })->get();
+            $datas = collect($datas)->toArray();
+            
+            if(!empty($datas) && count($datas)){
+                foreach ($datas as $data) {
+                    $language = Language::where('name',$data['language'])->first();
+                    if($language){
+                        $language_keys = LanguageKey::where('type','NOTES_ERRORS')->get();
+                        foreach ($language_keys as $language_key) {
+                            $error_value = NotesError::where('language_id',$language->id)->where('language_key_id',$language_key->id)->first();
+                            if(!$error_value){
+                                $error_value = new NotesError;
+                                $error_value->language_id = $language->id;
+                                $error_value->language_key_id = $language_key->id;
+                            }
+                            $error_value->value = empty($data[$language_key->name]) ?  "" : $data[$language_key->name];
+                            $error_value->save();
+
+                        }
+                    }                      
+                }
+                return redirect('error-notes')->with('message','Error Notes updated')
+                        ->with('status','success');
+
+            }
+        }
+        return back()->with('message','File Missing')
+                        ->with('status','error');
+    }
+
+
+
     public function importExport(Request $request)
     {
         //return $request->all();
@@ -554,17 +626,31 @@ class DefaultCalculatorController extends Controller
 
             })->get();
             $datas = collect($datas)->toArray();
-            Log::info($datas);
+            // Log::info($datas);
             if(!empty($datas) && count($datas)){
                 foreach ($datas as $data) {
-                                        
+                    $language = Language::where('name',$data['language'])->first();
+                    if($language){
+                        $language_keys = LanguageKey::where('type','FORM_VALUES')->get();
+                        foreach ($language_keys as $language_key) {
+                            $language_value = LanguageValue::where('language_id',$language->id)->where('language_key_id',$language_key->id)->first();
+                            if(!$language_value){
+                                $language_value = new LanguageValue;
+                                $language_value->language_id = $language->id;
+                                $language_value->language_key_id = $language_key->id;
+                            }
+                            $language_value->value = empty($data[$language_key->name]) ?  "" : $data[$language_key->name];
+                            $language_value->save();
+                        }
+                    }                      
                 }
                 return redirect('languages-notes')->with('message','Language Notes updated')
                         ->with('status','success');
 
             }
         }
-        return back();
+        return back()->with('message','File Missing')
+                        ->with('status','error');
     }
 
     public function getLanguages(){

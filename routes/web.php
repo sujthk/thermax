@@ -152,6 +152,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/error-notes/edit/{error_notes_id}', 'DefaultCalculatorController@updateErrorNote');
 	Route::post('/error-notes/add', 'DefaultCalculatorController@postErrorNote');
 	Route::get('/error-notes/delete/{error_notes_id}', 'DefaultCalculatorController@DeleteErrorNote');
+    Route::post('/error-notes/export-excel', 'DefaultCalculatorController@exportErrorExcel');
+    Route::post('/error-notes/import-excel', 'DefaultCalculatorController@importErrorExcel');
 
 	Route::get('/languages-notes', 'DefaultCalculatorController@getLanguageNotes')->name('language-notes');
 	Route::post('/languages-notes/edit/{language_note_id}', 'DefaultCalculatorController@updateLanguageNote');

@@ -42,13 +42,13 @@
 	                    <div class="card">
 	                        <div style="display: none;" class="card-header">
 	                        	<div class="">
-		                            <h5>Language Note</h5>
+		                            <h5>Language Notes</h5>
 		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#new_note">New Language Note +</button>
                             	</div>
 	                        </div>
                             <div class="card-header">
                                 <div class="">
-                                    <h5>Language Note</h5>
+                                    <h5>Language Notes</h5>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-sm-6">

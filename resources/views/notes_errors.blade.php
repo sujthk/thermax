@@ -40,12 +40,37 @@
 	                        </div>
 	                    @endif
 	                    <div class="card">
-	                        <div class="card-header">
+	                        <div style="display: none;" class="card-header">
 	                        	<div class="">
-		                            <h5>Add Note</h5>
+		                            <h5>Error Notes</h5>
 		                            <button class="btn btn-primary btn-sm " data-toggle="modal" data-target="#new_note">New Note +</button>
                             	</div>
 	                        </div>
+                            <div class="card-header">
+                                <div class="">
+                                    <h5>Error Notes</h5>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-sm-6">
+                                                
+                                                <form action="{{url('error-notes/import-excel')}}" method="POST" enctype="multipart/form-data">
+                                                    {{ csrf_field() }}
+                                                    <input type="file" name="file" class="form-control" required="">
+                                                    <br>
+                                                    <button class="btn btn-success" type="submit">Import Errors Data</button>
+                                                   
+                                                </form>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <form action="{{url('error-notes/export-excel')}}" method="POST" enctype="multipart/form-data">
+                                                    {{ csrf_field() }}
+                                                     <button class="btn btn-warning" type="submit">Export Errors Data</button>
+                                                </form>     
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 	                        <div class="card-block">
 	                            <div class="dt-responsive table-responsive">
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
