@@ -117,7 +117,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label class="col-sm-12 col-form-label">3. Metallurgy Standard - standard, non_standard</label> 
+                                                <label class="col-sm-12 col-form-label">3. Metallurgy Standard - true,false</label> 
                                             </div>
                                         </div>
                                         <div class="row">

@@ -1154,6 +1154,13 @@ class VamBaseController extends Controller
         // error_reporting(-1);
     }
 
+    public function getUnitsData()
+    {
+
+        return array('Centigrade' => "°C",'Fahrenheit' => "°F",'Millimeter' => "mm",'Inch' => "in",'Kilogram' => "kg",'Ton' => "ton",'Pound' => "lbs",'KgPerCmSq' => "kg/cm²",'KgPerCmSqGauge' =>"kg/cm²(g)",'Bar' =>"bar",'BarGauge' =>"bar(g)",'mLC' =>"mLC",'mWC' => "mWC",'mmWC' => "mmWC",'ftLC' => "ftLC",'ftWC' => "ftWC",'psi' => "psi",'psig' => "psi(g)",'kiloPascal' => "kPa",'kiloPascalGauge' => "kPa(g)",'CubicMeter' =>"m³",'CubicFeet' =>"cu.ft.",'SquareMeter' =>"m²",'SquareFeet' =>"sq.ft.",'TR' => "TR",'kW' => "kW",'CubicMeterPerHr' => "m³/hr",'CubicFeetPerHour' => "cu.ft./hr",'GallonPerMin' => "gallon/min",'KilogramsPerHr' => "kg/hr",'PoundsPerHour' => "lb/hr",'NCubicMeterPerHr' => "Nm³/hr",'NCubicFeetPerHour' =>"Ncu.ft./hr",'SquareMeterKperkW' =>"m² K/kW",'SquareMeterHrCperKcal' =>"m² hr °C/kcal",'SquareFeetHrFperBTU' =>"ft² Hr °F/BTU",'kCPerHour' => "kcal/Hr",'KWatt' => "kW",'MBTUPerHour' => "MBH",'kCPerKilogram' => "kcal/kg",'BTUPerPound' => "BTU/lb",'kJPerKilogram' => "kJ/kg",'kCPerNcubicmetre' => "kcal/Nm³",'BTUPerNcubicfeet' => "BTU/Ncu.ft",'kJPerNcubicmetre' =>"kJ/Nm³",'KgPerCmSqGauge' =>"kg/cm²(g)",'psiGauge' =>"psi(g)",'kiloPascalGauge' =>"kPa(g)",'DN' =>"DN",'NB' =>"NPS",'kcalperkgdegC' =>"kcal/kg°C",'kJouleperkgdegC' =>"kJ/kg°C",'BTUperpounddegF' =>"BTU/lb°F");
+
+    }
+
 
 
 }

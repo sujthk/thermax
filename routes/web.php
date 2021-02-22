@@ -187,4 +187,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('auto-testing/calculator', 'CalculatorTestingController@testingCalculator');
 	Route::post('auto-testing/download', 'CalculatorTestingController@downloadTestedCalculator');
 
+
+    Route::get('/calculators/l5-series', 'L5SeriesController@getL5Series')->name('calculators/l5-series');
+
 });

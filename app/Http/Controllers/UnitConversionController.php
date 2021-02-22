@@ -14,177 +14,75 @@ class UnitConversionController extends Controller
         $unit_set_id = Auth::user()->unit_set_id;
     	$unit_set = UnitSet::find($unit_set_id);
 
+        // Capacity Unit
+        $chiller_values['capacity'] = $this->convertUICapacityUnit($chiller_values['capacity'],$unit_set->CapacityUnit);
 
-    	if($unit_set->CapacityUnit != 'TR'){
-    		$chiller_values['capacity'] = $chiller_values['capacity'] * 3.5169; 
-    	}
+        // TemperatureUnit
+        $chiller_values['chilled_water_in'] = $this->convertUITemperatureUnit($chiller_values['chilled_water_in'],$unit_set->TemperatureUnit);
+        $chiller_values['chilled_water_out'] = $this->convertUITemperatureUnit($chiller_values['chilled_water_out'],$unit_set->TemperatureUnit);
+        $chiller_values['min_chilled_water_out'] = $this->convertUITemperatureUnit($chiller_values['min_chilled_water_out'],$unit_set->TemperatureUnit);
+        $chiller_values['cooling_water_in'] = $this->convertUITemperatureUnit($chiller_values['cooling_water_in'],$unit_set->TemperatureUnit);
+        $chiller_values['cooling_water_in_min_range'] = $this->convertUITemperatureUnit($chiller_values['cooling_water_in_min_range'],$unit_set->TemperatureUnit);
+        $chiller_values['cooling_water_in_max_range'] = $this->convertUITemperatureUnit($chiller_values['cooling_water_in_max_range'],$unit_set->TemperatureUnit);
+       if($calculator_code == "D_H2")
+       {
+           $chiller_values['hot_water_in'] = $this->convertUITemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit);
+           $chiller_values['hot_water_out'] = $this->convertUITemperatureUnit($chiller_values['hot_water_out'],$unit_set->TemperatureUnit);
+           $chiller_values['min_hot_water_out'] = $this->convertUITemperatureUnit($chiller_values['min_hot_water_out'],$unit_set->TemperatureUnit);
+           $chiller_values['min_hot_water_in'] = $this->convertUITemperatureUnit($chiller_values['min_hot_water_in'],$unit_set->TemperatureUnit); 
+           $chiller_values['max_hot_water_in'] = $this->convertUITemperatureUnit($chiller_values['max_hot_water_in'],$unit_set->TemperatureUnit);
+       }
 
-    	if($unit_set->TemperatureUnit != 'Centigrade'){
-    		$chiller_values['chilled_water_in'] = ($chiller_values['chilled_water_in'] * 9)/5 +32; 
-    		$chiller_values['chilled_water_out'] = ($chiller_values['chilled_water_out'] * 9)/5 +32; 
-    		$chiller_values['min_chilled_water_out'] = ($chiller_values['min_chilled_water_out'] * 9)/5 +32; 
-    		$chiller_values['cooling_water_in'] = ($chiller_values['cooling_water_in'] * 9)/5 +32; 
-    		$chiller_values['cooling_water_in_min_range'] = ($chiller_values['cooling_water_in_min_range'] * 9)/5 +32; 
-    		$chiller_values['cooling_water_in_max_range'] = ($chiller_values['cooling_water_in_max_range'] * 9)/5 +32; 
 
-            if($calculator_code == "D_H2")
-            {
-                $chiller_values['hot_water_in'] = ($chiller_values['hot_water_in'] * 9)/5 +32; 
-                $chiller_values['hot_water_out'] = ($chiller_values['hot_water_out'] * 9)/5 +32; 
-                $chiller_values['min_hot_water_out'] = ($chiller_values['min_hot_water_out'] * 9)/5 +32; 
-                $chiller_values['min_hot_water_in'] = round(($chiller_values['min_hot_water_in'] * 9),2)/5 +32; 
-                $chiller_values['max_hot_water_in'] = round(($chiller_values['max_hot_water_in'] * 9),2)/5 +32; 
-            }
-    	}
-        if($calculator_code == "D_H2")
-        {
-            if($unit_set->AllWorkPrHWUnit != 'KgPerCmSqGauge'){
+        // FlowRateUnit 
+        $chiller_values['cooling_water_flow'] = $this->convertUIFlowRateUnit($chiller_values['cooling_water_flow'],$unit_set->FlowRateUnit);
+        $cooling_water_ranges = array();
+        if(!is_array($chiller_values['cooling_water_ranges'])){
+            $chiller_values['cooling_water_ranges'] = explode(",", $chiller_values['cooling_water_ranges']);
+        }
+        for ($i=0; $i < count($chiller_values['cooling_water_ranges']); $i++) { 
+            $cooling_water_ranges[] = $this->convertUIFlowRateUnit($chiller_values['cooling_water_ranges'][$i],$unit_set->FlowRateUnit);
+        }
+        $chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
 
-                if($unit_set->AllWorkPrHWUnit == 'psiGauge'){
-                    $chiller_values['all_work_pr_hw'] = round(($chiller_values['all_work_pr_hw'] * 14.2233),2);
-                }
-                if($unit_set->AllWorkPrHWUnit == 'kiloPascalGauge'){
-                    $chiller_values['all_work_pr_hw'] = round(($chiller_values['all_work_pr_hw'] * 98.0665),2);
-                }
-            }
+        // LengthUnit
+        $chiller_values['evaporator_thickness'] = $this->convertUILengthUnit($chiller_values['evaporator_thickness'],$unit_set->LengthUnit);
+        $chiller_values['absorber_thickness'] = $this->convertUILengthUnit($chiller_values['absorber_thickness'],$unit_set->LengthUnit);
+        $chiller_values['condenser_thickness'] = $this->convertUILengthUnit($chiller_values['condenser_thickness'],$unit_set->LengthUnit);
+        $chiller_values['evaporator_thickness_min_range'] = $this->convertUILengthUnit($chiller_values['evaporator_thickness_min_range'],$unit_set->LengthUnit);
+        $chiller_values['evaporator_thickness_max_range'] = $this->convertUILengthUnit($chiller_values['evaporator_thickness_max_range'],$unit_set->LengthUnit);
+        $chiller_values['absorber_thickness_min_range'] = $this->convertUILengthUnit($chiller_values['absorber_thickness_min_range'],$unit_set->LengthUnit);
+        $chiller_values['absorber_thickness_max_range'] = $this->convertUILengthUnit($chiller_values['absorber_thickness_max_range'],$unit_set->LengthUnit);
+        $chiller_values['condenser_thickness_min_range'] = $this->convertUILengthUnit($chiller_values['condenser_thickness_min_range'],$unit_set->LengthUnit);
+        $chiller_values['condenser_thickness_max_range'] = $this->convertUILengthUnit($chiller_values['condenser_thickness_max_range'],$unit_set->LengthUnit);
+
+
+        // FoulingFactorUnit
+        $chiller_values['fouling_non_chilled'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_non_chilled'],$unit_set->FoulingFactorUnit);
+        $chiller_values['fouling_non_cooling'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_non_cooling'],$unit_set->FoulingFactorUnit);
+        $chiller_values['fouling_ari_chilled'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_ari_chilled'],$unit_set->FoulingFactorUnit);
+        $chiller_values['fouling_ari_cooling'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_ari_cooling'],$unit_set->FoulingFactorUnit);
+        if(!empty($chiller_values['fouling_chilled_water_value'])){
+            $chiller_values['fouling_chilled_water_value'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_chilled_water_value'],$unit_set->FoulingFactorUnit);
+        }
+        if(!empty($chiller_values['fouling_cooling_water_value'])){
+            $chiller_values['fouling_cooling_water_value'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_cooling_water_value'],$unit_set->FoulingFactorUnit);
         }
 
-    	if($unit_set->FlowRateUnit != 'CubicMeterPerHr'){
+        // PressureUnit
+        if($calculator_code == "D_S2"){
+            $chiller_values['steam_pressure'] = $this->convertUIPressureUnit($chiller_values['steam_pressure'],$unit_set->PressureUnit);
+            $chiller_values['steam_pressure_min_range'] = $this->convertUIPressureUnit($chiller_values['steam_pressure_min_range'],$unit_set->PressureUnit);
+            $chiller_values['steam_pressure_max_range'] = $this->convertUIPressureUnit($chiller_values['steam_pressure_max_range'],$unit_set->PressureUnit);
 
-    		$cooling_water_ranges = array();
-    		if(!is_array($chiller_values['cooling_water_ranges'])){
-    			$chiller_values['cooling_water_ranges'] = explode(",", $chiller_values['cooling_water_ranges']);
-    		}
+        }
+       
 
-    		if($unit_set->FlowRateUnit == 'CubicFeetPerHour'){
-    			$chiller_values['cooling_water_flow'] = round(($chiller_values['cooling_water_flow'] * 35.3147),2);
-    			for ($i=0; $i < count($chiller_values['cooling_water_ranges']); $i++) { 
-    				$cooling_water_ranges[] = round(($chiller_values['cooling_water_ranges'][$i] * 35.3147),2);
-    			}
-    			$chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
-    		}
+        // AllWorkPrHWUnit
+        if($calculator_code == "D_H2"){
+            $chiller_values['all_work_pr_hw'] = $this->convertUIAllWorkPrHWUnit($chiller_values['all_work_pr_hw'],$unit_set->AllWorkPrHWUnit);
+        }
 
-    		if($unit_set->FlowRateUnit == 'GallonPerMin'){
-    			$chiller_values['cooling_water_flow'] = round(($chiller_values['cooling_water_flow'] * 264.172 / 60),2);
-    			for ($i=0; $i < count($chiller_values['cooling_water_ranges']); $i++) { 
-    				$cooling_water_ranges[] = round(($chiller_values['cooling_water_ranges'][$i] * 264.172 / 60),2);
-    			}
-    			$chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
-    		}
-
-    	}
-
-
-    	if($unit_set->LengthUnit != 'Millimeter'){
-    		$chiller_values['evaporator_thickness'] = round(($chiller_values['evaporator_thickness'] * 0.0393700787),4); 
-    		$chiller_values['absorber_thickness'] = round(($chiller_values['absorber_thickness'] * 0.0393700787),4); 
-    		$chiller_values['condenser_thickness'] = round(($chiller_values['condenser_thickness'] * 0.0393700787),4);  
-    		$chiller_values['evaporator_thickness_min_range'] = round(($chiller_values['evaporator_thickness_min_range'] * 0.0393700787),4); 
-    		$chiller_values['evaporator_thickness_max_range'] = round(($chiller_values['evaporator_thickness_max_range'] * 0.0393700787),4); 
-    		$chiller_values['absorber_thickness_min_range'] = round(($chiller_values['absorber_thickness_min_range'] * 0.0393700787),4);
-    		$chiller_values['absorber_thickness_max_range'] = round(($chiller_values['absorber_thickness_max_range'] * 0.0393700787),4); 
-    		$chiller_values['condenser_thickness_min_range'] = round(($chiller_values['condenser_thickness_min_range'] * 0.0393700787),4); 
-    		$chiller_values['condenser_thickness_max_range'] = round(($chiller_values['condenser_thickness_max_range'] * 0.0393700787),4);
-
-    	}
-
-    	if($unit_set->FoulingFactorUnit != 'SquareMeterHrCperKcal'){
-    		if($unit_set->FoulingFactorUnit == 'SquareMeterKperkW'){
-    			$chiller_values['fouling_non_chilled'] = round(($chiller_values['fouling_non_chilled'] * 860),10);
-    			$chiller_values['fouling_non_cooling'] = round(($chiller_values['fouling_non_cooling'] * 860),10);
-    			$chiller_values['fouling_ari_chilled'] = round(($chiller_values['fouling_ari_chilled'] * 860),10);
-    			$chiller_values['fouling_ari_cooling'] = round(($chiller_values['fouling_ari_cooling'] * 860),10);
-    			if(!empty($chiller_values['fouling_chilled_water_value'])){
-    				$chiller_values['fouling_chilled_water_value'] = round(($chiller_values['fouling_chilled_water_value'] * 860),10);
-    			}
-
-    			if(!empty($chiller_values['fouling_cooling_water_value'])){
-    				$chiller_values['fouling_cooling_water_value'] = round(($chiller_values['fouling_cooling_water_value'] * 860),10);
-    			}
-    		}
-
-    		if($unit_set->FoulingFactorUnit == 'SquareFeetHrFperBTU'){
-    			$chiller_values['fouling_non_chilled'] = round(($chiller_values['fouling_non_chilled'] * 4.886),10);
-    			$chiller_values['fouling_non_cooling'] = round(($chiller_values['fouling_non_cooling'] * 4.886),10);
-    			$chiller_values['fouling_ari_chilled'] = round(($chiller_values['fouling_ari_chilled'] * 4.886),10);
-    			$chiller_values['fouling_ari_cooling'] = round(($chiller_values['fouling_ari_cooling'] * 4.886),10);
-    			if(!empty($chiller_values['fouling_chilled_water_value'])){
-    				$chiller_values['fouling_chilled_water_value'] = round(($chiller_values['fouling_chilled_water_value'] * 4.886),10);
-    			}
-
-    			if(!empty($chiller_values['fouling_cooling_water_value'])){
-    				$chiller_values['fouling_cooling_water_value'] = round(($chiller_values['fouling_cooling_water_value'] * 4.886),10);
-    			}
-    		}
-    	}
-
-
-    	if($unit_set->PressureUnit != 'KgPerCmSqGauge'){
-
-            if($calculator_code == "D_S2")
-            {
-    			if($unit_set->PressureUnit == 'BarGauge') 
-    			{
-    				$chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] * 0.980665),2);
-    				$chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] * 0.980665),2);
-    				$chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] * 0.980665),2);
-    			}
-    			if($unit_set->PressureUnit == 'psig') 
-    			{
-    				$chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] * 14.223),2);
-    				$chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] * 14.223),2);
-    				$chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] * 14.223),2);
-    			}
-                if ($unit_set->PressureUnit == 'kiloPascalGauge')    //sk 9/4/08
-                {
-                    $chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] * 98.0665),2);
-                    $chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] * 98.0665),2);
-                    $chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] * 98.0665),2);
-                }
-                if ($unit_set->PressureUnit == 'KgPerCmSq')               //mk
-                {
-                    $chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] + 1.03323),2);
-                    $chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] + 1.03323),2);
-                    $chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] + 1.03323),2);
-                }
-                if ($unit_set->PressureUnit == 'psi')                     //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 14.223) + 14.695),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] * 14.223) + 14.695),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] * 14.223) + 14.695),2);
-                }
-                if ($unit_set->PressureUnit == 'kiloPascal')              //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 98.0665) + 101.325),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] * 98.0665) + 101.325),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] * 98.0665) + 101.325),2);
-                }
-                if ($unit_set->PressureUnit == 'mLC')                     //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 10) + 10.3323),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] * 10) + 10.3323),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] * 10) + 10.3323),2);
-                }
-                if ($unit_set->PressureUnit == 'ftLC')                    //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 32.8084) + 33.8985),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] * 32.8084) + 33.8985),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] * 32.8084) + 33.8985),2);
-                }
-                if ($unit_set->PressureUnit == 'ftWC')                    //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 32.8084) + 33.8985),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] * 32.8084) + 33.8985),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] * 32.8084) + 33.8985),2);
-                }
-                if ($unit_set->PressureUnit == 'mmWC')                    //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 10000) + 10332.3),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] * 10000) + 10332.3),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] * 10000) + 10332.3),2);
-                }
-            }
-    	}
 
 
     	return $chiller_values;
@@ -197,174 +95,77 @@ class UnitConversionController extends Controller
         $unit_set_id = Auth::user()->unit_set_id;
     	$unit_set = UnitSet::find($unit_set_id);
 
+        // CapacityUnit
+        $chiller_values['capacity'] = $this->convertCalculationCapacityUnit($chiller_values['capacity'],$unit_set->CapacityUnit);
 
-    	if($unit_set->CapacityUnit != 'TR'){
-    		$chiller_values['capacity'] = $chiller_values['capacity'] / 3.5169; 
-    	}
+        // TemperatureUnit
+        $chiller_values['chilled_water_in'] = $this->convertCalculationTemperatureUnit($chiller_values['chilled_water_in'],$unit_set->TemperatureUnit);
+        $chiller_values['chilled_water_out'] = $this->convertCalculationTemperatureUnit($chiller_values['chilled_water_out'],$unit_set->TemperatureUnit);
+        $chiller_values['min_chilled_water_out'] = $this->convertCalculationTemperatureUnit($chiller_values['min_chilled_water_out'],$unit_set->TemperatureUnit);
+        $chiller_values['cooling_water_in'] = $this->convertCalculationTemperatureUnit($chiller_values['cooling_water_in'],$unit_set->TemperatureUnit);
+        $chiller_values['cooling_water_in_min_range'] = $this->convertCalculationTemperatureUnit($chiller_values['cooling_water_in_min_range'],$unit_set->TemperatureUnit);
+        $chiller_values['cooling_water_in_max_range'] = $this->convertCalculationTemperatureUnit($chiller_values['cooling_water_in_max_range'],$unit_set->TemperatureUnit);
 
-    	if($unit_set->TemperatureUnit != 'Centigrade'){
-    		$chiller_values['chilled_water_in'] = ($chiller_values['chilled_water_in'] - 32)*5/9; 
-    		$chiller_values['chilled_water_out'] = ($chiller_values['chilled_water_out'] - 32)*5/9; 
-    		$chiller_values['min_chilled_water_out'] = ($chiller_values['min_chilled_water_out'] - 32)*5/9; 
-    		$chiller_values['cooling_water_in'] = ($chiller_values['cooling_water_in'] - 32)*5/9; 
-    		$chiller_values['cooling_water_in_min_range'] = ($chiller_values['cooling_water_in_min_range'] - 32)*5/9; 
-    		$chiller_values['cooling_water_in_max_range'] = ($chiller_values['cooling_water_in_max_range'] - 32)*5/9; 
-
-            if($calculator_code == "D_H2")
-            {
-                $chiller_values['hot_water_in'] = ($chiller_values['hot_water_in'] - 32)*5/9; 
-                $chiller_values['hot_water_out'] = ($chiller_values['hot_water_out']- 32)*5/9; 
-                $chiller_values['min_hot_water_out'] = ($chiller_values['min_hot_water_out'] - 32)*5/9; 
-                $chiller_values['min_hot_water_in'] = round((($chiller_values['min_hot_water_in'] - 32)*5/9),2); 
-                $chiller_values['max_hot_water_in'] = round((($chiller_values['max_hot_water_in'] - 32)*5/9),2); 
-            }
-    		
-    	}
         if($calculator_code == "D_H2")
-        {
-            if($unit_set->AllWorkPrHWUnit != 'KgPerCmSqGauge'){
+       {
+           $chiller_values['hot_water_in'] = $this->convertCalculationTemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit);
+           $chiller_values['hot_water_out'] = $this->convertCalculationTemperatureUnit($chiller_values['hot_water_out'],$unit_set->TemperatureUnit);
+           $chiller_values['min_hot_water_out'] = $this->convertCalculationTemperatureUnit($chiller_values['min_hot_water_out'],$unit_set->TemperatureUnit);
+           $chiller_values['min_hot_water_in'] = $this->convertCalculationTemperatureUnit($chiller_values['min_hot_water_in'],$unit_set->TemperatureUnit); 
+           $chiller_values['max_hot_water_in'] = $this->convertCalculationTemperatureUnit($chiller_values['max_hot_water_in'],$unit_set->TemperatureUnit);
+       }
 
-                if($unit_set->AllWorkPrHWUnit == 'psiGauge'){
-                    $chiller_values['all_work_pr_hw'] = round(($chiller_values['all_work_pr_hw'] /14.2233),2);
-                }
-                if($unit_set->AllWorkPrHWUnit == 'kiloPascalGauge'){
-                    $chiller_values['all_work_pr_hw'] = round(($chiller_values['all_work_pr_hw'] / 98.0665),2);
-                }
-            }
+
+        // FlowRateUnit
+        $chiller_values['cooling_water_flow'] = $this->convertCalculationFlowRateUnit($chiller_values['cooling_water_flow'],$unit_set->FlowRateUnit);
+        $cooling_water_ranges = array();
+        if(!is_array($chiller_values['cooling_water_ranges'])){
+            $chiller_values['cooling_water_ranges'] = explode(",", $chiller_values['cooling_water_ranges']);
+        }
+        for ($i=0; $i < count($chiller_values['cooling_water_ranges']); $i++) { 
+            $cooling_water_ranges[] = $this->convertCalculationFlowRateUnit($chiller_values['cooling_water_ranges'][$i],$unit_set->FlowRateUnit);
+        }
+        $chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
+
+
+        // LengthUnit
+        $chiller_values['evaporator_thickness'] = $this->convertCalculationLengthUnit($chiller_values['evaporator_thickness'],$unit_set->LengthUnit);
+        $chiller_values['absorber_thickness'] = $this->convertCalculationLengthUnit($chiller_values['absorber_thickness'],$unit_set->LengthUnit);
+        $chiller_values['condenser_thickness'] = $this->convertCalculationLengthUnit($chiller_values['condenser_thickness'],$unit_set->LengthUnit);
+        $chiller_values['evaporator_thickness_min_range'] = $this->convertCalculationLengthUnit($chiller_values['evaporator_thickness_min_range'],$unit_set->LengthUnit);
+        $chiller_values['evaporator_thickness_max_range'] = $this->convertCalculationLengthUnit($chiller_values['evaporator_thickness_max_range'],$unit_set->LengthUnit);
+        $chiller_values['absorber_thickness_min_range'] = $this->convertCalculationLengthUnit($chiller_values['absorber_thickness_min_range'],$unit_set->LengthUnit);
+        $chiller_values['absorber_thickness_max_range'] = $this->convertCalculationLengthUnit($chiller_values['absorber_thickness_max_range'],$unit_set->LengthUnit);
+        $chiller_values['condenser_thickness_min_range'] = $this->convertCalculationLengthUnit($chiller_values['condenser_thickness_min_range'],$unit_set->LengthUnit);
+        $chiller_values['condenser_thickness_max_range'] = $this->convertCalculationLengthUnit($chiller_values['condenser_thickness_max_range'],$unit_set->LengthUnit);
+
+        // FoulingFactorUnit
+        $chiller_values['fouling_non_chilled'] = $this->convertCalculationFoulingFactorUnit($chiller_values['fouling_non_chilled'],$unit_set->FoulingFactorUnit);
+        $chiller_values['fouling_non_cooling'] = $this->convertCalculationFoulingFactorUnit($chiller_values['fouling_non_cooling'],$unit_set->FoulingFactorUnit);
+        $chiller_values['fouling_ari_chilled'] = $this->convertCalculationFoulingFactorUnit($chiller_values['fouling_ari_chilled'],$unit_set->FoulingFactorUnit);
+        $chiller_values['fouling_ari_cooling'] = $this->convertCalculationFoulingFactorUnit($chiller_values['fouling_ari_cooling'],$unit_set->FoulingFactorUnit);
+        if(!empty($chiller_values['fouling_chilled_water_value'])){
+            $chiller_values['fouling_chilled_water_value'] = $this->convertCalculationFoulingFactorUnit($chiller_values['fouling_chilled_water_value'],$unit_set->FoulingFactorUnit);
+        }
+        if(!empty($chiller_values['fouling_cooling_water_value'])){
+            $chiller_values['fouling_cooling_water_value'] = $this->convertCalculationFoulingFactorUnit($chiller_values['fouling_cooling_water_value'],$unit_set->FoulingFactorUnit);
         }
 
-    	if($unit_set->FlowRateUnit != 'CubicMeterPerHr'){
 
-    		$cooling_water_ranges = array();
-    		if(!is_array($chiller_values['cooling_water_ranges'])){
-    			$chiller_values['cooling_water_ranges'] = explode(",", $chiller_values['cooling_water_ranges']);
-    		}
-
-    		if($unit_set->FlowRateUnit == 'CubicFeetPerHour'){
-    			$chiller_values['cooling_water_flow'] = $chiller_values['cooling_water_flow'] / 35.3147;
-    			for ($i=0; $i < count($chiller_values['cooling_water_ranges']); $i++) { 
-    				$cooling_water_ranges[] = $chiller_values['cooling_water_ranges'][$i] / 35.3147;
-    			}
-    			$chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
-    		}
-
-    		if($unit_set->FlowRateUnit == 'GallonPerMin'){
-    			$chiller_values['cooling_water_flow'] = $chiller_values['cooling_water_flow'] * 60 / 264.172;
-    			for ($i=0; $i < count($chiller_values['cooling_water_ranges']); $i++) { 
-    				$cooling_water_ranges[] = $chiller_values['cooling_water_ranges'][$i] * 60 / 264.172;
-    			}
-    			$chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
-    		}
-
-    	}
-
-    	if($unit_set->LengthUnit != 'Millimeter'){
-    		$chiller_values['evaporator_thickness'] = $chiller_values['evaporator_thickness'] / 0.0393700787; 
-    		$chiller_values['absorber_thickness'] = $chiller_values['absorber_thickness'] / 0.0393700787; 
-    		$chiller_values['condenser_thickness'] = $chiller_values['condenser_thickness'] / 0.0393700787;
-    		$chiller_values['evaporator_thickness_min_range'] = ($chiller_values['evaporator_thickness_min_range'] / 0.0393700787); 
-    		$chiller_values['evaporator_thickness_max_range'] = ($chiller_values['evaporator_thickness_max_range'] / 0.0393700787); 
-    		$chiller_values['absorber_thickness_min_range'] = ($chiller_values['absorber_thickness_min_range'] / 0.0393700787);
-    		$chiller_values['absorber_thickness_max_range'] = ($chiller_values['absorber_thickness_max_range'] / 0.0393700787); 
-    		$chiller_values['condenser_thickness_min_range'] = ($chiller_values['condenser_thickness_min_range'] / 0.0393700787); 
-    		$chiller_values['condenser_thickness_max_range'] = ($chiller_values['condenser_thickness_max_range'] / 0.0393700787);
-
-    	}
-
-    	if($unit_set->FoulingFactorUnit != 'SquareMeterHrCperKcal'){
-    		if($unit_set->FoulingFactorUnit == 'SquareMeterKperkW'){
-    			$chiller_values['fouling_non_chilled'] = $chiller_values['fouling_non_chilled'] / 860;
-    			$chiller_values['fouling_non_cooling'] = $chiller_values['fouling_non_cooling'] / 860;
-    			$chiller_values['fouling_ari_chilled'] = $chiller_values['fouling_ari_chilled'] / 860;
-    			$chiller_values['fouling_ari_cooling'] = $chiller_values['fouling_ari_cooling'] / 860;
-    			if(!empty($chiller_values['fouling_chilled_water_value'])){
-    				$chiller_values['fouling_chilled_water_value'] = $chiller_values['fouling_chilled_water_value'] / 860;
-    			}
-
-    			if(!empty($chiller_values['fouling_cooling_water_value'])){
-    				$chiller_values['fouling_cooling_water_value'] = $chiller_values['fouling_cooling_water_value'] / 860;
-    			}
-    		}
-
-    		if($unit_set->FoulingFactorUnit == 'SquareFeetHrFperBTU'){
-    			$chiller_values['fouling_non_chilled'] = $chiller_values['fouling_non_chilled'] / 4.886;
-    			$chiller_values['fouling_non_cooling'] = $chiller_values['fouling_non_cooling'] / 4.886;
-    			$chiller_values['fouling_ari_chilled'] = $chiller_values['fouling_ari_chilled'] / 4.886;
-    			$chiller_values['fouling_ari_cooling'] = $chiller_values['fouling_ari_cooling'] / 4.886;
-    			if(!empty($chiller_values['fouling_chilled_water_value'])){
-    				$chiller_values['fouling_chilled_water_value'] = $chiller_values['fouling_chilled_water_value'] / 4.886;
-    			}
-
-    			if(!empty($chiller_values['fouling_cooling_water_value'])){
-    				$chiller_values['fouling_cooling_water_value'] = $chiller_values['fouling_cooling_water_value'] / 4.886;
-    			}
-    		}
-    	}
-        if($calculator_code == "D_S2")
-        {
-        	if($unit_set->PressureUnit != 'KgPerCmSqGauge'){
-    			if($unit_set->PressureUnit == 'BarGauge') 
-    			{
-    				$chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] / 0.980665),2);
-    				$chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] / 0.980665),2);
-    				$chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] / 0.980665),2);
-    			}
-    			if($unit_set->PressureUnit == 'psig') 
-    			{
-    				$chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] / 14.223),2);
-    				$chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] / 14.223),2);
-    				$chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] / 14.223),2);
-    			}
-                if ($unit_set->PressureUnit == 'kiloPascalGauge')    //sk 9/4/08
-                {
-                    $chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] / 98.0665),2);
-                    $chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] / 98.0665),2);
-                    $chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] / 98.0665),2);
-                }
-                if ($unit_set->PressureUnit == 'KgPerCmSq')               //mk
-                {
-                    $chiller_values['steam_pressure'] = round(($chiller_values['steam_pressure'] - 1.03323),2);
-                    $chiller_values['steam_pressure_min_range'] = round(($chiller_values['steam_pressure_min_range'] - 1.03323),2);
-                    $chiller_values['steam_pressure_max_range'] = round(($chiller_values['steam_pressure_max_range'] - 1.03323),2);
-                }
-                if ($unit_set->PressureUnit == 'psi')                     //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] / 14.223) - 14.695),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] / 14.223) - 14.695),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] / 14.223) - 14.695),2);
-                }
-                if ($unit_set->PressureUnit == 'kiloPascal')              //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] * 98.0665) + 101.325),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] / 98.0665) - 101.325),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] / 98.0665) - 101.325),2);
-                }
-                if ($unit_set->PressureUnit == 'mLC')                     //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] / 10) - 10.3323),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] / 10) - 10.3323),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] / 10) - 10.3323),2);
-                }
-                if ($unit_set->PressureUnit == 'ftLC')                    //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] / 32.8084) - 33.8985),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] / 32.8084) - 33.8985),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] / 32.8084) - 33.8985),2);
-                }
-                if ($unit_set->PressureUnit == 'ftWC')                    //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] / 32.8084) - 33.8985),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] / 32.8084) - 33.8985),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] / 32.8084) - 33.8985),2);
-                }
-                if ($unit_set->PressureUnit == 'mmWC')                    //mk
-                {
-                    $chiller_values['steam_pressure'] = round((($chiller_values['steam_pressure'] / 10000) - 10332.3),2);
-                    $chiller_values['steam_pressure_min_range'] = round((($chiller_values['steam_pressure_min_range'] / 10000) - 10332.3),2);
-                    $chiller_values['steam_pressure_max_range'] = round((($chiller_values['steam_pressure_max_range'] / 10000) - 10332.3),2);
-                }
-        	}
+        // PressureUnit
+        if($calculator_code == "D_S2"){
+            $chiller_values['steam_pressure'] = $this->convertCalculationPressureUnit($chiller_values['steam_pressure'],$unit_set->PressureUnit);
+            $chiller_values['steam_pressure_min_range'] = $this->convertCalculationPressureUnit($chiller_values['steam_pressure_min_range'],$unit_set->PressureUnit);
+            $chiller_values['steam_pressure_max_range'] = $this->convertCalculationPressureUnit($chiller_values['steam_pressure_max_range'],$unit_set->PressureUnit);
         }
+        
+
+
+        // AllWorkPrHWUnit
+        if($calculator_code == "D_H2"){
+            $chiller_values['all_work_pr_hw'] = $this->convertCalculationAllWorkPrHWUnit($chiller_values['all_work_pr_hw'],$unit_set->AllWorkPrHWUnit);
+        }
+        
 
     	return $chiller_values;
 
@@ -376,387 +177,544 @@ class UnitConversionController extends Controller
         $unit_set_id = Auth::user()->unit_set_id;
     	$unit_set = UnitSet::find($unit_set_id);
 
+        // CapacityUnit
+        $calculated_values['TON'] = $this->convertUICapacityUnit($calculated_values['TON'],$unit_set->CapacityUnit);
 
-    	if($unit_set->CapacityUnit != 'TR'){
-    		$calculated_values['TON'] = $calculated_values['TON'] * 3.5169; 
-    	}
+        // TemperatureUnit
+        $calculated_values['TCHW11'] = $this->convertUITemperatureUnit($calculated_values['TCHW11'],$unit_set->TemperatureUnit);
+        $calculated_values['TCHW12'] = $this->convertUITemperatureUnit($calculated_values['TCHW12'],$unit_set->TemperatureUnit);
+        $calculated_values['TCW11'] = $this->convertUITemperatureUnit($calculated_values['TCW11'],$unit_set->TemperatureUnit);
+        $calculated_values['CoolingWaterOutTemperature'] = $this->convertUITemperatureUnit($calculated_values['CoolingWaterOutTemperature'],$unit_set->TemperatureUnit);
+        $calculated_values['m_dMinCondensateDrainTemperature'] = $this->convertUITemperatureUnit($calculated_values['m_dMinCondensateDrainTemperature'],$unit_set->TemperatureUnit);
+        $calculated_values['m_dMaxCondensateDrainTemperature'] = $this->convertUITemperatureUnit($calculated_values['m_dMaxCondensateDrainTemperature'],$unit_set->TemperatureUnit);
+        if($calculator_code == "D_H2")
+        {
+            $calculated_values['hot_water_in'] = $this->convertUITemperatureUnit($calculated_values['hot_water_in'],$unit_set->TemperatureUnit);
+            $calculated_values['hot_water_out'] = $this->convertUITemperatureUnit($calculated_values['hot_water_out'],$unit_set->TemperatureUnit);
+        }
 
-    	if($unit_set->TemperatureUnit != 'Centigrade'){
-    		$calculated_values['TCHW11'] = ($calculated_values['TCHW11'] * 9)/5 +32; 
-    		$calculated_values['TCHW12'] = ($calculated_values['TCHW12'] * 9)/5 +32; 
-    		$calculated_values['TCW11'] = ($calculated_values['TCW11'] * 9)/5 +32; 
-    		$calculated_values['CoolingWaterOutTemperature'] = ($calculated_values['CoolingWaterOutTemperature'] * 9)/5 +32; 
-    		$calculated_values['m_dMinCondensateDrainTemperature'] = ($calculated_values['m_dMinCondensateDrainTemperature'] * 9)/5 +32; 
-    		$calculated_values['m_dMaxCondensateDrainTemperature'] = ($calculated_values['m_dMaxCondensateDrainTemperature'] * 9)/5 +32; 
-            if($calculator_code == "D_H2")
-            {
-                $calculated_values['hot_water_in'] = ($calculated_values['hot_water_in'] * 9)/5 +32; 
-                $calculated_values['hot_water_out'] = ($calculated_values['hot_water_out'] * 9)/5 +32; 
-            }
+        // FlowRateUnit
+        $calculated_values['GCW'] = $this->convertUIFlowRateUnit($calculated_values['GCW'],$unit_set->FlowRateUnit);
+        $calculated_values['ChilledWaterFlow'] = $this->convertUIFlowRateUnit($calculated_values['ChilledWaterFlow'],$unit_set->FlowRateUnit);
+        $calculated_values['BypassFlow'] = $this->convertUIFlowRateUnit($calculated_values['BypassFlow'],$unit_set->FlowRateUnit);
+        if($calculator_code == "D_H2")
+        {
+            $calculated_values['HotWaterFlow']= $this->convertUIFlowRateUnit($calculated_values['HotWaterFlow'],$unit_set->FlowRateUnit);
+        }
 
-    	}
+
+        // LengthUnit
+        $calculated_values['TU3'] = $this->convertUILengthUnit($calculated_values['TU3'],$unit_set->LengthUnit);
+        $calculated_values['TU6'] = $this->convertUILengthUnit($calculated_values['TU6'],$unit_set->LengthUnit);
+        $calculated_values['TV6'] = $this->convertUILengthUnit($calculated_values['TV6'],$unit_set->LengthUnit);
+        $calculated_values['Length'] = $this->convertUILengthUnit($calculated_values['Length'],$unit_set->LengthUnit);
+        $calculated_values['Width'] = $this->convertUILengthUnit($calculated_values['Width'],$unit_set->LengthUnit);
+        $calculated_values['Height'] = $this->convertUILengthUnit($calculated_values['Height'],$unit_set->LengthUnit);
+        $calculated_values['ClearanceForTubeRemoval'] = $this->convertUILengthUnit($calculated_values['ClearanceForTubeRemoval'],$unit_set->LengthUnit);
+
+   
+        // FoulingFactorUnit
+        $calculated_values['FFCHW1'] = $this->convertUIFoulingFactorUnit($calculated_values['FFCHW1'],$unit_set->FoulingFactorUnit);
+        $calculated_values['FFCOW1'] = $this->convertUIFoulingFactorUnit($calculated_values['FFCOW1'],$unit_set->FoulingFactorUnit);
+
+        // PressureDropUnit
+        $calculated_values['ChilledFrictionLoss'] = $this->convertUIPressureDropUnit($calculated_values['ChilledFrictionLoss'],$unit_set->PressureDropUnit);
+        $calculated_values['CoolingFrictionLoss'] = $this->convertUIPressureDropUnit($calculated_values['CoolingFrictionLoss'],$unit_set->PressureDropUnit);
+        if($calculator_code == "D_H2")
+        {
+            $calculated_values['HotWaterFrictionLoss'] = $this->convertUIPressureDropUnit($calculated_values['HotWaterFrictionLoss'],$unit_set->PressureDropUnit);
+        }
+
+
+        // PressureUnit and WorkPressureUnit
+        $calculated_values['m_maxCHWWorkPressure'] = $this->convertUIPressureUnit($calculated_values['m_maxCHWWorkPressure'],$unit_set->WorkPressureUnit);
+        $calculated_values['m_maxCOWWorkPressure'] = $this->convertUIPressureUnit($calculated_values['m_maxCOWWorkPressure'],$unit_set->WorkPressureUnit);
+        $calculated_values['m_DesignPressure'] = $this->convertUIPressureUnit($calculated_values['m_DesignPressure'],$unit_set->PressureUnit);
+        if($calculator_code == "D_S2")
+        {
+            $calculated_values['PST1'] = $this->convertUIPressureUnit($calculated_values['PST1'],$unit_set->PressureUnit);
+            $calculated_values['m_dCondensateDrainPressure'] = $this->convertUIPressureUnit($calculated_values['m_dCondensateDrainPressure'],$unit_set->PressureUnit);
+        }
+
+
+        // NozzleDiameterUnit
+        $calculated_values['ChilledConnectionDiameter'] = $this->convertUINozzleDiameterUnit($calculated_values['ChilledConnectionDiameter'],$unit_set->NozzleDiameterUnit); 
+        $calculated_values['CoolingConnectionDiameter'] = $this->convertUINozzleDiameterUnit($calculated_values['CoolingConnectionDiameter'],$unit_set->NozzleDiameterUnit);
+        $calculated_values['SteamConnectionDiameter'] = $this->convertUINozzleDiameterUnit($calculated_values['SteamConnectionDiameter'],$unit_set->NozzleDiameterUnit); 
+        $calculated_values['SteamDrainDiameter'] = $this->convertUINozzleDiameterUnit($calculated_values['SteamDrainDiameter'],$unit_set->NozzleDiameterUnit);
+
+        // SteamConsumptionUnit
+        $calculated_values['SteamConsumption'] = $this->convertUISteamConsumptionUnit($calculated_values['SteamConsumption'],$unit_set->SteamConsumptionUnit);
+
+        // WeightUnit
+        $calculated_values['OperatingWeight'] = $this->convertUIWeightUnit($calculated_values['OperatingWeight'],$unit_set->WeightUnit);
+        $calculated_values['MaxShippingWeight'] = $this->convertUIWeightUnit($calculated_values['MaxShippingWeight'],$unit_set->WeightUnit);
+        $calculated_values['FloodedWeight'] = $this->convertUIWeightUnit($calculated_values['FloodedWeight'],$unit_set->WeightUnit);
+        $calculated_values['DryWeight'] = $this->convertUIWeightUnit($calculated_values['DryWeight'],$unit_set->WeightUnit);
+
        
-       
-    	if($unit_set->FlowRateUnit != 'CubicMeterPerHr'){
 
-    		if($unit_set->FlowRateUnit == 'CubicFeetPerHour'){
-    			$calculated_values['GCW'] = $calculated_values['GCW'] * 35.3147;
-    			$calculated_values['ChilledWaterFlow'] = round(($calculated_values['ChilledWaterFlow'] * 35.3147),2);
-    			$calculated_values['BypassFlow'] = round(($calculated_values['BypassFlow'] * 35.3147),2);
-
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFlow']= round(($calculated_values['HotWaterFlow'] * 35.3147),2);
-                }
-    		}
-
-    		if($unit_set->FlowRateUnit == 'GallonPerMin'){
-    			$calculated_values['GCW'] = $calculated_values['GCW'] * 264.172 / 60;
-    			$calculated_values['ChilledWaterFlow'] = round(($calculated_values['ChilledWaterFlow'] * 264.172 / 60),2);
-    			$calculated_values['BypassFlow'] = round(($calculated_values['BypassFlow'] * 264.172 / 60),2);
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFlow']= round(($calculated_values['HotWaterFlow'] * 264.172 / 60),2);   
-                }
-    		}
-    	}
-
-
-    	if($unit_set->LengthUnit != 'Millimeter'){
-    		$calculated_values['TU3'] = round(($calculated_values['TU3'] * 0.0393700787),4); 
-    		$calculated_values['TU6'] = round(($calculated_values['TU6'] * 0.0393700787),4); 
-    		$calculated_values['TV6'] = round(($calculated_values['TV6'] * 0.0393700787),4); 
-    		$calculated_values['Length'] = round(($calculated_values['Length'] * 0.0393700787),4); 
-    		$calculated_values['Width'] = round(($calculated_values['Width'] * 0.0393700787),4); 
-    		$calculated_values['Height'] = round(($calculated_values['Height'] * 0.0393700787),4); 
-    		$calculated_values['ClearanceForTubeRemoval'] = round(($calculated_values['ClearanceForTubeRemoval'] * 0.0393700787),4); 
-    	}
-
-    	if($unit_set->FoulingFactorUnit != 'SquareMeterHrCperKcal'){
-    		if($unit_set->FoulingFactorUnit == 'SquareMeterKperkW'){
-    			$calculated_values['FFCHW1'] = $calculated_values['FFCHW1'] * 860;
-    			$calculated_values['FFCOW1'] = $calculated_values['FFCOW1'] * 860;
-    		}
-
-    		if($unit_set->FoulingFactorUnit == 'SquareFeetHrFperBTU'){
-    			$calculated_values['FFCHW1'] = $calculated_values['FFCHW1'] * 4.886;
-    			$calculated_values['FFCOW1'] = $calculated_values['FFCOW1'] * 4.886;
-    		}
-    	}
-       
-
-    	if($unit_set->PressureUnit != 'KgPerCmSqGauge'){
-			if($unit_set->PressureUnit == 'BarGauge') 
-			{
-                if($calculator_code == "D_S2")
-                {
-    				$calculated_values['PST1'] = round(($calculated_values['PST1'] * 0.980665),2);
-    				$calculated_values['m_dCondensateDrainPressure'] = round(($calculated_values['m_dCondensateDrainPressure'] * 0.980665),2);
-                }
-				$calculated_values['m_DesignPressure'] = round(($calculated_values['m_DesignPressure'] * 0.980665),2);
-			}
-			if($unit_set->PressureUnit == 'psig') 
-			{
-                if($calculator_code == "D_S2")
-                {
-    				$calculated_values['PST1'] = round(($calculated_values['PST1'] * 14.223),2);
-    				$calculated_values['m_dCondensateDrainPressure'] = round(($calculated_values['m_dCondensateDrainPressure'] * 14.223),2);
-                }
-				$calculated_values['m_DesignPressure'] = round(($calculated_values['m_DesignPressure'] * 14.223),2);
-			}
-            if ($unit_set->PressureUnit == 'kiloPascalGauge')    //sk 9/4/08
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round(($calculated_values['PST1'] * 98.0665),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round(($calculated_values['m_dCondensateDrainPressure'] * 98.0665),2);
-                }
-                $calculated_values['m_DesignPressure'] = round(($calculated_values['m_DesignPressure'] * 98.0665),2);
-            }
-            if ($unit_set->PressureUnit == 'KgPerCmSq')               //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round(($calculated_values['PST1'] + 1.03323),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round(($calculated_values['m_dCondensateDrainPressure'] + 1.03323),2);
-                }
-                $calculated_values['m_DesignPressure'] = round(($calculated_values['m_DesignPressure'] + 1.03323),2);
-
-            }
-            if ($unit_set->PressureUnit == 'psi')                     //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round((($calculated_values['PST1'] * 14.223) + 14.695),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round((($calculated_values['m_dCondensateDrainPressure'] * 14.223) + 14.695),2);
-                }
-                $calculated_values['m_DesignPressure'] = round((($calculated_values['m_DesignPressure'] * 14.223) + 14.695),2);
-
-            }
-            if ($unit_set->PressureUnit == 'kiloPascal')              //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round((($calculated_values['PST1'] * 98.0665) + 101.325),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round((($calculated_values['m_dCondensateDrainPressure'] * 98.0665) + 101.325),2);
-                }
-                $calculated_values['m_DesignPressure'] = round((($calculated_values['m_DesignPressure'] * 98.0665) + 101.325),2);
-            }
-            if ($unit_set->PressureUnit == 'mLC')                     //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round((($calculated_values['PST1'] * 10) + 10.3323),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round((($calculated_values['m_dCondensateDrainPressure'] * 10) + 10.3323),2);
-                }
-                $calculated_values['m_DesignPressure'] = round((($calculated_values['m_DesignPressure'] * 10) + 10.3323),2);
-
-            }
-            if ($unit_set->PressureUnit == 'ftLC')                    //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round((($calculated_values['PST1'] * 32.8084) + 33.8985),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round((($calculated_values['m_dCondensateDrainPressure'] * 32.8084) + 33.8985),2);
-                }
-                $calculated_values['m_DesignPressure'] = round((($calculated_values['m_DesignPressure'] * 32.8084) + 33.8985),2);
-
-            }
-            if ($unit_set->PressureUnit == 'ftWC')                    //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round((($calculated_values['PST1'] * 32.8084) + 33.8985),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round((($calculated_values['m_dCondensateDrainPressure'] * 32.8084) + 33.8985),2);
-                }
-                $calculated_values['m_DesignPressure'] = round((($calculated_values['m_DesignPressure'] * 32.8084) + 33.8985),2);
-
-            }
-            if ($unit_set->PressureUnit == 'mmWC')                    //mk
-            {
-                if($calculator_code == "D_S2")
-                {
-                    $calculated_values['PST1'] = round((($calculated_values['PST1'] * 10000) + 10332.3),2);
-                    $calculated_values['m_dCondensateDrainPressure'] = round((($calculated_values['m_dCondensateDrainPressure'] * 10000) + 10332.3),2);
-                }
-                $calculated_values['m_DesignPressure'] = round((($calculated_values['m_DesignPressure'] * 10000) + 10332.3),2);
-            }
-	   }
-
-    	if($unit_set->PressureDropUnit != 'mLC'){
-			if($unit_set->PressureDropUnit == 'Bar') 
-			{
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss'] / 10.1972;
-                }
-				$calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] / 10.1972; //sk 26/3
-				$calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] / 10.1972;
-			}
-			else if($unit_set->PressureDropUnit == 'ftLC') 
-			{
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss'] * 3.28084;
-                }
-				$calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] * 3.28084;
-				$calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] * 3.28084;
-			}
-			else if($unit_set->PressureDropUnit == 'kiloPascal') 
-			{
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss'] * 9.80665;
-                }
-				$calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] * 9.80665;
-				$calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] * 9.80665;
-			}
-            else if ($unit_set->PressureDropUnit == 'kiloPascalGauge')           //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss'] * 9.80665;
-                }
-                $calculated_values['ChilledFrictionLoss'] = ($calculated_values['ChilledFrictionLoss'] * 9.80665) - 101.325;
-                $calculated_values['CoolingFrictionLoss'] = ($calculated_values['CoolingFrictionLoss'] * 9.80665) - 101.325;
-            }
-            else if ($unit_set->PressureDropUnit == 'KgPerCmSq')                 //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss']/10;
-                }
-                $calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] / 10;
-                $calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] / 10;
-            }
-            else if ($unit_set->PressureDropUnit == 'KgPerCmSqGauge')            //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = ($calculated_values['HotWaterFrictionLoss']/10)- 1.03323;
-                }
-                $calculated_values['ChilledFrictionLoss'] = ($calculated_values['ChilledFrictionLoss'] / 10) - 1.03323;
-                $calculated_values['CoolingFrictionLoss'] = ($calculated_values['CoolingFrictionLoss'] / 10) - 1.03323;
-            }
-            else if ($unit_set->PressureDropUnit == 'psi')                       //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss']* 1.42233;
-                }
-                $calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] * 1.42233;
-                $calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] * 1.42233;
-            }
-            else if ($unit_set->PressureDropUnit == 'psig')                      //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = ($calculated_values['HotWaterFrictionLoss']* 1.42233) - 14.695;
-                }
-                $calculated_values['ChilledFrictionLoss'] = ($calculated_values['ChilledFrictionLoss'] * 1.42233) - 14.695;
-                $calculated_values['CoolingFrictionLoss'] = ($calculated_values['CoolingFrictionLoss'] * 1.42233) - 14.695;
-            }
-            else if ($unit_set->PressureDropUnit == 'mmWC')                      //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss']* 1000;
-                }
-                $calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] * 1000;
-                $calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] * 1000;
-            }
-            else if ($unit_set->PressureDropUnit == 'ftWC')                      //mk
-            {
-                if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = $calculated_values['HotWaterFrictionLoss']* 3.28084;
-                }
-                $calculated_values['ChilledFrictionLoss'] = $calculated_values['ChilledFrictionLoss'] * 3.28084;
-                $calculated_values['CoolingFrictionLoss'] = $calculated_values['CoolingFrictionLoss'] * 3.28084;
-            }
-            else if ($unit_set->PressureDropUnit == 'BarGauge')                  //mk
-            {
-                 if($calculator_code == "D_H2")
-                {
-                    $calculated_values['HotWaterFrictionLoss'] = ($calculated_values['HotWaterFrictionLoss']/ 10.1972) - 1.01325;
-                }
-                $calculated_values['ChilledFrictionLoss'] = ($calculated_values['ChilledFrictionLoss'] / 10.1972) - 1.01325;
-                $calculated_values['CoolingFrictionLoss'] = ($calculated_values['CoolingFrictionLoss'] / 10.1972) - 1.01325;
-            }
-    	}
-
-
-    	if($unit_set->WorkPressureUnit != 'KgPerCmSqGauge'){
-			if($unit_set->WorkPressureUnit == 'BarGauge') 
-			{
-				$calculated_values['m_maxCHWWorkPressure'] = round(($calculated_values['m_maxCHWWorkPressure'] * 0.980665),2);
-				$calculated_values['m_maxCOWWorkPressure'] = round(($calculated_values['m_maxCOWWorkPressure'] * 0.980665),2);
-
-			}
-			if($unit_set->WorkPressureUnit == 'psig') 
-			{
-				$calculated_values['m_maxCHWWorkPressure'] = round(($calculated_values['m_maxCHWWorkPressure'] * 14.223),2);
-				$calculated_values['m_maxCOWWorkPressure'] = round(($calculated_values['m_maxCOWWorkPressure'] * 14.223),2);
-
-			}
-            if ($unit_set->WorkPressureUnit == 'kiloPascalGauge')    //sk 9/4/08
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round(($calculated_values['m_maxCHWWorkPressure'] * 98.0665),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round(($calculated_values['m_maxCOWWorkPressure'] * 98.0665),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'KgPerCmSq')               //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round(($calculated_values['m_maxCHWWorkPressure'] + 1.03323),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round(($calculated_values['m_maxCOWWorkPressure'] + 1.03323),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'psi')                     //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round((($calculated_values['m_maxCHWWorkPressure'] * 14.223) + 14.695),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round((($calculated_values['m_maxCOWWorkPressure'] * 14.223) + 14.695),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'kiloPascal')              //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round((($calculated_values['m_maxCHWWorkPressure'] * 98.0665) + 101.325),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round((($calculated_values['m_maxCOWWorkPressure'] * 98.0665) + 101.325),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'mLC')                     //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round((($calculated_values['m_maxCHWWorkPressure'] * 10) + 10.3323),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round((($calculated_values['m_maxCOWWorkPressure'] * 10) + 10.3323),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'ftLC')                    //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round((($calculated_values['m_maxCHWWorkPressure'] * 32.8084) + 33.8985),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round((($calculated_values['m_maxCOWWorkPressure'] * 32.8084) + 33.8985),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'ftWC')                    //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round((($calculated_values['m_maxCHWWorkPressure'] * 32.8084) + 33.8985),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round((($calculated_values['m_maxCOWWorkPressure'] * 32.8084) + 33.8985),2);
-
-            }
-            if ($unit_set->WorkPressureUnit == 'mmWC')                    //mk
-            {
-                $calculated_values['m_maxCHWWorkPressure'] = round((($calculated_values['m_maxCHWWorkPressure'] * 10000) + 10332.3),2);
-                $calculated_values['m_maxCOWWorkPressure'] = round((($calculated_values['m_maxCOWWorkPressure'] * 10000) + 10332.3),2);
-            }
-    	}
-
-    	if($unit_set->NozzleDiameterUnit != 'DN'){
-    		$calculated_values['ChilledConnectionDiameter'] = $calculated_values['ChilledConnectionDiameter'] / 25; 
-    		$calculated_values['CoolingConnectionDiameter'] = $calculated_values['CoolingConnectionDiameter'] / 25; 
-    		$calculated_values['SteamConnectionDiameter'] = $calculated_values['SteamConnectionDiameter'] / 25; 
-    		$calculated_values['SteamDrainDiameter'] = $calculated_values['SteamDrainDiameter'] / 25; 
-    	}
-
-    	if($unit_set->SteamConsumptionUnit != 'KilogramsPerHr'){
+    	// if($unit_set->HeatUnit != 'kCPerHour'){
     		
-    		$calculated_values['SteamConsumption'] = $calculated_values['SteamConsumption'] * 2.20462262; 
-    	}
+    	// 	if ($unit_set->HeatUnit == 'KWatt')
+     //        {
+     //            // $calculated_values['AbsorbentPumpMotorKW'] = $calculated_values['AbsorbentPumpMotorKW'] / 859.845;   //SK 3600/4.1868
+     //            // $calculated_values['RefrigerantPumpMotorKW'] = $calculated_values['RefrigerantPumpMotorKW'] / 859.845;
+     //            // $calculated_values['PurgePumpMotorKW'] = $calculated_values['PurgePumpMotorKW'] / 859.845;
 
-    	if($unit_set->HeatUnit != 'kCPerHour'){
-    		
-    		if ($unit_set->HeatUnit == 'KWatt')
-            {
-                // $calculated_values['AbsorbentPumpMotorKW'] = $calculated_values['AbsorbentPumpMotorKW'] / 859.845;   //SK 3600/4.1868
-                // $calculated_values['RefrigerantPumpMotorKW'] = $calculated_values['RefrigerantPumpMotorKW'] / 859.845;
-                // $calculated_values['PurgePumpMotorKW'] = $calculated_values['PurgePumpMotorKW'] / 859.845;
+     //        }
+     //        else if($unit_set->HeatUnit == 'MBTUPerHour')
+     //        {
+     //            // $calculated_values['AbsorbentPumpMotorKW'] = $calculated_values['AbsorbentPumpMotorKW'] * 3.96832 / 1000;
+     //            // $calculated_values['RefrigerantPumpMotorKW'] = $calculated_values['RefrigerantPumpMotorKW'] * 3.96832 / 1000;
+     //            // $calculated_values['PurgePumpMotorKW'] = $calculated_values['PurgePumpMotorKW'] * 3.96832 / 1000;
 
-            }
-            else if($unit_set->HeatUnit == 'MBTUPerHour')
-            {
-                // $calculated_values['AbsorbentPumpMotorKW'] = $calculated_values['AbsorbentPumpMotorKW'] * 3.96832 / 1000;
-                // $calculated_values['RefrigerantPumpMotorKW'] = $calculated_values['RefrigerantPumpMotorKW'] * 3.96832 / 1000;
-                // $calculated_values['PurgePumpMotorKW'] = $calculated_values['PurgePumpMotorKW'] * 3.96832 / 1000;
+     //        }
+    	// }
 
-            }
-    	}
-
-    	if($unit_set->WeightUnit != 'Ton'){
-    		if($unit_set->WeightUnit == 'Pound') 
-    		{
-    			$calculated_values['OperatingWeight'] = $calculated_values['OperatingWeight'] * 2.20462262 * 1000;
-    			$calculated_values['MaxShippingWeight'] = $calculated_values['MaxShippingWeight'] * 2.20462262 * 1000;
-    			$calculated_values['FloodedWeight'] = $calculated_values['FloodedWeight'] * 2.20462262 * 1000;
-    			$calculated_values['DryWeight'] = $calculated_values['DryWeight'] * 2.20462262 * 1000;
-    		}
-    		else if ($unit_set->WeightUnit == 'Kilogram') 
-    		{
-    			$calculated_values['OperatingWeight'] = $calculated_values['OperatingWeight'] * 1000;
-    			$calculated_values['MaxShippingWeight'] = $calculated_values['MaxShippingWeight'] * 1000;
-    			$calculated_values['FloodedWeight'] = $calculated_values['FloodedWeight'] * 1000;
-    			$calculated_values['DryWeight'] = $calculated_values['DryWeight'] * 1000;
-    		}
-    	}
         
     	return $calculated_values;
 
     }
+
+
+    public function convertUITemperatureUnit($value,$unit){
+        if($unit == 'Fahrenheit'){
+            $value = ($value * 9)/5 +32;
+        }
+
+        return $value;
+
+    }
+
+    public function convertCalculationTemperatureUnit($value,$unit){
+        if($unit == 'Fahrenheit'){
+            $value = ($value - 32)*5/9;
+        }    
+
+        return $value;
+
+    }
+
+    public function convertUICapacityUnit($value,$unit){
+        if($unit == 'kW'){
+            $value = ($value * 3.5169);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationCapacityUnit($value,$unit){
+        if($unit == 'kW'){
+            $value = $value / 3.5169;
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIFlowRateUnit($value,$unit){
+
+
+        if($unit == 'CubicFeetPerHour'){
+            $value = ($value * 35.3147);
+        }
+
+        if($unit == 'GallonPerMin'){
+            $value = ($value * 264.172) / 60;
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationFlowRateUnit($value,$unit){
+        
+        if($unit == 'CubicFeetPerHour'){
+            $value = ($value / 35.3147);
+        }
+
+        if($unit == 'GallonPerMin'){
+            $value = ($value * 60) / 264.172;
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertUILengthUnit($value,$unit){
+        
+        if($unit == 'Inch'){
+            $value = ($value * 0.0393700787);
+        }
+
+        return round($value,4);
+
+    }
+
+    public function convertCalculationLengthUnit($value,$unit){
+        if($unit == 'Inch'){
+            $value = $value / 0.0393700787;
+        }    
+
+        return round($value,4);
+
+    }
+
+    public function convertUIFoulingFactorUnit($value,$unit){
+         
+        if($unit == 'SquareMeterKperkW'){
+            $value = ($value * 860);
+        }
+
+        if($unit == 'SquareFeetHrFperBTU'){
+            $value = ($value * 4.886);
+        }
+
+        return round($value,10);
+
+    }
+
+    public function convertCalculationFoulingFactorUnit($value,$unit){
+        if($unit == 'SquareMeterKperkW'){
+            $value = ($value / 860);
+        }
+
+        if($unit == 'SquareFeetHrFperBTU'){
+            $value = ($value / 4.886);
+        }
+
+        return round($value,10);
+
+    }
+
+
+    public function convertUIPressureUnit($value,$unit){
+
+
+        if($unit == 'BarGauge'){
+            $value = ($value * 0.980665);
+        }
+
+        if($unit == 'psig'){
+            $value = ($value * 14.223);
+        }
+
+        if($unit == 'kiloPascalGauge'){
+            $value = ($value * 98.0665);
+        }
+
+        if($unit == 'KgPerCmSq'){
+            $value = ($value + 1.03323);
+        }
+
+        if($unit == 'psi'){
+            $value = (($value * 14.223) + 14.695);
+        }
+
+        if($unit == 'kiloPascal'){
+            $value = (($value * 98.0665) + 101.325);
+        }
+
+        if($unit == 'mLC'){
+            $value = (($value * 10) + 10.3323);
+        }
+
+        if($unit == 'ftLC'){
+            $value = (($value * 32.8084) + 33.8985);
+        }
+
+        if($unit == 'ftWC'){
+            $value = (($value * 32.8084) + 33.8985);
+        }
+
+        if($unit == 'mmWC'){
+            $value = (($value * 10000) + 10332.3);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationPressureUnit($value,$unit){
+
+        if($unit == 'BarGauge'){
+            $value = ($value / 0.980665);
+        }
+
+        if($unit == 'psig'){
+            $value = ($value / 14.223);
+        }
+
+        if($unit == 'kiloPascalGauge'){
+            $value = ($value / 98.0665);
+        }
+
+        if($unit == 'KgPerCmSq'){
+            $value = ($value - 1.03323);
+        }
+
+        if($unit == 'psi'){
+            $value = (($value / 14.223) - 14.695);
+        }
+
+        if($unit == 'kiloPascal'){
+            $value = (($value / 98.0665) - 101.325);
+        }
+
+        if($unit == 'mLC'){
+            $value = (($value / 10) - 10.3323);
+        }
+
+        if($unit == 'ftLC'){
+            $value = (($value / 32.8084) - 33.8985);
+        }
+
+        if($unit == 'ftWC'){
+            $value = (($value / 32.8084) - 33.8985);
+        }
+
+        if($unit == 'mmWC'){
+            $value = (($value / 10000) - 10332.3);
+        }
+
+        return round($value,2);
+
+    }
+
+
+    public function convertUIPressureDropUnit($value,$unit){
+
+        if($unit == 'Bar') 
+        {
+
+            $value = $value / 10.1972; 
+        }
+        if($unit == 'ftLC') 
+        {
+            $value = $value * 3.28084;
+        }
+        if($unit == 'kiloPascal') 
+        {
+            $value = $value * 9.80665;
+        }
+        if ($unit == 'kiloPascalGauge')           //mk
+        {
+            $value = ($value * 9.80665) - 101.325;
+        }
+        if ($unit == 'KgPerCmSq')                 //mk
+        {
+            $value = $value / 10;
+        }
+        if ($unit == 'KgPerCmSqGauge')            //mk
+        {
+
+            $value = ($value / 10) - 1.03323;
+        }
+        if ($unit == 'psi')                       //mk
+        {
+
+            $value = $value * 1.42233;
+        }
+        if ($unit == 'psig')                      //mk
+        {
+            $value = ($value * 1.42233) - 14.695;
+        }
+        if ($unit == 'mmWC')                      //mk
+        {
+            $value = $value * 1000;
+        }
+        if ($unit == 'ftWC')                      //mk
+        {
+
+            $value = $value * 3.28084;
+        }
+        if ($unit == 'BarGauge')                  //mk
+        {
+
+           $value = ($value / 10.1972) - 1.01325;
+        }
+
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationPressureDropUnit($value,$unit){
+        if($unit == 'Bar') 
+        {
+
+            $value = $value * 10.1972; 
+        }
+        if($unit == 'ftLC') 
+        {
+            $value = $value / 3.28084;
+        }
+        if($unit == 'kiloPascal') 
+        {
+            $value = $value / 9.80665;
+        }
+        if ($unit == 'kiloPascalGauge')           //mk
+        {
+            $value = ($value / 9.80665) + 101.325;
+        }
+        if ($unit == 'KgPerCmSq')                 //mk
+        {
+            $value = $value * 10;
+        }
+        if ($unit == 'KgPerCmSqGauge')            //mk
+        {
+
+            $value = ($value * 10) + 1.03323;
+        }
+        if ($unit == 'psi')                       //mk
+        {
+
+            $value = $value / 1.42233;
+        }
+        if ($unit == 'psig')                      //mk
+        {
+            $value = ($value / 1.42233) + 14.695;
+        }
+        if ($unit == 'mmWC')                      //mk
+        {
+            $value = $value / 1000;
+        }
+        if ($unit == 'ftWC')                      //mk
+        {
+
+            $value = $value / 3.28084;
+        }
+        if ($unit == 'BarGauge')                  //mk
+        {
+
+           $value = ($value * 10.1972) + 1.01325;
+        }
+
+        return round($value,2);
+
+    }
+
+
+    public function convertUINozzleDiameterUnit($value,$unit){
+        
+        if($unit == 'NB'){
+            $value = ($value  / 25);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationNozzleDiameterUnit($value,$unit){
+        if($unit == 'NB'){
+            $value = $value * 25;
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUISteamConsumptionUnit($value,$unit){
+        
+        if($unit == 'PoundsPerHour'){
+            $value = ($value * 2.20462262);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationSteamConsumptionUnit($value,$unit){
+        if($unit == 'PoundsPerHour'){
+            $value = $value / 2.20462262;
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIHeatUnit($value,$unit){
+        
+        if($unit == 'KWatt'){
+            $value = ($value / 859.845);
+        }
+
+        if($unit == 'MBTUPerHour'){
+            $value = ($value  * 3.96832) / 1000;
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationHeatUnit($value,$unit){
+        if($unit == 'KWatt'){
+            $value = $value * 859.845;
+        }
+
+        if($unit == 'MBTUPerHour'){
+            $value = ($value  / 3.96832) * 1000;
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIWeightUnit($value,$unit){
+        
+        if($unit == 'Pound'){
+            $value = ($value * 2.20462262 * 1000);
+        }
+
+        if($unit == 'Kilogram'){
+            $value = ($value  * 1000);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationWeightUnit($value,$unit){
+        if($unit == 'Pound'){
+            $value = ($value / 2.20462262) / 1000;
+        }
+
+        if($unit == 'Kilogram'){
+            $value = ($value  / 1000);
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIAllWorkPrHWUnit($value,$unit){
+        
+        if($unit == 'psiGauge'){
+            $value = ($value * 14.2233);
+        }
+
+        if($unit == 'kiloPascalGauge'){
+            $value = ($value  * 98.0665);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationAllWorkPrHWUnit($value,$unit){
+        if($unit == 'psiGauge'){
+            $value = ($value / 14.2233);
+        }
+
+        if($unit == 'kiloPascalGauge'){
+            $value = ($value  / 98.0665);
+        }    
+
+        return round($value,2);
+
+    }
+
 
 }

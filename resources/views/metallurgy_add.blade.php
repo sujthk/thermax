@@ -66,6 +66,12 @@
 		                        	        <input id="default_thickness" name="default_thickness" type="text" value="{{ old('default_thickness') }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">OD (mm)</label>
+                                        <div class="col-sm-6">
+                                            <input id="ode" name="ode" type="text" value="{{ old('ode') }}" required class="form-control">
+                                        </div>
+                                    </div>
 		                        	<div class="form-group row">
 		                        	    <label class="col-sm-3 col-form-label">Min Thickness</label>
 		                        	    <div class="col-sm-6">

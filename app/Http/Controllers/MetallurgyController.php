@@ -33,6 +33,7 @@ class MetallurgyController extends Controller
             'con_max_velocity' => 'required|numeric',
             'abs_min_velocity' => 'required|numeric',
             'abs_max_velocity' => 'required|numeric',
+            'ode' => 'required|numeric',
 		]);
 
 
@@ -49,6 +50,7 @@ class MetallurgyController extends Controller
         $metallurgy->abs_max_velocity = $request->abs_max_velocity;
         $metallurgy->con_min_velocity = $request->con_min_velocity;
         $metallurgy->con_max_velocity = $request->con_max_velocity;
+        $metallurgy->ode = $request->ode;
 		$metallurgy->save();
 
 		return redirect('metallurgies')->with('message','Metallurgy Added')
@@ -74,6 +76,7 @@ class MetallurgyController extends Controller
             'con_max_velocity' => 'required|numeric',
             'abs_min_velocity' => 'required|numeric',
             'abs_max_velocity' => 'required|numeric',
+            'ode' => 'required|numeric',
 		]);
 
 
@@ -89,6 +92,7 @@ class MetallurgyController extends Controller
         $metallurgy->abs_max_velocity = $request->abs_max_velocity;
         $metallurgy->con_min_velocity = $request->con_min_velocity;
         $metallurgy->con_max_velocity = $request->con_max_velocity;
+        $metallurgy->ode = $request->ode;
 		$metallurgy->save();
 
 		return redirect('metallurgies')->with('message','Metallurgy Updated')

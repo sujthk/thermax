@@ -140,15 +140,15 @@ class CalculatorTestingController extends Controller
 
         $datas = array();
         $failure_data = array();
-        $i = 1;
+
         foreach ($tested_results as $tested_result) {
             $input_values = json_decode($tested_result->input_values,true);
             $output_values = json_decode($tested_result->output_values,true);
 
             if(!empty($tested_result->output_values)){
                 
-                $datas[] = $this->outputExcelFormat($output_values,$input_values['calculator_code'],$i);
-                $i++;
+                $datas[] = $this->outputExcelFormat($input_values,$output_values,$input_values['calculator_code']);
+                
             }
             else{
                 $failure_data[] = $input_values;
@@ -171,18 +171,44 @@ class CalculatorTestingController extends Controller
 
     }
 
-    public function outputExcelFormat($output_values,$calculator_code,$i){
+    public function outputExcelFormat($input_values,$output_values,$calculator_code){
         $data = [];
-        $data['Sr.No'] = $i;
+        $data['S.No'] = $input_values['S.No'];
+        $data['model_name'] = $input_values['model_name'];
+        $data['model_number'] = $input_values['model_number'];
+        $data['capacity'] = $input_values['capacity'];
+        $data['chilled_water_in'] = $input_values['chilled_water_in'];
+        $data['chilled_water_out'] = $input_values['chilled_water_out'];
+        $data['cooling_water_in'] = $input_values['cooling_water_in'];
+        $data['cooling_water_flow'] = $input_values['cooling_water_flow'];
+        $data['glycol_selected'] = $input_values['glycol_selected'];
+        $data['glycol_chilled_water'] = $input_values['glycol_chilled_water'];
+        $data['glycol_cooling_water'] = $input_values['glycol_cooling_water'];
+        $data['metallurgy_standard'] = $input_values['metallurgy_standard'];
+        $data['evaporator_material_value'] = $input_values['evaporator_material_value'];
+        $data['evaporator_thickness'] = $input_values['evaporator_thickness'];
+        $data['absorber_material_value'] = $input_values['absorber_material_value'];
+        $data['absorber_thickness'] = $input_values['absorber_thickness'];
+        $data['condenser_material_value'] = $input_values['condenser_material_value'];
+        $data['condenser_thickness'] = $input_values['condenser_thickness'];
+        $data['fouling_factor'] = $input_values['fouling_factor'];
+        $data['fouling_chilled_water_value'] = $input_values['fouling_chilled_water_value'];
+        $data['fouling_cooling_water_value'] = $input_values['fouling_cooling_water_value'];
+        $data['steam_pressure'] = $input_values['steam_pressure'];
+        $data['region_type'] = $input_values['region_type'];
+
+
+
+        $data['Sr.No'] = $input_values['S.No'];
         $data['model'] = isset($output_values['model_name']) ?  $output_values['model_name'] : "";
         $data['Capacity'] = isset($output_values['TON']) ?  $output_values['TON'] : "";
         $data['chilled_inlet_temp'] = isset($output_values['TCHW11']) ?  $output_values['TCHW11'] : "";
         $data['chilled_outlet_temp'] = isset($output_values['TCHW12']) ?  $output_values['TCHW12'] : "";
         $data['chilled_water_flow'] = isset($output_values['ChilledWaterFlow']) ?  $output_values['ChilledWaterFlow'] : "";
-        $data['cooling_water_flow'] = isset($output_values['GCW']) ?  $output_values['GCW'] : "";
+        // $data['cooling_water_flow'] = isset($output_values['GCW']) ?  $output_values['GCW'] : "";
         $data['cooling_inlet_temp'] = isset($output_values['TCW11']) ?  $output_values['TCW11'] : "";
         $data['cooling_outlet_temp'] = isset($output_values['CoolingWaterOutTemperature']) ?  $output_values['CoolingWaterOutTemperature'] : "";
-        $data['steam_pressure'] = isset($output_values['PST1']) ?  $output_values['PST1'] : "";
+        // $data['steam_pressure'] = isset($output_values['PST1']) ?  $output_values['PST1'] : "";
         $data['steam_consumption'] = isset($output_values['SteamConsumption']) ?  $output_values['SteamConsumption'] : "";
         if(empty($output_values['BypassFlow'])){
             $data['cooling_bypass_flow'] = "-";
@@ -260,7 +286,8 @@ class CalculatorTestingController extends Controller
         $data['FloodedWeight'] = isset($output_values['FloodedWeight']) ?  $output_values['FloodedWeight'] : "";
         $data['DryWeight'] = isset($output_values['DryWeight']) ?  $output_values['DryWeight'] : "";
         $data['ClearanceForTubeRemoval'] = isset($output_values['ClearanceForTubeRemoval']) ?  $output_values['ClearanceForTubeRemoval'] : "";
-        $data['region_type'] = isset($output_values['region_type']) ?  $output_values['region_type'] : "";
+        // $data['region_type'] = isset($output_values['region_type']) ?  $output_values['region_type'] : "";
+        $data['Result'] = isset($output_values['Result']) ?  $output_values['Result'] : "";
 
 
 
