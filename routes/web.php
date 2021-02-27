@@ -95,10 +95,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
 	/*Double Effect S2 Serires*/
 	Route::get('/calculators/double-effect-s2', 'DoubleSteamController@getDoubleEffectS2')->name('calculators/double-effect-s2');
-	Route::post('/calculators/double-effect-s2', 'DoubleSteamController@calculateDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/ajax-calculate', 'DoubleSteamController@postAjaxDoubleEffectS2');
-	Route::post('/calculators/double-effect-s2/ajax-calculate-region', 'DoubleSteamController@postAjaxDoubleEffectS2Region');
-
+	// Route::post('/calculators/double-effect-s2/ajax-calculate-region', 'DoubleSteamController@postAjaxDoubleEffectS2Region');
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
 	//report
@@ -189,5 +187,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
 
     Route::get('/calculators/l5-series', 'L5SeriesController@getL5Series')->name('calculators/l5-series');
+    Route::post('/calculators/l5-series/ajax-calculate', 'L5SeriesController@postAjaxL5');
 
 });

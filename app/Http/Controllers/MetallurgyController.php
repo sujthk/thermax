@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Metallurgy;
 use App\ChillerOption;
+
 class MetallurgyController extends Controller
 {
     public function getMetallurgies(){

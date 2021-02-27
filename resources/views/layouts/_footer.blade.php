@@ -33,7 +33,7 @@
     <link rel="stylesheet" href="{{asset('sweetalert2/dist/sweetalert2.min.css')}}">
     <script src="{{asset('sweetalert2/dist/sweetalert2.min.js')}}"></script>
     
-    <script src="{{asset('assets/pages/user-profile.js')}}"></script>
+    <!-- <script src="{{asset('assets/pages/user-profile.js')}}"></script> -->
     
     @yield('scripts')
      <script>

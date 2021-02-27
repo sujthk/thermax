@@ -43,19 +43,30 @@
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Calculators</h5>
+                                    <br>
+                                    <br>
+                                    <br>
 		                            <div class="card-body">
 		                            	<div class="row">
 		                            	     <div class="col-sm-6">
-		                            		
+		                            		    <h5>Import Calculation Datas</h5>
         							            <form action="{{url('importExcel')}}" method="POST" enctype="multipart/form-data">
         							                {{ csrf_field() }}
+                                                    <select name="code" id="code" class="form-control"  required="">
+                                                        <option value="">---Select Calculator---</option>
+                                                    @foreach($calculator_keys as $calculator_key)
+
+                                                    <option  value="{{$calculator_key->code}}">{{$calculator_key->name}}</option>
+                                                    @endforeach
+                                                    </select><br>
         							                <input type="file" name="file" class="form-control" required="">
         							                <br>
-        							                <button class="btn btn-success" type="submit">Import User Data</button>
+        							                <button class="btn btn-success" type="submit">Import Calculation Datas</button>
         							               
         							            </form>
 							                </div>
 							            <div class="col-sm-6">
+                                            <h5>Export Calculation Datas</h5>
 							            	<form action="{{url('importExport')}}" method="POST" enctype="multipart/form-data">
     							                {{ csrf_field() }}
     							            	<select name="code" id="code" class="form-control"  required="">
@@ -65,7 +76,7 @@
      											<option  value="{{$calculator_key->code}}">{{$calculator_key->name}}</option>
      											@endforeach
      											</select><br>
-    							            	 <button class="btn btn-warning" type="submit">Export User Data</button>
+    							            	 <button class="btn btn-warning" type="submit">Export Calculation Datas</button>
                                              </form>
 							            </div>
 							            </div>

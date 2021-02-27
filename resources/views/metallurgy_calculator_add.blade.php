@@ -58,18 +58,10 @@
                                         <label class="col-sm-3 col-form-label">Code</label>
                                         <div class="col-sm-6">
                                             <select name="code" id="code" class="form-control">
-                                                <option value="D_S2">S2 Series</option>
-                                                <option value="D_S2_SMALL">S2 Series - Small</option>
-                                                <option value="D_S1">S1 Series</option>
-                                                <option value="D_G2">Direct G2 Series</option>
-                                                <option value="D_G2_SMALL">Direct G2 Series - Small</option>
-                                                <option value="D_E2">E2 Series</option>
-                                                <option value="D_H2">H2 Series</option>
-                                                <option value="D_H1">H1 Series</option>
-                                                <option value="D_L5">L5 Series</option>
-                                                <option value="D_5G">5G Series</option>
-                                                <option value="D_STEAM_FIRED">Steam Fired</option>
-                                                <option value="D_DIRECT_FIRED">Direct Fired</option>
+                                                @foreach ($calculators as $calculator)
+                                                    <option value="{{ $calculator->code }}">{{ $calculator->name }}</option>
+                                                @endforeach
+ 
                                             </select>
                                         </div>
                                     </div>

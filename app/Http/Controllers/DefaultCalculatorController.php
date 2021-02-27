@@ -13,6 +13,7 @@ use App\CalculationKey;
 use App\Language;
 use App\LanguageValue;
 use App\LanguageKey;
+use App\Calculator;
 use Log;
 use Excel;
 class DefaultCalculatorController extends Controller
@@ -90,7 +91,9 @@ class DefaultCalculatorController extends Controller
 
     public function addMetallurgyCalculator(){
 
-        return view('metallurgy_calculator_add');
+        $calculators = Calculator::all();
+
+        return view('metallurgy_calculator_add')->with('calculators',$calculators);
     }
 
     public function postMetallurgyCalculator(Request $request){
@@ -390,7 +393,6 @@ class DefaultCalculatorController extends Controller
                $data[] = $data1;
             }
 
-            //return $data;
             return Excel::create('chiller_calculation', function($excel) use ($data) {
                 $excel->sheet('mySheet', function($sheet) use ($data)
                 {
@@ -401,8 +403,16 @@ class DefaultCalculatorController extends Controller
         else
         {
              
-            $data1 = array('id','name','code','min_model');
-            $data[] =array_merge($data1,$key_datas);
+            $data1 =[];
+            $data1['id'] = "";
+            $data1['name'] = "";
+            $data1['code'] = "";
+            $data1['min_model'] = "";
+             foreach ($key_datas as $key => $key_data) {
+                $data1[$key_data] = "";
+             }
+            $data[] = $data1;
+
 
             return Excel::create('chiller_calculation', function($excel) use ($data) {
                 $excel->sheet('mySheet', function($sheet) use ($data)
@@ -432,7 +442,7 @@ class DefaultCalculatorController extends Controller
             $titles = "";
 
             if(!empty($data) && count($data)){
-            $key_datas1 = CalculationKey::where('code',$data[0]['code'])->first();
+            $key_datas1 = CalculationKey::where('code',$request->code)->first();
             $key_datas =explode(",",$key_datas1->keys);
             }
             //return  $key_datas;
@@ -441,14 +451,14 @@ class DefaultCalculatorController extends Controller
                     $data1=[];
                     foreach ($key_datas as $key_data) {
                         //if($value[strtolower($key_data)])
-                            $data1[$key_data] = $value[strtolower($key_data)];
+                            $data1[$key_data] = $value[$key_data];
                     }
                     
                     $chiller_calculation_value = ChillerCalculationValue::where('code',$value['code'])->where('min_model',$value['min_model'])->first();
                     if($chiller_calculation_value)
                     {
                         $chiller_calculation_value->name = $value['name'];
-                        $chiller_calculation_value->code = $value['code'];
+                        $chiller_calculation_value->code = $request->code;
                         $chiller_calculation_value->min_model = $value['min_model'];
                         $chiller_calculation_value->calculation_values = json_encode($data1);
                         //return $chiller_calculation_value;
@@ -458,7 +468,7 @@ class DefaultCalculatorController extends Controller
                     {
                         $chiller_calculation_value =new ChillerCalculationValue;
                         $chiller_calculation_value->name = $value['name'];
-                        $chiller_calculation_value->code = $value['code'];
+                        $chiller_calculation_value->code = $request->code;
                         $chiller_calculation_value->min_model = $value['min_model'];
                         $chiller_calculation_value->calculation_values = json_encode($data1);
                         //return $chiller_calculation_value;
@@ -482,7 +492,9 @@ class DefaultCalculatorController extends Controller
 
         $calculator_keys = CalculationKey::orderBy('created_at', 'desc')->get();
 
-        return view('calculator_key_list')->with('calculator_keys',$calculator_keys);
+        $calculators = Calculator::all();
+
+        return view('calculator_key_list')->with('calculator_keys',$calculator_keys)->with('calculators',$calculators);
     }
     public function postCalculationKey(Request $request){
 

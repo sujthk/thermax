@@ -38,7 +38,7 @@
 	                    <div class="card">
 	                        <div class="card-header">
 	                        	<div class="">
-		                            <h5>Add Metallurgy Calculator</h5>
+		                            <h5>Edit Group Calculator</h5>
                             	</div>
 	                        </div>
 	                        <form id="edit_default_calculator" method="post" action="{{ url('/group-calcluation/update',[$group_calculation->id]) }}" enctype="multipart/form-data">

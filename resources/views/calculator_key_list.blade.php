@@ -143,8 +143,13 @@
 	                                <input type="text" class="form-control" name="name" required placeholder="Name">
 	                            </div>
 	                              <div class="input-group">
-	                                <label class="col-form-label">Code</label> 
-	                                <input type="text" class="form-control" name="code" required placeholder="Code">
+	                                <label class="col-form-label">Calculator</label> 
+                                    <select name="code" id="code" class="form-control">
+                                        @foreach ($calculators as $calculator)
+                                            <option value="{{ $calculator->code }}">{{ $calculator->name }}</option>
+                                        @endforeach
+                                    
+                                    </select>
 	                            </div>
 	                            <div class="input-group">
 	                                <label class="col-form-label">Keys</label> 
