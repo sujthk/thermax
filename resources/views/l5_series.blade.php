@@ -1249,8 +1249,8 @@
                 changed_value = input_type;
 
                 if(validate){
-                    // sendValues(send_values_url);
-                    alert("send values");
+                    sendValues(send_values_url);
+                    // alert("send values");
                 }
                 else{
                     $("#calculate_button").prop('disabled', true);
