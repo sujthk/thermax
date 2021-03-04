@@ -345,7 +345,7 @@ class DoubleSteamController extends Controller
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
         
-        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas])->render();
+        $view = view("reports.report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas])->render();
 
         return $view;
     
@@ -480,8 +480,8 @@ class DoubleSteamController extends Controller
         $vam_base = new VamBaseController();
 
         $pid_ft3 = $vam_base->PIPE_ID($this->calculation_values['PNB']);
-        $this->calculation_values['PODA'] = $pid_ft3['PODA'];
-        $this->calculation_values['THPA'] = $pid_ft3['THPA'];
+        $this->calculation_values['PODA'] = $pid_ft3['POD'];
+        $this->calculation_values['THPA'] = $pid_ft3['THP'];
 
         
         $this->calculation_values['PSL1'] = $this->calculation_values['PSLI'] + $this->calculation_values['PSLO'];

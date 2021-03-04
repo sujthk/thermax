@@ -768,6 +768,7 @@
         var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
         var region_user = model_values.region_type;
         var send_values_url = "{{ url('calculators/l5-series/ajax-calculate') }}";
+        var submit_url = "{{ url('calculators/l5-series/submit-calculate') }}";
 
 
 
@@ -1258,6 +1259,10 @@
 
             }
 
+        $("#l5_series").submit(function(event) {
+            event.preventDefault();
+            submitValues(submit_url);
+        });
    
         function castToBoolean(){
 

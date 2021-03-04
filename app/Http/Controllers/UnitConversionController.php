@@ -68,8 +68,11 @@ class UnitConversionController extends Controller
         if(!empty($chiller_values['fouling_cooling_water_value'])){
             $chiller_values['fouling_cooling_water_value'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_cooling_water_value'],$unit_set->FoulingFactorUnit);
         }
+        if($calculator_code == "L5"){
+            $chiller_values['fouling_non_hot'] = $this->convertUIFoulingFactorUnit($chiller_values['fouling_non_hot'],$unit_set->FoulingFactorUnit);
+        }
 
-        // PressureUnit
+        // PressureUnit , FurnacePressureDropUnit, WorkPressureUnit, PressureDropUnit
         if($calculator_code == "D_S2"){
             $chiller_values['steam_pressure'] = $this->convertUIPressureUnit($chiller_values['steam_pressure'],$unit_set->PressureUnit);
             $chiller_values['steam_pressure_min_range'] = $this->convertUIPressureUnit($chiller_values['steam_pressure_min_range'],$unit_set->PressureUnit);
@@ -152,7 +155,7 @@ class UnitConversionController extends Controller
         }
 
 
-        // PressureUnit
+        // PressureUnit, PressureDropUnit, FurnacePressureDropUnit, WorkPressureUnit
         if($calculator_code == "D_S2"){
             $chiller_values['steam_pressure'] = $this->convertCalculationPressureUnit($chiller_values['steam_pressure'],$unit_set->PressureUnit);
             $chiller_values['steam_pressure_min_range'] = $this->convertCalculationPressureUnit($chiller_values['steam_pressure_min_range'],$unit_set->PressureUnit);
@@ -226,7 +229,7 @@ class UnitConversionController extends Controller
         }
 
 
-        // PressureUnit and WorkPressureUnit
+        // PressureUnit, PressureDropUnit, FurnacePressureDropUnit, WorkPressureUnit
         $calculated_values['m_maxCHWWorkPressure'] = $this->convertUIPressureUnit($calculated_values['m_maxCHWWorkPressure'],$unit_set->WorkPressureUnit);
         $calculated_values['m_maxCOWWorkPressure'] = $this->convertUIPressureUnit($calculated_values['m_maxCOWWorkPressure'],$unit_set->WorkPressureUnit);
         $calculated_values['m_DesignPressure'] = $this->convertUIPressureUnit($calculated_values['m_DesignPressure'],$unit_set->PressureUnit);
@@ -710,6 +713,63 @@ class UnitConversionController extends Controller
 
         if($unit == 'kiloPascalGauge'){
             $value = ($value  / 98.0665);
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIAreaUnit($value,$unit){
+        
+        if($unit == 'SquareFeet'){
+            $value = ($value * 10.763915051182416);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationAreaUnit($value,$unit){
+        if($unit == 'SquareFeet'){
+            $value = $value / 10.763915051182416;
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIVolumeUnit($value,$unit){
+        
+        if($unit == 'CubicFeet'){
+            $value = ($value * 35.3147);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationVolumeUnit($value,$unit){
+        if($unit == 'CubicFeet'){
+            $value = $value / 35.3147;
+        }    
+
+        return round($value,2);
+
+    }
+
+    public function convertUIExhaustGasFlowUnit($value,$unit){
+        
+        if($unit == 'PoundsPerHour'){
+            $value = ($value * 2.20462262);
+        }
+
+        return round($value,2);
+
+    }
+
+    public function convertCalculationExhaustGasFlowUnit($value,$unit){
+        if($unit == 'PoundsPerHour'){
+            $value = $value / 2.20462262;
         }    
 
         return round($value,2);

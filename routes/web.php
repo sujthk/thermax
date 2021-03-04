@@ -188,5 +188,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
     Route::get('/calculators/l5-series', 'L5SeriesController@getL5Series')->name('calculators/l5-series');
     Route::post('/calculators/l5-series/ajax-calculate', 'L5SeriesController@postAjaxL5');
+    Route::post('/calculators/l5-series/submit-calculate', 'L5SeriesController@postL5');
 
 });
