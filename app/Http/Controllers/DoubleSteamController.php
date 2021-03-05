@@ -390,7 +390,7 @@ class DoubleSteamController extends Controller
 
         if($type == 'save_word'){
             $report_controller = new ReportController();
-            $word_download = $report_controller->wordFormat($user_report_id,$this->model_code);
+            $word_download = $report_controller->wordFormatS2($user_report_id,$this->model_code);
 
             $file_name = "S2-Steam-Fired-Serices-".Auth::user()->id.".docx";
             return response()->download(storage_path($file_name));

@@ -769,6 +769,8 @@
         var region_user = model_values.region_type;
         var send_values_url = "{{ url('calculators/l5-series/ajax-calculate') }}";
         var submit_url = "{{ url('calculators/l5-series/submit-calculate') }}";
+        var save_report_url = "{{ url('calculators/l5-series/save-report') }}";
+        var reset_url = "{{ url('calculators/l5-series/reset-calculate') }}";
 
 
 
@@ -1135,9 +1137,9 @@
 
         $('input:radio[name="region_type"]').change(function() {
             model_values.region_type = $(this).val();
-            model_values.model_number = 60;
+            model_values.model_number = 185;
             
-            sendRegionValues();
+            sendResetValues(reset_url);
         });   
 
 
@@ -1263,6 +1265,26 @@
             event.preventDefault();
             submitValues(submit_url);
         });
+
+        $( "#reset" ).click(function() {
+            // console.log(model_values.cooling_water_ranges);
+            sendResetValues(reset_url);
+        });
+
+        function afterReset(){
+            if(model_values.region_type == 2){
+                //console.log("usa selected");
+                model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
+                model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
+                model_values.fouling_hot_water_value = model_values.fouling_non_hot
+            }
+            updateValues(); 
+        }
+
+        $( ".save_report" ).click(function() {
+            saveReport(save_report_url);
+        });
+
    
         function castToBoolean(){
 

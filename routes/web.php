@@ -189,5 +189,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::get('/calculators/l5-series', 'L5SeriesController@getL5Series')->name('calculators/l5-series');
     Route::post('/calculators/l5-series/ajax-calculate', 'L5SeriesController@postAjaxL5');
     Route::post('/calculators/l5-series/submit-calculate', 'L5SeriesController@postL5');
+    Route::post('/calculators/l5-series/save-report', 'L5SeriesController@postSaveReport');
+    Route::get('/calculators/l5-series/download-report/{user_report_id}/{type}', 'L5SeriesController@downloadReport')->name('download.l5report');
+    Route::post('/calculators/l5-series/reset-calculate', 'L5SeriesController@postResetL5');
 
 });

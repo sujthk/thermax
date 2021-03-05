@@ -145,21 +145,21 @@ class L5SeriesController extends Controller
         $this->CWFLOW();
         
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
         
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        // try {
+        try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -167,17 +167,16 @@ class L5SeriesController extends Controller
             $this->RESULT_CALCULATE();
     
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
 
-        // $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
-        $calculated_values = $this->calculation_values;
-        Log::info($calculated_values);
-        return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
+        // Log::info($this->calculation_values);
+        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
+
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -218,10 +217,150 @@ class L5SeriesController extends Controller
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
         
-        $view = view("report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas])->render();
+        $view = view("reports.l5_report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas])->render();
 
         return $view;
     
+    }
+
+    public function postSaveReport(Request $request){
+        $calculation_values = $request->input('calculation_values');
+        $name = $request->input('name',"");
+        $project = $request->input('project',"");
+        $phone = $request->input('phone',"");
+        $report_type = $request->input('report_type',"save_pdf");
+
+        
+
+        $user = Auth::user();
+
+        $user_report = new UserReport;
+        $user_report->user_id = $user->id;
+        $user_report->name = $name;
+        $user_report->project = $project;
+        $user_report->phone = $phone;
+        $user_report->calculator_code = $this->model_code;
+        $user_report->unit_set_id = $user->unit_set_id;
+        $user_report->report_type = $report_type;
+        $user_report->region_type = $calculation_values['region_type'];
+        $user_report->calculation_values = json_encode($calculation_values);
+        $user_report->language = Auth::user()->language_id;
+        $user_report->save();
+
+        $redirect_url = route('download.l5report', ['user_report_id' => $user_report->id,'type' => $report_type]);
+        
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','redirect_url'=>$redirect_url]);
+        
+    }
+
+    public function downloadReport($user_report_id,$type){
+
+        $user_report = UserReport::find($user_report_id);
+        if(!$user_report){
+            return response()->json(['status'=>false,'msg'=>'Invalid Report']);
+        }
+
+        if($type == 'save_word'){
+            $report_controller = new ReportController();
+            $word_download = $report_controller->wordFormatL5($user_report_id,$this->model_code);
+
+            $file_name = "L5-Serices-".Auth::user()->id.".docx";
+            return response()->download(storage_path($file_name));
+        }
+
+        $calculation_values = json_decode($user_report->calculation_values,true);
+        
+        $name = $user_report->name;
+        $project = $user_report->project;
+        $phone = $user_report->phone;
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>=',$calculation_values['MODEL'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+        $evaporator_name = $evaporator_option->metallurgy->display_name;
+        $absorber_name = $absorber_option->metallurgy->display_name;
+        $condenser_name = $condenser_option->metallurgy->display_name;
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+
+        $language = $user_report->language;
+
+
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+        $units_data = $vam_base->getUnitsData();
+
+
+        $pdf = PDF::loadView('reports.report_l5_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
+
+        return $pdf->download('l5.pdf');
+
+    }
+
+    public function postResetL5(Request $request){
+        $model_number =(int)$request->input('model_number');
+        $model_values = $request->input('values');
+
+        $chiller_form_values = $this->getFormValues($model_number);
+
+        $chiller_form_values['region_type'] = $model_values['region_type'];
+        if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
+        {
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+            $chiller_form_values['hot_water_in'] =  $chiller_form_values['USA_hot_water_in'];
+            $chiller_form_values['hot_water_flow'] =  $chiller_form_values['USA_hot_water_flow'];
+
+            if($chiller_form_values['region_type'] == 2)
+                $chiller_form_values['fouling_factor']="ari";
+            else
+                $chiller_form_values['fouling_factor']="standard";
+
+        }
+
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>=',$model_number)->first();
+        //$queries = DB::getQueryLog();
+
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_options = $chiller_options->where('type', 'eva');
+        $absorber_options = $chiller_options->where('type', 'abs');
+        $condenser_options = $chiller_options->where('type', 'con');
+
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+    
+            
+        $this->model_values = $chiller_form_values;
+
+        $this->castToBoolean();
+        $range_calculation = $this->RANGECAL();
+
+        $min_chilled_water_out = Auth::user()->min_chilled_water_out;
+        if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
+            $this->model_values['min_chilled_water_out'] = $min_chilled_water_out;
+        
+
+        $unit_conversions = new UnitConversionController;
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
+ 
+        
+
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
+
     }
 
 
@@ -1055,6 +1194,11 @@ class L5SeriesController extends Controller
         $absorber_option = $chiller_options->where('type', 'abs')->where('value',$chiller_metallurgy_option->abs_default_value)->first();
         $condenser_option = $chiller_options->where('type', 'con')->where('value',$chiller_metallurgy_option->con_default_value)->first();
 
+        if(!isset($this->model_values['generator_tube_name'])){
+            $this->model_values['generator_tube_name'] = "";
+        }
+
+
         if($this->model_values['metallurgy_standard']){
                      
             $this->calculation_values['TU2'] = $chiller_metallurgy_option->eva_default_value; 
@@ -1063,6 +1207,7 @@ class L5SeriesController extends Controller
             $this->calculation_values['TU6'] = $absorber_option->metallurgy->default_thickness;
             $this->calculation_values['TV5'] = $chiller_metallurgy_option->con_default_value; 
             $this->calculation_values['TV6'] = $condenser_option->metallurgy->default_thickness;
+            $this->calculation_values['generator_tube_name'] = $this->model_values['generator_tube_name'];
             $this->calculation_values['TG2'] = 1;
             $this->calculation_values['TG3'] = 0.65;
             // $this->calculation_values['FFCHW'] = 0.0; 
@@ -1079,6 +1224,7 @@ class L5SeriesController extends Controller
             $this->calculation_values['TV6'] = $this->model_values['condenser_thickness'];
 
             $this->calculation_values['TG2'] = $this->model_values['generator_tube_value'];
+            $this->calculation_values['generator_tube_name'] = $this->model_values['generator_tube_name'];
             if($this->calculation_values['TG2'] == 1){
                 $this->calculation_values['TG3'] = 0.65;
             }
@@ -1086,6 +1232,7 @@ class L5SeriesController extends Controller
                 $this->calculation_values['TG3'] = 0.8;
             }
         }
+
 
 
         $this->calculation_values['GCW'] = $this->model_values['cooling_water_flow'];
@@ -1123,6 +1270,7 @@ class L5SeriesController extends Controller
         $this->calculation_values['CoolingFrictionLoss'] = 0;
         $this->calculation_values['HotwaterFrictionLoss'] = 0;
         $this->calculation_values['TGP'] = 0;
+        $this->calculation_values['HHType'] = "Standard";
         // $this->calculation_values['EVAPDROP'] = 0;
         
 
@@ -3037,15 +3185,6 @@ class L5SeriesController extends Controller
             $this->calculation_values['UABSL'] = $this->calculation_values['UABSL'] * 0.9;
         }
 
-        Log::info("UEVA = ".$this->calculation_values['UEVA']);
-        Log::info("UEVAH = ".$this->calculation_values['UEVAH']);
-        Log::info("UEVAL = ".$this->calculation_values['UEVAL']);
-        Log::info("UCONH = ".$this->calculation_values['UCONH']);
-        Log::info("UABSH = ".$this->calculation_values['UABSH']);
-        Log::info("UABSL = ".$this->calculation_values['UABSL']);
-        Log::info("UCONL = ".$this->calculation_values['UCONL']);
-        Log::info("UCON = ".$this->calculation_values['UCON']);
-
 
         //CW = 2;       //DEFAULT CONDENSER ENTRY, 1 FOR ABSORBER ENTRY
 
@@ -3682,8 +3821,7 @@ class L5SeriesController extends Controller
                 }
                 else
                 {
-                    Log::info("LMTDGENL = ".$this->calculation_values['LMTDGENL']);
-                    Log::info("LMTDGENLA = ".$this->calculation_values['LMTDGENLA']);
+
                     if ($this->calculation_values['LMTDGENL'] > $this->calculation_values['LMTDGENLA'])
                     {
                         $this->calculation_values['Notes'] = $this->notes['NOTES_HW_TEMP_LESS'];
@@ -4023,7 +4161,15 @@ class L5SeriesController extends Controller
             'how_water_temp_min_range',
             'how_water_temp_max_range',
             'generator_tube_list',
-            'hot_water_flow']);
+            'hot_water_flow',
+            'USA_capacity',
+            'USA_chilled_water_in',
+            'USA_chilled_water_out',
+            'USA_cooling_water_in',
+            'USA_cooling_water_flow',
+            'USA_hot_water_in',
+            'USA_hot_water_flow'
+            ]);
 
         $region_type = Auth::user()->region_type;
 

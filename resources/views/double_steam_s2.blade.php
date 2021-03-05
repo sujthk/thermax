@@ -752,7 +752,7 @@
 	var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
 	var region_user = model_values.region_type;
     var save_report_url = "{{ url('calculators/double-effect-s2/save-report') }}";
-    var show_report_url = "{{ url('calculators/double-effect-s2/show-report') }}";
+    // var show_report_url = "{{ url('calculators/double-effect-s2/show-report') }}";
     var reset_url = "{{ url('calculators/double-effect-s2/reset-calculate') }}";
     var submit_url = "{{ url('calculators/double-effect-s2/submit-calculate') }}";
     var send_values_url = "{{ url('calculators/double-effect-s2/ajax-calculate') }}";
@@ -1177,10 +1177,10 @@
         }
 
 
-		$( "#show_report" ).click(function() {
-			showReport(show_report_url);
+		// $( "#show_report" ).click(function() {
+		// 	showReport(show_report_url);
 
-		});
+		// });
 
 
 		$( ".save_report" ).click(function() {

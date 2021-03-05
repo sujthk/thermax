@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Http\Controllers\VamBaseController;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\SendUserOtp;
@@ -325,11 +326,11 @@ class UserController extends Controller
 
         $unit_set = UnitSet::find($user_report->unit_set_id);
 
-        $units_data = $this->getUnitsData();
 
         $language = $user_report->language;
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas($language);
+        $units_data = $vam_base->getUnitsData();
         
 
         if($user_report->calculator_code == 'D_S2')
@@ -344,18 +345,18 @@ class UserController extends Controller
         }
         elseif ($user_report->calculator_code == 'D_G2') {
 
-            $pdf = PDF::loadView('reports.report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data]);
+            $pdf = PDF::loadView('reports.report_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
             return $pdf->download('Direct-Fired-series.pdf');
+         }
+         elseif ($user_report->calculator_code == 'L5') {
+
+            $pdf = PDF::loadView('reports.report_l5_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
+            return $pdf->download('l5-series.pdf');
          }
         
 
     }
-    public function getUnitsData()
-    {
-
-        return array('Centigrade' => "°C",'Fahrenheit' => "°F",'Millimeter' => "mm",'Inch' => "in",'Kilogram' => "kg",'Ton' => "ton",'Pound' => "lbs",'KgPerCmSq' => "kg/cm²",'KgPerCmSqGauge' =>"kg/cm²(g)",'Bar' =>"bar",'BarGauge' =>"bar(g)",'mLC' =>"mLC",'mWC' => "mWC",'mmWC' => "mmWC",'ftLC' => "ftLC",'ftWC' => "ftWC",'psi' => "psi",'psig' => "psi(g)",'kiloPascal' => "kPa",'kiloPascalGauge' => "kPa(g)",'CubicMeter' =>"m³",'CubicFeet' =>"cu.ft.",'SquareMeter' =>"m²",'SquareFeet' =>"sq.ft.",'TR' => "TR",'kW' => "kW",'CubicMeterPerHr' => "m³/hr",'CubicFeetPerHour' => "cu.ft./hr",'GallonPerMin' => "gallon/min",'KilogramsPerHr' => "kg/hr",'PoundsPerHour' => "lb/hr",'NCubicMeterPerHr' => "Nm³/hr",'NCubicFeetPerHour' =>"Ncu.ft./hr",'SquareMeterKperkW' =>"m² K/kW",'SquareMeterHrCperKcal' =>"m² hr °C/kcal",'SquareFeetHrFperBTU' =>"ft² Hr °F/BTU",'kCPerHour' => "kcal/Hr",'KWatt' => "kW",'MBTUPerHour' => "MBH",'kCPerKilogram' => "kcal/kg",'BTUPerPound' => "BTU/lb",'kJPerKilogram' => "kJ/kg",'kCPerNcubicmetre' => "kcal/Nm³",'BTUPerNcubicfeet' => "BTU/Ncu.ft",'kJPerNcubicmetre' =>"kJ/Nm³",'KgPerCmSqGauge' =>"kg/cm²(g)",'psiGauge' =>"psi(g)",'kiloPascalGauge' =>"kPa(g)",'DN' =>"DN",'NB' =>"NPS",'kcalperkgdegC' =>"kcal/kg°C",'kJouleperkgdegC' =>"kJ/kg°C",'BTUperpounddegF' =>"BTU/lb°F");
-
-    }
+ 
     public function getDashboard()
     {
         $time_lines = TimeLine::all();
