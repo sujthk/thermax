@@ -294,7 +294,26 @@
 											</div>
 											<div class="col-lg-2">
 												<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-													 <option value="185">L5 D3</option>
+                                                     <option value="185">L5 D3</option>
+                                                     <option value="210">L5 D4</option>
+                                                     <option value="245">L5 E1</option>
+                                                     <option value="270">L5 E2</option>
+                                                     <option value="310">L5 E3</option>
+                                                     <option value="340">L5 E4</option>
+                                                     <option value="380">L5 E5</option>
+                                                     <option value="425">L5 E6</option>
+                                                     <option value="485">L5 F2</option>
+                                                     <option value="540">L5 F3</option>
+                                                     <option value="630">L5 G1</option>
+                                                     <option value="690">L5 G2</option>
+                                                     <option value="730">L5 G3</option>
+                                                     <option value="780">L5 G4</option>
+                                                     <option value="850">L5 G5</option>
+                                                     <option value="950">L5 G6</option>
+                                                     <option value="1050">L5 H1</option>
+                                                     <option value="1150">L5 H2</option>
+                                                     <option value="1260">L5 J1</option>
+													 <option value="1380">L5 J2</option>
 
 												</select>
 											</div>
@@ -796,10 +815,15 @@
             updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,model_values.evaporator_thickness_change);
             updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,model_values.absorber_thickness_change);
             updateCondenserOptions(chiller_metallurgy_options.con_default_value,model_values.condenser_thickness_change);
+            loadGeneratorOptions();
 
+            updateValues();
+        }
+
+        function loadGeneratorOptions(){
             var generator_tubes = model_values.generator_tube_list.split(",");
             var $el = $("#generator_tube_list");
-
+            
             $.each(generator_tubes, function(key,option) {
                 var generator_tube = option.split("-");
                 
@@ -810,8 +834,6 @@
                 }
                 
             });
-
-            updateValues();
         }
 
 
@@ -1278,11 +1300,12 @@
                 model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
                 model_values.fouling_hot_water_value = model_values.fouling_non_hot
             }
+            loadGeneratorOptions();
             updateValues(); 
         }
 
         $( ".save_report" ).click(function() {
-            saveReport(save_report_url);
+            saveReport(save_report_url,this.id);
         });
 
    

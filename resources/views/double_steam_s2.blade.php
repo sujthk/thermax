@@ -945,236 +945,237 @@
 		foulingFactor($(this).val());
 	});
 	
-		function foulingFactor(value){
+	function foulingFactor(value){
+		$("#fouling_chilled_water").prop('checked', false);
+
+
+		if (value == 'standard') {
+			$("#fouling_factor_standard").prop('checked', true);
 			$("#fouling_chilled_water").prop('checked', false);
-
-
-			if (value == 'standard') {
-				$("#fouling_factor_standard").prop('checked', true);
-				$("#fouling_chilled_water").prop('checked', false);
-				$("#fouling_cooling_water").prop('checked', false);
-				$(".fouling_standard").prop('disabled', true);
-				$(".fouling_chilled_min").attr('data-original-title',"");
-				$(".fouling_cooling_min").attr('data-original-title',"");
-				$("#fouling_chilled_value").val("");
-				$("#fouling_cooling_value").val("");
-				model_values.fouling_chilled_water_checked = false;
-				model_values.fouling_cooling_water_checked = false;
-				model_values.fouling_chilled_water_disabled = true;
-				model_values.fouling_cooling_water_disabled = true;
+			$("#fouling_cooling_water").prop('checked', false);
+			$(".fouling_standard").prop('disabled', true);
+			$(".fouling_chilled_min").attr('data-original-title',"");
+			$(".fouling_cooling_min").attr('data-original-title',"");
+			$("#fouling_chilled_value").val("");
+			$("#fouling_cooling_value").val("");
+			model_values.fouling_chilled_water_checked = false;
+			model_values.fouling_cooling_water_checked = false;
+			model_values.fouling_chilled_water_disabled = true;
+			model_values.fouling_cooling_water_disabled = true;
+			model_values.fouling_chilled_water_value = "";
+			model_values.fouling_cooling_water_value = "";
+		} else if (value == 'non_standard'){
+			model_values.fouling_chilled_water_disabled = false;
+			model_values.fouling_cooling_water_disabled = false;
+			// model_values.fouling_chilled_water_value = "";
+			// model_values.fouling_cooling_water_value = "";
+			if(!model_values.fouling_chilled_water_checked){
 				model_values.fouling_chilled_water_value = "";
+			}
+
+			if(!model_values.fouling_cooling_water_checked){
 				model_values.fouling_cooling_water_value = "";
-			} else if (value == 'non_standard'){
-				model_values.fouling_chilled_water_disabled = false;
-				model_values.fouling_cooling_water_disabled = false;
-				// model_values.fouling_chilled_water_value = "";
-				// model_values.fouling_cooling_water_value = "";
-				if(!model_values.fouling_chilled_water_checked){
-					model_values.fouling_chilled_water_value = "";
-				}
-
-				if(!model_values.fouling_cooling_water_checked){
-					model_values.fouling_cooling_water_value = "";
-				}
-
-				$("#fouling_factor_non_standard").prop('checked', true);
-				$("#fouling_chilled_water").prop('disabled', model_values.fouling_chilled_water_disabled);
-				$("#fouling_cooling_water").prop('disabled', model_values.fouling_cooling_water_disabled);
-				$("#fouling_chilled_water").prop('checked', model_values.fouling_chilled_water_checked);
-				$("#fouling_cooling_water").prop('checked', model_values.fouling_cooling_water_checked);
-				$("#fouling_chilled_value").prop('disabled', model_values.fouling_chilled_water_value_disabled);
-				$("#fouling_cooling_value").prop('disabled', model_values.fouling_cooling_water_value_disabled);
-				$("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
-				$("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
-				$(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_non_chilled);
-				$(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_non_cooling);
-
 			}
-			else{
 
-				model_values.fouling_chilled_water_checked = false;
-				model_values.fouling_cooling_water_checked = false;
-				model_values.fouling_chilled_water_value_disabled = true;
-				model_values.fouling_cooling_water_value_disabled = true;
-
-				$("#fouling_factor_ari").prop('checked', true);
-				$("#fouling_chilled_water").prop('disabled', true);
-				$("#fouling_cooling_water").prop('disabled', true);
-				$("#fouling_chilled_water").prop('checked', true);
-				$("#fouling_cooling_water").prop('checked', true);
-				$("#fouling_chilled_value").prop('disabled', false);
-				$("#fouling_cooling_value").prop('disabled', false);
-				$(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_ari_chilled);
-			
-				$(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_ari_cooling);
-				$("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
-				$("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
-			}
-		}
-
-		
-
-
-		
-
-		$('input[type=radio][name=glycol]').change(function() {
-			// alert(this.value);
-			model_values.glycol_selected = this.value;
-			updateModelValues('glycol_type_changed');
-		});
-		$('input:radio[name="region_type"]').change(function() {
-			model_values.region_type = $(this).val();
-			model_values.model_number = 60;
-			sendResetValues(reset_url);
-			// sendRegionValues();
-		});
-
-		
-
-		$('input[type=radio][name=tube_metallurgy]').change(function() {
-            // alert(this.value);
-            if(this.value == 'non_standard'){
-                $("#tube_metallurgy_standard").prop('disabled', false);
-                $(".range-hide").addClass('show-div');
-                $(".metallurgy_standard").prop('disabled', false);
-                var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
-                $('#evaporator_thickness').attr('data-original-title',evaporator_range);
-                var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
-                $("#absorber_thickness").attr('data-original-title',absorber_range);
-                var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
-                $("#condenser_thickness").attr('data-original-title',condenser_range);
-
-                model_values.metallurgy_standard = false;
-            }
-            else{
-                $(".metallurgy_standard").prop('disabled', true);
-                $(".metallurgy_standard_span").html("");
-                $(".range-hide").removeClass('show-div').addClass('hidden-div');
-
-                model_values.metallurgy_standard = true;
-                updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,true);
-                updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,true);
-                updateCondenserOptions(chiller_metallurgy_options.con_default_value,true);
-                updateValues();
-            }
-            
-        });
-
-		function updateModelValues(input_type){
-			var validate = false;
-            $("#ajax-loader").hide();
-			switch(input_type) {
-				case 'model_number':
-				model_values.model_number = $("#model_number").val();
-				validate = true;
-				break;
-				case 'capacity':
-				var capacity = $("#capacity").val();
-				model_values.capacity = capacity;
-				validate = inputValidation(capacity,"positive_decimals","capacity_error","{!! $language_datas['valid_capacity'] !!}");
-				break;
-				case 'chilled_water_in':
-				model_values.chilled_water_in = $("#chilled_water_in").val();
-				validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error","{!! $language_datas['valid_chilled_water_in'] !!}");
-				break;	
-				case 'chilled_water_out':
-				model_values.chilled_water_out = $("#chilled_water_out").val();
-				validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error","{!! $language_datas['valid_chilled_water_out'] !!}");
-				break;
-				case 'glycol_type_changed':
-				validate = true;
-				break;	
-				case 'glycol_chilled_water':
-				model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
-				validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error","{!! $language_datas['valid_glycol_chilled_water'] !!}");
-				break;
-				case 'glycol_cooling_water':
-				model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
-				validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error","{!! $language_datas['valid_glycol_cooling_water'] !!}");
-				break;
-				case 'cooling_water_in':
-				model_values.cooling_water_in = $("#cooling_water_in").val();
-				validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error","{!! $language_datas['valid_cooling_water_in'] !!}");
-				break;
-				case 'cooling_water_flow':
-				model_values.cooling_water_flow = $("#cooling_water_flow").val();
-				validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error","{!! $language_datas['valid_cooling_water_flow'] !!}");
-				break;					
-				case 'evaporator_tube_type':
-				model_values.evaporator_material_value = $("#evaporator_material").val();
-				updateEvaporatorOptions(model_values.evaporator_material_value,true);
-				// model_values.evaporator_thickness_change = true;
-				validate = true;
-				break;					
-				case 'absorber_tube_type':
-				model_values.absorber_material_value = $("#absorber_material").val();
-				updateAbsorberOptions(model_values.absorber_material_value,true);
-				validate = true;
-				break;	
-				case 'condenser_tube_type':
-				model_values.condenser_material_value = $("#condenser_material").val();
-				updateCondenserOptions(model_values.condenser_material_value,true);
-				validate = true;
-				break;
-				case 'evaporator_thickness':
-				model_values.evaporator_thickness = $("#evaporator_thickness").val();
-				validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error","{!! $language_datas['valid_evaporator_thickness'] !!}");
-				break;
-				case 'absorber_thickness':
-				model_values.absorber_thickness = $("#absorber_thickness").val();
-				validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error","{!! $language_datas['valid_absorber_thickness'] !!}");
-				break;
-				case 'condenser_thickness':
-				model_values.condenser_thickness = $("#condenser_thickness").val();
-				validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error","{!! $language_datas['valid_condenser_thickness'] !!}");
-				break;	
-				case 'fouling_chilled_value':
-				model_values.fouling_chilled_water_value = $("#fouling_chilled_value").val();
-				validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error","{!! $language_datas['valid_fouling_chilled_water'] !!}");
-				break;	
-				case 'fouling_cooling_value':
-				model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
-				validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","{!! $language_datas['valid_fouling_cooling_water'] !!}");
-				break;	
-				case 'steam_pressure':
-				model_values.steam_pressure = $("#steam_pressure").val();
-				validate = inputValidation(model_values.steam_pressure,"positive_decimals","steam_pressure_error","{!! $language_datas['valid_steam_pressure'] !!}");
-				break;								
-
-				default:
-				// code block
-			}
-			changed_value = input_type;
-
-			if(validate){
-				sendValues(send_values_url);
-			}
-			else{
-				$("#calculate_button").prop('disabled', true);
-			}
+			$("#fouling_factor_non_standard").prop('checked', true);
+			$("#fouling_chilled_water").prop('disabled', model_values.fouling_chilled_water_disabled);
+			$("#fouling_cooling_water").prop('disabled', model_values.fouling_cooling_water_disabled);
+			$("#fouling_chilled_water").prop('checked', model_values.fouling_chilled_water_checked);
+			$("#fouling_cooling_water").prop('checked', model_values.fouling_cooling_water_checked);
+			$("#fouling_chilled_value").prop('disabled', model_values.fouling_chilled_water_value_disabled);
+			$("#fouling_cooling_value").prop('disabled', model_values.fouling_cooling_water_value_disabled);
+			$("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
+			$("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
+			$(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_non_chilled);
+			$(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_non_cooling);
 
 		}
+		else{
+
+			model_values.fouling_chilled_water_checked = false;
+			model_values.fouling_cooling_water_checked = false;
+			model_values.fouling_chilled_water_value_disabled = true;
+			model_values.fouling_cooling_water_value_disabled = true;
+
+			$("#fouling_factor_ari").prop('checked', true);
+			$("#fouling_chilled_water").prop('disabled', true);
+			$("#fouling_cooling_water").prop('disabled', true);
+			$("#fouling_chilled_water").prop('checked', true);
+			$("#fouling_cooling_water").prop('checked', true);
+			$("#fouling_chilled_value").prop('disabled', false);
+			$("#fouling_cooling_value").prop('disabled', false);
+			$(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_ari_chilled);
+		
+			$(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_ari_cooling);
+			$("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
+			$("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
+		}
+	}
+
+		
 
 
 		
-		$("#double_steam_s2").submit(function(event) {
-			event.preventDefault();
-			submitValues(submit_url);
-		});
 
-		$( "#reset" ).click(function() {
-			// console.log(model_values.cooling_water_ranges);
-			sendResetValues(reset_url);
-		});
+	$('input[type=radio][name=glycol]').change(function() {
+		// alert(this.value);
+		model_values.glycol_selected = this.value;
+		updateModelValues('glycol_type_changed');
+	});
+    
+	$('input:radio[name="region_type"]').change(function() {
+		model_values.region_type = $(this).val();
+		model_values.model_number = 60;
+		sendResetValues(reset_url);
+		// sendRegionValues();
+	});
 
-        function afterReset(){
-            if(model_values.region_type == 2){
-                //console.log("usa selected");
-                model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
-                model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
-            }
-            updateValues(); 
+		
+
+	$('input[type=radio][name=tube_metallurgy]').change(function() {
+        // alert(this.value);
+        if(this.value == 'non_standard'){
+            $("#tube_metallurgy_standard").prop('disabled', false);
+            $(".range-hide").addClass('show-div');
+            $(".metallurgy_standard").prop('disabled', false);
+            var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+            $('#evaporator_thickness').attr('data-original-title',evaporator_range);
+            var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+            $("#absorber_thickness").attr('data-original-title',absorber_range);
+            var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+            $("#condenser_thickness").attr('data-original-title',condenser_range);
+
+            model_values.metallurgy_standard = false;
         }
+        else{
+            $(".metallurgy_standard").prop('disabled', true);
+            $(".metallurgy_standard_span").html("");
+            $(".range-hide").removeClass('show-div').addClass('hidden-div');
+
+            model_values.metallurgy_standard = true;
+            updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,true);
+            updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,true);
+            updateCondenserOptions(chiller_metallurgy_options.con_default_value,true);
+            updateValues();
+        }
+        
+    });
+
+	function updateModelValues(input_type){
+		var validate = false;
+        $("#ajax-loader").hide();
+		switch(input_type) {
+			case 'model_number':
+			model_values.model_number = $("#model_number").val();
+			validate = true;
+			break;
+			case 'capacity':
+			var capacity = $("#capacity").val();
+			model_values.capacity = capacity;
+			validate = inputValidation(capacity,"positive_decimals","capacity_error","{!! $language_datas['valid_capacity'] !!}");
+			break;
+			case 'chilled_water_in':
+			model_values.chilled_water_in = $("#chilled_water_in").val();
+			validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error","{!! $language_datas['valid_chilled_water_in'] !!}");
+			break;	
+			case 'chilled_water_out':
+			model_values.chilled_water_out = $("#chilled_water_out").val();
+			validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error","{!! $language_datas['valid_chilled_water_out'] !!}");
+			break;
+			case 'glycol_type_changed':
+			validate = true;
+			break;	
+			case 'glycol_chilled_water':
+			model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
+			validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error","{!! $language_datas['valid_glycol_chilled_water'] !!}");
+			break;
+			case 'glycol_cooling_water':
+			model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
+			validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error","{!! $language_datas['valid_glycol_cooling_water'] !!}");
+			break;
+			case 'cooling_water_in':
+			model_values.cooling_water_in = $("#cooling_water_in").val();
+			validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error","{!! $language_datas['valid_cooling_water_in'] !!}");
+			break;
+			case 'cooling_water_flow':
+			model_values.cooling_water_flow = $("#cooling_water_flow").val();
+			validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error","{!! $language_datas['valid_cooling_water_flow'] !!}");
+			break;					
+			case 'evaporator_tube_type':
+			model_values.evaporator_material_value = $("#evaporator_material").val();
+			updateEvaporatorOptions(model_values.evaporator_material_value,true);
+			// model_values.evaporator_thickness_change = true;
+			validate = true;
+			break;					
+			case 'absorber_tube_type':
+			model_values.absorber_material_value = $("#absorber_material").val();
+			updateAbsorberOptions(model_values.absorber_material_value,true);
+			validate = true;
+			break;	
+			case 'condenser_tube_type':
+			model_values.condenser_material_value = $("#condenser_material").val();
+			updateCondenserOptions(model_values.condenser_material_value,true);
+			validate = true;
+			break;
+			case 'evaporator_thickness':
+			model_values.evaporator_thickness = $("#evaporator_thickness").val();
+			validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error","{!! $language_datas['valid_evaporator_thickness'] !!}");
+			break;
+			case 'absorber_thickness':
+			model_values.absorber_thickness = $("#absorber_thickness").val();
+			validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error","{!! $language_datas['valid_absorber_thickness'] !!}");
+			break;
+			case 'condenser_thickness':
+			model_values.condenser_thickness = $("#condenser_thickness").val();
+			validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error","{!! $language_datas['valid_condenser_thickness'] !!}");
+			break;	
+			case 'fouling_chilled_value':
+			model_values.fouling_chilled_water_value = $("#fouling_chilled_value").val();
+			validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error","{!! $language_datas['valid_fouling_chilled_water'] !!}");
+			break;	
+			case 'fouling_cooling_value':
+			model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
+			validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","{!! $language_datas['valid_fouling_cooling_water'] !!}");
+			break;	
+			case 'steam_pressure':
+			model_values.steam_pressure = $("#steam_pressure").val();
+			validate = inputValidation(model_values.steam_pressure,"positive_decimals","steam_pressure_error","{!! $language_datas['valid_steam_pressure'] !!}");
+			break;								
+
+			default:
+			// code block
+		}
+		changed_value = input_type;
+
+		if(validate){
+			sendValues(send_values_url);
+		}
+		else{
+			$("#calculate_button").prop('disabled', true);
+		}
+
+	}
+
+
+		
+	$("#double_steam_s2").submit(function(event) {
+		event.preventDefault();
+		submitValues(submit_url);
+	});
+
+	$( "#reset" ).click(function() {
+		// console.log(model_values.cooling_water_ranges);
+		sendResetValues(reset_url);
+	});
+
+    function afterReset(){
+        if(model_values.region_type == 2){
+            //console.log("usa selected");
+            model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
+            model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
+        }
+        updateValues(); 
+    }
 
 
 		// $( "#show_report" ).click(function() {
@@ -1183,25 +1184,25 @@
 		// });
 
 
-		$( ".save_report" ).click(function() {
-			saveReport(save_report_url);
-		});
+	$( ".save_report" ).click(function() {
+		saveReport(save_report_url,this.id);
+	});
 
 
-		function castToBoolean(){
+	function castToBoolean(){
 
-			model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
+		model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
 
-			model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
-			model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
-			model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);
-			model_values.fouling_chilled_water_checked = getBoolean(model_values.fouling_chilled_water_checked);
-			model_values.fouling_cooling_water_checked = getBoolean(model_values.fouling_cooling_water_checked);
-			model_values.fouling_chilled_water_disabled = getBoolean(model_values.fouling_chilled_water_disabled);
-			model_values.fouling_cooling_water_disabled = getBoolean(model_values.fouling_cooling_water_disabled);
-			model_values.fouling_chilled_water_value_disabled = getBoolean(model_values.fouling_chilled_water_value_disabled);
-			model_values.fouling_cooling_water_value_disabled = getBoolean(model_values.fouling_cooling_water_value_disabled);
-		}
+		model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
+		model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
+		model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);
+		model_values.fouling_chilled_water_checked = getBoolean(model_values.fouling_chilled_water_checked);
+		model_values.fouling_cooling_water_checked = getBoolean(model_values.fouling_cooling_water_checked);
+		model_values.fouling_chilled_water_disabled = getBoolean(model_values.fouling_chilled_water_disabled);
+		model_values.fouling_cooling_water_disabled = getBoolean(model_values.fouling_cooling_water_disabled);
+		model_values.fouling_chilled_water_value_disabled = getBoolean(model_values.fouling_chilled_water_value_disabled);
+		model_values.fouling_cooling_water_value_disabled = getBoolean(model_values.fouling_cooling_water_value_disabled);
+	}
 
 		
 

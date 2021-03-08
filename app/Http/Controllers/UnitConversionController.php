@@ -305,27 +305,7 @@ class UnitConversionController extends Controller
         $calculated_values['FloodedWeight'] = $this->convertWeightUnit($calculated_values['FloodedWeight'],"Ton",$unit_set->WeightUnit);
         $calculated_values['DryWeight'] = $this->convertWeightUnit($calculated_values['DryWeight'],"Ton",$unit_set->WeightUnit);
 
-       
-
-    	// if($unit_set->HeatUnit != 'kCPerHour'){
-    		
-    	// 	if ($unit_set->HeatUnit == 'KWatt')
-     //        {
-     //            // $calculated_values['AbsorbentPumpMotorKW'] = $calculated_values['AbsorbentPumpMotorKW'] / 859.845;   //SK 3600/4.1868
-     //            // $calculated_values['RefrigerantPumpMotorKW'] = $calculated_values['RefrigerantPumpMotorKW'] / 859.845;
-     //            // $calculated_values['PurgePumpMotorKW'] = $calculated_values['PurgePumpMotorKW'] / 859.845;
-
-     //        }
-     //        else if($unit_set->HeatUnit == 'MBTUPerHour')
-     //        {
-     //            // $calculated_values['AbsorbentPumpMotorKW'] = $calculated_values['AbsorbentPumpMotorKW'] * 3.96832 / 1000;
-     //            // $calculated_values['RefrigerantPumpMotorKW'] = $calculated_values['RefrigerantPumpMotorKW'] * 3.96832 / 1000;
-     //            // $calculated_values['PurgePumpMotorKW'] = $calculated_values['PurgePumpMotorKW'] * 3.96832 / 1000;
-
-     //        }
-    	// }
-
-        
+          
     	return $calculated_values;
 
     }
@@ -333,7 +313,9 @@ class UnitConversionController extends Controller
 
     public function convertTemperatureUnit($input_value, $from_unit, $to_unit) 
     {
-        if($from_unit != $to_unit) 
+  
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -353,7 +335,8 @@ class UnitConversionController extends Controller
     public function convertLengthUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -373,7 +356,8 @@ class UnitConversionController extends Controller
     public function convertAreaUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -394,7 +378,8 @@ class UnitConversionController extends Controller
     public function convertVolumeUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -415,7 +400,8 @@ class UnitConversionController extends Controller
     public function convertWeightUnit($input_value, $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -462,7 +448,8 @@ class UnitConversionController extends Controller
     public function convertPressureUnit($input_value, $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -762,7 +749,8 @@ class UnitConversionController extends Controller
     public function convertCapacityUnit($input_value, $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -783,7 +771,8 @@ class UnitConversionController extends Controller
     public function convertFlowRateUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -831,7 +820,8 @@ class UnitConversionController extends Controller
     public function convertFoulingFactorUnit($input_value, $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -879,7 +869,8 @@ class UnitConversionController extends Controller
     public function convertSteamConsumptionUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -899,7 +890,8 @@ class UnitConversionController extends Controller
     public function convertExhaustGasFlowUnit($input_value, $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -919,7 +911,8 @@ class UnitConversionController extends Controller
     public function convertFuelConsumptionOilUnit($input_value, $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -939,7 +932,8 @@ class UnitConversionController extends Controller
     public function convertFuelConsumptionGasUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -959,7 +953,8 @@ class UnitConversionController extends Controller
     public function convertHeatUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -1005,7 +1000,8 @@ class UnitConversionController extends Controller
     public function convertCalorificValueGasUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -1050,7 +1046,8 @@ class UnitConversionController extends Controller
     public function convertCalorificValueOilUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {
@@ -1095,7 +1092,8 @@ class UnitConversionController extends Controller
     public function convertNozzleDiameterUnit($input_value,  $from_unit, $to_unit) 
     {
         
-        if($from_unit != $to_unit) 
+        $input_value = floatval($input_value);
+        if($from_unit != $to_unit)  
         {
             switch ($from_unit) 
             {

@@ -166,12 +166,12 @@ function inputValidation(value,validation_type,input_name,message){
 	return false;
 }
 
-function saveReport(chiller_url){
+function saveReport(chiller_url,report_type){
 
 	var name = $('#customer_name').val();
 	var project = $('#project').val();
 	var phone = $('#phone').val();
-	var report_type = this.id;
+	// var report_type = this.id;
 	
 	if(name == '' || project == '' || phone == ''){
 

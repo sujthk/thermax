@@ -392,7 +392,7 @@ class DoubleSteamController extends Controller
             $report_controller = new ReportController();
             $word_download = $report_controller->wordFormatS2($user_report_id,$this->model_code);
 
-            $file_name = "S2-Steam-Fired-Serices-".Auth::user()->id.".docx";
+            $file_name = "S2-Steam-Fired-Series-".Auth::user()->id.".docx";
             return response()->download(storage_path($file_name));
         }
 
@@ -439,7 +439,6 @@ class DoubleSteamController extends Controller
 
 
 		$this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
-
 		$this->model_values['evaporator_thickness_change'] = $vam_base->getBoolean($this->model_values['evaporator_thickness_change']);
 	    $this->model_values['absorber_thickness_change'] = $vam_base->getBoolean($this->model_values['absorber_thickness_change']);
 	    $this->model_values['condenser_thickness_change'] = $vam_base->getBoolean($this->model_values['condenser_thickness_change']);
@@ -6657,7 +6656,7 @@ class DoubleSteamController extends Controller
         $vam_base = new VamBaseController();
         $this->notes = $vam_base->getNotesError();
 
-        $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
+        $this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
         $this->updateInputs();
 
 

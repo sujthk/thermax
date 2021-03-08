@@ -40,8 +40,13 @@ Route::group(['middleware' => 'guest'], function(){
 });
 
 	Route::get('/data', 'DoubleSteamController@getChillerData');
-	Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report')->middleware('auth');
-	Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2')->middleware('auth');
+
+Route::group(['middleware' => ['auth']], function(){
+    Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report');
+    Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2');
+    Route::get('/calculators/l5-series/download-report/{user_report_id}/{type}', 'L5SeriesController@downloadReport')->name('download.l5report');
+
+});	
 
 Route::group(['middleware' => ['auth','revalidate']], function(){
 
@@ -102,6 +107,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	//report
 	Route::post('/calculators/double-effect-s2/show-report', 'DoubleSteamController@postShowReport');
 	Route::post('/calculators/double-effect-s2/save-report', 'DoubleSteamController@postSaveReport');
+    
 	/*End Double Effect S2 Serires*/
 
 	/*Double Effect H2 Serires*/
@@ -116,6 +122,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	//report
 	Route::post('/calculators/double-effect-h2/show-report', 'DoubleH2SteamController@postShowReport');
 	Route::post('/calculators/double-effect-h2/save-report', 'DoubleH2SteamController@postSaveReport');
+    
 	/*End Double Effect H2 Serires*/
 
 	/*Double Effect G2 Serires*/
@@ -190,7 +197,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/l5-series/ajax-calculate', 'L5SeriesController@postAjaxL5');
     Route::post('/calculators/l5-series/submit-calculate', 'L5SeriesController@postL5');
     Route::post('/calculators/l5-series/save-report', 'L5SeriesController@postSaveReport');
-    Route::get('/calculators/l5-series/download-report/{user_report_id}/{type}', 'L5SeriesController@downloadReport')->name('download.l5report');
     Route::post('/calculators/l5-series/reset-calculate', 'L5SeriesController@postResetL5');
 
 });

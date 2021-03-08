@@ -264,7 +264,7 @@ class L5SeriesController extends Controller
             $report_controller = new ReportController();
             $word_download = $report_controller->wordFormatL5($user_report_id,$this->model_code);
 
-            $file_name = "L5-Serices-".Auth::user()->id.".docx";
+            $file_name = "L5-Series-".Auth::user()->id.".docx";
             return response()->download(storage_path($file_name));
         }
 
@@ -347,7 +347,7 @@ class L5SeriesController extends Controller
         $this->model_values = $chiller_form_values;
 
         $this->castToBoolean();
-        $range_calculation = $this->RANGECAL();
+        $this->CWFLOW();
 
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
         if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
@@ -944,6 +944,7 @@ class L5SeriesController extends Controller
         {
             return array('status' => false,'msg' => $this->notes['NOTES_COW_MAX_LIM']);
         }
+        
         $this->model_values['cooling_water_ranges'] = $range_values;
 
         return array('status' => true,'msg' => "process run successfully");
@@ -4286,4 +4287,57 @@ class L5SeriesController extends Controller
 
         return $calculation_values;
     }
+
+
+    public function testingL5Calculation($datas){
+        
+        $this->model_values = $datas;
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
+
+        $this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
+        $this->CWFLOW();
+
+
+        $this->calculation_values['msg'] = '';
+       try {
+           $this->WATERPROP();
+
+           $velocity_status = $this->VELOCITY();
+
+       } 
+       catch (\Exception $e) {
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
+       
+
+       if(isset($velocity_status['status']) && !$velocity_status['status']){
+            $this->calculation_values['msg'] = $velocity_status['msg'];
+       }
+
+
+
+       try {
+           $this->CALCULATIONS();
+
+           $this->CONVERGENCE();
+
+           $this->RESULT_CALCULATE();
+       
+           $this->loadSpecSheetData();
+       }
+       catch (\Exception $e) {
+
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
+
+        return $this->calculation_values;
+        // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
+
+    
+    }
+
 }
