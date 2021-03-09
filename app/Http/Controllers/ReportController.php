@@ -517,7 +517,7 @@ class ReportController extends Controller
             $section->addText(($key + 1).". ".$note);
         }
 
-        $file_name = "S2-Steam-Fired-Serices-".Auth::user()->id.".docx";
+        $file_name = "S2-Steam-Fired-Series-".Auth::user()->id.".docx";
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objWriter->save(storage_path($file_name));
@@ -1075,7 +1075,7 @@ class ReportController extends Controller
             $section->addText(($key + 1).". ".$note);
         }
 
-        $file_name = "L5-Serices-".Auth::user()->id.".docx";
+        $file_name = "L5-Series-".Auth::user()->id.".docx";
         $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
         try {
             $objWriter->save(storage_path($file_name));
@@ -1577,7 +1577,7 @@ class ReportController extends Controller
            $section->addText(($key + 1).". ".$note);
        }
 
-       $file_name = "H2-Steam-Fired-Serices".Auth::user()->id.".docx";
+       $file_name = "H2-Steam-Fired-Series".Auth::user()->id.".docx";
        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
        try {
            $objWriter->save(storage_path($file_name));
