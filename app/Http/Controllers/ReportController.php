@@ -30,9 +30,9 @@ class ReportController extends Controller
         $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
         $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
 
-        $evaporator_name = $evaporator_option->metallurgy->display_name;
-        $absorber_name = $absorber_option->metallurgy->display_name;
-        $condenser_name = $condenser_option->metallurgy->display_name;
+        $evaporator_name = $evaporator_option->metallurgy->report_name;
+        $absorber_name = $absorber_option->metallurgy->report_name;
+        $condenser_name = $condenser_option->metallurgy->report_name;
 
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
@@ -525,6 +525,8 @@ class ReportController extends Controller
             Log::info($e);
         }
 
+        return $file_name;
+
     }
 
     public function wordFormatL5($user_report_id,$model_code){
@@ -546,9 +548,10 @@ class ReportController extends Controller
         $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
         $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
 
-        $evaporator_name = $evaporator_option->metallurgy->display_name;
-        $absorber_name = $absorber_option->metallurgy->display_name;
-        $condenser_name = $condenser_option->metallurgy->display_name;
+        $evaporator_name = $evaporator_option->metallurgy->report_name;
+        $absorber_name = $absorber_option->metallurgy->report_name;
+        $condenser_name = $condenser_option->metallurgy->report_name;
+
 
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
@@ -1035,7 +1038,13 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['generator_tube_material']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['generator_tube_name']));
+        if($calculation_values['TG2'] == 1){
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("Copper"));
+        }
+        else{
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("SS"));
+        }
+        
 
         if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true'){
             $chilled_table->addRow();
@@ -1083,6 +1092,8 @@ class ReportController extends Controller
             Log::info($e);
         }
 
+        return $file_name;
+
     }
 
     public function wordFormatH2($user_report_id,$model_code){
@@ -1108,9 +1119,9 @@ class ReportController extends Controller
        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
 
-       $evaporator_name = $evaporator_option->metallurgy->display_name;
-       $absorber_name = $absorber_option->metallurgy->display_name;
-       $condenser_name = $condenser_option->metallurgy->display_name;
+       $evaporator_name = $evaporator_option->metallurgy->report_name;
+       $absorber_name = $absorber_option->metallurgy->report_name;
+       $condenser_name = $condenser_option->metallurgy->report_name;
 
        $vam_base = new VamBaseController();
        $language_datas = $vam_base->getLanguageDatas();
@@ -1584,5 +1595,7 @@ class ReportController extends Controller
        } catch (Exception $e) {
            Log::info($e);
        }
+
+       return $file_name;
    }
 }

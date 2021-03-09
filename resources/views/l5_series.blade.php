@@ -823,7 +823,7 @@
         function loadGeneratorOptions(){
             var generator_tubes = model_values.generator_tube_list.split(",");
             var $el = $("#generator_tube_list");
-            
+            $el.empty();
             $.each(generator_tubes, function(key,option) {
                 var generator_tube = option.split("-");
                 
@@ -1019,19 +1019,19 @@
 
                 $("#fouling_chilled_water").prop('checked', true);
                 $("#fouling_cooling_water").prop('checked', true);
-                $("#fouling_hot_water").prop('checked', true);
+                $("#fouling_hot_water").prop('checked', false);
 
                 $("#fouling_chilled_value").prop('disabled', false);
                 $("#fouling_cooling_value").prop('disabled', false);
-                $("#fouling_hot_water_value").prop('disabled', false);
+                $("#fouling_hot_water_value").prop('disabled', true);
 
                 $(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_ari_chilled);
                 $(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_ari_cooling);
-                $(".fouling_hot_water_min").attr('data-original-title',">"+model_values.fouling_non_hot);
+                $(".fouling_hot_water_min").attr('data-original-title',"");
 
                 $("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
                 $("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
-                $("#fouling_hot_water_value").val(model_values.fouling_hot_water_value);
+                $("#fouling_hot_water_value").val("");
             }
         }  
 

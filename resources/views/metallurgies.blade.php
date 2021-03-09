@@ -52,7 +52,8 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th>Name</th>
-	                                            <th>Display Name</th>
+                                                <th>Display Name</th>
+	                                            <th>Report Name</th>
 	                                            <th>Default Thickness</th>
 	                                            <th>Min Thickness</th>
 	                                            <th>Max Thickness</th>
@@ -63,7 +64,8 @@
 	                                    	@foreach ($metallurgies as $metallurgy) 
 	                                    		<tr>
 	                                    		    <td>{{ $metallurgy->name }}</td>
-	                                    		    <td>{{ $metallurgy->display_name }}</td>
+                                                    <td>{{ $metallurgy->display_name }}</td>
+	                                    		    <td>{{ $metallurgy->report_name }}</td>
 	                                    		    <td>{{ $metallurgy->default_thickness }}</td>
 	                                    		    <td>{{ $metallurgy->min_thickness }}</td>	
 	                                    		    <td>{{ $metallurgy->max_thickness }}</td>

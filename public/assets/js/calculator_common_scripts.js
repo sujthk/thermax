@@ -8,8 +8,8 @@ function getBoolean(value){
 		case "1":
 		case "on":
 		case "yes":
-		return true;
-        case "TRUE":
+		case "TRUE":
+		return true;  
 		default: 
 		return false;
 	}
@@ -18,7 +18,7 @@ function getBoolean(value){
 
 function getCoolingWaterRanges(cooling_water_ranges){
 	var range_values = "";
-	 console.log(cooling_water_ranges);
+	 // console.log(cooling_water_ranges);
 	if(!$.isArray(cooling_water_ranges)){
 		var cooling_water_ranges = cooling_water_ranges.split(",");
 	}
@@ -61,7 +61,7 @@ function updateEvaporatorOptions(value,thickness_change){
 
 	if(model_values.chilled_water_out < 3.499 && model_values.chilled_water_out > 0.99){
 		if(model_values.glycol_chilled_water == 0 || model_values.glycol_chilled_water == null){
-			model_values.evaporator_thickness = 0.8;
+			// model_values.evaporator_thickness = 0.8;
 		}
 	} 			
 }

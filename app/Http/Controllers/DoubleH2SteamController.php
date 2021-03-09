@@ -379,9 +379,9 @@ class DoubleH2SteamController extends Controller
 
         if($type == 'save_word'){
             $report_controller = new ReportController();
-            $word_download = $report_controller->wordFormatH2($user_report_id,$this->model_code);
+            $file_name = $report_controller->wordFormatH2($user_report_id,$this->model_code);
           
-            $file_name = "H2-Steam-Fired-Series".Auth::user()->id.".docx";
+            // $file_name = "H2-Steam-Fired-Series".Auth::user()->id.".docx";
             return response()->download(storage_path($file_name));
         }
 

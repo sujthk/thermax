@@ -390,9 +390,9 @@ class DoubleSteamController extends Controller
 
         if($type == 'save_word'){
             $report_controller = new ReportController();
-            $word_download = $report_controller->wordFormatS2($user_report_id,$this->model_code);
+            $file_name = $report_controller->wordFormatS2($user_report_id,$this->model_code);
 
-            $file_name = "S2-Steam-Fired-Series-".Auth::user()->id.".docx";
+            // $file_name = "S2-Steam-Fired-Series-".Auth::user()->id.".docx";
             return response()->download(storage_path($file_name));
         }
 
@@ -411,9 +411,9 @@ class DoubleSteamController extends Controller
         $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
         $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
 
-        $evaporator_name = $evaporator_option->metallurgy->display_name;
-        $absorber_name = $absorber_option->metallurgy->display_name;
-        $condenser_name = $condenser_option->metallurgy->display_name;
+        $evaporator_name = $evaporator_option->metallurgy->report_name;
+        $absorber_name = $absorber_option->metallurgy->report_name;
+        $condenser_name = $condenser_option->metallurgy->report_name;
 
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
@@ -1078,6 +1078,7 @@ class DoubleSteamController extends Controller
            		}
            	break;
            	case "EVAPORATOR_THICKNESS":
+
            		$this->model_values['evaporator_thickness_change'] = false;
            		if(($this->model_values['evaporator_thickness'] >= $this->model_values['evaporator_thickness_min_range']) && ($this->model_values['evaporator_thickness'] <= $this->model_values['evaporator_thickness_max_range'])){
                     $range_calculation = $this->RANGECAL();
@@ -1197,7 +1198,7 @@ class DoubleSteamController extends Controller
 
         if (floatval($this->model_values['chilled_water_out']) < 3.5 && floatval($this->model_values['glycol_chilled_water']) == 0)
         {
-            if (floatval($this->model_values['evaporator_material_value']) != 3)
+            if (floatval($this->model_values['evaporator_material_value']) != 4)
             {
 
                 return array('status' => false,'msg' => $this->notes['NOTES_EVA_TUBETYPE']);

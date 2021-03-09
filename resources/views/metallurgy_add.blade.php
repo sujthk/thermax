@@ -60,6 +60,12 @@
 		                        	        <input id="display_name" name="display_name" type="text" value="{{ old('display_name') }}" required class="form-control">
 		                        	    </div>
 		                        	</div>
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label">Report Name</label>
+                                        <div class="col-sm-6">
+                                            <input id="report_name" name="report_name" type="text" value="{{ old('report_name') }}" required class="form-control">
+                                        </div>
+                                    </div>
 		                        	<div class="form-group row">
 		                        	    <label class="col-sm-3 col-form-label">Default Thickness</label>
 		                        	    <div class="col-sm-6">

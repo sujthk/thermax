@@ -521,7 +521,11 @@
 										<td> 4 </td>
 										<td class="font-class"> {{ $language_datas['generator_tube_material'] }}</td>
 										<td> </td>
-										<td class="optimal-r1"> {{ $calculation_values['generator_tube_name'] }} </td>
+                                        @if($calculation_values['TG2'] == 1)
+										    <td class="optimal-r1"> Copper </td>
+                                        @else
+                                            <td class="optimal-r1"> SS </td>
+                                        @endif  
 									</tr>
 									@if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true')
 										<tr>

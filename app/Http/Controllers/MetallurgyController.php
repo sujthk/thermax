@@ -24,7 +24,8 @@ class MetallurgyController extends Controller
     public function postMetallurgy(Request $request){
 		$this->validate($request, [
             'name' => 'required',
-		    'display_name' => 'required',
+            'display_name' => 'required',
+		    'report_name' => 'required',
             'default_thickness' => 'required|numeric',
             'min_thickness' => 'required|numeric',
             'max_thickness' => 'required|numeric',
@@ -41,7 +42,8 @@ class MetallurgyController extends Controller
 
 		$metallurgy = new Metallurgy;
         $metallurgy->name = $request->name;
-		$metallurgy->display_name = $request->display_name;
+        $metallurgy->display_name = $request->display_name;
+		$metallurgy->report_name = $request->report_name;
 		$metallurgy->default_thickness = $request->default_thickness;
 		$metallurgy->min_thickness = $request->min_thickness;
 		$metallurgy->max_thickness = $request->max_thickness;
@@ -68,6 +70,7 @@ class MetallurgyController extends Controller
     	$this->validate($request, [
             'name' => 'required',
 		    'display_name' => 'required',
+            'report_name' => 'required',
             'default_thickness' => 'required|numeric',
             'min_thickness' => 'required|numeric',
             'max_thickness' => 'required|numeric',
@@ -84,6 +87,7 @@ class MetallurgyController extends Controller
     	$metallurgy = Metallurgy::find($metallurgy_id);
 		$metallurgy->name = $request->name;
         $metallurgy->display_name = $request->display_name;
+        $metallurgy->report_name = $request->report_name;
 		$metallurgy->default_thickness = $request->default_thickness;
 		$metallurgy->min_thickness = $request->min_thickness;
 		$metallurgy->max_thickness = $request->max_thickness;
