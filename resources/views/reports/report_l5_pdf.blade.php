@@ -524,7 +524,7 @@
                                         @if($calculation_values['TG2'] == 1)
 										    <td class="optimal-r1"> Copper </td>
                                         @else
-                                            <td class="optimal-r1"> SS </td>
+                                            <td class="optimal-r1"> SS316L ERW </td>
                                         @endif  
 									</tr>
 									@if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true')

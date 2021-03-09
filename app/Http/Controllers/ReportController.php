@@ -1042,7 +1042,7 @@ class ReportController extends Controller
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("Copper"));
         }
         else{
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("SS"));
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("SS316L ERW"));
         }
         
 
