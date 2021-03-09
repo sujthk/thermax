@@ -386,6 +386,20 @@
                                           <td class="optimal-r1"> {{ round($calculation_values['PurgePumpMotorKW'],2) }}({{ round($calculation_values['PurgePumpMotorAmp'],2) }}) </td>
                                         @endif
 									</tr>
+                                    @if($calculation_values['region_type'] == 2)
+                                        <tr>     
+                                            <td> 6 </td>
+                                            <td class="font-class"> MOP </td>
+                                            <td class="optimal-r1">  </td>                                
+                                            <td class="optimal-r1"> {{ round($calculation_values['MOP'],2) }}</td>
+                                        </tr>
+                                        <tr>     
+                                            <td> 7 </td>
+                                            <td class="font-class"> MCA </td>
+                                            <td class="optimal-r1">  </td>                                
+                                            <td class="optimal-r1"> {{ round($calculation_values['MCA'],2) }}</td>
+                                        </tr>
+                                    @endif
 									<tr>
 										<td class="dark-cell" scope="col"> E  </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['physical_data'] }}</td>

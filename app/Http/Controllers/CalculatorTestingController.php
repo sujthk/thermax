@@ -300,14 +300,25 @@ class CalculatorTestingController extends Controller
         $data['connection_drain_dia'] = isset($output_values['SteamDrainDiameter']) ?  $output_values['SteamDrainDiameter'] : "";
         $data['power_supply'] = isset($output_values['PowerSupply']) ?  $output_values['PowerSupply'] : "";
         $data['power_consumption'] = isset($output_values['TotalPowerConsumption']) ?  $output_values['TotalPowerConsumption'] : "";
+
         $data['absorbent_pump_rating(KW)'] = isset($output_values['AbsorbentPumpMotorKW']) ?  $output_values['AbsorbentPumpMotorKW'] : "";
         $data['absorbent_pump_rating(AMP)'] = isset($output_values['AbsorbentPumpMotorAmp']) ?  $output_values['AbsorbentPumpMotorAmp'] : "";
         $data['refrigerant_pump_rating(KW)'] = isset($output_values['RefrigerantPumpMotorKW']) ?  $output_values['RefrigerantPumpMotorKW'] : "";
         $data['refrigerant_pump_rating(AMP)'] = isset($output_values['RefrigerantPumpMotorAmp']) ?  $output_values['RefrigerantPumpMotorAmp'] : "";
         $data['vaccum_pump_rating(KW)'] = isset($output_values['PurgePumpMotorKW']) ?  $output_values['PurgePumpMotorKW'] : "";
         $data['vaccum_pump_rating(AMP)'] = isset($output_values['PurgePumpMotorAmp']) ?  $output_values['PurgePumpMotorAmp'] : "";
-        $data['MOP'] = isset($output_values['MOP']) ?  $output_values['MOP'] : "";
-        $data['MCA'] = isset($output_values['MCA']) ?  $output_values['MCA'] : "";
+        $data['MOP'] = "";
+        $data['MCA'] = "";
+        if($output_values['region_type'] == 2){
+            $data['absorbent_pump_rating(KW)'] = isset($output_values['USA_AbsorbentPumpMotorKW']) ?  $output_values['USA_AbsorbentPumpMotorKW'] : "";
+            $data['absorbent_pump_rating(AMP)'] = isset($output_values['USA_AbsorbentPumpMotorAmp']) ?  $output_values['USA_AbsorbentPumpMotorAmp'] : "";
+            $data['refrigerant_pump_rating(KW)'] = isset($output_values['USA_RefrigerantPumpMotorKW']) ?  $output_values['USA_RefrigerantPumpMotorKW'] : "";
+            $data['refrigerant_pump_rating(AMP)'] = isset($output_values['USA_RefrigerantPumpMotorAmp']) ?  $output_values['USA_RefrigerantPumpMotorAmp'] : "";
+            $data['vaccum_pump_rating(KW)'] = isset($output_values['USA_PurgePumpMotorKW']) ?  $output_values['USA_PurgePumpMotorKW'] : "";
+            $data['vaccum_pump_rating(AMP)'] = isset($output_values['USA_PurgePumpMotorAmp']) ?  $output_values['USA_PurgePumpMotorAmp'] : "";
+            $data['MOP'] = isset($output_values['MOP']) ?  $output_values['MOP'] : "";
+            $data['MCA'] = isset($output_values['MCA']) ?  $output_values['MCA'] : "";
+        }  
         $data['Length'] = isset($output_values['Length']) ?  $output_values['Length'] : "";
         $data['Width'] = isset($output_values['Width']) ?  $output_values['Width'] : "";
         $data['Height'] = isset($output_values['Height']) ?  $output_values['Height'] : "";
@@ -445,6 +456,20 @@ class CalculatorTestingController extends Controller
         $data['vaccum_pump_rating(AMP)'] = isset($output_values['PurgePumpMotorAmp']) ?  $output_values['PurgePumpMotorAmp'] : "";
         $data['MOP'] = isset($output_values['MOP']) ?  $output_values['MOP'] : "";
         $data['MCA'] = isset($output_values['MCA']) ?  $output_values['MCA'] : "";
+        if($output_values['region_type'] == 2){
+            $data['hp_absorbent_pump_rating(KW)'] = isset($output_values['USA_HPAbsorbentPumpMotorKW']) ?  $output_values['USA_HPAbsorbentPumpMotorKW'] : "";
+            $data['hp_absorbent_pump_rating(AMP)'] = isset($output_values['USA_HPAbsorbentPumpMotorAmp']) ?  $output_values['USA_HPAbsorbentPumpMotorAmp'] : "";
+            $data['lp_absorbent_pump_rating(KW)'] = isset($output_values['USA_LPAbsorbentPumpMotorKW']) ?  $output_values['USA_LPAbsorbentPumpMotorKW'] : "";
+            $data['lp_absorbent_pump_rating(AMP)'] = isset($output_values['USA_LPAbsorbentPumpMotorAmp']) ?  $output_values['USA_LPAbsorbentPumpMotorAmp'] : "";
+            $data['refrigerant_pump_rating(KW)'] = isset($output_values['USA_RefrigerantPumpMotorKW']) ?  $output_values['USA_RefrigerantPumpMotorKW'] : "";
+            $data['refrigerant_pump_rating(AMP)'] = isset($output_values['USA_RefrigerantPumpMotorAmp']) ?  $output_values['USA_RefrigerantPumpMotorAmp'] : "";
+            $data['vaccum_pump_rating(KW)'] = isset($output_values['USA_PurgePumpMotorKW']) ?  $output_values['USA_PurgePumpMotorKW'] : "";
+            $data['vaccum_pump_rating(AMP)'] = isset($output_values['USA_PurgePumpMotorAmp']) ?  $output_values['USA_PurgePumpMotorAmp'] : "";
+            $data['MOP'] = isset($output_values['MOP']) ?  $output_values['MOP'] : "";
+            $data['MCA'] = isset($output_values['MCA']) ?  $output_values['MCA'] : "";
+        }
+
+
         $data['Length'] = isset($output_values['Length']) ?  $output_values['Length'] : "";
         $data['Width'] = isset($output_values['Width']) ?  $output_values['Width'] : "";
         $data['Height'] = isset($output_values['Height']) ?  $output_values['Height'] : "";
