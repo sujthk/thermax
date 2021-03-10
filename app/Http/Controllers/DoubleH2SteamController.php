@@ -434,21 +434,6 @@ class DoubleH2SteamController extends Controller
         $this->model_values['fouling_cooling_water_value_disabled'] = $vam_base->getBoolean($this->model_values['fouling_cooling_water_value_disabled']);
     }
 
-    public function getBoolean($value){
-
-        // if($value == true || $value == "true" || $value == "1" || $value == 1){
-        //  return true;
-        // }
-
-        // return false;
-
-        if($value == "true" || $value == "1" || $value == 1){
-            return true;
-        }
-        else{
-            return "0";
-        }
-    }
 
     public function updateInputs(){
 
@@ -4869,8 +4854,8 @@ class DoubleH2SteamController extends Controller
     public function testingH2Calculation($datas){
      
         $this->model_values = $datas;
-
-        $this->model_values['metallurgy_standard'] = $this->getBoolean($this->model_values['metallurgy_standard']);
+        $vam_base = new VamBaseController();
+        $this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
         $this->updateInputs();
 
         $this->calculation_values['msg'] = '';

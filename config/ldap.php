@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'logging' => env('LDAP_LOGGING', false),
+    'logging' => env('LDAP_LOGGING', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -143,7 +143,7 @@ return [
                 |
                 */
 
-                'hosts' => explode(' ', env('LDAP_HOSTS', 'corp-dc1.corp.acme.org corp-dc2.corp.acme.org')),
+                'hosts' => explode(' ', env('LDAP_HOSTS', '10.100.2.14')),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -183,7 +183,7 @@ return [
                 |
                 */
 
-                'base_dn' => env('LDAP_BASE_DN', 'dc=corp,dc=acme,dc=org'),
+                'base_dn' => env('LDAP_BASE_DN', 'dc=thermaxdomain,dc=com'),
 
                 /*
                 |--------------------------------------------------------------------------
@@ -198,8 +198,8 @@ return [
                 |
                 */
 
-                'username' => env('LDAP_USERNAME', 'username'),
-                'password' => env('LDAP_PASSWORD', 'secret'),
+                'username' => env('LDAP_USERNAME', 'NIS.SK'),
+                'password' => env('LDAP_PASSWORD', 'SKtmx@1234'),
 
                 /*
                 |--------------------------------------------------------------------------

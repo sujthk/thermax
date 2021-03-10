@@ -98,9 +98,9 @@ border: #0FA015 1px solid;
 											</div>
 										</div>
 										<div class="form-group row">
-											<label class="col-sm-4 col-form-label">Email</label>
+											<label class="col-sm-4 col-form-label">Username</label>
 											<div class="col-sm-8">
-												<input id="email" name="email" type="email" value="{{ $user->email }}" required class="form-control">
+												<input id="username" name="username" type="text" value="{{ $user->username }}" required class="form-control">
 											</div>
 										</div>
 										<div class="form-group row">

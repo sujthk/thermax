@@ -14,6 +14,7 @@
 // Delete Routes strictly for developer access
 
 Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
+Route::get('/user/ldap', 'UserController@ldapUsers');
 
 
 

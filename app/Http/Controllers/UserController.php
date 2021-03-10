@@ -23,8 +23,18 @@ use DB;
 use Log;
 use Exception;
 use PDF;
+use Adldap\AdldapInterface;
+
 class UserController extends Controller
 {
+    
+    public function ldapUsers(AdldapInterface $ldap)
+    {
+
+        return $ldap->search()->users()->get();
+        
+    }
+
     public function getUsers(){
 
     	$users = User::all();
@@ -48,7 +58,7 @@ class UserController extends Controller
         //return $request->all();
 		$this->validate($request, [
 		    'name' => 'required',
-            'email' => 'required|unique:users,email',
+            'username' => 'required|unique:users,username',
 		    'password' => 'required',
             'user_type' => 'required',
 		    'unit_set_id' => 'required',
@@ -71,7 +81,7 @@ class UserController extends Controller
 
 		$user = new User;
 		$user->name = $request->name;
-		$user->email = $request->email;
+		$user->username = $request->username;
         $user->mobile = $request->mobile;
 		$user->password = $hashed_password;
         $user->user_type = $request->user_type;
@@ -111,7 +121,7 @@ class UserController extends Controller
     	$this->validate($request, [
 		    'user_type' => 'required',
 		    'name' => 'required',
-		    'email' => 'required|unique:users,email,'.$user_id,
+		    'username' => 'required|unique:users,username,'.$user_id,
             'unit_set_id' => 'required',
             'region_type' => 'required',
             'mobile' => 'required',
@@ -131,7 +141,7 @@ class UserController extends Controller
 
     	$user = User::find($user_id);
     	$user->name = $request->name;
-		$user->email = $request->email;
+		$user->username = $request->username;
         $user->mobile = $request->mobile;
 		$user->user_type = $request->user_type;
         $user->unit_set_id = $request->unit_set_id;
@@ -176,10 +186,10 @@ class UserController extends Controller
 
     public function sendUserOtp(Request $request){
 
-    	$email = $request->email;
+    	$username = $request->username;
     	$password = $request->password;
 
-    	$user = DB::table('users')->where("email",$email)->first();
+    	$user = DB::table('users')->where("username",$username)->first();
     	if(!$user)
     		return response()->json(['status'=>false,'msg'=>'User Not Found']);
 
@@ -205,12 +215,12 @@ class UserController extends Controller
 
     public function loginUser(Request $request){
 		$this->validate($request, [
-		    'email' => 'required',
+		    'username' => 'required',
 		    'password' => 'required',
 		    'otp' => 'required',
 		]);
 
-		$user = DB::table('users')->where("email",$request->email)->first();
+		$user = DB::table('users')->where("username",$request->username)->first();
     	if(!$user)
     		return response()->json(['status'=>false,'msg'=>'User Not Found']);
 
@@ -225,7 +235,7 @@ class UserController extends Controller
     		return response()->json(['status'=>false,'msg'=>'Invalid Otp']);
 
 
-		if (Auth::attempt(['email' => $request->email, 'password' => $request->password, 'otp' => $request->otp, 'status' => 1])) {
+		if (Auth::attempt(['username' => $request->username, 'password' => $request->password, 'otp' => $request->otp, 'status' => 1])) {
             // Authentication passed...
 
 			$user = Auth::user();
@@ -251,7 +261,6 @@ class UserController extends Controller
         $this->validate($request, [
             'mobile' => 'required',
             'name' => 'required',
-            'email' => 'required|unique:users,email,'.$user_id,
             'unit_set_id' => 'required',
             'language_id' => 'required',
         ]);
@@ -260,7 +269,6 @@ class UserController extends Controller
 
         $user = User::find($user_id);
         $user->name = $request->name;
-        $user->email = $request->email;
         $user->mobile = $request->mobile;
         $user->unit_set_id = $request->unit_set_id;
         $user->language_id = $request->language_id;

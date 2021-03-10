@@ -71,7 +71,7 @@
 									@endif
 									<hr/>
 									<div class="input-group">
-										<input type="email" class="form-control" name="email" id="email" value="" required placeholder="Your Email Address">
+										<input type="text" class="form-control" name="username" id="username" value="" required placeholder="Your Username">
 									</div>
 									<div class="input-group">
 										<input type="password" class="form-control" name="password" id="password" value="" required placeholder="Password">
@@ -150,14 +150,14 @@
 					first_visit = 1;
 				}
 				else{
-					var email = $('#email').val();
+					var username = $('#username').val();
 					var password = $('#password').val();
 					var otp = $('#otp').val();
 					var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 				   	$.ajax({
 						type: "POST",
 						url: "{{ url('login') }}",
-						data: { email : email,_token: CSRF_TOKEN,password: password,otp: otp},
+						data: { username : username,_token: CSRF_TOKEN,password: password,otp: otp},
 						success: function(response){
 							// console.log(response);
 							if(response.status){
@@ -178,13 +178,13 @@
 			});
 
 			function sendOtp(){
-				var email = $('#email').val();
+				var username = $('#username').val();
 				var password = $('#password').val();
 				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			   	$.ajax({
 					type: "POST",
 					url: "{{ url('user-send-otp') }}",
-					data: { email : email,_token: CSRF_TOKEN,password: password},
+					data: { username : username,_token: CSRF_TOKEN,password: password},
 					success: function(response){
 						// console.log(response);
 						$(".disp").prop('disabled', false);

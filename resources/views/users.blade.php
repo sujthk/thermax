@@ -52,7 +52,7 @@
 	                                    <thead>
 	                                        <tr>
 	                                            <th>Name</th>
-	                                            <th>Email</th>
+	                                            <th>Username</th>
 	                                            <th>User Type</th>
 	                                            <th>Last Logged In</th>
 	                                            <th style="width: 10%">Status</th>
@@ -63,7 +63,7 @@
 	                                    	@foreach ($users as $user) 
 	                                    		<tr>
 	                                    		    <td>{{ $user->name }}</td>
-	                                    		    <td>{{ $user->email }}</td>
+	                                    		    <td>{{ $user->username }}</td>
 	                                    		    <td>{{ $user->user_type }}</td>	
 	                                    		    <td>{{ $user->last_logged_in }}</td>
 	                                    		    <td>

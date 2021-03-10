@@ -116,8 +116,8 @@ Change Password
                         <table class="table">
                             <tbody>
                                 <tr>
-                                    <th scope="row">Email</th>
-                                    <td><a href="#!">{{$user->email}}</a></td>
+                                    <th scope="row">Username</th>
+                                    <td><a href="#!">{{$user->username}}</a></td>
                                 </tr>
                                 <tr>
                                     <th scope="row">Region Type</th>
@@ -184,6 +184,23 @@ Change Password
                                         </div>
                                     </td>
                                 </tr>
+                                
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- end of table col-lg-6 -->
+                    <div class="col-lg-6">
+                        <table class="table">
+                            <tbody>
+                                <!-- <tr>
+                                    <td>
+                                        <div class="input-group">
+                                             <span class="input-group-addon"> Username</span>
+                                            <input id="email" name="email" type="email" value="{{ $user->username }}" required class="form-control">
+                                        </div>
+                                    </td>
+                                </tr> -->
                                 <tr>
                                     <td>
                                          <div class="input-group">
@@ -196,23 +213,6 @@ Change Password
                                         </div>
                                     </td>
                                 </tr>
-                                
-                            </tbody>
-                        </table>
-                    </div>
-                    <!-- end of table col-lg-6 -->
-                    <div class="col-lg-6">
-                        <table class="table">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="input-group">
-                                             <span class="input-group-addon"> Email</span>
-                                            <input id="email" name="email" type="email" value="{{ $user->email }}" required class="form-control">
-                                        </div>
-                                    </td>
-                                </tr>
-
                                 <tr>
                                     <td>
                                         <div class="input-group">

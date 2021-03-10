@@ -98,9 +98,9 @@
 												</div>
 											</div>
 											<div class="form-group row">
-												<label class="col-sm-4 col-form-label">Email</label>
+												<label class="col-sm-4 col-form-label">Username</label>
 												<div class="col-sm-8">
-													<input id="email" name="email" type="email" value="{{ old('email') }}" required class="form-control" placeholder="Enter your Email">
+													<input id="username" name="username" type="text" value="{{ old('username') }}" required class="form-control" placeholder="Enter your Email">
 												</div>
 											</div>
 											<div class="form-group row">

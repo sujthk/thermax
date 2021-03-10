@@ -52,6 +52,7 @@
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">
 	                                    <thead>
 	                                        <tr>
+                                                <th>S.No</th>
 	                                        	<th>Model Name</th>
 	                                            <th>Model</th>
 	                                            <th>Result</th>
@@ -118,7 +119,7 @@
 
 		function sendCalculationValues(values){
 			values.calculator_code = code;
-			var tr_row = '<tr><td>'+values.model_name+'</td><td>'+values.model_number+'</td>';
+			var tr_row = '<tr><td>'+current_index+'</td><td>'+values.model_name+'</td><td>'+values.model_number+'</td>';
 			var error = 1;
 			$.ajax({
 				type: "POST",
@@ -131,12 +132,12 @@
 				success: function(response){
 					
 					if(response.status){
-						console.log(response.result);
+						// console.log(response.result);
 						tr_row = tr_row+'<td>'+response.result.Result+'</td></tr>';
 						error = 0;
 					}
 					else{
-						console.log(response.msg);
+						// console.log(response.msg);
 					}	
 							
 
