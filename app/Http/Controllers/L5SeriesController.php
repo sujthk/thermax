@@ -330,7 +330,6 @@ class L5SeriesController extends Controller
 
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>=',$model_number)->first();
-        //$queries = DB::getQueryLog();
 
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;

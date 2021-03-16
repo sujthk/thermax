@@ -146,7 +146,7 @@ class VamBaseController extends Controller
 	}
 
 
-    public function EG_VISCOSITY($EGT, $EGX){
+    public function EG_VISCOSITY($EGT = 18.5, $EGX = 10){
     	$REM= fmod($EGX, 10);
 		$EGX1=$EGX-$REM;
 		$EGRX1=$this->EG_VISCOSITY1($EGT,$EGX1);
@@ -157,6 +157,7 @@ class VamBaseController extends Controller
 		$YY11 = ($EGX - $EGX2) / ($EGX1 - $EGX2) * $Y0;
 		$YY22 = ($EGX - $EGX1) / ($EGX2 - $EGX1) * $Y1;
 		$YY2 = $YY11 + $YY22;
+
 		return $YY2;
     }
 
@@ -191,6 +192,8 @@ class VamBaseController extends Controller
 		$NYY11 = ($TVS - $EGT2) / ($EGT1 - $EGT2) * $NY0;
 		$NYY22 = ($TVS - $EGT1) / ($EGT2 - $EGT1) * $NY1;
 		$NYY2 = $NYY11 + $NYY22;
+
+ 
 		return $NYY2;
 	}
 

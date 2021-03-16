@@ -15,6 +15,7 @@
 
 Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
 Route::get('/user/ldap', 'UserController@ldapUsers');
+Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
 
 
 
@@ -199,5 +200,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/l5-series/submit-calculate', 'L5SeriesController@postL5');
     Route::post('/calculators/l5-series/save-report', 'L5SeriesController@postSaveReport');
     Route::post('/calculators/l5-series/reset-calculate', 'L5SeriesController@postResetL5');
+
+
+    Route::get('/calculators/l1-series', 'L1SeriesController@getL1Series')->name('calculators/l1-series');
 
 });
