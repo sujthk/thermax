@@ -980,6 +980,7 @@ class VamBaseController extends Controller
             $H1 = $A * $T + 0.5* $B * $T * $T + $C * $T * $T * $T/3 + 100 - $D;
             $ERR1[$N]=$H-$H1;
             $N++;
+
         }
         return $T;
     }

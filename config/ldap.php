@@ -183,7 +183,7 @@ return [
                 |
                 */
 
-                'base_dn' => env('LDAP_BASE_DN', 'dc=thermaxdomain,dc=com'),
+                'base_dn' => env('LDAP_BASE_DN', 'ou=mathematicians,dc=example,dc=com'),
 
                 /*
                 |--------------------------------------------------------------------------

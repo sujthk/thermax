@@ -1729,16 +1729,6 @@ class DoubleSteamController extends Controller
        $this->calculation_values['PDE'] = $this->calculation_values['FLE'] + $this->calculation_values['SHE'];                    //P$this->calculation_values['RE']SSU$this->calculation_values['RE'] DROP IN CHIL$this->calculation_values['LE']D WATER CKT
 
        
-       // Log::info("RE = ".$this->calculation_values['RE']);
-       // Log::info("VEA = ".$this->calculation_values['VEA']);
-       // Log::info("IDE = ".$this->calculation_values['IDE']);
-       // Log::info("FLP = ".$this->calculation_values['FLP']);
-       // Log::info("FF1 = ".$this->calculation_values['FF1']);
-       // Log::info("F = ".$this->calculation_values['F']);
-       // Log::info("FE1 = ".$this->calculation_values['FE1']);
-       // Log::info("TME = ".$this->calculation_values['TME']);
-       // Log::info("CHGLY_ROW22 = ".$this->calculation_values['CHGLY_ROW22']);
-       // Log::info("CHGLY_VIS22 = ".$this->calculation_values['CHGLY_VIS22']);
 
     }
 
@@ -1963,17 +1953,11 @@ class DoubleSteamController extends Controller
         $this->calculation_values['VAL'] = $this->calculation_values['GCWAL'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * (($this->calculation_values['TNAA'] / 2) / $this->calculation_values['TAPL']));
 
         
-        // Log::info("KEVA = ".$this->calculation_values['KEVA']);
-        // Log::info("KABS = ".$this->calculation_values['KABS']);
-        // Log::info("KCON = ".$this->calculation_values['KCON']);
+
         $this->DERATE_KEVA();
         $this->DERATE_KABSH();
         $this->DERATE_KABSL();
         $this->DERATE_KCON();
-
-        // Log::info("KEVA = ".$this->calculation_values['KEVA']);
-        // Log::info("KABS = ".$this->calculation_values['KABS']);
-        // Log::info("KCON = ".$this->calculation_values['KCON']);
 
 
         if ($this->calculation_values['MODEL'] < 3500)
@@ -2013,10 +1997,6 @@ class DoubleSteamController extends Controller
         $this->calculation_values['UABSL'] = 1.0 / ((1.0 / $this->calculation_values['KABSL']) + $this->calculation_values['FFCOW1']);
         $this->calculation_values['UCON'] = 1.0 / ((1.0 / $this->calculation_values['KCON']) + $this->calculation_values['FFCOW1']);
 
-
-        // Log::info("UEVAH = ".$this->calculation_values['UEVAH']);
-        // Log::info("UABSH = ".$this->calculation_values['UABSH']);
-        // Log::info("UCON = ".$this->calculation_values['UCON']);
 
         if ($this->calculation_values['TAP'] == 1) // 11.9.14
         {
@@ -2081,10 +2061,6 @@ class DoubleSteamController extends Controller
             $this->calculation_values['UABSL'] = 1.0 / ((1.0 / $this->calculation_values['KABSL']) + ($this->calculation_values['FFCOW1'] * 0.5));
             $this->calculation_values['UCON'] = 1.0 / ((1.0 / $this->calculation_values['KCON']) + ($this->calculation_values['FFCOW1'] * 0.5));
 
-
-            // Log::info("UEVAH = ".$this->calculation_values['UEVAH']);
-            // Log::info("UABSH = ".$this->calculation_values['UABSH']);
-            // Log::info("UCON = ".$this->calculation_values['UCON']);
 
             if ($this->calculation_values['TAP'] == 1)
             {
@@ -2803,6 +2779,7 @@ class DoubleSteamController extends Controller
             $this->calculation_values['I8'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T8'], $this->calculation_values['XCONC']);
             $this->calculation_values['QLIBRLTHE'] = $this->calculation_values['GCONC'] * ($this->calculation_values['I9'] - $this->calculation_values['I8']);
             $this->calculation_values['I11'] = ($this->calculation_values['QLIBRLTHE'] / $this->calculation_values['GDIL1']) + $this->calculation_values['I2'];
+
             $this->calculation_values['T11'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I11']);
             $this->calculation_values['LMTDLTHE'] = (($this->calculation_values['T9'] - $this->calculation_values['T11']) - ($this->calculation_values['T8'] - $this->calculation_values['T2'])) / log(($this->calculation_values['T9'] - $this->calculation_values['T11']) / ($this->calculation_values['T8'] - $this->calculation_values['T2']));
             $this->calculation_values['QLMTDLTHE'] = $this->calculation_values['ULTHE'] * $this->calculation_values['ALTHE'] * $this->calculation_values['LMTDLTHE'];
@@ -2847,6 +2824,7 @@ class DoubleSteamController extends Controller
             
             
             $this->calculation_values['I10'] = $this->calculation_values['I4'] - ($this->calculation_values['QLIBRHTHE'] / $this->calculation_values['GMED']);
+
             $this->calculation_values['T10'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XMED'], $this->calculation_values['I10']);
             $this->calculation_values['LMTDHTHE'] = (($this->calculation_values['T4'] - $this->calculation_values['T7']) - ($this->calculation_values['T10'] - $this->calculation_values['T11'])) / log(($this->calculation_values['T4'] - $this->calculation_values['T7']) / ($this->calculation_values['T10'] - $this->calculation_values['T11']));
             $this->calculation_values['QLMTDHTHE'] = $this->calculation_values['UHTHE'] * $this->calculation_values['AHTHE'] * $this->calculation_values['LMTDHTHE'];
@@ -2938,6 +2916,7 @@ class DoubleSteamController extends Controller
             $this->calculation_values['GSTEAM'] = $this->calculation_values['QLMTDHTG'] / ($this->calculation_values['HSTEAM'] - $this->calculation_values['TS']);
             $this->HR();
             $this->calculation_values['I14'] = ($this->calculation_values['GDIL2'] * $this->calculation_values['I20'] + $this->calculation_values['GDIL1'] * $this->calculation_values['I7']) / $this->calculation_values['GDIL'];
+
             $this->calculation_values['T14'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I14']);
             $this->calculation_values['QHTG'] = ($this->calculation_values['GMED'] * $this->calculation_values['I4']) + ($this->calculation_values['GREF1'] * $this->calculation_values['J4']) - ($this->calculation_values['GDIL'] * $this->calculation_values['I14']);
 
@@ -3031,6 +3010,7 @@ class DoubleSteamController extends Controller
             $this->calculation_values['TSTOUT'] = $tstout[$this->calculation_values['i']];
             $this->calculation_values['QHR'] = $this->calculation_values['GSTEAM'] * ($this->calculation_values['TSMIN'] - $this->calculation_values['TSTOUT']);
             $this->calculation_values['I20'] = $this->calculation_values['I21'] + ($this->calculation_values['QHR'] / $this->calculation_values['GDIL2']);
+  
             $this->calculation_values['T20'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I20']);
             $this->calculation_values['LMTDHR'] = (($this->calculation_values['TSMIN'] - 5 - $this->calculation_values['T20']) - ($this->calculation_values['TSTOUT'] - $this->calculation_values['T21'])) / log(($this->calculation_values['TSMIN'] - 5 - $this->calculation_values['T20']) / ($this->calculation_values['TSTOUT'] - $this->calculation_values['T21']));
             $this->calculation_values['QLMTDHR'] = $this->calculation_values['UHR'] * $this->calculation_values['AHR'] * $this->calculation_values['LMTDHR'];
@@ -6697,6 +6677,7 @@ class DoubleSteamController extends Controller
 
        if(isset($velocity_status['status']) && !$velocity_status['status']){
             $this->calculation_values['msg'] = $velocity_status['msg'];
+            
        }
 
 
