@@ -32,7 +32,7 @@ class UnitConversionController extends Controller
            $chiller_values['min_hot_water_in'] = $this->convertTemperatureUnit($chiller_values['min_hot_water_in'],"Centigrade",$unit_set->TemperatureUnit); 
            $chiller_values['max_hot_water_in'] = $this->convertTemperatureUnit($chiller_values['max_hot_water_in'],"Centigrade",$unit_set->TemperatureUnit);
        }
-       if($calculator_code == "L5"){
+       if($calculator_code == "L5" || $calculator_code == "L1"){
             $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],"Centigrade",$unit_set->TemperatureUnit);
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],"Centigrade",$unit_set->TemperatureUnit);
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],"Centigrade",$unit_set->TemperatureUnit);
@@ -49,7 +49,7 @@ class UnitConversionController extends Controller
             $cooling_water_ranges[] = $this->convertFlowRateUnit($chiller_values['cooling_water_ranges'][$i],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         }
         $chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
-        if($calculator_code == "L5"){
+        if($calculator_code == "L5" || $calculator_code == "L1"){
             $chiller_values['hot_water_flow'] = $this->convertFlowRateUnit($chiller_values['hot_water_flow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         }
 
@@ -79,7 +79,7 @@ class UnitConversionController extends Controller
         if(!empty($chiller_values['fouling_cooling_water_value'])){
             $chiller_values['fouling_cooling_water_value'] = $this->convertFoulingFactorUnit($chiller_values['fouling_cooling_water_value'],"SquareMeterHrCperKcal",$unit_set->FoulingFactorUnit);
         }
-        if($calculator_code == "L5"){
+        if($calculator_code == "L5" || $calculator_code == "L1"){
             $chiller_values['fouling_non_hot'] = $this->convertFoulingFactorUnit($chiller_values['fouling_non_hot'],"SquareMeterHrCperKcal",$unit_set->FoulingFactorUnit);
         }
 
@@ -127,7 +127,7 @@ class UnitConversionController extends Controller
            $chiller_values['min_hot_water_in'] = $this->convertTemperatureUnit($chiller_values['min_hot_water_in'],$unit_set->TemperatureUnit,"Centigrade"); 
            $chiller_values['max_hot_water_in'] = $this->convertTemperatureUnit($chiller_values['max_hot_water_in'],$unit_set->TemperatureUnit,"Centigrade");
        }
-       if($calculator_code == "L5"){
+       if($calculator_code == "L5" || $calculator_code == "L1"){
             $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],$unit_set->TemperatureUnit,"Centigrade");
@@ -144,7 +144,7 @@ class UnitConversionController extends Controller
             $cooling_water_ranges[] = $this->convertFlowRateUnit($chiller_values['cooling_water_ranges'][$i],$unit_set->FlowRateUnit,"CubicMeterPerHr");
         }
         $chiller_values['cooling_water_ranges'] = $cooling_water_ranges;
-        if($calculator_code == "L5"){
+        if($calculator_code == "L5" || $calculator_code == "L1"){
             $chiller_values['hot_water_flow'] = $this->convertFlowRateUnit($chiller_values['hot_water_flow'],$unit_set->FlowRateUnit,"CubicMeterPerHr");
         }
 
@@ -171,7 +171,7 @@ class UnitConversionController extends Controller
         if(!empty($chiller_values['fouling_cooling_water_value'])){
             $chiller_values['fouling_cooling_water_value'] = $this->convertFoulingFactorUnit($chiller_values['fouling_cooling_water_value'],$unit_set->FoulingFactorUnit,"SquareMeterHrCperKcal");
         }
-        if($calculator_code == "L5"){
+        if($calculator_code == "L5" || $calculator_code == "L1"){
             $chiller_values['fouling_non_hot'] = $this->convertFoulingFactorUnit($chiller_values['fouling_non_hot'],$unit_set->FoulingFactorUnit,"SquareMeterHrCperKcal");
             $chiller_values['fouling_hot_water_value'] = $this->convertFoulingFactorUnit($chiller_values['fouling_hot_water_value'],$unit_set->FoulingFactorUnit,"SquareMeterHrCperKcal");
         }

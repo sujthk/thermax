@@ -1237,7 +1237,7 @@ class L5SeriesController extends Controller
 
         $this->calculation_values['GCW'] = $this->model_values['cooling_water_flow'];
         $this->calculation_values['TCW11'] = $this->model_values['cooling_water_in'];
-         $this->calculation_values['GL'] = $this->model_values['glycol_selected']; 
+        $this->calculation_values['GL'] = $this->model_values['glycol_selected']; 
         $this->calculation_values['CHGLY'] = $this->model_values['glycol_chilled_water']; 
         $this->calculation_values['COGLY'] = $this->model_values['glycol_cooling_water'];
 

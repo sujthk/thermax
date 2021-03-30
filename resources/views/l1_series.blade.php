@@ -294,27 +294,14 @@
 											</div>
 											<div class="col-lg-2">
 												<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-                                                     <option value="185">L5 D3</option>
-                                                     <option value="210">L5 D4</option>
-                                                     <option value="245">L5 E1</option>
-                                                     <option value="270">L5 E2</option>
-                                                     <option value="310">L5 E3</option>
-                                                     <option value="340">L5 E4</option>
-                                                     <option value="380">L5 E5</option>
-                                                     <option value="425">L5 E6</option>
-                                                     <option value="485">L5 F2</option>
-                                                     <option value="540">L5 F3</option>
-                                                     <option value="630">L5 G1</option>
-                                                     <option value="690">L5 G2</option>
-                                                     <option value="730">L5 G3</option>
-                                                     <option value="780">L5 G4</option>
-                                                     <option value="850">L5 G5</option>
-                                                     <option value="950">L5 G6</option>
-                                                     <option value="1050">L5 H1</option>
-                                                     <option value="1150">L5 H2</option>
-                                                     <option value="1260">L5 J1</option>
-													 <option value="1380">L5 J2</option>
-
+                                                     <option value="35">L1 M1</option>
+                                                     <option value="45">L1 M2</option>
+                                                     <option value="60">L1 N1</option>
+                                                     <option value="70">L1 N2</option>
+                                                     <option value="90">L1 N3</option>
+                                                     <option value="110">L1 N4</option>
+                                                     <option value="135">L1 P1</option>
+                                                     <option value="160">L1 P2</option>
 												</select>
 											</div>
 											<div class="col-lg-1">
@@ -1159,7 +1146,7 @@
 
         $('input:radio[name="region_type"]').change(function() {
             model_values.region_type = $(this).val();
-            model_values.model_number = 185;
+            model_values.model_number = 35;
             
             sendResetValues(reset_url);
         });   
