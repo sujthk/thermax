@@ -47,6 +47,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report');
     Route::get('/calculators/double-effect-h2/download-report/{user_report_id}/{type}', 'DoubleH2SteamController@downloadReport')->name('download.report_h2');
     Route::get('/calculators/l5-series/download-report/{user_report_id}/{type}', 'L5SeriesController@downloadReport')->name('download.l5report');
+    Route::get('/calculators/l1-series/download-report/{user_report_id}/{type}', 'L1SeriesController@downloadReport')->name('download.l1report');
 
 });	
 
@@ -206,5 +207,6 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/l1-series/ajax-calculate', 'L1SeriesController@postAjaxL1');
     Route::post('/calculators/l1-series/reset-calculate', 'L1SeriesController@postResetL1');
     Route::post('/calculators/l1-series/submit-calculate', 'L1SeriesController@postL1');
+    Route::post('/calculators/l1-series/save-report', 'L1SeriesController@postSaveReport');
 
 });
