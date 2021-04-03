@@ -223,6 +223,10 @@ class UnitConversionController extends Controller
             $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['THW4'] = $this->convertTemperatureUnit($calculated_values['THW4'],"Centigrade",$unit_set->TemperatureUnit);
         }
+        if($calculator_code == "L1"){
+            $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
+            $calculated_values['THW2'] = $this->convertTemperatureUnit($calculated_values['THW2'],"Centigrade",$unit_set->TemperatureUnit);
+        }
 
         // FlowRateUnit
         $calculated_values['GCW'] = $this->convertFlowRateUnit($calculated_values['GCW'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
@@ -232,7 +236,7 @@ class UnitConversionController extends Controller
         {
             $calculated_values['HotWaterFlow']= $this->convertFlowRateUnit($calculated_values['HotWaterFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         }
-        if($calculator_code == "L5"){
+        if($calculator_code == "L5" || $calculator_code == "L1"){
             $calculated_values['GHOT']= $this->convertFlowRateUnit($calculated_values['GHOT'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         }
 
@@ -250,7 +254,7 @@ class UnitConversionController extends Controller
         // FoulingFactorUnit
         $calculated_values['FFCHW1'] = $this->convertFoulingFactorUnit($calculated_values['FFCHW1'],"SquareMeterHrCperKcal",$unit_set->FoulingFactorUnit);
         $calculated_values['FFCOW1'] = $this->convertFoulingFactorUnit($calculated_values['FFCOW1'],"SquareMeterHrCperKcal",$unit_set->FoulingFactorUnit);
-        if($calculator_code == "L5"){
+        if($calculator_code == "L5" || $calculator_code == "L1"){
             $calculated_values['FFHOW1'] = $this->convertFoulingFactorUnit($calculated_values['FFHOW1'],"SquareMeterHrCperKcal",$unit_set->FoulingFactorUnit);
         }
 

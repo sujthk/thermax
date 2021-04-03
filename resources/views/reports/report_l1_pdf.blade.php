@@ -312,7 +312,7 @@
 										<td> 3 </td>
 										<td class="font-class"> {{ $language_datas['hot_water_outlet_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['THW4'],1) }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['THW2'],1) }}</td>
 									</tr>
 									<tr>
 										<td> 4 </td> 
@@ -367,64 +367,54 @@
 											</td>
 										@endif
 									</tr>
-									<tr>
-										<td class="dark-cell" scope="col"> D  </td>
-										<td class="dark-cell font-class" scope="col"> {{ $language_datas['electrical_data'] }}</td>
-										<td class="dark-cell" scope="col"> </td>
-										<td class="dark-cell" scope="col"> </td>      
-									</tr>
-									<tr>
-										<td> 1 </td>
-										<td class="font-class"> {{ $language_datas['power_supply'] }}</td>
-										<td> </td>
-										<td class="optimal-r1"> {{ $calculation_values['PowerSupply'] }}</td>
-									</tr>
-									<tr>
-										<td> 2 </td>
-										<td class="font-class"> {{ $language_datas['power_consumption'] }}</td>
-										<td class="optimal-r1">kVA</td>
-										<td class="optimal-r1"> {{ round($calculation_values['TotalPowerConsumption'],1) }}</td>
-									</tr>
-									<tr>
-										<td> 3 </td>
-										<td class="font-class"> {{ $language_datas['hp_absorbent_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
-										@if($calculation_values['region_type'] == 2)
-                                            <td class="optimal-r1"> {{ round($calculation_values['USA_HPAbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['USA_HPAbsorbentPumpMotorAmp'],2) }} ) </td>
+                                   <tr>
+                                        <td class="dark-cell" scope="col"> D  </td>
+                                        <td class="dark-cell font-class" scope="col"> {{ $language_datas['electrical_data'] }}</td>
+                                        <td class="dark-cell" scope="col"> </td>
+                                        <td class="dark-cell" scope="col"> </td>      
+                                    </tr>
+                                    <tr>
+                                        <td> 1 </td>
+                                        <td class="font-class"> {{ $language_datas['power_supply'] }}</td>
+                                        <td> </td>
+                                        <td class="optimal-r1"> {{ $calculation_values['PowerSupply'] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td> 2 </td>
+                                        <td class="font-class"> {{ $language_datas['power_consumption'] }}</td>
+                                        <td class="optimal-r1">kVA</td>
+                                        <td class="optimal-r1"> {{ round($calculation_values['TotalPowerConsumption'],1) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td> 3 </td>
+                                        <td class="font-class"> {{ $language_datas['absorbent_pump_rating'] }}</td>
+                                        <td class="optimal-r1"> kW (A)</td>
+                                        @if($calculation_values['region_type'] == 2)
+                                            <td class="optimal-r1"> {{ round($calculation_values['USA_AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['USA_AbsorbentPumpMotorAmp'],2) }} ) </td>
                                         @else
-                                          <td class="optimal-r1"> {{ round($calculation_values['HPAbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['HPAbsorbentPumpMotorAmp'],2) }} ) </td>
+                                          <td class="optimal-r1"> {{ round($calculation_values['AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['AbsorbentPumpMotorAmp'],2) }} ) </td>
                                         @endif
-									</tr>
-									<tr>
-										<td> 4 </td>
-										<td class="font-class"> {{ $language_datas['lp_absorbent_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
-										@if($calculation_values['region_type'] == 2)
-                                            <td class="optimal-r1"> {{ round($calculation_values['USA_LPAbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['USA_LPAbsorbentPumpMotorAmp'],2) }} ) </td>
-                                        @else
-                                          <td class="optimal-r1"> {{ round($calculation_values['LPAbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['LPAbsorbentPumpMotorAmp'],2) }} ) </td>
-                                        @endif
-									</tr>
-									<tr>
-										<td> 5 </td> 
-										<td class="font-class"> {{ $language_datas['refrigerant_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
-										@if($calculation_values['region_type'] == 2)
+                                    </tr>
+                                    <tr>
+                                        <td> 4 </td> 
+                                        <td class="font-class"> {{ $language_datas['refrigerant_pump_rating'] }}</td>
+                                        <td class="optimal-r1"> kW (A)</td>
+                                        @if($calculation_values['region_type'] == 2)
                                             <td class="optimal-r1"> {{ round($calculation_values['USA_RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['USA_RefrigerantPumpMotorAmp'],2) }}) </td>
                                          @else
                                           <td class="optimal-r1"> {{ round($calculation_values['RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['RefrigerantPumpMotorAmp'],2) }}) </td>
                                         @endif
-									</tr>
-									<tr>     
-										<td> 6 </td>
-										<td class="font-class"> {{ $language_datas['vaccum_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
-										@if($calculation_values['region_type'] == 2)
+                                    </tr>
+                                    <tr>     
+                                        <td> 5 </td>
+                                        <td class="font-class"> {{ $language_datas['vaccum_pump_rating'] }}</td>
+                                        <td class="optimal-r1"> kW (A)</td>
+                                        @if($calculation_values['region_type'] == 2)
                                             <td class="optimal-r1"> {{ round($calculation_values['USA_PurgePumpMotorKW'],2) }}({{ round($calculation_values['USA_PurgePumpMotorAmp'],2) }}) </td>
                                         @else
                                           <td class="optimal-r1"> {{ round($calculation_values['PurgePumpMotorKW'],2) }}({{ round($calculation_values['PurgePumpMotorAmp'],2) }}) </td>
                                         @endif
-									</tr>
+                                    </tr>
                                     @if($calculation_values['region_type'] == 2)
                                         <tr>     
                                             <td> 6 </td>

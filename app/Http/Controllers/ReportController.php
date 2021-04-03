@@ -8,6 +8,7 @@ use App\UserReport;
 use App\UnitSet;
 use App\ChillerMetallurgyOption;
 use App\Http\Controllers\VamBaseController;
+use Log;
 
 class ReportController extends Controller
 {
@@ -1107,8 +1108,8 @@ class ReportController extends Controller
         $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
-                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>=',$calculation_values['MODEL'])->first();
-
+                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
+                                        
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
         $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
@@ -1380,7 +1381,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['hot_water_outlet_temp']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['THW4'],1)));
+        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['THW2'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
@@ -1455,29 +1456,18 @@ class ReportController extends Controller
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['hp_absorbent_pump_rating']));
+        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['absorbent_pump_rating']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
         if($calculation_values['region_type'] ==2){
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_HPAbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['USA_HPAbsorbentPumpMotorAmp'],2)." )" ));
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['USA_AbsorbentPumpMotorAmp'],2)." )" ));
         }
         else{
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['HPAbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['HPAbsorbentPumpMotorAmp'],2)." )" ));
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],2)." )" ));
         }
         
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['lp_absorbent_pump_rating']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-        if($calculation_values['region_type'] ==2){
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_LPRefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['USA_LPRefrigerantPumpMotorAmp'],2)." )" ));
-        }
-        else{
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['LPAbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['LPAbsorbentPumpMotorAmp'],2)." )" ));
-        }       
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['refrigerant_pump_rating']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
         if($calculation_values['region_type'] ==2){
@@ -1489,7 +1479,7 @@ class ReportController extends Controller
         
 
         $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
+        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['vaccum_pump_rating']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
         if($calculation_values['region_type'] ==2){
