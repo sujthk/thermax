@@ -200,21 +200,21 @@ class L1SeriesController extends Controller
         $this->RANGECAL();
         
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
         
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        // try {
+        try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -222,12 +222,12 @@ class L1SeriesController extends Controller
             $this->RESULT_CALCULATE();
     
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
 
         // Log::info($this->calculation_values);
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
@@ -505,7 +505,8 @@ class L1SeriesController extends Controller
         } while ($this->calculation_values['VA'] < $this->calculation_values['VAMAX']);
         //}
 
-        if ($this->calculation_values['VA'] > ($this->calculation_values['VAMAX'] + 0.01) && $this->calculation_values['TAP'] != 1)
+        
+        if ($this->calculation_values['VA'] > ($this->calculation_values['VAMAX']) && $this->calculation_values['TAP'] != 1)
         {
             $this->calculation_values['TAP'] = $this->calculation_values['TAP'] - 1;
             $this->calculation_values['VA'] = $this->calculation_values['GCW'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * ($this->calculation_values['TNAA'] / $this->calculation_values['TAP']));
@@ -520,6 +521,7 @@ class L1SeriesController extends Controller
             $this->calculation_values['GCWAH'] = $this->calculation_values['GCW'];
             $this->calculation_values['GCWAL'] = $this->calculation_values['GCW'];
         }
+
 
         /**************** CONDENSER VELOCITY ******************/
         $this->calculation_values['TCP'] = 1;
@@ -549,7 +551,7 @@ class L1SeriesController extends Controller
     }
 
     public function HWVELOCITY(){
-        for ($this->calculation_values['TGP'] = 2; $this->calculation_values['TGP'] < 8; $this->calculation_values['TGP'] += 2)
+        for ($this->calculation_values['TGP'] = 2; $this->calculation_values['TGP'] <= 8; $this->calculation_values['TGP'] += 2)
         {
             $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / 3600 / (3.142 / 4 * $this->calculation_values['IDG'] * $this->calculation_values['IDG'] * $this->calculation_values['TNG'] / $this->calculation_values['TGP']);
             if ($this->calculation_values['VG'] > 1.25)
@@ -558,11 +560,14 @@ class L1SeriesController extends Controller
             }
         }
 
+
         if ($this->calculation_values['VG'] < 1.25)
         {
+
             $this->calculation_values['TGP'] = 8;                                                            //6+6 passes after 4+4. 5+5 pass is not given in Gen
             $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / 3600 / (3.142 / 4 * $this->calculation_values['IDG'] * $this->calculation_values['IDG'] * $this->calculation_values['TNG'] / $this->calculation_values['TGP']);
         }
+
 
         if ($this->calculation_values['VG'] > 2.78 && $this->calculation_values['TGP'] != 2)
         {
@@ -741,7 +746,7 @@ class L1SeriesController extends Controller
             $t3n1 = array();
             $t12 = array();
             $t3n2 = array();
-            $TCW14 = $this->calculation_values['TCW2'];
+            $TCW14 = $this->calculation_values['TCW4'];
 
             do
             {
@@ -766,7 +771,7 @@ class L1SeriesController extends Controller
                 $this->calculation_values['ARIRC'] = ($TCW14 - $this->calculation_values['TCW11']) * 1.8;
                 $this->calculation_values['ALMTDC'] = $this->calculation_values['ARIRC'] / log(1 + ($this->calculation_values['ARIRC'] / $this->calculation_values['ARISSPC']));
                 $this->calculation_values['ARICOWA'] = 3.141593 * $this->calculation_values['LE'] * ($this->calculation_values['IDA'] * $this->calculation_values['TNAA'] + $this->calculation_values['IDC'] * $this->calculation_values['TNC']);
-                $this->calculation_values['AILMTDC'] = (5 * $this->calculation_values['FFCOW1']) * ($this->calculation_values['GCW'] * $this->calculation_values['COGLY_ROW'] * ($this->calculation_values['COGLY_SPHT'] / 4187) * ($this->calculation_values['TCW2'] - $this->calculation_values['TCW11']) * 3.968 / ($this->calculation_values['ARICOWA'] * 3.28084 * 3.28084));
+                $this->calculation_values['AILMTDC'] = (5 * $this->calculation_values['FFCOW1']) * ($this->calculation_values['GCW'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT1'] / 4187) * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW11']) * 3.968 / ($this->calculation_values['ARICOWA'] * 3.28084 * 3.28084));
                 $this->calculation_values['ARIZC'] = $this->calculation_values['ARIRC'] / ($this->calculation_values['ALMTDC'] - $this->calculation_values['AILMTDC']);
                 $this->calculation_values['ARITDAC'] = $this->calculation_values['ARISSPC'] - ($this->calculation_values['ARIRC'] / (exp($this->calculation_values['ARIZC']) - 1));
                 $this->calculation_values['ARITCWI'] = $this->calculation_values['TCW11'] + ($this->calculation_values['ARITDAC'] / 1.8);
@@ -1006,6 +1011,8 @@ class L1SeriesController extends Controller
             }
         }
 
+
+
         $this->calculation_values['UGEN'] = $this->calculation_values['UGEN'] * $this->calculation_values['FACT1'] * $this->calculation_values['FACT2'];
 
         if ($this->calculation_values['UGEN'] > 1100)
@@ -1017,12 +1024,14 @@ class L1SeriesController extends Controller
             $this->calculation_values['UGEN'] = 750;
         }
 
-        if ($this->calculation_values['THW1'] > 105)
+        if ($this->calculation_values['THW1'] > 105 || $this->calculation_values['TG2'] == 2)
         {
             $this->calculation_values['UGEN'] = $this->calculation_values['UGEN'] * 0.95;   //CUNI or SS Metallurgy above 105 DEG C
         }
 
         $this->calculation_values['UGEN'] = 1 / ((1 / $this->calculation_values['UGEN']) + $this->calculation_values['FFHOW1']);
+
+
     }
 
     public function EVAPORATOR(){
@@ -2331,7 +2340,7 @@ class L1SeriesController extends Controller
                     $min_range = $cooling_water_ranges[$i];
                     $max_range = $cooling_water_ranges[$i+1];
 
-                    if(($cooling_water_flow > $min_range) && ($cooling_water_flow < $max_range)){
+                    if(($cooling_water_flow > ($min_range - 0.1)) && ($cooling_water_flow < ($max_range + 0.1))){
                         $range_validate = true;
                         break;
                     }
@@ -2530,7 +2539,7 @@ class L1SeriesController extends Controller
             $min_range = $cooling_water_ranges[$i];
             $max_range = $cooling_water_ranges[$i+1];
 
-            if(($cooling_water_flow > $min_range) && ($cooling_water_flow < $max_range)){
+            if(($cooling_water_flow > ($min_range - 0.1)) && ($cooling_water_flow < ($max_range + 0.1))){
                 $range_validate = true;
                 break;
             }
@@ -2814,7 +2823,6 @@ class L1SeriesController extends Controller
             return array('status' => false,'msg' => $this->notes['NOTES_COW_MAX_LIM']);
         }
 
-
        
         $range_values = array();
         foreach ($FLOWMN as $key => $min) {
@@ -3092,7 +3100,7 @@ class L1SeriesController extends Controller
   
         $this->calculation_values['THE'] = $this->calculation_values['TU3'];
 
-        if ($this->calculation_values['TU2'] < 3.1)
+        if ($this->calculation_values['TU2'] < 4.1)
         {
             $this->calculation_values['IDE'] = $this->calculation_values['ODE'] - (2.0 * ($this->calculation_values['THE'] + 0.1) / 1000);
         }
@@ -3127,7 +3135,7 @@ class L1SeriesController extends Controller
         }
 
         //GEN TUBE
-        $this->calculation_values['THG'] = $this->calculation_values['TG3'];
+        $this->calculation_values['THG'] = $this->calculation_values['TG3'] + 0.1;
         $this->calculation_values['IDG'] = $this->calculation_values['ODG'] - (2.0 * $this->calculation_values['THG'] / 1000);
     }
 

@@ -234,7 +234,7 @@
 					 	<div class="row">
 						  	<div class="col-md-6">
 								<div class="page-header-title">
-								 <h4>Double Effect Steam Fired series</h4>
+								 <h4>S1 Series</h4>
 							 	</div>
 							</div>
 			 
@@ -294,35 +294,35 @@
 											</div>
 											<div class="col-lg-2">
 												<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-													 <option value="60">S2 M1</option>
-                                                     <option value="75">S2 M2</option>
-                                                     <option value="90">S2 N1</option>
-                                                     <option value="110">S2 N2</option>
-                                                     <option value="150">S2 N3</option>
-													 <option value="175">S2 N4</option>
-													 <option value="210">S2 P1</option>
-													 <option value="250">S2 P2</option>
-													 <option value="310">S2 D3</option>
-													 <option value="350">S2 D4</option>
-													 <option value="410">S2 E1</option>
-													 <option value="470">S2 E2</option>
-													 <option value="530">S2 E3</option>
-													 <option value="580">S2 E4</option>
-													 <option value="630">S2 E5</option>
-													 <option value="710">S2 E6</option>
-													 <option value="760">S2 F1</option>
-													 <option value="810">S2 F2</option>
-													 <option value="900">S2 F3</option>
-													 <option value="1010">S2 G1</option>
-													 <option value="1130">S2 G2</option>
-													 <option value="1260">S2 G3</option>
-													 <option value="1380">S2 G4</option>
-													 <option value="1560">S2 G5</option>
-													 <option value="1690">S2 G6</option>
-													 <option value="1890">S2 H1</option>
-													 <option value="2130">S2 H2</option>
-													 <option value="2270">S2 J1</option>
-													 <option value="2560">S2 J2</option>
+													 <option value="60">S1 M1</option>
+                                                     <option value="75">S1 M2</option>
+                                                     <option value="90">S1 N1</option>
+                                                     <option value="110">S1 N2</option>
+                                                     <option value="150">S1 N3</option>
+													 <option value="175">S1 N4</option>
+													 <option value="210">S1 P1</option>
+													 <option value="250">S1 P2</option>
+													 <option value="310">S1 D3</option>
+													 <option value="350">S1 D4</option>
+													 <option value="410">S1 E1</option>
+													 <option value="470">S1 E2</option>
+													 <option value="530">S1 E3</option>
+													 <option value="580">S1 E4</option>
+													 <option value="630">S1 E5</option>
+													 <option value="710">S1 E6</option>
+													 <option value="760">S1 F1</option>
+													 <option value="810">S1 F2</option>
+													 <option value="900">S1 F3</option>
+													 <option value="1010">S1 G1</option>
+													 <option value="1130">S1 G2</option>
+													 <option value="1260">S1 G3</option>
+													 <option value="1380">S1 G4</option>
+													 <option value="1560">S1 G5</option>
+													 <option value="1690">S1 G6</option>
+													 <option value="1890">S1 H1</option>
+													 <option value="2130">S1 H2</option>
+													 <option value="2270">S1 J1</option>
+													 <option value="2560">S1 J2</option>
 												</select>
 											</div>
 											<div class="col-lg-1">
@@ -333,10 +333,6 @@
 												 <label>{{ $language_datas['capacity'] }}</label></div>
 											<div class="col-lg-2">          
 												<input id="capacity" name="capacity" type="text" value="" onchange="updateModelValues('capacity')" class="form-control">
-
-												<!-- <span class="messages emsg hidden" id="capacity_error">
-													 <p class="text-danger error">Please Enter a Valid Capacity</p>
-												</span> -->
 											</div>
 											<div class="col-lg-1">
 												 <label>({{ $units_data[$unit_set->CapacityUnit] }})</label>
@@ -352,9 +348,6 @@
 											<div class="col-lg-2">
 												<input type="text" id="chilled_water_in" name="chilled_water_in" onchange="updateModelValues('chilled_water_in')" value="" class="form-control">
 
-												<!-- <span class="messages emsg hidden" id="chilled_water_in_error">
-													 <p class="text-danger error">Please Enter a Valid Chilled Water In</p>
-												</span> -->
 											</div>
 											<div class="col-lg-1">
 												<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -364,10 +357,7 @@
 												<label>{{ $language_datas['chilled_water_out'] }} </label>
 											</div>
 											<div class="col-lg-2">
-												<input type="text" class="form-control min_chilled_water_out" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="" data-animation="false" data-placement="bottom" title="">
-												<!-- <span class="messages emsg hidden" id="chilled_water_out_error">
-													 <p class="text-danger error">Please Enter a Valid Chilled Water Out</p>
-												 </span> -->
+												<input type="text" class="form-control min_chilled_water_out" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="" data-animation="false" data-placement="bottom" >
 											</div>
 											<div class="col-lg-1">
 												 <label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -383,10 +373,6 @@
 							</div>
 							<div class="col-lg-2">
 								 <input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-toggle="tooltip" data-animation="false" data-placement="bottom" data-original-title>
-
-								 <!-- <span class="messages emsg hidden" id="cooling_water_in_error">
-									 <p class="text-danger error">Please Enter a Valid Cooling Water In</p>
-								 </span> -->
 							</div>
 							<div class="col-lg-1">
 								<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -398,10 +384,6 @@
 							<div class="col-lg-2">
 
 								<input type="text" name="cooling_water_flow" onchange="updateModelValues('cooling_water_flow')" id="cooling_water_flow" value="" class="form-control cooling_water_ranges " data-animation="false" data-placement="bottom" data-original-title>
-
-								<!-- <span class="messages emsg hidden" id="cooling_water_flow_error">
-									<p class="text-danger error">Please Enter a Valid Cooling Water Flow</p>
-								</span> -->
 							</div>
 							<div class="col-lg-1">
 								<label>({{ $units_data[$unit_set->FlowRateUnit] }})</label>
@@ -409,7 +391,6 @@
 						</div>
 						<div class="row">
 							<div class="col-12">
-								<!-- <label class="">Available Range(s) : <span id=""></span></label> -->
 							</div>
 						</div>
 	
@@ -448,9 +429,6 @@
 									<div class="col-md-3">
 										 <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
 
-										 <!-- <span class="messages emsg hidden" id="glycol_chilled_water_error">
-											 <p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p>
-										 </span> -->
 									</div>
 							
 									<div class="col-md-3">
@@ -458,10 +436,6 @@
 									</div>
 									<div class="col-md-3">
 										 <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
-
-										 <!-- <span class="messages emsg hidden" id="glycol_cooling_water_error">
-											 <p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p>
-										 </span> -->
 									</div>
 								</div>
 							</div>
@@ -503,11 +477,7 @@
 									<div class="col-lg-12 range-hide">
 										<div class="row">
 										    <div class="col-md-8">
-												<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-animation="false" data-placement="bottom" title="">
-
-												<!-- <span class="messages emsg hidden" id="evaporator_thickness_error">
-												 <p class="text-danger error">Please Enter a Valid Evaporator Thickness</p>
-											 	</span> -->
+												<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-animation="false" data-placement="bottom" >
 											 	<span class="" id="evaporator_range"></span>
 											</div>
 											<div class="col-lg-4">
@@ -531,11 +501,7 @@
 									<div class="col-lg-12 range-hide">
 										<div class="row">
 											<div class="col-md-8">
-												<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-animation="false" data-placement="bottom" title="">
-
-												<!-- <span class="messages emsg hidden" id="absorber_thickness_error">
-													 <p class="text-danger error">Please Enter a Valid Absorber Thickness</p>
-												</span> -->
+												<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-animation="false" data-placement="bottom" >
 												<span class="metallurgy_standard_span" id="absorber_range"></span>
 											</div>
 											<div class="col-lg-4">
@@ -559,10 +525,7 @@
 									<div class="col-lg-12 range-hide">
 										<div class="row">
 											<div class="col-md-8">
-												<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-animation="false" data-placement="bottom" title="">
-												<!-- <span class="messages emsg hidden" id="condenser_thickness_error">
-													 <p class="text-danger error">Please Enter a Valid Condenser Thickness</p>
-												</span> -->
+												<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-animation="false" data-placement="bottom" >
 												<span class="metallurgy_standard_span" id="condenser_range"></span>
 											</div>
 											<div class="col-lg-4">
@@ -610,7 +573,7 @@
 							 	<div class="row margin-0">
 								 	<div class="col-lg-2 padding-0 checkbox-fade fade-in-primary">
 									 	<label>
-										 	<input type="checkbox" class="fouling_standard " name="fouling_chilled_water" id="fouling_chilled_water" value="" data-animation="false" data-placement="bottom" title="">
+										 	<input type="checkbox" class="fouling_standard " name="fouling_chilled_water" id="fouling_chilled_water" value="" data-animation="false" data-placement="bottom" >
 										 	<span class="cr">
 											 <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
 										 	</span><span>{{ $language_datas['chilled_water'] }}</span><span id=""></span>
@@ -618,11 +581,7 @@
 								 	</div>
 
 								 	<div class="col-lg-2">
-									 	<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')" class="form-control fouling_standard fouling_chilled_min" data-animation="false" data-placement="bottom" title="">
-
-									 	<!-- <span class="messages emsg hidden" id="fouling_chilled_value_error">
-										 <p class="text-danger error">Please Enter a Valid Fouling Chilled Water</p>
-									 	</span> -->
+									 	<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')" class="form-control fouling_standard fouling_chilled_min" data-animation="false" data-placement="bottom" >
 								 	</div>
 									<div class="col-lg-2 padding-0">
 										 <label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
@@ -630,7 +589,7 @@
 
 									<div class="col-lg-2 padding-0 checkbox-fade fade-in-primary">
 									 	<label>
-										 	<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="" data-animation="false" data-placement="bottom" title="0.00005">
+										 	<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="" data-animation="false" data-placement="bottom" >
 										 	<span class="cr">
 											 <i class="cr-icon icofont icofont-ui-check txt-primary"></i>
 										 	</span><span>{{ $language_datas['cooling_water'] }}</span><span id=""></span>
@@ -638,11 +597,7 @@
 								 	</div>
 
 								 	<div class="col-lg-2">
-									 	<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard fouling_cooling_min" data-animation="false" data-placement="bottom" title="">
-
-									 	<!-- <span class="messages emsg hidden" id="fouling_cooling_value_error">
-										 <p class="text-danger error">Please Enter a Valid Fouling Cooling Water</p>
-									 	</span> -->
+									 	<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard fouling_cooling_min" data-animation="false" data-placement="bottom" >
 								 	</div>
 									<div class="col-lg-2 padding-0">
 										<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
@@ -664,10 +619,6 @@
 									</div>
 									<div class="col-lg-4">
 										<input type="text" name="steam_pressure" id="steam_pressure" onchange="updateModelValues('steam_pressure')" value="" class="form-control steam_pressure_range" data-animation="false" data-placement="bottom">
-
-										<!-- <span class="messages emsg hidden" id="steam_pressure_error">
-											 <p class="text-danger error">Please Enter a Valid Steam Pressure123</p>
-										</span> -->
 									</div>
 									<div class="col-lg-3">
 										 <label>({{ $units_data[$unit_set->PressureUnit] }})</label>
@@ -710,9 +661,6 @@
 										 	<button type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">  <i class="fas fa-file-pdf"></i> Export to Pdf</button>
 										</div>
 								 	</div>                           
-						  			<!-- <div class="summary-head">
-					 				<h4> Summary : </h4>
-				 					</div> -->
 				 					<div id="notes_div" >
 
 				 					</div>
@@ -751,11 +699,11 @@
 	var calculation_values;
 	var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
 	var region_user = model_values.region_type;
-    var save_report_url = "{{ url('calculators/double-effect-s2/save-report') }}";
+    var save_report_url = "{{ url('calculators/s1-series/save-report') }}";
     // var show_report_url = "{{ url('calculators/double-effect-s2/show-report') }}";
-    var reset_url = "{{ url('calculators/double-effect-s2/reset-calculate') }}";
-    var submit_url = "{{ url('calculators/double-effect-s2/submit-calculate') }}";
-    var send_values_url = "{{ url('calculators/double-effect-s2/ajax-calculate') }}";
+    var reset_url = "{{ url('calculators/s1-series/reset-calculate') }}";
+    var submit_url = "{{ url('calculators/s1-series/submit-calculate') }}";
+    var send_values_url = "{{ url('calculators/s1-series/ajax-calculate') }}";
 
 
 	if(region_user == 4){
@@ -769,25 +717,12 @@
 		$("#region_list").hide();
 	}
 	$( document ).ready(function() {
-		// swal("Hello world!");
 		loadDefaultValues();
 		$('.menu-hide-click').trigger('click');
-		// sendValues();
 	});
 
 
 	function loadDefaultValues(){
-		// model_values.evaporator_thickness_change = true;
-		// model_values.absorber_thickness_change = true;
-		// model_values.condenser_thickness_change = true;
-		// model_values.fouling_chilled_water_value = "";
-		// model_values.fouling_cooling_water_value = "";
-		// model_values.fouling_chilled_water_checked = false;
-		// model_values.fouling_cooling_water_checked = false;
-		// model_values.fouling_chilled_water_disabled = true;
-		// model_values.fouling_cooling_water_disabled = true;
-		// model_values.fouling_chilled_water_value_disabled = true;
-		// model_values.fouling_cooling_water_value_disabled = true;
 
 		updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,model_values.evaporator_thickness_change);
 		updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,model_values.absorber_thickness_change);
@@ -830,6 +765,7 @@
 		$("#condenser_material").val(model_values.condenser_material_value);
 		$("#steam_pressure").val(model_values.steam_pressure);
 		var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
+		console.log(steam_pressure_range);
 		$('.steam_pressure_range').attr('data-original-title',steam_pressure_range);
 		// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
 		if(model_values.glycol_none === 'true')
@@ -1164,24 +1100,16 @@
 	});
 
 	$( "#reset" ).click(function() {
-		// console.log(model_values.cooling_water_ranges);
 		sendResetValues(reset_url);
 	});
 
     function afterReset(){
         if(model_values.region_type == 2){
-            //console.log("usa selected");
             model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
             model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
         }
         updateValues(); 
     }
-
-
-		// $( "#show_report" ).click(function() {
-		// 	showReport(show_report_url);
-
-		// });
 
 
 	$( ".save_report" ).click(function() {
@@ -1205,104 +1133,6 @@
 	}
 
 		
-
-
-        // $('#region').change(function() {
-
-        //     model_values.region_name = $("#region").val();
-        //     if($(this).val() == 'USA'){
-        //      $("#regionlist").show();
-        //      model_values.region_name = $("#region").val();
-    //          $("#fouling_ari").html('');
-        //      $("#fouling_factor_ahri").html("AHRI");
-        //      model_values.fouling_factor ="ari";
-        //      model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
-        //      model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
-        //      foulingFactor('ari');
-        //  }
-        //  else
-        //  {
-        //      //$("#regionlist").hide();
-        //      model_values.region_name = $("#region").val();
-        //      $("#fouling_ari").html("ARI");
-        //      $("#fouling_factor_ahri").html('');
-        //      model_values.fouling_factor ="standard";
-        //      foulingFactor('standard');
-        //  }
-        //     sendRegionValues();
-        // });
-
-        // function sendRegionValues(){
-        //  // var form_values = $("#double_steam_s2").serialize();
-        //  var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-        //  $.ajax({
-        //      type: "POST",
-        //      url: "{{ url('calculators/double-effect-s2/ajax-calculate-region') }}",
-        //      data: { values : model_values,_token: CSRF_TOKEN},
-        //      success: function(response){
-        //          if(response.status){
-        //              console.log(response.model_values);
-        //              $("#calculate_button").prop('disabled', false);
-        //              model_values = response.model_values;
-        //              castToBoolean();
-
-        //              loadDefaultValues();
-        //              onRegionChange();
-                        
-        //          }
-        //          else{
-        //              $("#calculate_button").prop('disabled', true);
-        //              // alert(response.msg);
-        //              $(".showreport").hide();
-        //              $("#errornotes").show();
-        //              $("#errormessage").html(response.msg);
-                        
-        //              // swal(response.msg, "", "error").then((value) => {
-        //              //  $('#'+changed_value).focus();
-        //              // });
-        //              // console.log(changed_value);
-                        
-        //          }                   
-        //      },
-        //  });
-        // }
-
-
-        // function onRegionChange(){
-
-
-        //  if(model_values.region_type == 1){
-        //      $("#regionlist").hide();
-        //      model_values.region_name ='';
-        //      $("#fouling_ari").html("ARI");
-        //      $("#fouling_factor_ahri").html('');
-        //      model_values.fouling_factor ="standard";
-        //      foulingFactor('standard');
-        //  }
-        //  else
-        //  {   
-        //      if(model_values.region_type == 2){
-        //          //$("#regionlist").show();
-        //          //model_values.region_name = $("#region").val();
-        //          $("#fouling_ari").html('');
-        //          $("#fouling_factor_ahri").html("AHRI");
-        //          model_values.fouling_factor ="ari";
-        //          model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
-        //          model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
-        //          foulingFactor('ari');
-        //      }
-        //      else
-        //      {
-        //          //$("#regionlist").show();
-        //          //model_values.region_name = $("#region").val();
-        //          $("#fouling_ari").html("ARI");
-        //          $("#fouling_factor_ahri").html('');
-        //          model_values.fouling_factor ="standard";
-        //          foulingFactor('standard');
-        //      }
-        //  }
-        // }
-
 </script>
 <script type="text/javascript" src="{{asset('assets/js/calculator_common_scripts.js')}}"></script>	
 <script>

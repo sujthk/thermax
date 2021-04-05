@@ -318,13 +318,13 @@
 										<td> 4 </td> 
 										<td class="font-class"> {{ $language_datas['generator_passes'] }}</td>
 										<td class="optimal-r1"> No.</td>
-										<td class="optimal-r1"> {{ $calculation_values['TGP'] }} + {{ $calculation_values['TGP'] }} </td>
+										<td class="optimal-r1"> {{ $calculation_values['TGP'] }}</td>
 									</tr>
 									<tr>
 										<td> 5 </td> 
 										<td class="font-class"> {{ $language_datas['hot_water_circuit_pressure_loss'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['HotWaterFrictionLoss'],1) }} </td>
+										<td class="optimal-r1"> {{ number_format($calculation_values['HotWaterFrictionLoss'], 1) }} </td>
 									</tr>
 									<tr>     
 										<td> 6 </td>
@@ -362,6 +362,8 @@
 										<td class="optimal-r1"> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
 										@if($calculation_values['TUU'] == "standard")
 											<td class="optimal-r1"> {{ $calculation_values['TUU'] }} </td>
+                                        @elseif($calculation_values['TUU'] == "ari")
+                                            <td class="optimal-r1"> standard</td>      
 										@else
 											<td class="optimal-r1"> {{ $calculation_values['FFHOW1'] }} 
 											</td>

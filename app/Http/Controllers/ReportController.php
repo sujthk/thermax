@@ -863,6 +863,8 @@ class ReportController extends Controller
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
         if($calculation_values['TUU'] == "standard")
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['TUU'] ));
+        else if($calculation_values['TUU'] == "ari")
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "standard" ));
         else
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['FFHOW1'] ));
 
@@ -1387,13 +1389,13 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['generator_passes']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "No" ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['TGP']." + ".$calculation_values['TGP'] ));
+        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['TGP']));
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['hot_water_circuit_pressure_loss']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->PressureDropUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['HotWaterFrictionLoss'],1)));
+        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(number_format($calculation_values['HotWaterFrictionLoss'], 1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
@@ -1430,6 +1432,8 @@ class ReportController extends Controller
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
         if($calculation_values['TUU'] == "standard")
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['TUU'] ));
+        else if($calculation_values['TUU'] == "ari")
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "standard" ));
         else
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['FFHOW1'] ));
 

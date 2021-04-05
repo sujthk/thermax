@@ -362,6 +362,8 @@
 										<td class="optimal-r1"> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
 										@if($calculation_values['TUU'] == "standard")
 											<td class="optimal-r1"> {{ $calculation_values['TUU'] }} </td>
+                                        @elseif($calculation_values['TUU'] == "ari")
+                                            <td class="optimal-r1"> standard</td>     
 										@else
 											<td class="optimal-r1"> {{ $calculation_values['FFHOW1'] }} 
 											</td>

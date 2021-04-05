@@ -118,6 +118,12 @@
                         <span data-i18n="nav.widget.main">Double Effect S2 Steam</span>
                     </a>
                 </li>
+                <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/s1-series','has-class') }}" >
+                    <a href="{{ url('/calculators/s1-series') }}">
+                        <i class="ti-package"></i>
+                        <span data-i18n="nav.widget.main">Single Effect S1 Steam</span>
+                    </a>
+                </li>
                 <li data-placement="bottom" title="Double Effect G2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/l5-series','has-class') }}" >
                     <a href="{{ url('/calculators/l5-series') }}">
                        <i class="ti-package"></i>

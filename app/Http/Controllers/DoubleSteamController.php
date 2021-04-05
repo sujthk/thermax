@@ -583,11 +583,11 @@ class DoubleSteamController extends Controller
 
 
         if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-       {
+        {
             $this->calculation_values['AT13'] =$this->calculation_values['AT13']-$this->calculation_values['EX_AT13'] ;
             $this->calculation_values['KEVA'] =$this->calculation_values['KEVA']*$this->calculation_values['EX_KEVA'] ;
             $this->calculation_values['KABS'] =$this->calculation_values['KABS']*$this->calculation_values['EX_KABS'] ;
-       }
+        }
         // $this->calculation_values['KCON'] = 3000 * 1.4;
 
         // $this->calculation_values['ULTHE'] = 450; 

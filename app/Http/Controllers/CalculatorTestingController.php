@@ -543,9 +543,8 @@ class CalculatorTestingController extends Controller
 
         $data['UEVAH'] = isset($output_values['UEVAH']) ?  floatval($output_values['UEVAH']) : "";
         $data['UABSH'] = isset($output_values['UABSH']) ?  floatval($output_values['UABSH']) : "";
-        $data['UCONH'] = isset($output_values['UCONH']) ?  floatval($output_values['UCONH']) : "";
-        $data['UCONL'] = isset($output_values['UCONL']) ?  floatval($output_values['UCONL']) : "";
-        $data['UGENH'] = isset($output_values['UGENH']) ?  floatval($output_values['UGENH']) : "";
+        $data['UCON'] = isset($output_values['UCON']) ?  floatval($output_values['UCON']) : "";
+        $data['UGEN'] = isset($output_values['UGEN']) ?  floatval($output_values['UGEN']) : "";
         $data['GDIL'] = isset($output_values['GDIL']) ?  floatval($output_values['GDIL']) : "";
         $data['XDIL'] = isset($output_values['XDIL']) ?  floatval($output_values['XDIL']) : "";
         $data['XCONC'] = isset($output_values['XCONC']) ?  floatval($output_values['XCONC']) : "";
