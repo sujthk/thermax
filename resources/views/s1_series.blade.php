@@ -765,7 +765,7 @@
 		$("#condenser_material").val(model_values.condenser_material_value);
 		$("#steam_pressure").val(model_values.steam_pressure);
 		var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
-		console.log(steam_pressure_range);
+		
 		$('.steam_pressure_range').attr('data-original-title',steam_pressure_range);
 		// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
 		if(model_values.glycol_none === 'true')

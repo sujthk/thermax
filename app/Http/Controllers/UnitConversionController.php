@@ -84,7 +84,7 @@ class UnitConversionController extends Controller
         }
 
         // PressureUnit 
-        if($calculator_code == "D_S2"){
+        if($calculator_code == "D_S2" || $calculator_code == "S1"){
             $chiller_values['steam_pressure'] = $this->convertPressureUnit($chiller_values['steam_pressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
             $chiller_values['steam_pressure_min_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_min_range'],"KgPerCmSqGauge",$unit_set->PressureUnit);
             $chiller_values['steam_pressure_max_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_max_range'],"KgPerCmSqGauge",$unit_set->PressureUnit);
@@ -178,7 +178,7 @@ class UnitConversionController extends Controller
 
 
         // PressureUnit
-        if($calculator_code == "D_S2"){
+        if($calculator_code == "D_S2" || $calculator_code == "S1"){
             $chiller_values['steam_pressure'] = $this->convertPressureUnit($chiller_values['steam_pressure'],$unit_set->PressureUnit,"KgPerCmSqGauge");
             $chiller_values['steam_pressure_min_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_min_range'],$unit_set->PressureUnit,"KgPerCmSqGauge");
             $chiller_values['steam_pressure_max_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_max_range'],$unit_set->PressureUnit,"KgPerCmSqGauge");
@@ -210,7 +210,7 @@ class UnitConversionController extends Controller
         $calculated_values['TCHW12'] = $this->convertTemperatureUnit($calculated_values['TCHW12'],"Centigrade",$unit_set->TemperatureUnit);
         $calculated_values['TCW11'] = $this->convertTemperatureUnit($calculated_values['TCW11'],"Centigrade",$unit_set->TemperatureUnit);
         $calculated_values['CoolingWaterOutTemperature'] = $this->convertTemperatureUnit($calculated_values['CoolingWaterOutTemperature'],"Centigrade",$unit_set->TemperatureUnit);
-        if($calculator_code == "D_S2"){
+        if($calculator_code == "D_S2" || $calculator_code == "S1"){
             $calculated_values['m_dMinCondensateDrainTemperature'] = $this->convertTemperatureUnit($calculated_values['m_dMinCondensateDrainTemperature'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['m_dMaxCondensateDrainTemperature'] = $this->convertTemperatureUnit($calculated_values['m_dMaxCondensateDrainTemperature'],"Centigrade",$unit_set->TemperatureUnit);
         }
@@ -278,7 +278,7 @@ class UnitConversionController extends Controller
 
 
         // PressureUnit
-        if($calculator_code == "D_S2")
+        if($calculator_code == "D_S2" || $calculator_code == "S1")
         {
             $calculated_values['PST1'] = $this->convertPressureUnit($calculated_values['PST1'],"KgPerCmSqGauge",$unit_set->PressureUnit);
             $calculated_values['m_dCondensateDrainPressure'] = $this->convertPressureUnit($calculated_values['m_dCondensateDrainPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
@@ -298,7 +298,7 @@ class UnitConversionController extends Controller
         }
 
         // SteamConsumptionUnit
-        if($calculator_code == "D_S2"){
+        if($calculator_code == "D_S2" || $calculator_code == "S1"){
             $calculated_values['SteamConsumption'] = $this->convertSteamConsumptionUnit($calculated_values['SteamConsumption'],"KilogramsPerHr",$unit_set->SteamConsumptionUnit);
         }
         

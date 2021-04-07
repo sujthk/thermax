@@ -3709,11 +3709,15 @@ class L5SeriesController extends Controller
             $this->calculation_values['HHType'] = "NonStandard";
         }
         
-        if ($this->calculation_values['THW1'] > 99)
+        if ($this->calculation_values['THW1'] > 99 && ($this->calculation_values['region_type'] == 1 || $this->calculation_values['region_type'] == 2))
         {
             array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
             array_push($notes,$this->notes['NOTES_CONF_WT']);
-        }           
+        }
+        elseif ($this->calculation_values['THW1'] > 105 && $this->calculation_values['region_type'] == 2{
+           array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
+           array_push($notes,$this->notes['NOTES_CONF_WT']);
+       }           
 
         if ($this->calculation_values['VELEVA'] == 1)
         {
