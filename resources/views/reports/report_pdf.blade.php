@@ -176,7 +176,7 @@
 										@if($calculation_values['TUU'] == "standard")
 											<td class="optimal-r1"> {{ $calculation_values['TUU'] }} </td>
 										@else
-											<td class="optimal-r1"> {{ $calculation_values['FFCHW1'] }} </td>
+											<td class="optimal-r1"> {{ number_format($calculation_values['FFCHW1'], 5) }} </td>
 										@endif	
 									</tr>
 									<tr>     
@@ -262,7 +262,7 @@
 										@if($calculation_values['TUU'] == "standard")
 											<td class="optimal-r1"> {{ $calculation_values['TUU'] }} </td>
 										@else
-											<td class="optimal-r1"> {{ $calculation_values['FFCOW1'] }} 
+											<td class="optimal-r1"> {{ number_format($calculation_values['FFCOW1'], 5) }} 
 											</td>
 										@endif
 									</tr>

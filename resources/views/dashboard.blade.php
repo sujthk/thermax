@@ -79,7 +79,7 @@
 								
 								<div class="teimeline-header">
 									<h2>{{$time_line->name}}</h2>
-									<em>{{date("F jS,Y ", strtotime($time_line->created_at))}} </em>
+									<em>{{date("F jS,Y ", strtotime($time_line->updated_at))}} </em>
 								</div>
 								<div class="t-max-content">
 								   <p>

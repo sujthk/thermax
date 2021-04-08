@@ -188,7 +188,7 @@
 											<div class="form-group row">
 												<label class="col-sm-3 col-form-label">Min Chilled Water Out</label>
 												<div class="col-sm-8">
-													<input id="min_chilled_water_out" name="min_chilled_water_out" type="text" value="{{ old('min_chilled_water_out') }}" required class="form-control" placeholder="Enter your Max Chilled Water Out value">
+													<input id="min_chilled_water_out" name="min_chilled_water_out" type="text" value="{{ old('min_chilled_water_out') }}" required class="form-control" placeholder="Enter your Min Chilled Water Out value">
 												</div>
 											</div>
 

@@ -38,16 +38,16 @@
                         </a>
                         <ul class="show-notification profile-notification">
                             <li>
-                                <a href="#!">
-                                    <i class="ti-settings"></i> Settings
-                                </a>
-                            </li>
-                            <li>
                                 <a href="{{ url('profile') }}">
                                     <i class="ti-user"></i> Profile
                                 </a>
                             </li>
                             <li>
+                                <a href="">
+                                    <i class=""></i> 
+                                </a>
+                            </li>
+                            <li style="text-align: right;">
                                 <a href="{{ url('logout') }}">
                                     <i class="ti-layout-sidebar-left"></i> Logout
                                 </a>

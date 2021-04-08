@@ -109,22 +109,20 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/calculators/double-effect-s2/submit-calculate', 'DoubleSteamController@postDoubleEffectS2');
 	Route::post('/calculators/double-effect-s2/reset-calculate', 'DoubleSteamController@postResetDoubleEffectS2');
 	//report
-	Route::post('/calculators/double-effect-s2/show-report', 'DoubleSteamController@postShowReport');
+	// Route::post('/calculators/double-effect-s2/show-report', 'DoubleSteamController@postShowReport');
 	Route::post('/calculators/double-effect-s2/save-report', 'DoubleSteamController@postSaveReport');
     
 	/*End Double Effect S2 Serires*/
 
 	/*Double Effect H2 Serires*/
 	Route::get('/calculators/double-effect-h2', 'DoubleH2SteamController@getDoubleEffectH2')->name('calculators/double-effect-h2');
-	Route::post('/calculators/double-effect-h2', 'DoubleH2SteamController@calculateDoubleEffectH2');
+	// Route::post('/calculators/double-effect-h2', 'DoubleH2SteamController@calculateDoubleEffectH2');
 	Route::post('/calculators/double-effect-h2/ajax-calculate', 'DoubleH2SteamController@postAjaxDoubleEffectH2');
-
-	Route::post('/calculators/double-effect-h2/ajax-calculate-region', 'DoubleH2SteamController@postAjaxDoubleEffectH2Region');
-
+	// Route::post('/calculators/double-effect-h2/ajax-calculate-region', 'DoubleH2SteamController@postAjaxDoubleEffectH2Region');
 	Route::post('/calculators/double-effect-h2/submit-calculate', 'DoubleH2SteamController@postDoubleEffectH2');
 	Route::post('/calculators/double-effect-h2/reset-calculate', 'DoubleH2SteamController@postResetDoubleEffectH2');
 	//report
-	Route::post('/calculators/double-effect-h2/show-report', 'DoubleH2SteamController@postShowReport');
+	// Route::post('/calculators/double-effect-h2/show-report', 'DoubleH2SteamController@postShowReport');
 	Route::post('/calculators/double-effect-h2/save-report', 'DoubleH2SteamController@postSaveReport');
     
 	/*End Double Effect H2 Serires*/

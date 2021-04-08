@@ -536,7 +536,7 @@ class L5SeriesController extends Controller
                     $min_range = $cooling_water_ranges[$i];
                     $max_range = $cooling_water_ranges[$i+1];
 
-                    if(($cooling_water_flow > $min_range) && ($cooling_water_flow < $max_range)){
+                    if(($cooling_water_flow > ($min_range - 0.1)) && ($cooling_water_flow < ($max_range + 0.1))){
                         $range_validate = true;
                         break;
                     }
@@ -735,7 +735,7 @@ class L5SeriesController extends Controller
             $min_range = $cooling_water_ranges[$i];
             $max_range = $cooling_water_ranges[$i+1];
 
-            if(($cooling_water_flow > $min_range) && ($cooling_water_flow < $max_range)){
+            if(($cooling_water_flow > ($min_range - 0.1)) && ($cooling_water_flow < ($max_range + 0.1))){
                 $range_validate = true;
                 break;
             }
@@ -3714,7 +3714,7 @@ class L5SeriesController extends Controller
             array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
             array_push($notes,$this->notes['NOTES_CONF_WT']);
         }
-        elseif ($this->calculation_values['THW1'] > 105 && $this->calculation_values['region_type'] == 2{
+        else if ($this->calculation_values['THW1'] > 105 && $this->calculation_values['region_type'] == 2){
            array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
            array_push($notes,$this->notes['NOTES_CONF_WT']);
        }           

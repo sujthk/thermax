@@ -2510,23 +2510,42 @@ class ReportController extends Controller
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kVA" ));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['TotalPowerConsumption'],1) ));
 
+
        $chilled_table->addRow();
        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['absorbent_pump_rating']));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],2)." )" ));
+       if($calculation_values['region_type'] ==2){
+           $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['USA_AbsorbentPumpMotorAmp'],2)." )" ));
+       }
+       else{
+           $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],2)." )" ));
+       }
+       
 
        $chilled_table->addRow();
        $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['refrigerant_pump_rating']));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],2)." )" ));
+       if($calculation_values['region_type'] ==2){
+           $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['USA_RefrigerantPumpMotorAmp'],2)." )" ));
+       }
+       else{
+           $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],2)." )" ));
+       }
+       
 
        $chilled_table->addRow();
        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['vaccum_pump_rating']));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],2) ."( ". round($calculation_values['PurgePumpMotorAmp'],2)." )" ));
+       if($calculation_values['region_type'] ==2){
+           $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_PurgePumpMotorKW'],2) ."( ". round($calculation_values['USA_PurgePumpMotorAmp'],2)." )" ));
+       }
+       else{
+           $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],2) ."( ". round($calculation_values['PurgePumpMotorAmp'],2)." )" ));
+       }
+
        if($calculation_values['region_type'] ==2)
        {
 
