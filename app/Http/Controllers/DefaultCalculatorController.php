@@ -451,7 +451,10 @@ class DefaultCalculatorController extends Controller
                     $data1=[];
                     foreach ($key_datas as $key_data) {
                         //if($value[strtolower($key_data)])
+                        if(isset($value[$key_data]))    
                             $data1[$key_data] = $value[$key_data];
+                        else
+                            $data1[$key_data] = 0;
                     }
                     
                     $chiller_calculation_value = ChillerCalculationValue::where('code',$value['code'])->where('min_model',$value['min_model'])->first();

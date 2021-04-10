@@ -21,21 +21,12 @@ use DB;
 class DoubleG2SteamController extends Controller
 {
 	private $model_values;
-	private $default_model_values;
 	private $model_code = "D_G2";
 	private $calculation_values;
     private $notes;
+    private $changed_value;
 
-    public function __construct()
-    {
-        $notes_errors = NotesAndError::all();
-        $notes_key = $notes_errors->pluck('name');
-        $notes_value = $notes_errors->pluck('value');
 
-        $combined = $notes_key->combine($notes_value);
-
-        $this->notes = $combined;
-    }
 
     public function getDoubleEffectG2(){
 
@@ -44,7 +35,7 @@ class DoubleG2SteamController extends Controller
 
     	$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
                                         ->where('code',$this->model_code)
-    									->where('min_model','<',130)->where('max_model','>',130)->first();
+    									->where('min_model','<=',130)->where('max_model','>=',130)->first();
 
     	$chiller_options = $chiller_metallurgy_options->chillerOptions;
     	
@@ -56,27 +47,21 @@ class DoubleG2SteamController extends Controller
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
 
-        $region_type = Auth::user()->region_type;
 
-        if($region_type==2)
-            $region_name = Auth::user()->region->name;
-        else
-            $region_name = '';
-
-
-        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'region_name'=>$region_name,'region_type'=>$region_type);
-
-        $default_values = collect($chiller_form_values)->union($standard_values);
-
-        $units_data = $this->getUnitsData();
+        $min_chilled_water_out = Auth::user()->min_chilled_water_out;
+        if($min_chilled_water_out > $chiller_form_values['min_chilled_water_out'])
+            $chiller_form_values['min_chilled_water_out'] = $min_chilled_water_out;
 
         $unit_conversions = new UnitConversionController;
         
-        $converted_values = $unit_conversions->formUnitConversion($default_values,$this->model_code);
+        $converted_values = $unit_conversions->formUnitConversion($chiller_form_values,$this->model_code);
   
         $regions = Region::all();
-    	// return $evaporator_options;
-		return view('double_effect_g2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions]);
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+        $units_data = $vam_base->getUnitsData();
+
+		return view('double_effect_g2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions,'language_datas'=>$language_datas]);
                            
 	}
 
@@ -5405,6 +5390,19 @@ class DoubleG2SteamController extends Controller
             'fuel_type',
             'fuel_value_type'
         ]);
+
+        $region_type = Auth::user()->region_type;
+
+        if($region_type == 2)
+            $region_name = Auth::user()->region->name;
+        else
+            $region_name = '';
+
+
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1,'region_name'=>$region_name,'region_type'=>$region_type);
+
+
+        $form_values = collect($form_values)->union($standard_values);
 
         return $form_values;
     }

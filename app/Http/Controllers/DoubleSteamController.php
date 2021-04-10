@@ -2182,7 +2182,7 @@ class DoubleSteamController extends Controller
 
     public function CONCHECK1()
     {
-        if ($this->calculation_values['MODEL'] < 275)
+        if ($this->calculation_values['MODEL'] < 130)
         {
             if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
                 $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
@@ -2199,7 +2199,7 @@ class DoubleSteamController extends Controller
                 }
             }
         }
-        else if ($this->calculation_values['MODEL'] > 275)
+        else if ($this->calculation_values['MODEL'] > 130)
         {
             if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
                 $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;

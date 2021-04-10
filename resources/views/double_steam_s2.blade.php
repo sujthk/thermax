@@ -742,7 +742,6 @@
 <script type="text/javascript">
 
 	var model_values = {!! json_encode($default_values) !!};
-    console.log(model_values);
 	var evaporator_options = {!! json_encode($evaporator_options) !!};
 	var absorber_options = {!! json_encode($absorber_options) !!};
 	var condenser_options = {!! json_encode($condenser_options) !!};

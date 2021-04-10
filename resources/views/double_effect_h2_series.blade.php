@@ -298,8 +298,14 @@
 														</div>
 														<div class="col-lg-2">
 															<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-																<option  value="130">H2 C3</option>
-																<option value="160">H2 C4</option>
+			                                                    <option value="60">H2 M1</option>
+                                                                <option value="75">H2 M2</option>
+                                                                <option value="90">H2 N1</option>
+                                                                <option value="110">H2 N2</option>
+                                                                <option value="150">H2 N3</option>
+                                                                <option value="175">H2 N4</option>
+                                                                <option value="210">H2 P1</option>
+                                                                <option value="250">H2 P2</option>
 																<option value="210">H2 D1</option>
 																<option value="250">H2 D2</option>
 																<option value="310">H2 D3</option>
@@ -1073,7 +1079,7 @@
 
 		$('input:radio[name="region_type"]').change(function() {
 			model_values.region_type = $(this).val();
-			model_values.model_number = 130;
+			model_values.model_number = 60;
 			
 			sendResetValues(reset_url);
 		});

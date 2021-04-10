@@ -3236,6 +3236,19 @@ class S1SeriesController extends Controller
             $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
 
         }
+
+        if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
+        {
+
+             $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
+
+             $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
+
+             $this->calculation_values['DryWeight'] = $DryWeight1; 
+             $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
+             $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
+             $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
+         }
         
         switch ($model_number) {
             case 60:
@@ -3248,18 +3261,7 @@ class S1SeriesController extends Controller
                     $this->model_values['model_name'] = "TAC S1 M1";
                 }
 
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
+                
 
                 break;
 
@@ -3273,19 +3275,6 @@ class S1SeriesController extends Controller
                     $this->model_values['model_name'] = "TAC S1 M2";
                 }
 
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
-
                 break;    
 
             case 90:
@@ -3297,19 +3286,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 N1";
                 }
-
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
 
                 break;     
 
@@ -3323,19 +3299,6 @@ class S1SeriesController extends Controller
                     $this->model_values['model_name'] = "TAC S1 N2";
                 }
 
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
-
                 break;     
 
             case 150:
@@ -3347,19 +3310,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 N3";
                 }
-
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
 
                 break;      
 
@@ -3373,18 +3323,6 @@ class S1SeriesController extends Controller
                     $this->model_values['model_name'] = "TAC S1 N4";
                 }
 
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
 
                 break;     
 
@@ -3399,19 +3337,6 @@ class S1SeriesController extends Controller
                     $this->model_values['model_name'] = "TAC S1 P1";
                 }
 
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
-
                 break;     
 
             case 250:
@@ -3423,19 +3348,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 P2";
                 }
-
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                     $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                     $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                     $this->calculation_values['DryWeight'] = $DryWeight1; 
-                     $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                     $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                 }
 
                 break;  
 
@@ -3449,20 +3361,6 @@ class S1SeriesController extends Controller
                     $this->model_values['model_name'] = "TAC S1 D3";
                 }
 
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-      
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
             case 350:
                 if ($this->calculation_values['TCHW12'] < 3.5)
@@ -3473,22 +3371,7 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 D4";
                 }
-
-
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-      
+     
                 break;
             case 410:
                 if ($this->calculation_values['TCHW12'] < 3.5)
@@ -3499,22 +3382,7 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 E1";
                 }
-
-                if($this->calculation_values['region_type'] == 2|| $this->calculation_values['region_type'] == 3 )
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
-                  
+                 
                 break;
 
             case 470:
@@ -3526,20 +3394,7 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 E2";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-                
-
+              
                 break;
 
             case 530:
@@ -3550,19 +3405,6 @@ class S1SeriesController extends Controller
                 else
                 {
                     $this->model_values['model_name'] = "TAC S1 E3";
-                }
-
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
                 break;
@@ -3576,20 +3418,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 E4";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
 
                 break;
 
@@ -3602,20 +3430,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 E5";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
 
             case 710:
@@ -3627,19 +3441,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 E6";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
                 break;
 
             case 760:
@@ -3651,21 +3452,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 F1";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
 
             case 810:
@@ -3677,19 +3463,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 F2";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
 
                 break;
 
@@ -3702,20 +3475,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 F3";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
 
             case 1010:
@@ -3727,19 +3486,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 G1";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
                 break;
 
             case 1130:
@@ -3751,21 +3497,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 G2";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
 
             case 1260:
@@ -3777,21 +3508,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 G3";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
 
             case 1380:
@@ -3803,19 +3519,7 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 G4";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-             
+            
                 break;
 
             case 1560:
@@ -3827,20 +3531,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 G5";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
                 break;
 
             case 1690:
@@ -3852,19 +3542,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 G6";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
                 break;
 
             case 1890:
@@ -3875,19 +3552,6 @@ class S1SeriesController extends Controller
                 else
                 {
                     $this->model_values['model_name'] = "TAC S1 H1";
-                }
-
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
                 }
 
                 break;
@@ -3901,20 +3565,7 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 H2";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3)
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
+ 
                 break;
 
             case 2270:
@@ -3926,20 +3577,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 F1";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
-                {
-
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
                 break;
 
             case 2560:
@@ -3951,20 +3588,6 @@ class S1SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC S1 J2";
                 }
-                if($this->calculation_values['region_type'] == 2 || $this->calculation_values['region_type'] == 3 )
-                {
-
-                    $DryWeight1 = $this->calculation_values['DryWeight'] * $this->calculation_values['EX_DryWeight'];
-
-                    $ex_DryWeight =  $DryWeight1 - $this->calculation_values['DryWeight'] ;
-
-                    $this->calculation_values['DryWeight'] = $DryWeight1; 
-                    $this->calculation_values['MaxShippingWeight'] = $this->calculation_values['MaxShippingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['OperatingWeight'] =$this->calculation_values['OperatingWeight'] + $ex_DryWeight;
-                    $this->calculation_values['FloodedWeight'] = $this->calculation_values['FloodedWeight'] + $ex_DryWeight;
-                }
-
-
                 break;
 
             default:
