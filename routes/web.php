@@ -13,9 +13,9 @@
 
 // Delete Routes strictly for developer access
 
-Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
+// Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
 Route::get('/user/ldap', 'UserController@ldapUsers');
-Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
+// Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
 
 
 
@@ -116,28 +116,14 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
 	/*Double Effect H2 Serires*/
 	Route::get('/calculators/double-effect-h2', 'DoubleH2SteamController@getDoubleEffectH2')->name('calculators/double-effect-h2');
-	// Route::post('/calculators/double-effect-h2', 'DoubleH2SteamController@calculateDoubleEffectH2');
 	Route::post('/calculators/double-effect-h2/ajax-calculate', 'DoubleH2SteamController@postAjaxDoubleEffectH2');
-	// Route::post('/calculators/double-effect-h2/ajax-calculate-region', 'DoubleH2SteamController@postAjaxDoubleEffectH2Region');
 	Route::post('/calculators/double-effect-h2/submit-calculate', 'DoubleH2SteamController@postDoubleEffectH2');
 	Route::post('/calculators/double-effect-h2/reset-calculate', 'DoubleH2SteamController@postResetDoubleEffectH2');
-	//report
-	// Route::post('/calculators/double-effect-h2/show-report', 'DoubleH2SteamController@postShowReport');
 	Route::post('/calculators/double-effect-h2/save-report', 'DoubleH2SteamController@postSaveReport');
     
 	/*End Double Effect H2 Serires*/
 
-	/*Double Effect G2 Serires*/
-	Route::get('/calculators/double-effect-g2', 'DoubleG2SteamController@getDoubleEffectG2')->name('calculators/double-effect-g2');
-	Route::post('/calculators/double-effect-g2', 'DoubleG2SteamController@calculateDoubleEffectG2');
-	Route::post('/calculators/double-effect-g2/ajax-calculate', 'DoubleG2SteamController@postAjaxDoubleEffectG2');
-	Route::post('/calculators/double-effect-g2/ajax-calculate-region', 'DoubleG2SteamController@postAjaxDoubleEffectG2Region');
-	Route::post('/calculators/double-effect-g2/submit-calculate', 'DoubleG2SteamController@postDoubleEffectG2');
-	Route::post('/calculators/double-effect-g2/reset-calculate', 'DoubleG2SteamController@postResetDoubleEffectG2');
-	//report
-	Route::post('/calculators/double-effect-g2/show-report', 'DoubleG2SteamController@postShowReport');
-	Route::post('/calculators/double-effect-g2/save-report', 'DoubleG2SteamController@postSaveReport');
-	/*End Double Effect G2 Serires*/
+	
 
 
 	Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');
@@ -214,5 +200,13 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/s1-series/reset-calculate', 'S1SeriesController@postResetS1');
     Route::post('/calculators/s1-series/submit-calculate', 'S1SeriesController@postS1');
     Route::post('/calculators/s1-series/save-report', 'S1SeriesController@postSaveReport');
+
+    /*Double Effect G2 Serires*/
+    Route::get('/calculators/double-effect-g2', 'DoubleG2SteamController@getDoubleEffectG2')->name('calculators/double-effect-g2');
+    Route::post('/calculators/double-effect-g2/ajax-calculate', 'DoubleG2SteamController@postAjaxDoubleEffectG2');
+    Route::post('/calculators/double-effect-g2/submit-calculate', 'DoubleG2SteamController@postDoubleEffectG2');
+    Route::post('/calculators/double-effect-g2/reset-calculate', 'DoubleG2SteamController@postResetDoubleEffectG2');
+    Route::post('/calculators/double-effect-g2/save-report', 'DoubleG2SteamController@postSaveReport');
+    /*End Double Effect G2 Serires*/
 
 });

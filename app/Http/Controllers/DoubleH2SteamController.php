@@ -181,49 +181,6 @@ class DoubleH2SteamController extends Controller
         //log::info($calculated_values);
 
     }
-    public function postAjaxDoubleEffectH2Region(Request $request){
-
-        $model_values = $request->input('values');
-
-        $model_number =(int)$model_values['model_number'];
-        $chiller_form_values = $this->getFormValues($model_number);
-
-        $unit_conversions = new UnitConversionController;
-
-
-        $chiller_form_values['region_type'] = $model_values['region_type'];
-        if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
-        {
-
-            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
-            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
-            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
-            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
-            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
-
-        }
-
-// update user values with model values
-
-        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1);
-
-
-        $default_values = collect($chiller_form_values)->union($standard_values);
-        $this->model_values = $default_values;
-        // $this->castToBoolean();
-        // Log::info($this->model_values);
-        $range_calculation = $this->RANGECAL();
-
-        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
-
-        
-        $min_chilled_water_out = Auth::user()->min_chilled_water_out;
-        $converted_values['min_chilled_water_out'] = $min_chilled_water_out;
-        //Log::info($model_values);
-        // Log::info("converted".print_r($converted_values,true));
-        // Log::info("metallurgy updated = ".print_r($this->model_values,true));
-        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
-    }
 
     public function postResetDoubleEffectH2(Request $request){
         $model_number =(int)$request->input('model_number');
@@ -818,7 +775,7 @@ class DoubleH2SteamController extends Controller
             $this->model_values['evaporator_thickness_change'] = true;
             if (floatval($this->model_values['chilled_water_out']) < 3.5 && floatval($this->model_values['glycol_chilled_water']) == 0)
             {
-                if (floatval($this->model_values['evaporator_material_value']) != 3)
+                if (floatval($this->model_values['evaporator_material_value']) != 4)
                 {
 
                     return array('status' => false,'msg' => $this->notes['NOTES_EVA_TUBETYPE']);
@@ -1079,7 +1036,7 @@ class DoubleH2SteamController extends Controller
         // "EVAPORATOR_TUBE_TYPE":
         if (floatval($this->model_values['chilled_water_out']) < 3.5 && floatval($this->model_values['glycol_chilled_water']) == 0)
         {
-            if (floatval($this->model_values['evaporator_material_value']) != 3)
+            if (floatval($this->model_values['evaporator_material_value']) != 4)
             {
 
                 return array('status' => false,'msg' => $this->notes['NOTES_EVA_TUBETYPE']);
@@ -1276,7 +1233,7 @@ class DoubleH2SteamController extends Controller
         {
             $this->model_values['tube_metallurgy_standard'] = 'false';
             $this->model_values['metallurgy_standard'] = false;
-            $this->model_values['evaporator_material_value'] = 3;
+            $this->model_values['evaporator_material_value'] = 4;
         // $this->model_values['evaporator_thickness'] = 0.8;
             $this->model_values['evaporator_thickness_change'] = true;
         // $this->chillerAttributesChanged("EVAPORATORTUBETYPE");

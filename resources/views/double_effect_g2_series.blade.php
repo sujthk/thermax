@@ -347,7 +347,7 @@
 									<label>{{ $language_datas['cooling_water_in'] }}</label>
 								</div>
 								<div class="col-lg-2">
-									<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-toggle="tooltip" data-placement="bottom" data-original-title>
+									<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-placement="bottom" data-original-title>
 								</div>
 								<div class="col-lg-1">
 									<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -585,7 +585,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="card-header">
-										<h5>Fuel</h5>
+										<h5>{{ $language_datas['fuel'] }}</h5>
 									</div>
 								</div>
 								<div class="col-md-6">
@@ -612,12 +612,12 @@
 											<div class="radio radio-inline">
 												<label >
 													<input type="radio" name="fuel_value_type" id="fuel_natural_gas" value="NaturalGas" class="fuel_value_type" >
-														<i class="helper"></i>Natural Gas 
+														<i class="helper"></i>{{ $language_datas['natural_gas'] }}
 												</label>
 											</div>
 										</div>
 										<div class="col-lg-2">
-											<label>Cal.Value </label>
+											<label>{{ $language_datas['cal_value'] }} </label>
 										</div>
 										<div class="col-lg-4">
 											<input type="text" name="calorific_value" id="calorific_value" onchange="updateModelValues('calorific_value')" value="" class="form-control">
@@ -735,7 +735,491 @@
 @endsection
 
 @section('scripts')	
+<script type="text/javascript">
 
+    var model_values = {!! json_encode($default_values) !!};
+    var evaporator_options = {!! json_encode($evaporator_options) !!};
+    var absorber_options = {!! json_encode($absorber_options) !!};
+    var condenser_options = {!! json_encode($condenser_options) !!};
+    var chiller_metallurgy_options = {!! json_encode($chiller_metallurgy_options) !!};
+    var changed_value = "";
+    var calculation_values;
+    var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
+    var region_user = model_values.region_type;
+    var save_report_url = "{{ url('calculators/double-effect-g2/save-report') }}";
+    var reset_url = "{{ url('calculators/double-effect-g2/reset-calculate') }}";
+    var submit_url = "{{ url('calculators/double-effect-g2/submit-calculate') }}";
+    var send_values_url = "{{ url('calculators/double-effect-g2/ajax-calculate') }}";
+
+
+    if(region_user == 4){
+        $("#region_list").show();
+        $("#domestic").prop('checked', true);
+        $("#export_type").prop('disabled', false);
+        $("#regionlist").hide();
+        model_values.region_type = 1 ;
+    }
+    else{
+        $("#region_list").hide();
+    }
+    $( document ).ready(function() {
+        // swal("Hello world!");
+        loadDefaultValues();
+        $('.menu-hide-click').trigger('click');
+        // sendValues();
+    });
+
+    function loadDefaultValues(){
+
+        updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,model_values.evaporator_thickness_change);
+        updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,model_values.absorber_thickness_change);
+        updateCondenserOptions(chiller_metallurgy_options.con_default_value,model_values.condenser_thickness_change);
+        updateValues();
+    }
+
+
+    function updateValues() {
+
+        updateEvaporatorOptions(model_values.evaporator_material_value,model_values.evaporator_thickness_change);
+        updateAbsorberOptions(model_values.absorber_material_value,model_values.absorber_thickness_change);
+        updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
+
+        $("#model_number").val(model_values.model_number);
+        $('#capacity').val(model_values.capacity);
+        $('#model_name').html(model_values.model_name);
+        $('#chilled_water_in').val(model_values.chilled_water_in);
+        $('#chilled_water_out').val(model_values.chilled_water_out);
+        $('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
+        var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
+        $('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
+        $('#cooling_water_in').val(model_values.cooling_water_in);
+        $('#cooling_water_flow').val(model_values.cooling_water_flow);
+        var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
+        $('.cooling_water_ranges').attr('data-original-title',cooling_water_ranges);
+        $('#glycol_chilled_water').val(model_values.glycol_chilled_water ?  model_values.glycol_chilled_water : 0);
+        $('#glycol_cooling_water').val(model_values.glycol_cooling_water ?  model_values.glycol_cooling_water : 0);
+        
+        $('#evaporator_thickness').val(model_values.evaporator_thickness);
+        $('#absorber_thickness').val(model_values.absorber_thickness);
+        $('#condenser_thickness').val(model_values.condenser_thickness);
+        $("#evaporator_material").val(model_values.evaporator_material_value);
+        $("#absorber_material").val(model_values.absorber_material_value);
+        $("#condenser_material").val(model_values.condenser_material_value);
+        $("#calorific_value").val(model_values.calorific_value);
+
+        if(model_values.fuel_type === 'Normal'){
+            $("#fuel_normal").prop('checked', true);
+        }
+        else{
+            $("#fuel_gross").prop('checked', true);
+        }
+
+        if(model_values.fuel_value_type == 'NaturalGas'){
+            $("#fuel_natural_gas").prop('checked', true);
+          
+        }
+        else if(model_values.fuel_value_type == 'HSD'){
+            $("#fuel_hsd").prop('checked', true);
+        }
+        else{
+            $("#fuel_sko").prop('checked', true);
+
+        }
+        
+        if(model_values.glycol_none === 'true')
+            $("#glycol_none").prop('disabled', true);
+        else
+            $("#glycol_none").prop('disabled', false);
+
+
+        foulingFactor(model_values.fouling_factor);
+
+        if(model_values.glycol_selected == 1){
+            $("#glycol_none").prop('checked', true);
+            $("#glycol_chilled_water").prop('disabled', true);
+            $("#glycol_cooling_water").prop('disabled', true);
+
+        }
+        else if(model_values.glycol_selected == 2){
+            $("#glycol_ethylene").prop('checked', true);
+            $("#glycol_chilled_water").prop('disabled', false);
+            $("#glycol_cooling_water").prop('disabled', false);
+        }
+        else{
+            $("#glycol_propylene").prop('checked', true);
+            $("#glycol_chilled_water").prop('disabled', false);
+            $("#glycol_cooling_water").prop('disabled', false);
+
+        }
+
+
+        if(model_values.metallurgy_standard){
+            $("#tube_metallurgy_standard").prop('checked', true);
+            $(".metallurgy_standard").prop('disabled', true);
+            $(".metallurgy_standard_span").html("");
+            $(".range-hide").removeClass('show-div').addClass('hidden-div');
+
+        }else{
+            $(".range-hide").addClass('show-div');
+            $("#tube_metallurgy_non_standard").prop('checked', true);
+
+            if(model_values.tube_metallurgy_standard === 'false')
+                $("#tube_metallurgy_standard").prop('disabled', true);
+            else
+                $("#tube_metallurgy_standard").prop('disabled', false);
+            // $("#tube_metallurgy_standard").prop('disabled', true);
+            $(".metallurgy_standard").prop('disabled', false);
+            var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+
+            $('#evaporator_thickness').attr('data-original-title',evaporator_range);
+
+            var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+            $("#absorber_thickness").attr('data-original-title',absorber_range);
+            var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+            $("#condenser_thickness").attr('data-original-title',condenser_range);
+        }
+
+    }
+
+    $('input:radio[name="glycol"]').change(function() {
+        if ($(this).val() == 'none') {
+            $("#glycol_chilled_water").prop('disabled', true);
+            $("#glycol_cooling_water").prop('disabled', true);
+        } else {
+            // $("#glycol_none").prop('checked', false);
+            $("#glycol_ethylene").prop('checked', true);
+            $("#glycol_chilled_water").prop('disabled', false);
+            $("#glycol_cooling_water").prop('disabled', false);
+        }
+    });
+
+    $('#fouling_chilled_water').change(function() {
+        if($(this).is(":checked")) {
+            model_values.fouling_chilled_water_checked = true;
+            model_values.fouling_chilled_water_value_disabled = false;
+            model_values.fouling_chilled_water_value = model_values.fouling_non_chilled;
+            $("#fouling_chilled_value").val(model_values.fouling_non_chilled);
+            $("#fouling_chilled_value").prop('disabled', false);
+        }
+        else{
+            model_values.fouling_chilled_water_checked = false;
+            model_values.fouling_chilled_water_value_disabled = true;
+            model_values.fouling_chilled_water_value = "";
+            $("#fouling_chilled_value").val("");
+            $("#fouling_chilled_value").prop('disabled', true);
+        }
+
+    });
+
+    $('#fouling_cooling_water').change(function() {
+        if($(this).is(":checked")) {
+            model_values.fouling_cooling_water_checked = true;
+            model_values.fouling_cooling_water_value_disabled = false;
+            model_values.fouling_cooling_water_value = model_values.fouling_non_cooling;
+            $("#fouling_cooling_value").val(model_values.fouling_non_cooling);
+            $("#fouling_cooling_value").prop('disabled', false);
+        }
+        else{
+            model_values.fouling_cooling_water_checked = false;
+            model_values.fouling_cooling_water_value_disabled = true;
+            model_values.fouling_cooling_water_value = "";
+            $("#fouling_cooling_value").val("");
+            $("#fouling_cooling_value").prop('disabled', true);
+        }
+
+    });
+
+
+    $('input:radio[name="fouling_factor"]').change(function() {
+        $("#calculate_button").prop('disabled', false);
+        model_values.fouling_factor = $(this).val();
+        if($(this).val() == 'ari'){
+            model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled;
+            model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
+        }
+        foulingFactor($(this).val());
+    });
+
+    function foulingFactor(value){
+        $("#fouling_chilled_water").prop('checked', false);
+
+
+        if (value == 'standard') {
+            $("#fouling_factor_standard").prop('checked', true);
+            $("#fouling_chilled_water").prop('checked', false);
+            $("#fouling_cooling_water").prop('checked', false);
+            $(".fouling_standard").prop('disabled', true);
+            $(".fouling_chilled_min").attr('data-original-title',"");
+            $(".fouling_cooling_min").attr('data-original-title',"");
+            $("#fouling_chilled_value").val("");
+            $("#fouling_cooling_value").val("");
+            model_values.fouling_chilled_water_checked = false;
+            model_values.fouling_cooling_water_checked = false;
+            model_values.fouling_chilled_water_disabled = true;
+            model_values.fouling_cooling_water_disabled = true;
+            model_values.fouling_chilled_water_value = "";
+            model_values.fouling_cooling_water_value = "";
+        } else if (value == 'non_standard'){
+            model_values.fouling_chilled_water_disabled = false;
+            model_values.fouling_cooling_water_disabled = false;
+            // model_values.fouling_chilled_water_value = "";
+            // model_values.fouling_cooling_water_value = "";
+            if(!model_values.fouling_chilled_water_checked){
+                model_values.fouling_chilled_water_value = "";
+            }
+
+            if(!model_values.fouling_cooling_water_checked){
+                model_values.fouling_cooling_water_value = "";
+            }
+
+            $("#fouling_factor_non_standard").prop('checked', true);
+            $("#fouling_chilled_water").prop('disabled', model_values.fouling_chilled_water_disabled);
+            $("#fouling_cooling_water").prop('disabled', model_values.fouling_cooling_water_disabled);
+            $("#fouling_chilled_water").prop('checked', model_values.fouling_chilled_water_checked);
+            $("#fouling_cooling_water").prop('checked', model_values.fouling_cooling_water_checked);
+            $("#fouling_chilled_value").prop('disabled', model_values.fouling_chilled_water_value_disabled);
+            $("#fouling_cooling_value").prop('disabled', model_values.fouling_cooling_water_value_disabled);
+            $("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
+            $("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
+            $(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_non_chilled);
+            $(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_non_cooling);
+
+        }
+        else{
+
+            model_values.fouling_chilled_water_checked = false;
+            model_values.fouling_cooling_water_checked = false;
+            model_values.fouling_chilled_water_value_disabled = true;
+            model_values.fouling_cooling_water_value_disabled = true;
+
+            $("#fouling_factor_ari").prop('checked', true);
+            $("#fouling_chilled_water").prop('disabled', true);
+            $("#fouling_cooling_water").prop('disabled', true);
+            $("#fouling_chilled_water").prop('checked', true);
+            $("#fouling_cooling_water").prop('checked', true);
+            $("#fouling_chilled_value").prop('disabled', false);
+            $("#fouling_cooling_value").prop('disabled', false);
+            $(".fouling_chilled_min").attr('data-original-title',">"+model_values.fouling_ari_chilled);
+
+            $(".fouling_cooling_min").attr('data-original-title',">"+model_values.fouling_ari_cooling);
+            $("#fouling_chilled_value").val(model_values.fouling_chilled_water_value);
+            $("#fouling_cooling_value").val(model_values.fouling_cooling_water_value);
+        }
+    }
+
+
+        $('input:radio[name="tube_metallurgy"]').change(function() {
+            if ($(this).val() == 'standard') {
+                $(".metallurgy_standard").prop('disabled', true);
+                $(".metallurgy_standard_span").html("");
+                $(".range-hide").removeClass('show-div').addClass('hidden-div');
+
+            } else {
+                $("#tube_metallurgy_standard").prop('disabled', false);
+                $(".range-hide").addClass('show-div');
+                $(".metallurgy_standard").prop('disabled', false);
+                var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+                $('#evaporator_thickness').attr('data-original-title',evaporator_range);
+                var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+                $("#absorber_thickness").attr('data-original-title',absorber_range);
+                var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+                $("#condenser_thickness").attr('data-original-title',condenser_range);
+            }
+        });
+
+    
+        $('input[type=radio][name=glycol]').change(function() {
+            // alert(this.value);
+            model_values.glycol_selected = this.value;
+            updateModelValues('glycol_type_changed');
+        });
+
+        $('input:radio[name="region_type"]').change(function() {
+            model_values.region_type = $(this).val();
+            model_values.model_number = 130;
+            
+            sendResetValues(reset_url);
+        });
+
+        $('input[type=radio][name=tube_metallurgy]').change(function() {
+            // alert(this.value);
+            if(this.value == 'non_standard'){
+                $("#tube_metallurgy_standard").prop('disabled', false);
+                $(".range-hide").addClass('show-div');
+                $(".metallurgy_standard").prop('disabled', false);
+                var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
+                $('#evaporator_thickness').attr('data-original-title',evaporator_range);
+                var absorber_range = "("+model_values.absorber_thickness_min_range+" - "+model_values.absorber_thickness_max_range+")";
+                $("#absorber_thickness").attr('data-original-title',absorber_range);
+                var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
+                $("#condenser_thickness").attr('data-original-title',condenser_range);
+
+                model_values.metallurgy_standard = false;
+            }
+            else{
+                $(".metallurgy_standard").prop('disabled', true);
+                $(".metallurgy_standard_span").html("");
+                $(".range-hide").removeClass('show-div').addClass('hidden-div');
+
+                model_values.metallurgy_standard = true;
+                updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,true);
+                updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,true);
+                updateCondenserOptions(chiller_metallurgy_options.con_default_value,true);
+                updateValues();
+            }
+            
+        });
+
+
+    function updateModelValues(input_type){
+        var validate = false;
+        switch(input_type) {
+            case 'model_number':
+            model_values.model_number = $("#model_number").val();
+            validate = true;
+            break;
+            case 'capacity':
+            var capacity = $("#capacity").val();
+            model_values.capacity = capacity;
+            validate = inputValidation(capacity,"positive_decimals","capacity_error","{!! $language_datas['valid_capacity'] !!}");
+            break;
+            case 'chilled_water_in':
+            model_values.chilled_water_in = $("#chilled_water_in").val();
+            validate = inputValidation(model_values.chilled_water_in,"positive_decimals","chilled_water_in_error","{!! $language_datas['valid_chilled_water_in'] !!}");
+            break;  
+            case 'chilled_water_out':
+            model_values.chilled_water_out = $("#chilled_water_out").val();
+            validate = inputValidation(model_values.chilled_water_out,"positive_decimals","chilled_water_out_error","{!! $language_datas['valid_chilled_water_out'] !!}");
+            break;
+            case 'glycol_type_changed':
+            validate = true;
+            break;  
+            case 'glycol_chilled_water':
+            model_values.glycol_chilled_water = $("#glycol_chilled_water").val();
+            validate = inputValidation(model_values.glycol_chilled_water,"positive_decimals","glycol_chilled_water_error","{!! $language_datas['valid_glycol_chilled_water'] !!}");
+            break;
+            case 'glycol_cooling_water':
+            model_values.glycol_cooling_water = $("#glycol_cooling_water").val();
+            validate = inputValidation(model_values.glycol_cooling_water,"positive_decimals","glycol_cooling_water_error","{!! $language_datas['valid_glycol_cooling_water'] !!}");
+            break;
+            case 'cooling_water_in':
+            model_values.cooling_water_in = $("#cooling_water_in").val();
+            validate = inputValidation(model_values.cooling_water_in,"positive_decimals","cooling_water_in_error","{!! $language_datas['valid_cooling_water_in'] !!}");
+            break;
+            case 'cooling_water_flow':
+            model_values.cooling_water_flow = $("#cooling_water_flow").val();
+            validate = inputValidation(model_values.cooling_water_flow,"positive_decimals","cooling_water_flow_error","{!! $language_datas['valid_cooling_water_flow'] !!}");
+            break;                  
+            case 'evaporator_tube_type':
+            model_values.evaporator_material_value = $("#evaporator_material").val();
+            updateEvaporatorOptions(model_values.evaporator_material_value,true);
+            // model_values.evaporator_thickness_change = true;
+            validate = true;
+            break;                  
+            case 'absorber_tube_type':
+            model_values.absorber_material_value = $("#absorber_material").val();
+            updateAbsorberOptions(model_values.absorber_material_value,true);
+            validate = true;
+            break;  
+            case 'condenser_tube_type':
+            model_values.condenser_material_value = $("#condenser_material").val();
+            updateCondenserOptions(model_values.condenser_material_value,true);
+            validate = true;
+            break;
+            case 'evaporator_thickness':
+            model_values.evaporator_thickness = $("#evaporator_thickness").val();
+            validate = inputValidation(model_values.evaporator_thickness,"positive_decimals","evaporator_thickness_error","{!! $language_datas['valid_evaporator_thickness'] !!}");
+            break;
+            case 'absorber_thickness':
+            model_values.absorber_thickness = $("#absorber_thickness").val();
+            validate = inputValidation(model_values.absorber_thickness,"positive_decimals","absorber_thickness_error","{!! $language_datas['valid_absorber_thickness'] !!}");
+            break;
+            case 'condenser_thickness':
+            model_values.condenser_thickness = $("#condenser_thickness").val();
+            validate = inputValidation(model_values.condenser_thickness,"positive_decimals","condenser_thickness_error","{!! $language_datas['valid_condenser_thickness'] !!}");
+            break;  
+            case 'fouling_chilled_value':
+            model_values.fouling_chilled_water_value = $("#fouling_chilled_value").val();
+            validate = inputValidation(model_values.fouling_chilled_water_value,"positive_decimals","fouling_chilled_value_error","{!! $language_datas['valid_fouling_chilled_water'] !!}");
+            break;  
+            case 'fouling_cooling_value':
+            model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
+            validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","{!! $language_datas['valid_fouling_cooling_water'] !!}");
+            break;
+            case 'hot_water_in':
+            model_values.hot_water_in = $("#hot_water_in").val();
+            validate = inputValidation(model_values.hot_water_in,"positive_decimals","hot_water_in_error","{!! $language_datas['valid_hot_water_in'] !!}");
+            break;
+            case 'hot_water_out':
+            model_values.hot_water_out = $("#hot_water_out").val();
+            validate = inputValidation(model_values.hot_water_out,"positive_decimals","hot_water_out_error","{!! $language_datas['valid_hot_water_out'] !!}");
+            break;
+            case 'all_work_pr_hw':
+            model_values.all_work_pr_hw = $("#all_work_pr_hw").val();
+            validate = inputValidation(model_values.all_work_pr_hw,"positive_decimals","all_work_pr_hw_error","{!! $language_datas['valid_all_work_pr'] !!}");
+            break;                                      
+            default:
+            // code block
+        }
+        changed_value = input_type;
+
+        if(validate){
+            sendValues(send_values_url);
+        }
+        else{
+            $("#calculate_button").prop('disabled', true);
+        }
+
+    }
+
+    $("#double_steam_h2").submit(function(event) {
+        event.preventDefault();
+        submitValues(submit_url);
+    });
+
+    $( "#reset" ).click(function() {
+        // console.log(model_values.cooling_water_ranges);
+        sendResetValues(reset_url);
+    });
+
+    function afterReset(){
+        if(model_values.region_type == 2){
+            //console.log("usa selected");
+            model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
+            model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
+        }
+        updateValues(); 
+    }
+        
+    $( ".save_report" ).click(function() {
+        saveReport(save_report_url,this.id);
+    });
+
+
+
+    function castToBoolean(){
+
+        model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
+
+        model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
+        model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
+        model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);
+        model_values.fouling_chilled_water_checked = getBoolean(model_values.fouling_chilled_water_checked);
+        model_values.fouling_cooling_water_checked = getBoolean(model_values.fouling_cooling_water_checked);
+        model_values.fouling_chilled_water_disabled = getBoolean(model_values.fouling_chilled_water_disabled);
+        model_values.fouling_cooling_water_disabled = getBoolean(model_values.fouling_cooling_water_disabled);
+        model_values.fouling_chilled_water_value_disabled = getBoolean(model_values.fouling_chilled_water_value_disabled);
+        model_values.fouling_cooling_water_value_disabled = getBoolean(model_values.fouling_cooling_water_value_disabled);
+    }
+        
+    </script>
+    <script type="text/javascript" src="{{asset('assets/js/calculator_common_scripts.js')}}"></script>  
+    
+    <script>
+        $(document).ready(function(){
+            $('.ss-steam-label input').tooltip();
+        });
+    </script>
 
 @endsection
 

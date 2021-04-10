@@ -390,7 +390,7 @@
 							<label>{{ $language_datas['cooling_water_in'] }} </label>
 						</div>
 						<div class="col-lg-2">
-							<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-toggle="tooltip" data-placement="bottom" data-original-title>
+							<input type="text" value="" onchange="updateModelValues('cooling_water_in')" name="cooling_water_in" id="cooling_water_in" class="form-control cooling_water_in_range" data-placement="bottom" data-original-title>
 
 							<!-- <span class="messages emsg hidden" id="cooling_water_in_error">
 								<p class="text-danger error">Please Enter a Valid Cooling Water In</p>
@@ -519,7 +519,7 @@
 											<span class="" id="evaporator_range"></span>
 										</div>
 										<div class="col-lg-4">
-											<label class="padd-mm"> (mm) </label>
+											<label class="padd-mm"> ({{ $units_data[$unit_set->LengthUnit] }}) </label>
 										</div>
 									</div>
 								</div>							
@@ -547,7 +547,7 @@
 											<span class="metallurgy_standard_span" id="absorber_range"></span>
 										</div>
 										<div class="col-lg-4">
-											<label class="padd-mm"> (mm) </label>
+											<label class="padd-mm"> ({{ $units_data[$unit_set->LengthUnit] }}) </label>
 										</div>
 									</div>
 								</div>
@@ -575,7 +575,7 @@
 											<span class="metallurgy_standard_span" id="condenser_range"></span>
 										</div>
 										<div class="col-lg-4">
-											<label class="padd-mm"> (mm) </label>
+											<label class="padd-mm"> ({{ $units_data[$unit_set->LengthUnit] }}) </label>
 										</div>
 									</div>
 								</div>
@@ -1241,7 +1241,6 @@
 	function castToBoolean(){
 
 		model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
-
 		model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
 		model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
 		model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);
