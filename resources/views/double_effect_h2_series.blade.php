@@ -306,8 +306,6 @@
                                                                 <option value="175">H2 N4</option>
                                                                 <option value="210">H2 P1</option>
                                                                 <option value="250">H2 P2</option>
-																<option value="210">H2 D1</option>
-																<option value="250">H2 D2</option>
 																<option value="310">H2 D3</option>
 																<option value="350">H2 D4</option>
 																<option value="410">H2 E1</option>
