@@ -702,7 +702,7 @@ class CalculatorTestingController extends Controller
         $data['chilled_inlet_temp'] = isset($output_values['TCHW1H']) ?  floatval($output_values['TCHW1H']) : "";
         $data['chilled_outlet_temp'] = isset($output_values['TCHW2L']) ?  floatval($output_values['TCHW2L']) : "";
         $data['chilled_water_flow'] = isset($output_values['ChilledWaterFlow']) ?  floatval($output_values['ChilledWaterFlow']) : "";
-        $data['cooling_water_flow'] = isset($output_values['TCHW2L']) ?  floatval($output_values['TCHW2L']) : "";
+        $data['cooling_water_flow'] = isset($output_values['GCW']) ?  floatval($output_values['GCW']) : "";
         $data['cooling_inlet_temp'] = isset($output_values['TCW11']) ?  floatval($output_values['TCW11']) : "";
         $data['cooling_outlet_temp'] = isset($output_values['CoolingWaterOutTemperature']) ?  floatval($output_values['CoolingWaterOutTemperature']) : "";
         $data['hot_water_in'] = isset($output_values['THW1']) ?  floatval($output_values['THW1']) : "";
@@ -725,6 +725,7 @@ class CalculatorTestingController extends Controller
         } 
         $data['chilled_gylcol'] = isset($output_values['CHGLY']) ?  floatval($output_values['CHGLY']) : ""; 
         $data['cooling_gylcol'] = isset($output_values['COGLY']) ?  floatval($output_values['COGLY']) : "";
+        $data['hot_water_gylcol'] = isset($output_values['HWGLY']) ?  floatval($output_values['HWGLY']) : "";
         if($output_values['TUU'] == "standard"){
             $data['chilled_fouling_factor'] = "standard"; 
         }
@@ -738,6 +739,14 @@ class CalculatorTestingController extends Controller
         else{
             $data['cooling_fouling_factor'] = isset($output_values['FFCOW1']) ?  floatval($output_values['FFCOW1']) : ""; 
         }
+
+        if($output_values['TUU'] == "standard"){
+            $data['hot_fouling_factor'] = "standard"; 
+        }
+        else{
+            $data['hot_fouling_factor'] = isset($output_values['FFHOW1']) ?  floatval($output_values['FFHOW1']) : ""; 
+        }
+        
 
         $data['UEVAH'] = isset($output_values['UEVAH']) ?  floatval($output_values['UEVAH']) : "";
         $data['UABSH'] = isset($output_values['UABSH']) ?  floatval($output_values['UABSH']) : "";

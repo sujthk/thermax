@@ -612,7 +612,7 @@
 											<div class="radio radio-inline">
 												<label >
 													<input type="radio" name="fuel_value_type" id="fuel_natural_gas" value="NaturalGas" class="fuel_value_type" >
-														<i class="helper"></i>{{ $language_datas['natural_gas'] }}
+														<i class="helper"></i> Natural Gas
 												</label>
 											</div>
 										</div>
@@ -640,12 +640,13 @@
 												</div>	
 										</div>
 										<div class="col-lg-7">
-											<div class="row fuel_cv_stds" style="display: none;">
+											<div class="row" id="fuel_cv_stds" style="display: none;">
 											<div class="col-lg-4">
 												<label>Std GCV </label>
 											</div>
 											<div class="col-lg-6">
 												<span id="fuel_cv_std"></span>
+												<input type="text" name="std_calorific_value" id="std_calorific_value" disabled value="" class="form-control">
 												
 											</div>
 											<div class="col-lg-2">
@@ -805,27 +806,9 @@
         $("#evaporator_material").val(model_values.evaporator_material_value);
         $("#absorber_material").val(model_values.absorber_material_value);
         $("#condenser_material").val(model_values.condenser_material_value);
-        $("#calorific_value").val(model_values.calorific_value);
 
-        if(model_values.fuel_type === 'Normal'){
-            $("#fuel_normal").prop('checked', true);
-        }
-        else{
-            $("#fuel_gross").prop('checked', true);
-        }
-
-        if(model_values.fuel_value_type == 'NaturalGas'){
-            $("#fuel_natural_gas").prop('checked', true);
-          
-        }
-        else if(model_values.fuel_value_type == 'HSD'){
-            $("#fuel_hsd").prop('checked', true);
-        }
-        else{
-            $("#fuel_sko").prop('checked', true);
-
-        }
-        
+        updateFuelValues();
+   
         if(model_values.glycol_none === 'true')
             $("#glycol_none").prop('disabled', true);
         else
@@ -881,6 +864,47 @@
 
     }
 
+    function updateFuelValues(){
+        if(model_values.fuel_type == 'Normal'){
+            $("#fuel_normal").prop('checked', true);
+            $("#fuel_cv_stds").hide();
+        }
+        else{
+            $("#fuel_gross").prop('checked', true);
+            $("#fuel_cv_stds").show();
+        }
+
+        if(model_values.fuel_value_type == 'NaturalGas'){
+            $("#fuel_natural_gas").prop('checked', true);
+            model_values.calorific_value = model_values.normal_ng_calorific_value;
+
+            if(model_values.fuel_type != 'Normal'){
+	            model_values.std_calorific_value = model_values.gross_ng_calorific_value;
+	        }
+          
+        }
+        else if(model_values.fuel_value_type == 'HSD'){
+            $("#fuel_hsd").prop('checked', true);
+            model_values.calorific_value = model_values.normal_hsd_calorific_value;
+
+            if(model_values.fuel_type != 'Normal'){
+	            model_values.std_calorific_value = model_values.gross_hsd_calorific_value;
+	        }
+        }
+        else{
+            $("#fuel_sko").prop('checked', true);
+            model_values.calorific_value = model_values.normal_sko_calorific_value;
+
+            if(model_values.fuel_type != 'Normal'){
+	            model_values.std_calorific_value = model_values.gross_sko_calorific_value;
+	        }
+
+        }
+
+        $("#calorific_value").val(model_values.calorific_value);
+        $("#std_calorific_value").val(model_values.std_calorific_value);
+    }
+
     $('input:radio[name="glycol"]').change(function() {
         if ($(this).val() == 'none') {
             $("#glycol_chilled_water").prop('disabled', true);
@@ -891,6 +915,16 @@
             $("#glycol_chilled_water").prop('disabled', false);
             $("#glycol_cooling_water").prop('disabled', false);
         }
+    });
+
+    $('input:radio[name="fuel_type"]').change(function() {
+        if ($(this).val() == 'Normal') {
+        	model_values.fuel_type == 'Normal';   
+        } else {
+            model_values.fuel_type == 'Gross';
+        }
+
+        updateFuelValues();
     });
 
     $('#fouling_chilled_water').change(function() {

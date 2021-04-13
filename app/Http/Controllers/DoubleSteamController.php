@@ -226,7 +226,7 @@ class DoubleSteamController extends Controller
   
 	}
 
-    public function postResetS1(Request $request){
+    public function postResetDoubleEffectS2(Request $request){
         $model_number =(int)$request->input('model_number');
         $model_values = $request->input('values');
 
@@ -240,8 +240,6 @@ class DoubleSteamController extends Controller
             $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
             $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
             $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
-            $chiller_form_values['hot_water_in'] =  $chiller_form_values['USA_hot_water_in'];
-            $chiller_form_values['hot_water_flow'] =  $chiller_form_values['USA_hot_water_flow'];
 
             if($chiller_form_values['region_type'] == 2)
                 $chiller_form_values['fouling_factor']="ari";
@@ -251,7 +249,8 @@ class DoubleSteamController extends Controller
         }
 
 
-        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>=',$model_number)->first();
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+        //$queries = DB::getQueryLog();
 
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
@@ -263,12 +262,17 @@ class DoubleSteamController extends Controller
 
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
-    
+       //  $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1);
+
+       
+
+       // $chiller_form_values = collect($chiller_form_values)->union($standard_values);
+
             
         $this->model_values = $chiller_form_values;
 
         $this->castToBoolean();
-        $this->RANGECAL();
+        $range_calculation = $this->RANGECAL();
 
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
         if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
@@ -277,12 +281,14 @@ class DoubleSteamController extends Controller
 
         $unit_conversions = new UnitConversionController;
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
-    
+ 
         
 
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
 
     }
+
+    
     
     public function modulNumberDoubleEffectS2(){
         // $model_values = $this->model_values;
