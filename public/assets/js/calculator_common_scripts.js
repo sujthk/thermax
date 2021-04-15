@@ -331,6 +331,7 @@ function sendValues(chiller_url){
 		url: chiller_url,
 		data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 		success: function(response){
+			console.log(response);
 			if(response.status){
 				$('#'+changed_value).removeClass("box-color");
 				console.log(response.model_values);
@@ -341,9 +342,7 @@ function sendValues(chiller_url){
 			}
 			else{
 				$("#calculate_button").prop('disabled', true);
-				// alert(response.msg);
 				changed_value = response.changed_value
-				console.log(changed_value);
 				$(".showreport").hide();
 				$("#errornotes").show();
 				$('#'+changed_value).addClass("box-color");

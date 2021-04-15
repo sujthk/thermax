@@ -332,7 +332,7 @@
 													<label>{{ $language_datas['chilled_water_out'] }}</label>
 												</div>
 												<div class="col-lg-2">
-													<input type="text" class="form-control min_chilled_water_out" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="" data-placement="bottom" title="">
+													<input type="text" class="form-control min_chilled_water_out" id="chilled_water_out" name="chilled_water_out" onchange="updateModelValues('chilled_water_out')" value="" data-placement="bottom" >
 												</div>
 												<div class="col-lg-1">
 													<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -452,7 +452,7 @@
 										<div class="col-lg-12 range-hide">
 											<div class="row">
 												<div class="col-md-8">
-													<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" title="">
+													<input type="text" name="evaporator_thickness" id="evaporator_thickness" onchange="updateModelValues('evaporator_thickness')" value="" class="form-control metallurgy_standard metallurgy_standard_span" data-placement="bottom" >
 													<span class="" id="evaporator_range"></span>
 												</div>
 												<div class="col-lg-4">
@@ -476,7 +476,7 @@
 										<div class="col-lg-12 range-hide">
 											<div class="row">
 												<div class="col-md-8">
-													<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
+													<input type="text" name="absorber_thickness" id="absorber_thickness" onchange="updateModelValues('absorber_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" >
 													<span class="metallurgy_standard_span" id="absorber_range"></span>
 												</div>
 												<div class="col-lg-4">
@@ -501,7 +501,7 @@
 										<div class="col-lg-12 range-hide">
 											<div class="row">
 												<div class="col-md-8">
-													<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" title="">
+													<input type="text" name="condenser_thickness" id="condenser_thickness" onchange="updateModelValues('condenser_thickness')" value="" class="form-control metallurgy_standard" data-placement="bottom" >
 													<span class="metallurgy_standard_span" id="condenser_range"></span>
 												</div>
 												<div class="col-lg-4">
@@ -549,7 +549,7 @@
 									<div class="row margin-0">
 										<div class="col-lg-2 padding-0 checkbox-fade fade-in-primary">
 											<label>
-												<input type="checkbox" class="fouling_standard " name="fouling_chilled_water" id="fouling_chilled_water" value="" data-placement="bottom" title="">
+												<input type="checkbox" class="fouling_standard " name="fouling_chilled_water" id="fouling_chilled_water" value="" data-placement="bottom" >
 												<span class="cr">
 													<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
 												</span><span>{{ $language_datas['chilled_water'] }}</span><span id=""></span>
@@ -557,7 +557,7 @@
 										</div>
 
 										<div class="col-lg-2">
-											<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')" class="form-control fouling_standard fouling_chilled_min" data-placement="bottom" title="">
+											<input type="text" name="fouling_chilled_value" id="fouling_chilled_value" onchange="updateModelValues('fouling_chilled_value')" class="form-control fouling_standard fouling_chilled_min" data-placement="bottom" >
 										</div>
 										<div class="col-lg-2 padding-0">
 											<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
@@ -565,7 +565,7 @@
 
 										<div class="col-lg-2 padding-0 checkbox-fade fade-in-primary">
 											<label>
-												<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="" data-placement="bottom" title="0.00005">
+												<input type="checkbox" class="fouling_standard" name="fouling_cooling_water" id="fouling_cooling_water" value="" data-placement="bottom" >
 												<span class="cr">
 													<i class="cr-icon icofont icofont-ui-check txt-primary"></i>
 												</span><span>{{ $language_datas['cooling_water'] }}</span><span id=""></span>
@@ -573,7 +573,7 @@
 										</div>
 
 										<div class="col-lg-2">
-											<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard fouling_cooling_min" data-placement="bottom" title="">
+											<input type="text" name="fouling_cooling_value" id="fouling_cooling_value" onchange="updateModelValues('fouling_cooling_value')" class="form-control fouling_standard fouling_cooling_min" data-placement="bottom" >
 										</div>
 										<div class="col-lg-2 padding-0">
 											<label>({{ $units_data[$unit_set->FoulingFactorUnit] }})</label>
@@ -621,8 +621,6 @@
 										</div>
 										<div class="col-lg-4">
 											<input type="text" name="calorific_value" id="calorific_value" onchange="updateModelValues('calorific_value')" value="" class="form-control">
-
-											<span class="messages emsg hidden" id="calorific_value_error"><p class="text-danger error"></p></span>
 										</div>
 										<div class="col-lg-2">
 											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
@@ -776,6 +774,7 @@
         updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,model_values.absorber_thickness_change);
         updateCondenserOptions(chiller_metallurgy_options.con_default_value,model_values.condenser_thickness_change);
         updateValues();
+        updateFuelValues();
     }
 
 
@@ -807,7 +806,7 @@
         $("#absorber_material").val(model_values.absorber_material_value);
         $("#condenser_material").val(model_values.condenser_material_value);
 
-        updateFuelValues();
+        
    
         if(model_values.glycol_none === 'true')
             $("#glycol_none").prop('disabled', true);
@@ -1195,19 +1194,11 @@
             case 'fouling_cooling_value':
             model_values.fouling_cooling_water_value = $("#fouling_cooling_value").val();
             validate = inputValidation(model_values.fouling_cooling_water_value,"positive_decimals","fouling_cooling_value_error","{!! $language_datas['valid_fouling_cooling_water'] !!}");
-            break;
-            case 'hot_water_in':
-            model_values.hot_water_in = $("#hot_water_in").val();
-            validate = inputValidation(model_values.hot_water_in,"positive_decimals","hot_water_in_error","{!! $language_datas['valid_hot_water_in'] !!}");
-            break;
-            case 'hot_water_out':
-            model_values.hot_water_out = $("#hot_water_out").val();
-            validate = inputValidation(model_values.hot_water_out,"positive_decimals","hot_water_out_error","{!! $language_datas['valid_hot_water_out'] !!}");
-            break;
-            case 'all_work_pr_hw':
-            model_values.all_work_pr_hw = $("#all_work_pr_hw").val();
-            validate = inputValidation(model_values.all_work_pr_hw,"positive_decimals","all_work_pr_hw_error","{!! $language_datas['valid_all_work_pr'] !!}");
-            break;                                      
+            break; 
+            case 'calorific_value':
+                model_values.calorific_value = $("#calorific_value").val();
+                validate = inputValidation(model_values.calorific_value,"positive_decimals","calorific_value_error","{!! $language_datas['valid_calorific_value'] !!}");
+            break;                                     
             default:
             // code block
         }

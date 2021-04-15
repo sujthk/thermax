@@ -85,6 +85,7 @@ class DoubleH2SteamController extends Controller
         }
 
 
+        $this->changed_value =$changed_value;
         $this->model_values = $model_values;
         $this->castToBoolean();
 
@@ -94,14 +95,14 @@ class DoubleH2SteamController extends Controller
         $attribute_validator = $this->validateChillerAttribute($changed_value);
 
         if(!$attribute_validator['status'])
-            return response()->json(['status'=>false,'msg'=>$attribute_validator['msg']]);
+            return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'changed_value'=>$this->changed_value]);
         
         $this->updateInputs();
         $this->loadSpecSheetData();
 
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
 
-        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values]);
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'changed_value'=>$this->changed_value]);
     }
 
     public function postDoubleEffectH2(Request $request){
@@ -720,7 +721,7 @@ class DoubleH2SteamController extends Controller
         switch (strtoupper($attribute))
         {
             case "MODEL_NUMBER":
-            $this->modulNumberDoubleEffectH2();
+            // $this->modulNumberDoubleEffectH2();
 
             $range_calculation = $this->RANGECAL();
 

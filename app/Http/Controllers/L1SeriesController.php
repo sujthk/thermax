@@ -437,8 +437,14 @@ class L1SeriesController extends Controller
 
         if ($this->calculation_values['TEP'] > $this->calculation_values['TEPMAX'])
         {
+
             $this->calculation_values['TEP'] = $this->calculation_values['TEPMAX'];
             $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TEP']));
+
+
+            Log::info("VEA = ". $this->calculation_values['VEA']);
+            Log::info("IDE = ". $this->calculation_values['IDE']);
+            Log::info("TNEV = ". $this->calculation_values['TNEV']);
             if ($this->calculation_values['VEA'] < $this->calculation_values['VEMIN'])
             {
                 return  array('status' => false,'msg' => $this->notes['NOTES_CHW_VELO']);
@@ -511,6 +517,10 @@ class L1SeriesController extends Controller
             $this->calculation_values['TAP'] = $this->calculation_values['TAP'] - 1;
             $this->calculation_values['VA'] = $this->calculation_values['GCW'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * ($this->calculation_values['TNAA'] / $this->calculation_values['TAP']));
         }
+
+        Log::info("VA = ".$this->calculation_values['VA']);
+        Log::info("IDA = ".$this->calculation_values['IDA']);
+        Log::info("TNAA = ".$this->calculation_values['TNAA']);
         if ($this->calculation_values['TAP'] == 1)          //PARAFLOW
         {
             $this->calculation_values['GCWAH'] = 0.5 * $this->calculation_values['GCW'];
@@ -659,10 +669,23 @@ class L1SeriesController extends Controller
         $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TEP']));
 
 
+        Log::info("VAH = ".$this->calculation_values['VAH']);
+        Log::info("VAL = ".$this->calculation_values['VAL']);
+        Log::info("VEA = ".$this->calculation_values['VEA']);
+        Log::info("KABS = ".$this->calculation_values['KABS']);
+        Log::info("KEVA = ".$this->calculation_values['KEVA']);
+        Log::info("KCON = ".$this->calculation_values['KCON']);
+
         $this->DERATE_KEVA();
         $this->DERATE_KABSH();
         $this->DERATE_KABSL();
         $this->DERATE_KCON();
+
+        Log::info("KABS = ".$this->calculation_values['KABS']);
+        Log::info("KEVA = ".$this->calculation_values['KEVA']);
+        Log::info("KCON = ".$this->calculation_values['KCON']);
+
+
 
         if ($this->calculation_values['GHOT'] != 0)
         {
@@ -708,6 +731,17 @@ class L1SeriesController extends Controller
         $this->calculation_values['UABSH'] = 1.0 / ((1.0 / $this->calculation_values['KABSH']) + $this->calculation_values['FFCOW1']);
         $this->calculation_values['UABSL'] = 1.0 / ((1.0 / $this->calculation_values['KABSL']) + $this->calculation_values['FFCOW1']);
         $this->calculation_values['UCON'] = 1.0 / ((1.0 / $this->calculation_values['KCON']) + $this->calculation_values['FFCOW1']);
+
+
+        Log::info("UEVAH = ".$this->calculation_values['UEVAH']);
+        Log::info("UABSH = ".$this->calculation_values['UABSH']);
+        Log::info("UABSL = ".$this->calculation_values['UABSL']);
+        Log::info("UCON = ".$this->calculation_values['UCON']);
+        Log::info("UGEN = ".$this->calculation_values['UGEN']);
+        Log::info("VEA = ".$this->calculation_values['VEA']);
+        Log::info("VA = ".$this->calculation_values['VA']);
+        Log::info("VC = ".$this->calculation_values['VC']);
+        Log::info("VG = ".$this->calculation_values['VG']);
 
         if ($this->calculation_values['TAP'] == 1) // 11.9.14
         {
@@ -2910,6 +2944,7 @@ class L1SeriesController extends Controller
         $this->calculation_values['FFCOW1'] = floatval($this->model_values['fouling_cooling_water_value']);
         $this->calculation_values['FFHOW1'] = floatval($this->model_values['fouling_hot_water_value']);
 
+
         $chiller_metallurgy_option = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
                                     ->where('min_model','<=',(int)$this->model_values['model_number'])->where('max_model','>=',(int)$this->model_values['model_number'])->first();
 
@@ -3468,6 +3503,7 @@ class L1SeriesController extends Controller
           
        // }
 
+        Log::info($this->calculation_values);   
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
 

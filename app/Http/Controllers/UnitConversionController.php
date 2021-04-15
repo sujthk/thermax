@@ -37,6 +37,16 @@ class UnitConversionController extends Controller
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],"Centigrade",$unit_set->TemperatureUnit);
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],"Centigrade",$unit_set->TemperatureUnit);
        }
+       if($calculator_code == "D_G2"){
+            $chiller_values['calorific_value'] = $this->convertTemperatureUnit($chiller_values['calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['std_calorific_value'] = $this->convertTemperatureUnit($chiller_values['std_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['normal_ng_calorific_value'] = $this->convertTemperatureUnit($chiller_values['normal_ng_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['gross_ng_calorific_value'] = $this->convertTemperatureUnit($chiller_values['gross_ng_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['normal_hsd_calorific_value'] = $this->convertTemperatureUnit($chiller_values['normal_hsd_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['gross_hsd_calorific_value'] = $this->convertTemperatureUnit($chiller_values['gross_hsd_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['normal_sko_calorific_value'] = $this->convertTemperatureUnit($chiller_values['normal_sko_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['gross_sko_calorific_value'] = $this->convertTemperatureUnit($chiller_values['gross_sko_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
+       }
 
 
         // FlowRateUnit 
@@ -131,6 +141,9 @@ class UnitConversionController extends Controller
             $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],$unit_set->TemperatureUnit,"Centigrade");
+       }
+       if($calculator_code == "D_G2"){
+            $chiller_values['calorific_value'] = $this->convertTemperatureUnit($chiller_values['calorific_value'],$unit_set->TemperatureUnit,"Centigrade");
        }
 
 
