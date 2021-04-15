@@ -696,6 +696,7 @@ class CalculatorTestingController extends Controller
     
     public function outputL1ExcelFormat($input_values,$output_values){
         $data = [];
+        Log::info($output_values);
         $data['S.No'] = $input_values['S.No'];
         $data['model'] = isset($output_values['model_name']) ?  $output_values['model_name'] : "";
         $data['Capacity'] = isset($output_values['TON']) ?  floatval($output_values['TON']) : "";

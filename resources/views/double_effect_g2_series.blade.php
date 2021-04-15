@@ -918,10 +918,26 @@
     });
 
     $('input:radio[name="fuel_type"]').change(function() {
+    	
         if ($(this).val() == 'Normal') {
-        	model_values.fuel_type == 'Normal';   
+        	model_values.fuel_type = 'Normal';   
         } else {
-            model_values.fuel_type == 'Gross';
+            model_values.fuel_type = 'Gross';
+        }
+
+        updateFuelValues();
+    });
+
+    $('input:radio[name="fuel_value_type"]').change(function() {
+    	
+        if ($(this).val() == 'NaturalGas') {
+        	model_values.fuel_value_type = 'NaturalGas';   
+        } 
+        else if($(this).val() == 'HSD'){
+        	model_values.fuel_value_type = 'HSD';
+        }
+        else {
+            model_values.fuel_value_type = 'SKO';
         }
 
         updateFuelValues();
