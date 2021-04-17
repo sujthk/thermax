@@ -322,7 +322,13 @@ class UnitConversionController extends Controller
         $calculated_values['FloodedWeight'] = $this->convertWeightUnit($calculated_values['FloodedWeight'],"Ton",$unit_set->WeightUnit);
         $calculated_values['DryWeight'] = $this->convertWeightUnit($calculated_values['DryWeight'],"Ton",$unit_set->WeightUnit);
 
-          
+        
+
+        // Heat Unit
+        if($calculator_code == "D_G2"){
+            $calculated_values['HeatRejected'] = $this->convertHeatUnit($calculated_values['HeatRejected'],"kCPerHour",$unit_set->HeatUnit);
+        }
+
     	return $calculated_values;
 
     }
