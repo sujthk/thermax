@@ -4519,19 +4519,19 @@ class DoubleSteamController extends Controller
 	// }
 
 
-	public function getChillerData()
-	{
+	// public function getChillerData()
+	// {
 
 
-        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$this->model_values['model_number'])->first();
+ //        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$this->model_values['model_number'])->first();
         
-        $calculation_values = $chiller_calculation_values->calculation_values;
-        $calculation_values = json_decode($calculation_values,true);
+ //        $calculation_values = $chiller_calculation_values->calculation_values;
+ //        $calculation_values = json_decode($calculation_values,true);
 
-        return $calculation_values;
+ //        return $calculation_values;
 
 
-	}
+	// }
 
     // public function getConstantData()
     // {

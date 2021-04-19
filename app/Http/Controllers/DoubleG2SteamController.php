@@ -44,7 +44,6 @@ class DoubleG2SteamController extends Controller
     	$absorber_options = $chiller_options->where('type', 'abs');
     	$condenser_options = $chiller_options->where('type', 'con');
 
-        // Log::info($default_values);
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
 
@@ -2840,7 +2839,6 @@ class DoubleG2SteamController extends Controller
                 $tcws[$jj] = $tcws[$jj - 1] + $herr1[$jj - 1] * ($tcws[$jj - 1] - $tcws[$jj - 2]) / ($herr1[$jj - 2] - $herr1[$jj - 1]);
             }
 
-            Log::info($tcws[$jj]);
             $this->calculation_values['TCWS'] = $tcws[$jj];
 
             if ($this->calculation_values['GLL'] == 2)
@@ -3985,8 +3983,6 @@ class DoubleG2SteamController extends Controller
         }
 
 
-
-        // Log::info("init = ".$INIT);
         $range_values = array();
         foreach ($FLOWMN as $key => $min) {
             if(!empty($FLOWMX[$key])){
@@ -4003,7 +3999,6 @@ class DoubleG2SteamController extends Controller
 
         $this->model_values['cooling_water_ranges'] = $range_values;
 
-        //log::info($this->model_values['cooling_water_ranges']);
         return array('status' => true,'msg' => "process run successfully");
     }
 
@@ -4317,7 +4312,7 @@ class DoubleG2SteamController extends Controller
         // $this->model_values['condenser_material_value']=$model_values['condenser_material_value'];
 
         $this->model_values['metallurgy_standard'] = false;
-        //Log::info("Metallurgy Standard false");
+
         }
         else{
 
@@ -4332,7 +4327,6 @@ class DoubleG2SteamController extends Controller
             $this->model_values['absorber_thickness_change'] = true;
             $this->model_values['condenser_thickness_change'] = true;
 
-        //Log::info("Metallurgy Standard true");
         }
     }
 

@@ -330,18 +330,6 @@
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['RCV1'],1) }}</td>
 									</tr>
-									<tr>     
-										<td> 6 </td>
-										<td class="font-class"> {{ $language_datas['connection_drain_dia'] }} </td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['SteamDrainDiameter'],1) }} </td>
-									</tr>
-									<tr>     
-										<td> 7 </td>
-										<td class="font-class"> {{ $language_datas['design_pressure'] }} </td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['m_DesignPressure'],1) }} </td>
-									</tr>
 									<tr>
 										<td class="dark-cell" scope="col"> D  </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['electrical_data'] }}</td>

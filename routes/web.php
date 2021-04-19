@@ -41,7 +41,7 @@ Route::group(['middleware' => 'guest'], function(){
 
 });
 
-Route::get('/data', 'DoubleSteamController@getChillerData');
+// Route::get('/data', 'DoubleSteamController@getChillerData');
 
 Route::group(['middleware' => ['auth']], function(){
     Route::get('/calculators/double-effect-s2/download-report/{user_report_id}/{type}', 'DoubleSteamController@downloadReport')->name('download.report');

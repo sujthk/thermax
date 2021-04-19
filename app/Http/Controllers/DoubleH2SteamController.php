@@ -25,6 +25,7 @@ class DoubleH2SteamController extends Controller
     private $model_code = "D_H2";
     private $calculation_values;
     private $notes;
+    private $changed_value;
 
    
 
@@ -320,7 +321,7 @@ class DoubleH2SteamController extends Controller
         $user_report->report_type = $report_type;
         $user_report->region_type = $calculation_values['region_type'];
         $user_report->calculation_values = json_encode($calculation_values);
-        $user_report->language = Auth::user()->language;
+        $user_report->language = Auth::user()->language_id;
         $user_report->save();
 
         $redirect_url = route('download.report_h2', ['user_report_id' => $user_report->id,'type' => $report_type]);
