@@ -31,12 +31,12 @@ class DoubleG2SteamController extends Controller
 
     public function getDoubleEffectG2(){
 
-        $chiller_form_values = $this->getFormValues(130);
+        $chiller_form_values = $this->getFormValues(60);
 
 
     	$chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
                                         ->where('code',$this->model_code)
-    									->where('min_model','<=',130)->where('max_model','>=',130)->first();
+    									->where('min_model','<=',60)->where('max_model','>=',60)->first();
 
     	$chiller_options = $chiller_metallurgy_options->chillerOptions;
     	
@@ -61,7 +61,7 @@ class DoubleG2SteamController extends Controller
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
-
+        
 		return view('double_effect_g2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions,'language_datas'=>$language_datas]);
                            
 	}
@@ -168,7 +168,6 @@ class DoubleG2SteamController extends Controller
 
         $this->model_values = $converted_values;
 
-
         $this->castToBoolean();
 
         $vam_base = new VamBaseController();
@@ -186,19 +185,18 @@ class DoubleG2SteamController extends Controller
 
         
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
     
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
-
 
         // try {
             $this->CALCULATIONS();
@@ -217,9 +215,9 @@ class DoubleG2SteamController extends Controller
 
             
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
-
-        Log::info($calculated_values);
-        if($calculated_values['Result'] =="FAILED")
+      
+        
+        if($calculated_values['Result'] == "FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
         }
@@ -254,7 +252,6 @@ class DoubleG2SteamController extends Controller
         $unit_set = UnitSet::find($unit_set_id);
 
 
-
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
@@ -263,6 +260,89 @@ class DoubleG2SteamController extends Controller
 
         return $view;
     
+    }
+
+    public function postSaveReport(Request $request){
+        $calculation_values = $request->input('calculation_values');
+        $name = $request->input('name',"");
+        $project = $request->input('project',"");
+        $phone = $request->input('phone',"");
+        $report_type = $request->input('report_type',"save_pdf");
+
+        
+
+        $user = Auth::user();
+
+        $user_report = new UserReport;
+        $user_report->user_id = $user->id;
+        $user_report->name = $name;
+        $user_report->project = $project;
+        $user_report->phone = $phone;
+        $user_report->calculator_code = $this->model_code;
+        $user_report->unit_set_id = $user->unit_set_id;
+        $user_report->report_type = $report_type;
+        $user_report->region_type = $calculation_values['region_type'];
+        $user_report->calculation_values = json_encode($calculation_values);
+        $user_report->language = Auth::user()->language_id;
+        $user_report->save();
+
+        $redirect_url = route('download.g2report', ['user_report_id' => $user_report->id,'type' => $report_type]);
+        
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','redirect_url'=>$redirect_url]);
+        
+    }
+
+    public function downloadReport($user_report_id,$type){
+
+        $user_report = UserReport::find($user_report_id);
+        if(!$user_report){
+            return response()->json(['status'=>false,'msg'=>'Invalid Report']);
+        }
+
+        if($type == 'save_word'){
+            $report_controller = new ReportController();
+            $file_name = $report_controller->wordFormatG2($user_report_id,$this->model_code);
+
+            // $file_name = "S2-Steam-Fired-Series-".Auth::user()->id.".docx";
+            return response()->download(storage_path($file_name));
+        }
+
+        $calculation_values = json_decode($user_report->calculation_values,true);
+        
+        $name = $user_report->name;
+        $project = $user_report->project;
+        $phone = $user_report->phone;
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>',(int)$calculation_values['MODEL'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+        $evaporator_name = $evaporator_option->metallurgy->report_name;
+        $absorber_name = $absorber_option->metallurgy->report_name;
+        $condenser_name = $condenser_option->metallurgy->report_name;
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+
+        $language = $user_report->language;
+
+
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+        $units_data = $vam_base->getUnitsData();
+
+
+
+
+        $pdf = PDF::loadView('reports.report_g2_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
+
+        return $pdf->download('g2.pdf');
+
     }
 
     public function WATERPROP()
@@ -2002,8 +2082,11 @@ class DoubleG2SteamController extends Controller
             $this->calculation_values['I33'] = $this->calculation_values['I14'] + ($this->calculation_values['QEXFUEL'] / $this->calculation_values['GDIL']);
             $this->calculation_values['T33'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I33']);
 
+
             $this->calculation_values['LMTDHR'] = (($this->calculation_values['TEXH1'] - $this->calculation_values['T33']) - ($this->calculation_values['TEXH2'] - $this->calculation_values['T14'])) / (log(($this->calculation_values['TEXH1'] - $this->calculation_values['T33']) / ($this->calculation_values['TEXH2'] - $this->calculation_values['T14'])));
             $this->calculation_values['QLMTDHR'] = $this->calculation_values['UHR'] * $this->calculation_values['AHR'] * $this->calculation_values['LMTDHR'];
+
+
 
             $ferr[$this->calculation_values['ex']] = ($this->calculation_values['QLMTDHR'] - $this->calculation_values['QEXFUEL']) * 100 / $this->calculation_values['QLMTDHR'];
             $this->calculation_values['ex']++;
@@ -2061,7 +2144,7 @@ class DoubleG2SteamController extends Controller
         $CC[1][10] = $this->calculation_values['UHR'] * $this->calculation_values['AHR'] * $this->calculation_values['LMTDHR'];
         $CC[2][10] = $this->calculation_values['GEXFUEL'] * ($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) * 0.5 * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXH2']) * 0.97;   //HR
 
-        for ($j = 0; $j < 10; $j++)
+        for ($j = 0; $j < 11; $j++)
         {
             if ($CC[0][$j] <= $CC[1][$j] && $CC[0][$j] <= $CC[2][$j])   //MIN
                 $CC[3][$j] = $CC[0][$j];
@@ -2083,6 +2166,45 @@ class DoubleG2SteamController extends Controller
         $HEATIN = ($this->calculation_values['TON'] * 3024) + $this->calculation_values['QHTG'] + $this->calculation_values['QEXFUEL'];
         $HEATOUT = ($this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2H'] + $this->calculation_values['COGLY_SPHT1H']) * 0.5 * ($this->calculation_values['TCW2H'] - $this->calculation_values['TCW1H']) / 4187) + ($this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2L'] + $this->calculation_values['COGLY_SPHT1L']) * 0.5 * ($this->calculation_values['TCW2L'] - $this->calculation_values['TCW1L']) / 4187) + ($this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT4'] + $this->calculation_values['COGLY_SPHT3']) * 0.5 * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW3']) / 4187);
         $this->calculation_values['HBERROR'] = ($HEATIN - $HEATOUT) / $HEATIN * 100;
+    }
+
+
+    public function CONCHECK1()
+    {
+        if ($this->calculation_values['MODEL'] < 130)
+        {
+            if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+            else
+            {
+                if ($this->calculation_values['TCW11'] < 29.4)
+                    $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462);
+                else
+                {
+                    if ($this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                        $this->calculation_values['KM'] = 62.6 + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+                    else
+                        $this->calculation_values['KM'] = 62.6;
+                }
+            }
+        }
+        else if ($this->calculation_values['MODEL'] > 130)
+        {
+            if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+            else
+            {
+                if ($this->calculation_values['TCW11'] < 29.4)
+                    $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462);
+                else
+                {
+                    if ($this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                        $this->calculation_values['KM'] = 63.00 + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+                    else
+                        $this->calculation_values['KM'] = 63.00;
+                }
+            }
+        }
     }
 
     public function CONCHECK()
@@ -2190,56 +2312,53 @@ class DoubleG2SteamController extends Controller
     public function LMTDCHECK()
     {
 
-        if (!isset($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
+        if (!isset($this->calculation_values['LMTDEVAH']) || is_nan($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
         {
 
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
+        elseif (!isset($this->calculation_values['LMTDEVAL']) || is_nan($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDABSH']) || $this->calculation_values['LMTDABSH'] < 0)
+        elseif (!isset($this->calculation_values['LMTDABSH']) || is_nan($this->calculation_values['LMTDABSH']) || $this->calculation_values['LMTDABSH'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDABSL']) || $this->calculation_values['LMTDABSL'] < 0)
+        elseif (!isset($this->calculation_values['LMTDABSL']) || is_nan($this->calculation_values['LMTDABSL']) || $this->calculation_values['LMTDABSL'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDCON']) || $this->calculation_values['LMTDCON'] < 0)
+        elseif (!isset($this->calculation_values['LMTDCON']) || is_nan($this->calculation_values['LMTDCON']) || $this->calculation_values['LMTDCON'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDHTG']) || $this->calculation_values['LMTDHTG'] < 0)
+        elseif (!isset($this->calculation_values['LMTDHTG']) || is_nan($this->calculation_values['LMTDHTG']) || $this->calculation_values['LMTDHTG'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDLTG']) || $this->calculation_values['LMTDLTG'] < 0)
+        elseif (!isset($this->calculation_values['LMTDLTG']) || is_nan($this->calculation_values['LMTDLTG']) || $this->calculation_values['LMTDLTG'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDLTHE']) || $this->calculation_values['LMTDLTHE'] < 0)
+        elseif (!isset($this->calculation_values['LMTDLTHE']) || is_nan($this->calculation_values['LMTDLTHE']) || $this->calculation_values['LMTDLTHE'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDHTHE']) || $this->calculation_values['LMTDHTHE'] < 0)
+        elseif (!isset($this->calculation_values['LMTDHTHE']) || is_nan($this->calculation_values['LMTDHTHE']) || $this->calculation_values['LMTDHTHE'] < 0)
         {
             return false;
         }
-        elseif (!isset($this->calculation_values['LMTDDHE']) || $this->calculation_values['LMTDDHE'] < 0)
+        elseif (!isset($this->calculation_values['LMTDDHE']) || is_nan($this->calculation_values['LMTDDHE']) || $this->calculation_values['LMTDDHE'] < 0)
         {
             return false;
         }
         elseif (!isset($this->calculation_values['LMTDHR']) || is_nan($this->calculation_values['LMTDHR']) || $this->calculation_values['LMTDHR'] < 0)
         {
-            Log::info("sdas");
             return false;
         }
         else
         {
-            Log::info("test");
-        Log::info($this->calculation_values['LMTDHR']);
             return true;
         }
     }
@@ -2605,7 +2724,7 @@ class DoubleG2SteamController extends Controller
     {
 
         $ii = 1;
-        $this->calculation_values['COGLY_SPHT11'];
+        $this->calculation_values['COGLY_SPHT11'] = 0;
         $herr = array();
         $tcwa4 = array();
         $vam_base = new VamBaseController();
@@ -2721,6 +2840,7 @@ class DoubleG2SteamController extends Controller
                 $tcws[$jj] = $tcws[$jj - 1] + $herr1[$jj - 1] * ($tcws[$jj - 1] - $tcws[$jj - 2]) / ($herr1[$jj - 2] - $herr1[$jj - 1]);
             }
 
+            Log::info($tcws[$jj]);
             $this->calculation_values['TCWS'] = $tcws[$jj];
 
             if ($this->calculation_values['GLL'] == 2)
@@ -2801,7 +2921,7 @@ class DoubleG2SteamController extends Controller
         $this->calculation_values['ModeBCapacity'] = $this->calculation_values['TON'] * 0.5;
         $this->calculation_values['ModeBChilledWaterOutTemperature'] = $this->calculation_values['TCHW11'] - ($this->calculation_values['DT'] / 2);
         $this->calculation_values['ModeBCoolingWaterInTemperature'] = "40";
-        $this->calculation_values['ModeBCoolingWaterOutTemperature'] = $this->calculation_values['TCWS'];
+        $this->calculation_values['ModeBCoolingWaterOutTemperature'] = isset($this->calculation_values['TCWS']) ?  $this->calculation_values['TCWS'] : "";
         $this->calculation_values['ModeBFuelConsumption'] = $this->calculation_values['GFUEL']* 0.75;
         $this->calculation_values['ModeBHeatInput'] = $this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * 0.75 + $this->calculation_values['QEXFUEL'];
         $this->calculation_values['ModeBHeatRejected'] = ($this->calculation_values['TON'] * 1512) + ($this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * $this->calculation_values['CF'] * 0.75) + $this->calculation_values['QEXFUEL'];
@@ -3973,6 +4093,7 @@ class DoubleG2SteamController extends Controller
         $this->calculation_values['CoolingFrictionLoss'] = 0;
         $this->calculation_values['SteamConsumption'] = 0;
         $this->calculation_values['ex'] = 0;
+        $this->calculation_values['HeatRejected'] = 0;
 
 
         $this->DATA();

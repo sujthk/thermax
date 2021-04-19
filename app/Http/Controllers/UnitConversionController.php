@@ -37,16 +37,7 @@ class UnitConversionController extends Controller
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],"Centigrade",$unit_set->TemperatureUnit);
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],"Centigrade",$unit_set->TemperatureUnit);
        }
-       if($calculator_code == "D_G2"){
-            $chiller_values['calorific_value'] = $this->convertTemperatureUnit($chiller_values['calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['std_calorific_value'] = $this->convertTemperatureUnit($chiller_values['std_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['normal_ng_calorific_value'] = $this->convertTemperatureUnit($chiller_values['normal_ng_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['gross_ng_calorific_value'] = $this->convertTemperatureUnit($chiller_values['gross_ng_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['normal_hsd_calorific_value'] = $this->convertTemperatureUnit($chiller_values['normal_hsd_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['gross_hsd_calorific_value'] = $this->convertTemperatureUnit($chiller_values['gross_hsd_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['normal_sko_calorific_value'] = $this->convertTemperatureUnit($chiller_values['normal_sko_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-            $chiller_values['gross_sko_calorific_value'] = $this->convertTemperatureUnit($chiller_values['gross_sko_calorific_value'],"Centigrade",$unit_set->TemperatureUnit);
-       }
+       
 
 
         // FlowRateUnit 
@@ -107,6 +98,30 @@ class UnitConversionController extends Controller
             $chiller_values['all_work_pr_hw'] = $this->convertAllWorkPrHWUnit($chiller_values['all_work_pr_hw'],"KgPerCmSqGauge",$unit_set->AllWorkPrHWUnit);
         }
 
+        // CalorificValueGasUnit
+        if($calculator_code == "D_G2"){
+            if($chiller_values['fuel_value_type'] == 'NaturalGas'){
+                $chiller_values['calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+                $chiller_values['std_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['std_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+            }
+             
+             $chiller_values['normal_ng_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['normal_ng_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+             $chiller_values['gross_ng_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['gross_ng_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+             
+        }
+
+        // CalorificValueOilUnit
+        if($calculator_code == "D_G2"){
+            if($chiller_values['fuel_value_type'] != 'NaturalGas'){
+                $chiller_values['calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+                $chiller_values['std_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['std_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            }
+            $chiller_values['normal_hsd_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['gross_hsd_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['gross_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['normal_sko_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['normal_sko_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['gross_sko_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['gross_sko_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+        }
+
 
 
     	return $chiller_values;
@@ -142,10 +157,7 @@ class UnitConversionController extends Controller
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],$unit_set->TemperatureUnit,"Centigrade");
        }
-       if($calculator_code == "D_G2"){
-            $chiller_values['calorific_value'] = $this->convertTemperatureUnit($chiller_values['calorific_value'],$unit_set->TemperatureUnit,"Centigrade");
-       }
-
+  
 
         // FlowRateUnit
         $chiller_values['cooling_water_flow'] = $this->convertFlowRateUnit($chiller_values['cooling_water_flow'],$unit_set->FlowRateUnit,"CubicMeterPerHr");
@@ -202,6 +214,20 @@ class UnitConversionController extends Controller
         // AllWorkPrHWUnit
         if($calculator_code == "D_H2"){
             $chiller_values['all_work_pr_hw'] = $this->convertAllWorkPrHWUnit($chiller_values['all_work_pr_hw'],$unit_set->AllWorkPrHWUnit,"KgPerCmSqGauge");
+        }
+
+        // CalorificValueGasUnit
+        if($calculator_code == "D_G2"){
+            if($chiller_values['fuel_value_type'] == 'NaturalGas'){
+                $chiller_values['calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['calorific_value'],$unit_set->CalorificValueGasUnit,"kCPerNcubicmetre");
+            }      
+        }
+
+        // CalorificValueOilUnit
+        if($calculator_code == "D_G2"){
+            if($chiller_values['fuel_value_type'] != 'NaturalGas'){
+                $chiller_values['calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['calorific_value'],$unit_set->CalorificValueOilUnit,"kCPerKilogram");
+             }
         }
         
 
@@ -327,6 +353,20 @@ class UnitConversionController extends Controller
         // Heat Unit
         if($calculator_code == "D_G2"){
             $calculated_values['HeatRejected'] = $this->convertHeatUnit($calculated_values['HeatRejected'],"kCPerHour",$unit_set->HeatUnit);
+        }
+
+        // CalorificValueGasUnit
+        if($calculator_code == "D_G2"){
+            if($calculated_values['GCV'] == 'NaturalGas'){
+                $calculated_values['RCV1'] = $this->convertCalorificValueGasUnit($calculated_values['RCV1'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+            }      
+        }
+
+        // CalorificValueOilUnit
+        if($calculator_code == "D_G2"){
+            if($calculated_values['GCV'] != 'NaturalGas'){
+                $calculated_values['RCV1'] = $this->convertCalorificValueOilUnit($calculated_values['RCV1'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+             }
         }
 
     	return $calculated_values;

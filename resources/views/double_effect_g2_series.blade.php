@@ -2,215 +2,225 @@
 
  @section('styles')	
  <!-- Data Table Css -->
- <meta name="csrf-token" content="{{ csrf_token() }}" />
- <style type="text/css">
- 	.emsg {
- 		color: red;
- 	}
- 	.hidden {
- 		display: none;
- 	}
+  <meta name="csrf-token" content="{{ csrf_token() }}" />
+  <style type="text/css">
+     .emsg {
+         color: red;
+     }
 
- 	.hidden-div {
- 		visibility: hidden;
- 	}
+     .hidden {
+         display: none;
+     }
 
- 	.show-div {
- 		visibility: visible;
- 	}
+     .hidden-div {
+         visibility: hidden;
+     }
 
- 	.border-red {
- 		border-color: #bc291a !important;
- 	}
+     .show-div {
+         visibility: visible;
+     }
 
- 	.max-calculator .form-control,
- 	.max-calculator select.form-control {
- 		height: 26px;
- 		padding: 3px .5rem;
- 	}
+     .border-red {
+         border-color: #bc291a !important;
+     }
 
- 	.max-calculator {
- 		background: #fff;
- 	}
+     .max-calculator .form-control,
+     .max-calculator select.form-control {
+         height: 26px !important;
+         padding: 3px .5rem;
+     }
 
- 	.max-calculator .card-header {
- 		margin-bottom: 5px;
- 		padding: 8px;
- 	}
+     .max-calculator {
+         background: #fff;
+     }
 
- 	.max-calculator .card-header h5 {
- 		font-size: 11px;
- 		font-weight: 700;
- 	}
+     .max-calculator .card-header {
+         margin-bottom: 5px;
+         padding: 8px 0;
+         background:none;
+     }
 
- 	.modal-scrol {
- 		overflow-y: scroll;
- 		max-height: 180px;
- 	}
+     .max-calculator .card-header h5 {
+         font-size: 11px;
+         font-weight: 700;
+     }
 
- 	.contact-submit {
- 		margin-bottom: 10px;
- 		cursor: pointer;
- 	}
+     .modal-scrol {
+         overflow-y: scroll;
+         max-height: 180px;
+     }
 
- 	.model-two input::placeholder {
- 		color: #fff;
- 	}
+     .contact-submit {
+         margin-bottom: 10px;
+         cursor: pointer;
+     }
 
- 	.summary-head h4 {
- 		font-size: 16px;
- 		font-weight: 600;
- 	}
+     .model-two input::placeholder {
+         color: #fff;
+     }
 
- 	.model-two h5.modal-title {
- 		color: #fff;
- 	}
+     .summary-head h4 {
+         font-size: 16px;
+         font-weight: 600;
+     }
 
- 	.model-one h5.modal-title {
- 		color: #fff;
- 	}
+     .model-two h5.modal-title {
+         color: #fff;
+     }
 
- 	.model-open {
- 		overflow: hidden;
- 	}
+     .model-one h5.modal-title {
+         color: #fff;
+     }
 
- 	.modal {
- 		overflow-x: hidden;
- 		overflow-y: scroll;
- 	}
+     .model-open {
+         overflow: hidden;
+     }
+
+     .modal {
+         overflow-x: hidden;
+         overflow-y: scroll;
+     }
+
+         
+      .ss-steam-label p{
+          text-align: center;
+          margin: 0;
+      }
+     .ss-steam-label .page-wrapper {
+         padding: 20px 15px;
+     }
+
+     .ss-steam-label label {          
+         margin-bottom: 16%;
+          font-weight: 600;
+          color: #656565;
+     }
+
+     .ss-steam-label .page-wrapper .page-header {
+         margin-bottom: 0px;
+     }
+     
+     .ss-steam-label .card-header{
+         margin-bottom: 4px;
+         margin-top: 2px;
+     }
+  
+    body.dark-layout .ss-steam-label .form-control{
+        background: #fff;
+        color: #333;
+        border: none;
+        border-bottom: 1px solid #c5c5c5;
+        border-radius: 1px;
+         
+        text-align-last: center;
+    }
+     body.dark-layout .ss-steam-label select option{
+         text-align-last: center;
+     }
+    
+    .ss-steam-label .form-control{
+        text-align: center;
+    }
+    .notes-content{
+        
+        padding: 15px; 
+        /*
+            max-height: 500px;              
+            overflow: hidden;         
+        */
+    }
+    /*
+          .notes-content:hover{
+               overflow-y: auto;     
+              
+         }
+    */
+    .notes-content td, .notes-content th{
+        padding: 2px;
+         
+    }
+     
+    .contact-submit{
+        padding: 4px 15px;
+        background: #e10010;
+        border: none;
+         
+        border-radius: 2px;
+        color: #fff;
+        transition: all .2s;
+    }
+    .contact-submit:hover{
+        background: #333;
+        transition: all .2s;
+    }
+    .contact-submit:focus{
+        outline: 0;
+        box-shadow: none;
+    }
+     
+    .cal-rest{
+        padding: 25px 0 0 0;
+    }
+    .padd-2 input,select{
+         background:none;
+    }
+     .padd-mm{
+         padding-top: 10px;
+     }
+     
+    #scroll-right::-webkit-scrollbar-track
+    {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+        border-radius: 4px;
+        background-color: #F5F5F5;
+    }
+
+    #scroll-right::-webkit-scrollbar
+    {
+        width: 8px;
+        background-color: #F5F5F5;
+    }
+
+    #scroll-right::-webkit-scrollbar-thumb
+    {
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+        background-color: #555;
+    }
+    .scrollbar-right
+    {   
+        height: 89vh;
+        width: 100%;
+        background: #fff;
+        overflow-y: auto;
+         border: 3px solid #5d5d5d;
+    }
+    .force-overflow{
+        min-height: 450px;
+    } 
 
 
- 	.ss-steam-label p{
- 		text-align: center;
- 		margin: 0;
- 	}
- 	.ss-steam-label .page-wrapper {
- 		padding: 20px 15px;
- 	}
+    .tooltip-inner {
+        background-color: #fff; 
+        color: #000;
+        border: 1px solid #000;
+        padding: 0 10px;
+        margin: 0;
+             
+    }
 
- 	.ss-steam-label label { 		 
- 		margin-bottom: 10%;
- 		font-weight: 600;
- 		color: #656565;
- 	}
-
- 	.ss-steam-label .page-wrapper .page-header {
- 		margin-bottom: 0px;
- 	}
- 	.ss-steam-label .card-header{
-		padding: 15px 0;
-		margin-bottom: 4px;
-		margin-top: 2px;
-		background: #fff;
- 	}
-
- 	body.dark-layout .ss-steam-label .form-control{
- 		background: #fff;
- 		color: #333;
- 		border: none;
- 		border-bottom: 1px solid #c5c5c5;
- 		border-radius: 1px;
- 		 
- 		text-align-last: center;
- 	}
- 	body.dark-layout .ss-steam-label select option{
- 		text-align-last: center;
- 	}
-
- 	.ss-steam-label .form-control{
- 		text-align: center;
- 	}
-
- 	.notes-content{
-		padding: 15px; 
-	}
-	
-	.notes-content td, .notes-content th{
-		padding: 2px;
-		font-size: 11px;
-	}
-
-	.contact-submit{
-		padding: 4px 15px;
-		background: #e10010;
-		border: none;
-		font-size: 11px;
-		border-radius: 2px;
-		color: #fff;
-		transition: all .2s;
-	}
-	.contact-submit:hover{
-		background: #333;
-		transition: all .2s;
-	}
-	.contact-submit:focus{
-		outline: 0;
-		box-shadow: none;
-	}
-
-	.cal-rest{
-		padding: 0px 0 0 0;
-	}
-	.padd-2{
-
-	}
-	.padd-mm{
-		padding-top: 10px;
-	}
-
-	#scroll-right::-webkit-scrollbar-track
-	{
-		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-		border-radius: 4px;
-		background-color: #F5F5F5;
-	}
-
-
-	#scroll-right::-webkit-scrollbar
-	{
-		width: 8px;
-		background-color: #F5F5F5;
-	}
-
-	#scroll-right::-webkit-scrollbar-thumb
-	{
-		border-radius: 4px;
-		-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-		background-color: #555;
-	}
-	.scrollbar-right
-	{	
-		height: 495px;
-		width: 100%;
-		background: #fff;
-		overflow-y: auto;
-		border: 3px solid #5d5d5d;
-	}
-	.force-overflow{
-		min-height: 450px;
-	} 
-
-
-	.tooltip-inner {
-		background-color: #fff; 
-		color: #000;
-		border: 1px solid #000;
-		padding: 0 10px;
-		margin: 0;
-		font-size: 11px;
-	}
-
-	.margin-0{
-		margin: 0;
-	}
-	.padding-0{
-		padding: 0;
-	}
-
-	.box-color{
-		border: 1px solid red !important;
-	}
-</style>
+     .margin-0{
+         margin: 0;
+     }
+     .padding-0{
+         padding: 0;
+     }
+     
+     .box-color{
+        
+        border: 1px solid red !important;
+     }
+ </style>
 @endsection
 @section('content')
 <div class="main-body ss-steam-label">
@@ -277,10 +287,14 @@
 												</div>
 												<div class="col-lg-2">
 													<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-														<option  value="130">G2 C3</option>
-														<option value="160">G2 C4</option>
-														<option value="210">G2 D1</option>
-														<option value="250">G2 D2</option>
+                                                        <option value="60">G2 M1</option>
+                                                        <option value="75">G2 M2</option>
+                                                        <option value="90">G2 N1</option>
+                                                        <option value="110">G2 N2</option>
+                                                        <option value="150">G2 N3</option>
+                                                        <option value="175">G2 N4</option>
+                                                        <option value="210">G2 P1</option>
+                                                        <option value="250">G2 P2</option>
 														<option value="310">G2 D3</option>
 														<option value="350">G2 D4</option>
 														<option value="410">G2 E1</option>
@@ -623,7 +637,8 @@
 											<input type="text" name="calorific_value" id="calorific_value" onchange="updateModelValues('calorific_value')" value="" class="form-control">
 										</div>
 										<div class="col-lg-2">
-											<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
+											<label class="natural_gas_unit">({{ $units_data[$unit_set->CalorificValueGasUnit] }})</label>
+                                            <label class="hsd_gas_unit">({{ $units_data[$unit_set->CalorificValueOilUnit] }})</label>
 										</div>
 									</div> 
 								</div>
@@ -648,7 +663,8 @@
 												
 											</div>
 											<div class="col-lg-2">
-												<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
+												<label class="natural_gas_unit">({{ $units_data[$unit_set->CalorificValueGasUnit] }})</label>
+                                                <label class="hsd_gas_unit">({{ $units_data[$unit_set->CalorificValueOilUnit] }})</label>
 											</div>
 											</div>
 										</div>
@@ -880,6 +896,9 @@
             if(model_values.fuel_type != 'Normal'){
 	            model_values.std_calorific_value = model_values.gross_ng_calorific_value;
 	        }
+
+            $(".natural_gas_unit").show();
+            $(".hsd_gas_unit").hide();
           
         }
         else if(model_values.fuel_value_type == 'HSD'){
@@ -889,6 +908,9 @@
             if(model_values.fuel_type != 'Normal'){
 	            model_values.std_calorific_value = model_values.gross_hsd_calorific_value;
 	        }
+
+            $(".natural_gas_unit").hide();
+            $(".hsd_gas_unit").show();
         }
         else{
             $("#fuel_sko").prop('checked', true);
@@ -898,10 +920,14 @@
 	            model_values.std_calorific_value = model_values.gross_sko_calorific_value;
 	        }
 
+            $(".natural_gas_unit").hide();
+            $(".hsd_gas_unit").show();
+
         }
 
         $("#calorific_value").val(model_values.calorific_value);
         $("#std_calorific_value").val(model_values.std_calorific_value);
+
     }
 
     $('input:radio[name="glycol"]').change(function() {
@@ -1085,7 +1111,7 @@
 
         $('input:radio[name="region_type"]').change(function() {
             model_values.region_type = $(this).val();
-            model_values.model_number = 130;
+            model_values.model_number = 60;
             
             sendResetValues(reset_url);
         });
@@ -1230,6 +1256,7 @@
             model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling
         }
         updateValues(); 
+        updateFuelValues();
     }
         
     $( ".save_report" ).click(function() {

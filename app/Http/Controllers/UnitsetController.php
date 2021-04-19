@@ -104,7 +104,6 @@ class UnitsetController extends Controller
 
     public function updateUnitset(Request $request,$unit_set_id){
 		$this->validate($request, [
-		    'name' => 'required',
             'TemperatureUnit' => 'required',
 		    'LengthUnit' => 'required',
 		    'WeightUnit' => 'required',
@@ -128,17 +127,17 @@ class UnitsetController extends Controller
 		    'AllWorkPrHWUnit' => 'required',
 		    'HeatCapacityUnit' => 'required',
 		]);
-		$unit_name =	UnitSet::where('user_type','ADMIN')->pluck('name')->toArray();
+		// $unit_name =	UnitSet::where('user_type','ADMIN')->pluck('name')->toArray();
 
-		if(in_array($request->name,$unit_name))
-		{
-			return Redirect::back()->withInput()->withErrors('This Name Altraday Excited');
-		}
+		// if(in_array($request->name,$unit_name))
+		// {
+		// 	return Redirect::back()->withInput()->withErrors('This Name Altraday Excited');
+		// }
 		
 
 		$user=Auth::user();
 		$unit_set = UnitSet::find($unit_set_id);
-		$unit_set->name = $request->name;
+		// $unit_set->name = $request->name;
 		$unit_set->user_id = $user->id;
 
 		if($user->user_type =='ADMIN')

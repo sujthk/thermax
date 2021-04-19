@@ -54,7 +54,7 @@
 		                        	<div class="form-group row">
 		                        	    <label class="col-sm-4 col-form-label">Name</label>
 		                        	    <div class="col-sm-6">
-		                        	        <input id="name" name="name" type="text" value="{{ $unit_set->name }}" required class="form-control">
+		                        	        <input id="name" name="name" type="text" value="{{ $unit_set->name }}" disabled class="form-control">
 		                        	    </div>
 		                        	</div>
 		                        	<div class="form-group row">

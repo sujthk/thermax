@@ -138,9 +138,9 @@
 										
 										<td> {{ $language_datas['glycol_type'] }}</td>
 										<td> </td>
-										@if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
+										@if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
 											<td class="optimal-r1"> NA </td>
-										@elseif($calculation_values['GL'] == 2)
+										@elseif($calculation_values['GLL'] == 2)
 											<td class="optimal-r1">Ethylene</td>
 										@else
 											<td class="optimal-r1">Proplylene</td>
@@ -172,12 +172,6 @@
 										<th scope="col"> {{ $language_datas['cooling_water_circuit'] }}</th>
 										<th scope="col"> </th>
 										<th scope="col"> </th>      
-									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['heat_rejected'] }}</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['HeatRejected'],1) }}</td>
 									</tr>
 									<tr>
 										
@@ -230,9 +224,9 @@
 										<td> {{ $language_datas['glycol_type'] }} </td>
 										<td> </td>
 									
-										@if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
+										@if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
 											<td class="optimal-r1"> NA </td>
-										@elseif($calculation_values['GL'] == 2)
+										@elseif($calculation_values['GLL'] == 2)
 											<td class="optimal-r1">Ethylene</td>
 										@else
 											<td class="optimal-r1">Proplylene</td>
@@ -267,11 +261,35 @@
 										<th scope="col"> </th>      
 									</tr>
 									<tr>
-									
-										<td> Fuel Type</td>
+										<td> {{ $language_datas['fuel_type'] }}</td>
 										<td class="optimal-r1"> Gas</td>
-										<td class="optimal-r1"> Value</td>
+										<td class="optimal-r1"> {{ $calculation_values['CV'] }}</td>
 									</tr>
+                                    <tr>
+                                        <td> {{ $language_datas['calorific_fuel_type'] }}</td>
+                                        <td class="optimal-r1"> GCV</td>
+                                        <td class="optimal-r1"> {{ $calculation_values['GCV'] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $language_datas['calorific_value'] }}</td>
+                                        @if($calculation_values['GCV'] == 'NaturalGas')
+                                            <td class="optimal-r1"> {{ $units_data[$unit_set->CalorificValueGasUnit] }}</td>
+                                        @else
+                                            <td class="optimal-r1"> {{ $units_data[$unit_set->CalorificValueOilUnit] }}</td>
+                                        @endif
+                                        
+                                        <td class="optimal-r1"> {{ $calculation_values['RCV1'] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $language_datas['fuel_consumption'] }} ( + 3 %)</td>
+                                        <td class="optimal-r1"> GCV</td>    
+                                        <td class="optimal-r1"> {{ $calculation_values['FuelConsumption'] }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{{ $language_datas['exhaust_gas_duct_size'] }}</td>
+                                        <td class="optimal-r1">{{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
+                                        <td class="optimal-r1"> {{ $calculation_values['RCV1'] }}</td>
+                                    </tr>
 									<tr>
 										
 										<th scope="col"> {{ $language_datas['electrical_data'] }}</th>
