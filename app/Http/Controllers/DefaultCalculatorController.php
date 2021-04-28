@@ -448,7 +448,7 @@ class DefaultCalculatorController extends Controller
             //return  $key_datas;
             if(!empty($data) && count($data)){
                 foreach ($data as $value) {
-                    Log::info($value);
+                    
                     $data1=[];
                     foreach ($key_datas as $key_data) {
                         //if($value[strtolower($key_data)])

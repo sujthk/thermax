@@ -210,4 +210,10 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/double-effect-g2/save-report', 'DoubleG2SteamController@postSaveReport');
     /*End Double Effect G2 Serires*/
 
+    Route::get('/calculators/e2-series', 'E2SeriesController@getE2Series')->name('calculators/e2-series');
+    Route::post('/calculators/e2-series/ajax-calculate', 'E2SeriesController@postAjaxE2');
+    Route::post('/calculators/e2-series/reset-calculate', 'E2SeriesController@postResetE2');
+    Route::post('/calculators/e2-series/submit-calculate', 'E2SeriesController@postE2');
+    Route::post('/calculators/e2-series/save-report', 'E2SeriesController@postSaveReport');
+
 });
