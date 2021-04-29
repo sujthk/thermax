@@ -71,7 +71,7 @@ class E2SeriesController extends Controller
         $changed_value = $request->input('changed_value');
         // update user values with model values
 
-
+        // Log::info($changed_value);
         $unit_conversions = new UnitConversionController;
         if(!empty($changed_value)){
 
@@ -92,8 +92,8 @@ class E2SeriesController extends Controller
         if(!$attribute_validator['status'])
             return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'changed_value'=>$this->changed_value]);
 
-        $this->updateInputs();
-        $this->loadSpecSheetData();
+        // $this->updateInputs();
+        // $this->loadSpecSheetData();
         
         $this->model_values['min_chilled_water_out'] = $this->calculation_values['min_chilled_water_out']; 
 
@@ -376,10 +376,85 @@ class E2SeriesController extends Controller
                 }
                 
             break;
-            case "STEAM_PRESSURE":
-                if (!(($this->model_values['steam_pressure'] >= $this->model_values['steam_pressure_min_range']) && ($this->model_values['steam_pressure'] <= $this->model_values['steam_pressure_max_range'])))
+            case "ECONOMIZER":
+                if($this->model_values['engine_type'] == 'gas'){
+                    if($this->model_values['economizer'] == 'yes'){
+                        $this->model_values['gas_out_min'] = 140;
+                    }
+                    else{
+                        $this->model_values['gas_out_min'] = 170;
+                    }
+                }
+                else{
+                    $this->model_values['gas_out_min'] = 190;
+                }
+            break;
+            case "ENGINE_TYPE":
+                if($this->model_values['engine_type'] == 'gas'){
+                    $this->model_values['gas_out_min'] = 170;
+                }
+                else{
+                    $this->model_values['gas_out_min'] = 190;
+                }
+            break;
+            case "EXHAUST_GAS_IN":
+                if ($this->model_values['economizer'] == 'yes')
                 {
-                    return array('status' => false,'msg' => $this->notes['NOTES_STMPR_RANGE']);
+                    $this->model_values['gas_out_min'] = 140;
+                }
+                else if ($this->model_values['exhaust_gas_in'] > 399.99)
+                {
+                    $this->model_values['gas_out_min'] = 170;
+                }
+                else if ($this->model_values['exhaust_gas_in'] > 349.99)
+                {
+                    $this->model_values['gas_out_min'] = 175;
+                }
+                else
+                {
+                    $this->model_values['gas_out_min'] = 180;
+                }//Minimum exhaust temp out reduced to 170 but spec sheet to remain at 180
+
+                if ($this->model_values['exhaust_gas_in'] > $this->model_values['gas_in_max'])
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_EG_INT_MAX']);
+                }
+                if ($this->model_values['exhaust_gas_in'] < $this->model_values['gas_in_min'])
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_EG_INT_MIN']);
+                }
+            break;
+            case "EXHAUST_GAS_OUT":
+                if ($this->model_values['exhaust_gas_out'] < $this->model_values['gas_out_min'])
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_EGT_MIN']);
+                }
+                if ($this->model_values['exhaust_gas_out'] >= $this->model_values['exhaust_gas_in'])
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_EGT_IT_OT']);
+                }
+            break;
+            case "EXHAUST_GAS_FLOW":
+                if ($this->model_values['gas_flow'] == 0)
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_EG_F']);
+                }
+                if ($this->model_values['gas_flow_load'] == 0)
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_EG_F_FL']);
+                }
+                if ($this->model_values['gas_flow_load'] < $this->model_values['gas_flow']) // else stmt removed.
+                {
+                    //chiller.ExhaustGasFlowFullLoad = chiller.ExhaustGasFlowRate;
+                    return array('status' => false,'msg' => $this->notes['NOTES_EG_F1_FL']);
+                }
+                if ($this->model_values['design_load'] == 0)
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_DSL']);
+                }
+                if ($this->model_values['pressure_drop'] == 0)
+                {
+                    return array('status' => false,'msg' => $this->notes['NOTES_PR_DRP']);
                 }
             break;
 
@@ -724,8 +799,8 @@ class E2SeriesController extends Controller
             $this->calculation_values['CPEX2'] = 0.256;
         }
 
-        $this->calculation_values['GEXHAUST'] = $this->model_values['exhaust_gas_flow']; 
-        $this->calculation_values['LOAD'] = $this->model_values['exhaust_gas_load']; 
+        $this->calculation_values['GEXHAUST'] = $this->model_values['gas_flow']; 
+        $this->calculation_values['LOAD'] = $this->model_values['gas_flow_load']; 
         $this->calculation_values['PERCENT'] = $this->model_values['design_load']; 
         $this->calculation_values['FURNPRDROP'] = $this->model_values['pressure_drop']; 
         $this->calculation_values['ECO'] = $this->model_values['economizer']; 
@@ -4187,13 +4262,11 @@ class E2SeriesController extends Controller
             'cooling_water_in_max_range',
             'cooling_water_in_min_range',
             'economizer',
-            'gas_in',
+            'exhaust_gas_in',
             'gas_in_min',
             'gas_in_max',
-            'gas_out',
+            'exhaust_gas_out',
             'gas_out_min',
-            'oil_out',
-            'oil_out_min',
             'gas_flow',
             'gas_flow_load',
             'design_load',

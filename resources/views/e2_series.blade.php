@@ -912,13 +912,15 @@
 
 		}
 
-		$('#exhaust_gas_in').val(model_values.gas_in);
+		$('#exhaust_gas_in').val(model_values.exhaust_gas_in);
 		var gas_in_range = model_values.gas_in_min+" - "+model_values.gas_in_max;
 		$('.exhaust_gas_in_range').attr('data-original-title', gas_in_range);
 		$('#exhaust_gas_flow').val(model_values.gas_flow);
 		$('#exhaust_gas_load').val(model_values.gas_flow_load);
 		$('#design_load').val(model_values.design_load);
 		$('#pressure_drop').val(model_values.pressure_drop);
+		$('#exhaust_gas_out').val(model_values.exhaust_gas_out);
+		$('.exhaust_gas_out_range').attr('data-original-title',"min "+model_values.gas_out_min);
 		engine_type_change();
 	}
 
@@ -1050,18 +1052,14 @@
 
 	function engine_type_change(){
 		if(model_values.engine_type == 'gas'){
-			$("#engine_type_gas").prop('checked', true);
-			$('#exhaust_gas_out').val(model_values.gas_out);
-			$('.exhaust_gas_out_range').attr('data-original-title',"min "+model_values.gas_out_min);
-			$("#economizer_no").prop('checked', true);
-			$(".economizer_status").prop('disabled', true);
+			$("#engine_type_gas").prop('checked', true);			
+			$(".economizer_status").prop('disabled', false);
 		}
 		else{
 			$("#engine_type_oil").prop('checked', true);
-			$('#exhaust_gas_out').val(model_values.oil_out);
-			$('.exhaust_gas_out_range').attr('data-original-title',"min "+model_values.oil_out_min);
-			$(".economizer_status").prop('disabled', false);
+			$(".economizer_status").prop('disabled', true);
 		}
+		$("#economizer_no").prop('checked', true);
 	}	
 
 
@@ -1074,11 +1072,13 @@
 
 	$('input[type=radio][name=engine_type]').change(function() {
 		model_values.engine_type = this.value;
-		engine_type_change();
+		// engine_type_change();
+		updateModelValues('engine_type');
 	});
 
 	$('input[type=radio][name=economizer]').change(function() {
 		model_values.economizer = this.value;
+		updateModelValues('economizer');
 	});
     
 	$('input:radio[name="region_type"]').change(function() {
@@ -1204,12 +1204,12 @@
 			validate = inputValidation(model_values.exhaust_gas_out,"positive_decimals","exhaust_gas_out_error","{!! $language_datas['valid_exhaust_gas_out'] !!}");
 			break;
 			case 'exhaust_gas_flow':
-			model_values.exhaust_gas_flow = $("#exhaust_gas_flow").val();
-			validate = inputValidation(model_values.exhaust_gas_flow,"positive_decimals","exhaust_gas_flow_error","{!! $language_datas['valid_exhaust_gas_flow'] !!}");
+			model_values.gas_flow = $("#exhaust_gas_flow").val();
+			validate = inputValidation(model_values.gas_flow,"positive_decimals","exhaust_gas_flow_error","{!! $language_datas['valid_exhaust_gas_flow'] !!}");
 			break;
 			case 'exhaust_gas_load':
-			model_values.exhaust_gas_load = $("#exhaust_gas_load").val();
-			validate = inputValidation(model_values.exhaust_gas_load,"positive_decimals","exhaust_gas_load_error","{!! $language_datas['valid_exhaust_gas_load'] !!}");
+			model_values.gas_flow_load = $("#exhaust_gas_load").val();
+			validate = inputValidation(model_values.gas_flow_load,"positive_decimals","exhaust_gas_load_error","{!! $language_datas['valid_exhaust_gas_load'] !!}");
 			break;
 			case 'design_load':
 			model_values.design_load = $("#design_load").val();
@@ -1218,7 +1218,13 @@
 			case 'pressure_drop':
 			model_values.pressure_drop = $("#pressure_drop").val();
 			validate = inputValidation(model_values.pressure_drop,"positive_decimals","pressure_drop_error","{!! $language_datas['valid_pressure_drop'] !!}");
-			break;								
+			break;	
+			case 'economizer':
+			validate = true;
+			break;
+			case 'engine_type':
+			validate = true;
+			break;							
 
 			default:
 			// code block
