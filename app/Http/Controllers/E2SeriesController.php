@@ -93,7 +93,7 @@ class E2SeriesController extends Controller
             return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'changed_value'=>$this->changed_value]);
 
         // $this->updateInputs();
-        // $this->loadSpecSheetData();
+        $this->loadSpecSheetData();
         
         $this->model_values['min_chilled_water_out'] = $this->calculation_values['min_chilled_water_out']; 
 
@@ -107,6 +107,139 @@ class E2SeriesController extends Controller
        
 
         return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'changed_value'=>$this->changed_value]);
+    }
+
+    public function postResetE2(Request $request){
+        $model_number =(int)$request->input('model_number');
+        $model_values = $request->input('values');
+
+        $chiller_form_values = $this->getFormValues($model_number);
+
+        $chiller_form_values['region_type'] = $model_values['region_type'];
+        if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
+        {
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+
+            if($chiller_form_values['region_type'] == 2)
+                $chiller_form_values['fouling_factor']="ari";
+            else
+                $chiller_form_values['fouling_factor']="standard";
+
+        }
+
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+        //$queries = DB::getQueryLog();
+
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_options = $chiller_options->where('type', 'eva');
+        $absorber_options = $chiller_options->where('type', 'abs');
+        $condenser_options = $chiller_options->where('type', 'con');
+
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+
+            
+        $this->model_values = $chiller_form_values;
+
+        $this->castToBoolean();
+        $range_calculation = $this->RANGECAL();
+
+        $min_chilled_water_out = Auth::user()->min_chilled_water_out;
+        if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
+            $this->model_values['min_chilled_water_out'] = $min_chilled_water_out;
+        
+
+        $unit_conversions = new UnitConversionController;
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
+    
+        
+
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
+
+    }
+
+    public function postE2(Request $request){
+
+        $model_values = $request->input('values');
+        $name = $request->input('name',"");
+        $project = $request->input('project',"");
+        $phone = $request->input('phone',"");
+
+        // ini_set('memory_limit' ,'-1');
+        $unit_conversions = new UnitConversionController;
+
+        $converted_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
+
+        $this->model_values = $converted_values;
+
+
+        $this->castToBoolean();
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
+
+        $validate_attribute =  $this->validateAllChillerAttributes();  
+        if(!$validate_attribute['status'])
+                return response()->json(['status'=>false,'msg'=>$validate_attribute['msg']]);
+                                  
+
+        $this->model_values = $converted_values;
+        $this->castToBoolean();
+
+        $this->updateInputs();
+
+        
+        try {
+            $this->WATERPROP();
+            $velocity_status = $this->VELOCITY();
+        } 
+        catch (\Exception $e) {
+
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
+    
+
+        if(!$velocity_status['status'])
+            return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
+
+
+        try {
+            $this->CALCULATIONS();
+
+            $this->CONVERGENCE();
+
+            $this->RESULT_CALCULATE();
+    
+            $this->loadSpecSheetData();
+        }
+        catch (\Exception $e) {
+
+
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
+
+        $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
+        
+
+        if($calculated_values['Result'] =="FAILED")
+        {
+            return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
+        }
+        else
+        {
+            $showreport = $this->postShowReport($calculated_values,$name,$project,$phone);
+            return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values,'report'=>$showreport]);
+        }
+
+  
     }
 
     public function validateChillerAttribute($attribute){
@@ -464,6 +597,233 @@ class E2SeriesController extends Controller
         return array('status' => true,'msg' => "process run successfully");
 
     }
+
+    public function validateAllChillerAttributes(){
+
+        // "CAPACITY"
+        $capacity = floatval($this->model_values['capacity']);
+        if($capacity <= 0){
+            return array('status' => false,'msg' => $this->notes['NOTES_IV_CAPVAL']);
+        }
+        $this->model_values['capacity'] = $capacity;
+        $range_calculation = $this->RANGECAL();
+        if(!$range_calculation['status']){
+            return array('status'=>false,'msg'=>$range_calculation['msg']);
+        }
+            
+
+        // "CHILLED_WATER_IN":
+        if(floatval($this->model_values['chilled_water_out']) >= floatval($this->model_values['chilled_water_in'])){
+            return array('status' => false,'msg' => $this->notes['NOTES_CHW_OUT_TEMP']);
+        }
+        
+         // "CHILLED_WATER_OUT":
+
+        if (floatval($this->model_values['chilled_water_out']) < floatval($this->model_values['min_chilled_water_out']))
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_CHW_OT_MIN'].' (min = '.$this->model_values['min_chilled_water_out'].')');
+        }
+        if (floatval($this->model_values['chilled_water_out']) >= floatval($this->model_values['chilled_water_in']))
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_CHW_OT_IT']);
+        }
+
+        // $chilled_water_out_validation = $this->chilledWaterValidating();
+        // if(!$chilled_water_out_validation['status']){
+        //     return array('status'=>false,'msg'=>$chilled_water_out_validation['msg']);
+        // }
+
+                  
+        // "EVAPORATOR_TUBE_TYPE":
+
+        if (floatval($this->model_values['chilled_water_out']) < 3.5 && floatval($this->model_values['glycol_chilled_water']) == 0)
+        {
+            if (floatval($this->model_values['evaporator_material_value']) != 4)
+            {
+
+                return array('status' => false,'msg' => $this->notes['NOTES_EVA_TUBETYPE']);
+            }
+
+        }
+
+
+        // "GLYCOL_CHILLED_WATER":
+        
+        if (($this->model_values['glycol_chilled_water'] > $this->model_values['glycol_max_chilled_water'] || $this->model_values['glycol_chilled_water'] < $this->model_values['glycol_min_chilled_water'])) 
+        {
+            
+            if ($this->model_values['glycol_min_chilled_water'] == 10)
+            {
+
+                return array('status' => false,'msg' => $this->notes['NOTES_CHW_GL_OR1']);
+            }
+            else if ($this->model_values['glycol_min_chilled_water'] == 7.5)
+            {
+                return array('status' => false,'msg' => $this->notes['NOTES_CHW_GL_OR2']);
+            }
+            else
+            {
+                return array('status' => false,'msg' => $this->notes['NOTES_CHW_GL_OR']);
+            }
+        }
+
+        // "GLYCOL_COOLING_WATER":
+        if (($this->model_values['glycol_cooling_water'] > $this->model_values['glycol_max_cooling_water']))
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_COW_GLY_OR']);
+        }
+          
+
+        // "COOLING_WATER_IN":
+        if (!(($this->model_values['cooling_water_in'] >= $this->model_values['cooling_water_in_min_range']) && ($this->model_values['cooling_water_in'] <= $this->model_values['cooling_water_in_max_range'])))
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_COW_TEMP']);
+        }
+            
+
+
+         // "COOLING_WATER_FLOW":
+
+
+        $cooling_water_ranges = $this->model_values['cooling_water_ranges'];
+        $cooling_water_flow = $this->model_values['cooling_water_flow'];
+        $range_validate = false;
+        for ($i=0; $i < count($cooling_water_ranges); $i+=2) { 
+            $min_range = $cooling_water_ranges[$i];
+            $max_range = $cooling_water_ranges[$i+1];
+
+            if(($cooling_water_flow > ($min_range - 0.1)) && ($cooling_water_flow < ($max_range + 0.1))){
+                $range_validate = true;
+                break;
+            }
+
+        }
+        if(!$range_validate){
+            return array('status' => false,'msg' => $this->notes['NOTES_COW_RANGE']);
+        }
+    
+
+
+         // "EVAPORATOR_THICKNESS":
+        if(($this->model_values['evaporator_thickness'] >= $this->model_values['evaporator_thickness_min_range']) && ($this->model_values['evaporator_thickness'] <= $this->model_values['evaporator_thickness_max_range'])){
+
+        }
+        else{
+            return array('status' => false,'msg' =>$this->notes['NOTES_EVA_THICK']);
+        }
+    
+
+
+    // "ABSORBER_THICKNESS":
+
+        if(($this->model_values['absorber_thickness'] >= $this->model_values['absorber_thickness_min_range']) && ($this->model_values['absorber_thickness'] <= $this->model_values['absorber_thickness_max_range'])){
+
+        }
+        else{
+            return array('status' => false,'msg' => $this->notes['NOTES_ABS_THICK']);
+        }
+          
+
+
+         // "CONDENSER_THICKNESS":
+
+        if(($this->model_values['condenser_thickness'] >= $this->model_values['condenser_thickness_min_range']) && ($this->model_values['condenser_thickness'] <= $this->model_values['condenser_thickness_max_range'])){
+
+        }
+        else{
+            return array('status' => false,'msg' => $this->notes['NOTES_CON_THICK']);
+        }
+    
+        // "FOULING_CHILLED_VALUE":
+        if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_chilled_water_checked'])){
+            if($this->model_values['fouling_chilled_water_value'] < $this->model_values['fouling_non_chilled']){
+                return array('status' => false,'msg' => $this->notes['NOTES_CHW_FF_MIN']);
+            }
+        }
+        if($this->model_values['fouling_factor'] == 'ari'){
+            if($this->model_values['fouling_chilled_water_value'] < $this->model_values['fouling_ari_chilled']){
+                return array('status' => false,'msg' => $this->notes['NOTES_CHW_FF_MIN']);
+            }
+        }
+                
+           
+
+         // "FOULING_COOLING_VALUE":
+       
+        if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
+            if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
+                return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
+            }
+        }
+        if($this->model_values['fouling_factor'] == 'ari'){
+            if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_ari_cooling']){
+                return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
+            }
+        }
+                
+        
+
+        // "ECONOMIZER":
+        if($this->model_values['engine_type'] == 'gas'){
+            if($this->model_values['economizer'] == 'yes'){
+                $this->model_values['gas_out_min'] = 140;
+            }
+            else{
+                $this->model_values['gas_out_min'] = 170;
+            }
+        }
+        else{
+            $this->model_values['gas_out_min'] = 190;
+        }
+
+        // "EXHAUST_GAS_IN":
+
+        if ($this->model_values['exhaust_gas_in'] > $this->model_values['gas_in_max'])
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_EG_INT_MAX']);
+        }
+        if ($this->model_values['exhaust_gas_in'] < $this->model_values['gas_in_min'])
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_EG_INT_MIN']);
+        }
+
+        // "EXHAUST_GAS_OUT":
+        if ($this->model_values['exhaust_gas_out'] < $this->model_values['gas_out_min'])
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_EGT_MIN']);
+        }
+        if ($this->model_values['exhaust_gas_out'] >= $this->model_values['exhaust_gas_in'])
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_EGT_IT_OT']);
+        }
+
+        // "EXHAUST_GAS_FLOW":
+        if ($this->model_values['gas_flow'] == 0)
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_EG_F']);
+        }
+        if ($this->model_values['gas_flow_load'] == 0)
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_EG_F_FL']);
+        }
+        if ($this->model_values['gas_flow_load'] < $this->model_values['gas_flow']) // else stmt removed.
+        {
+            //chiller.ExhaustGasFlowFullLoad = chiller.ExhaustGasFlowRate;
+            return array('status' => false,'msg' => $this->notes['NOTES_EG_F1_FL']);
+        }
+        if ($this->model_values['design_load'] == 0)
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_DSL']);
+        }
+        if ($this->model_values['pressure_drop'] == 0)
+        {
+            return array('status' => false,'msg' => $this->notes['NOTES_PR_DRP']);
+        }
+
+        return array('status' => true,'msg' => "process run successfully");
+
+    }
+
 
     public function chilledWaterValidating(){
         if($this->model_values['chilled_water_out'] < 1){
@@ -882,6 +1242,381 @@ class E2SeriesController extends Controller
 
         return $GCWMIN1;
     }
+
+    public function loadSpecSheetData(){
+        $model_number = floatval($this->calculation_values['MODEL']);
+
+         if($this->calculation_values['region_type'] == 2)
+        {
+            $this->calculation_values['TotalPowerConsumption'] = (1.732 * 460 * ($this->calculation_values['USA_AbsorbentPumpMotorAmp'] + $this->calculation_values['USA_RefrigerantPumpMotorAmp'] + $this->calculation_values['USA_PurgePumpMotorAmp']) / 1000) + 1;
+
+            $this->calculation_values['PowerSupply'] = "460 V( ±10%), 60 Hz (±5%), 3 Phase+N";
+        }
+        else
+        {
+            $this->calculation_values['TotalPowerConsumption'] = (1.732 * 415 * ($this->calculation_values['AbsorbentPumpMotorAmp'] + $this->calculation_values['RefrigerantPumpMotorAmp'] + $this->calculation_values['PurgePumpMotorAmp']) / 1000) + 1;
+
+            $this->calculation_values['PowerSupply'] = "415 V( ±10%), 50 Hz (±5%), 3 Phase+N";
+
+        }
+        
+        switch ($model_number) {
+            case 60:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 M1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 M1";
+                }
+
+                break;
+
+            case 75:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 M2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 M2";
+                }
+
+                break;    
+
+            case 90:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 N1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 N1";
+                }
+
+                break;     
+
+            case 110:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 N2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 N2";
+                }
+
+                break;     
+
+            case 150:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 N3";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 N3";
+                }
+
+                break;      
+
+            case 175:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 N4";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 N4";
+                }
+
+                break;     
+
+
+            case 210:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 P1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 P1";
+                }
+
+                break;     
+
+            case 250:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 P2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 P2";
+                }
+
+                break; 
+
+            case 310:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 D3";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 D3";
+                }
+
+                break;
+
+            case 350:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 D4";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 D4";
+                }
+
+                break;     
+
+            case 410:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 E1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 E1";
+                }
+
+                break;               
+
+            case 470:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 E2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 E2";
+                }
+
+                break;       
+
+            case 530:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 E3";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 E3";
+                }
+
+                break;   
+
+            case 580:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 E4";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 E4";
+                }
+
+                break;     
+
+            case 630:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 E5";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 E5";
+                }
+
+                break;  
+
+            case 710:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 E6";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 E6";
+                }
+
+                break;  
+
+            case 760:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 F1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 F1";
+                }
+
+                break;  
+
+            case 810:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 F2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 F2";
+                }
+
+                break;  
+
+            case 900:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 F3";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 F3";
+                }
+
+                break; 
+
+            case 1010:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 G1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 G1";
+                }
+
+                break;
+
+            case 1130:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 G2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 G2";
+                }
+
+                break;   
+
+            case 1260:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 G3";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 G3";
+                }
+
+                break;      
+
+            case 1380:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 G4";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 G4";
+                }
+
+                break; 
+
+            case 1560:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 G5";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 G5";
+                }
+
+                break;   
+
+            case 1690:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 G6";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 G6";
+                }
+
+                break;     
+
+            case 1890:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 H1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 H1";
+                }
+
+                break; 
+
+            case 2130:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 H2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 H2";
+                }
+
+                break;   
+
+            case 2270:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 J1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 J1";
+                }
+
+                break; 
+
+            case 2560:
+                if ($this->calculation_values['TCHW12'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC E2 J2";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC E2 J2";
+                }
+
+                break;            
+
+
+            default:
+                # code...
+                break;
+        }
+    }
+
 
     private function DATA()
     {

@@ -24,7 +24,7 @@ class UnitConversionController extends Controller
         $chiller_values['cooling_water_in'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in'],"Centigrade",$unit_set->TemperatureUnit);
         $chiller_values['cooling_water_in_min_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_min_range'],"Centigrade",$unit_set->TemperatureUnit);
         $chiller_values['cooling_water_in_max_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_max_range'],"Centigrade",$unit_set->TemperatureUnit);
-       if($calculator_code == "D_H2")
+       if($calculator_code == "D_H2" || $calculator_code == "H1")
        {
            $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],"Centigrade",$unit_set->TemperatureUnit);
            $chiller_values['hot_water_out'] = $this->convertTemperatureUnit($chiller_values['hot_water_out'],"Centigrade",$unit_set->TemperatureUnit);
@@ -36,6 +36,13 @@ class UnitConversionController extends Controller
             $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],"Centigrade",$unit_set->TemperatureUnit);
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],"Centigrade",$unit_set->TemperatureUnit);
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],"Centigrade",$unit_set->TemperatureUnit);
+       }
+       if($calculator_code == "D_E2"){
+            $chiller_values['exhaust_gas_in'] = $this->convertTemperatureUnit($chiller_values['exhaust_gas_in'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['gas_in_min'] = $this->convertTemperatureUnit($chiller_values['gas_in_min'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['gas_in_max'] = $this->convertTemperatureUnit($chiller_values['gas_in_max'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['exhaust_gas_out'] = $this->convertTemperatureUnit($chiller_values['exhaust_gas_out'],"Centigrade",$unit_set->TemperatureUnit);
+            $chiller_values['gas_out_min'] = $this->convertTemperatureUnit($chiller_values['gas_out_min'],"Centigrade",$unit_set->TemperatureUnit); 
        }
        
 
@@ -122,6 +129,12 @@ class UnitConversionController extends Controller
             $chiller_values['gross_sko_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['gross_sko_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
         }
 
+        // ExhaustGasFlowUnit
+        if($calculator_code == "D_E2"){
+            $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+        }
+
 
 
     	return $chiller_values;
@@ -144,7 +157,7 @@ class UnitConversionController extends Controller
         $chiller_values['cooling_water_in'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in'],$unit_set->TemperatureUnit,"Centigrade");
         $chiller_values['cooling_water_in_min_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_min_range'],$unit_set->TemperatureUnit,"Centigrade");
         $chiller_values['cooling_water_in_max_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_max_range'],$unit_set->TemperatureUnit,"Centigrade");
-        if($calculator_code == "D_H2")
+        if($calculator_code == "D_H2" || $calculator_code == "H1")
        {
            $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit,"Centigrade");
            $chiller_values['hot_water_out'] = $this->convertTemperatureUnit($chiller_values['hot_water_out'],$unit_set->TemperatureUnit,"Centigrade");
@@ -156,6 +169,13 @@ class UnitConversionController extends Controller
             $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_min_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_min_range'],$unit_set->TemperatureUnit,"Centigrade");
             $chiller_values['how_water_temp_max_range'] = $this->convertTemperatureUnit($chiller_values['how_water_temp_max_range'],$unit_set->TemperatureUnit,"Centigrade");
+       }
+       if($calculator_code == "D_E2"){
+            $chiller_values['exhaust_gas_in'] = $this->convertTemperatureUnit($chiller_values['exhaust_gas_in'],$unit_set->TemperatureUnit,"Centigrade");
+            $chiller_values['gas_in_min'] = $this->convertTemperatureUnit($chiller_values['gas_in_min'],$unit_set->TemperatureUnit,"Centigrade");
+            $chiller_values['gas_in_max'] = $this->convertTemperatureUnit($chiller_values['gas_in_max'],$unit_set->TemperatureUnit,"Centigrade");
+            $chiller_values['exhaust_gas_out'] = $this->convertTemperatureUnit($chiller_values['exhaust_gas_out'],$unit_set->TemperatureUnit,"Centigrade");
+            $chiller_values['gas_out_min'] = $this->convertTemperatureUnit($chiller_values['gas_out_min'],$unit_set->TemperatureUnit,"Centigrade");
        }
   
 

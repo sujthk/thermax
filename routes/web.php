@@ -216,4 +216,11 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/e2-series/submit-calculate', 'E2SeriesController@postE2');
     Route::post('/calculators/e2-series/save-report', 'E2SeriesController@postSaveReport');
 
+
+    Route::get('/calculators/h1-series', 'H1SeriesController@getH1Series')->name('calculators/h1-series');
+    Route::post('/calculators/h1-series/ajax-calculate', 'H1SeriesController@postAjaxH1');
+    Route::post('/calculators/h1-series/reset-calculate', 'H1SeriesController@postResetH1');
+    Route::post('/calculators/h1-series/submit-calculate', 'H1SeriesController@postH1');
+    Route::post('/calculators/h1-series/save-report', 'H1SeriesController@postSaveReport');
+
 });

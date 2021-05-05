@@ -154,6 +154,12 @@
                         <span data-i18n="nav.widget.main">Double Effect E2</span>
                     </a>
                 </li>
+                <li data-placement="bottom" title="H1 Series" class="nav-item single-item {{ Nav::isRoute('/calculators/h1-series','has-class') }}" >
+                    <a href="{{ url('/calculators/h1-series') }}">
+                       <i class="ti-package"></i>
+                        <span data-i18n="nav.widget.main">H1 Series</span>
+                    </a>
+                </li>
                 @else
                 @foreach(Auth::guard()->user()->userCalculators as $userCalculator)
                     <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >
