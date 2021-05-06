@@ -3796,48 +3796,48 @@ class DoubleH2SteamController extends Controller
 
     public function LMTDCHECK()
     {
-        if (!isset($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
+        if (!isset($this->calculation_values['LMTDEVAH']) || is_nan($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
         {
         //Log::info($this->calculation_values['LMTDEVAH']);
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
+        else if (!isset($this->calculation_values['LMTDEVAL']) || is_nan($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDABSH']) || $this->calculation_values['LMTDABSH'] < 0)
+        else if (!isset($this->calculation_values['LMTDABSH']) || is_nan($this->calculation_values['LMTDABSH']) || $this->calculation_values['LMTDABSH'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDABSL']) || $this->calculation_values['LMTDABSL'] < 0)
+        else if (!isset($this->calculation_values['LMTDABSL']) || is_nan($this->calculation_values['LMTDABSL']) || $this->calculation_values['LMTDABSL'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDCON']) || $this->calculation_values['LMTDCON'] < 0)
+        else if (!isset($this->calculation_values['LMTDCON']) || is_nan($this->calculation_values['LMTDCON']) || $this->calculation_values['LMTDCON'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDHTG']) || $this->calculation_values['LMTDHTG'] < 0)
+        else if (!isset($this->calculation_values['LMTDHTG']) || is_nan($this->calculation_values['LMTDHTG']) || $this->calculation_values['LMTDHTG'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDGENA']) || $this->calculation_values['LMTDGENA'] < 0 )
+        else if (!isset($this->calculation_values['LMTDGENA']) || is_nan($this->calculation_values['LMTDGENA']) || $this->calculation_values['LMTDGENA'] < 0 )
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDLTG']) || $this->calculation_values['LMTDLTG'] < 0)
+        else if (!isset($this->calculation_values['LMTDLTG']) || is_nan($this->calculation_values['LMTDLTG']) || $this->calculation_values['LMTDLTG'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDLTHE']) || $this->calculation_values['LMTDLTHE'] < 0)
+        else if (!isset($this->calculation_values['LMTDLTHE']) || is_nan($this->calculation_values['LMTDLTHE']) || $this->calculation_values['LMTDLTHE'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDHTHE']) || $this->calculation_values['LMTDHTHE'] < 0)
+        else if (!isset($this->calculation_values['LMTDHTHE']) || is_nan($this->calculation_values['LMTDHTHE']) || $this->calculation_values['LMTDHTHE'] < 0)
         {
             return false;
         }
-        else if (!isset($this->calculation_values['LMTDDHE']) || $this->calculation_values['LMTDDHE'] < 0)
+        else if (!isset($this->calculation_values['LMTDDHE']) || is_nan($this->calculation_values['LMTDDHE']) || $this->calculation_values['LMTDDHE'] < 0)
         {
             return false;
         }
