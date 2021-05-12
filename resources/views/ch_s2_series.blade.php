@@ -227,14 +227,14 @@
 	<div class="page-wrapper max-calculator">
 		<div class="page-header">
 		<div class="page-body">
-			<form id="double_steam_s2" method="post" enctype="multipart/form-data">
+			<form id="chiller_heater_s2" method="post" enctype="multipart/form-data">
 				{{ csrf_field() }}
 				<div class="row">
 					<div class="col-md-7 padd-2">
 					 	<div class="row">
 						  	<div class="col-md-6">
 								<div class="page-header-title">
-								 <h4>S1 Series</h4>
+								 <h4>Chiller Heater S2 Series</h4>
 							 	</div>
 							</div>
 			 
@@ -614,14 +614,45 @@
 							</div>
 							<div class="col-md-12">
 								<div class="row">
-									<div class="col-lg-4">
+									<div class="col-lg-2">
 										 <label>{{ $language_datas['pressure'] }} : </label>
 									</div>
-									<div class="col-lg-4">
+									<div class="col-lg-2">
 										<input type="text" name="steam_pressure" id="steam_pressure" onchange="updateModelValues('steam_pressure')" value="" class="form-control steam_pressure_range" data-animation="false" data-placement="bottom">
 									</div>
-									<div class="col-lg-3">
+									<div class="col-lg-2">
 										 <label>({{ $units_data[$unit_set->PressureUnit] }})</label>
+									</div>
+
+									<div class="col-lg-2">
+										 <label>{{ $language_datas['heat_duty'] }} : </label>
+									</div>
+									<div class="col-lg-2">
+										<input type="text" name="heat_duty" id="heat_duty" onchange="updateModelValues('heat_duty')" value="" class="form-control heat_duty_range" data-animation="false" data-placement="bottom">
+									</div>
+									<div class="col-lg-2">
+										 <label>({{ $units_data[$unit_set->HeatUnit] }})</label>
+									</div>
+									<div class="col-lg-2">
+										<label>{{ $language_datas['hot_water_in'] }} </label>
+									</div>
+									<div class="col-lg-2">
+										<input type="text" name="hot_water_in" id="hot_water_in" onchange="updateModelValues('hot_water_in')" value="" class="form-control hot_water_in_range" data-placement="bottom" data-original-title>
+
+										<span class="messages emsg hidden" id="hot_water_in_error"><p class="text-danger error"></p></span>
+									</div>
+									<div class="col-lg-2">
+										<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
+									</div>
+
+									<div class="col-lg-2">
+										<label>{{ $language_datas['hot_water_out'] }}</label>
+									</div>
+									<div class="col-lg-2">
+										<input type="text" name="hot_water_out" id="hot_water_out" onchange="updateModelValues('hot_water_out')" value="" class="form-control hot_water_out_range" data-placement="bottom" data-original-title>
+									</div>
+									<div class="col-lg-2">
+										<label>({{ $units_data[$unit_set->TemperatureUnit] }})</label>
 									</div>
 								</div>
 							</div>
@@ -690,6 +721,7 @@
 <script type="text/javascript">
 
 	var model_values = {!! json_encode($default_values) !!};
+    // console.log(model_values);
 	var evaporator_options = {!! json_encode($evaporator_options) !!};
 	var absorber_options = {!! json_encode($absorber_options) !!};
 	var condenser_options = {!! json_encode($condenser_options) !!};
@@ -698,10 +730,10 @@
 	var calculation_values;
 	var metallurgy_unit = "{!! $unit_set->LengthUnit !!}";
 	var region_user = model_values.region_type;
-    var save_report_url = "{{ url('calculators/s1-series/save-report') }}";
-    var reset_url = "{{ url('calculators/s1-series/reset-calculate') }}";
-    var submit_url = "{{ url('calculators/s1-series/submit-calculate') }}";
-    var send_values_url = "{{ url('calculators/s1-series/ajax-calculate') }}";
+    var save_report_url = "{{ url('calculators/chiller-heater-s2-series/save-report') }}";
+    var reset_url = "{{ url('calculators/chiller-heater-s2-series/reset-calculate') }}";
+    var submit_url = "{{ url('calculators/chiller-heater-s2-series/submit-calculate') }}";
+    var send_values_url = "{{ url('calculators/chiller-heater-s2-series/ajax-calculate') }}";
 
 
 	if(region_user == 4){
@@ -765,7 +797,17 @@
 		var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
 		
 		$('.steam_pressure_range').attr('data-original-title',steam_pressure_range);
-		// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);
+		
+		$('#heat_duty').val(model_values.heat_duty);
+		$('.heat_duty_range').attr('data-original-title',"min "+model_values.heat_duty_min);
+
+		$("#hot_water_in").val(model_values.hot_water_in);
+		$("#hot_water_out").val(model_values.hot_water_out);
+		var hot_water_in_range = model_values.min_hot_water_in+" - "+model_values.max_hot_water_in;
+		$('.hot_water_in_range').attr('data-original-title',hot_water_in_range);
+		$('.hot_water_out_range').attr('data-original-title',"max "+model_values.max_hot_water_out);
+
+
 		if(model_values.glycol_none === 'true')
 			$("#glycol_none").prop('disabled', true);
 		else
@@ -1074,7 +1116,19 @@
 			case 'steam_pressure':
 			model_values.steam_pressure = $("#steam_pressure").val();
 			validate = inputValidation(model_values.steam_pressure,"positive_decimals","steam_pressure_error","{!! $language_datas['valid_steam_pressure'] !!}");
-			break;								
+			break;	
+			case 'heat_duty':
+			model_values.heat_duty = $("#heat_duty").val();
+			validate = inputValidation(model_values.heat_duty,"positive_decimals","heat_duty_error","{!! $language_datas['valid_heat_duty'] !!}");
+			break;	
+			case 'hot_water_in':
+            model_values.hot_water_in = $("#hot_water_in").val();
+            validate = inputValidation(model_values.hot_water_in,"positive_decimals","hot_water_in_error","{!! $language_datas['valid_hot_water_in'] !!}");
+            break;
+            case 'hot_water_out':
+            model_values.hot_water_out = $("#hot_water_out").val();
+            validate = inputValidation(model_values.hot_water_out,"positive_decimals","hot_water_out_error","{!! $language_datas['valid_hot_water_out'] !!}");
+            break; 							
 
 			default:
 			// code block
@@ -1092,7 +1146,7 @@
 
 
 		
-	$("#double_steam_s2").submit(function(event) {
+	$("#chiller_heater_s2").submit(function(event) {
 		event.preventDefault();
 		submitValues(submit_url);
 	});

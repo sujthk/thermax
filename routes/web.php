@@ -223,4 +223,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::post('/calculators/h1-series/submit-calculate', 'H1SeriesController@postH1');
     Route::post('/calculators/h1-series/save-report', 'H1SeriesController@postSaveReport');
 
+    Route::get('/calculators/chiller-heater-s2-series', 'ChillerHeaterS2Controller@getCHS2Series')->name('calculators/chiller-heater-s2-series');
+    Route::post('/calculators/chiller-heater-s2-series/ajax-calculate', 'ChillerHeaterS2Controller@postAjaxCHS2');
+
 });

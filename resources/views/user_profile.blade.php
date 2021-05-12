@@ -279,8 +279,14 @@ Change Password
                                     <td>
                                         <div class="input-group">
                                             
-                                            <input name="password" type="Password" placeholder="New Password" required class="form-control">
+                                            <input name="password" type="Password" placeholder="New Password" id="password" required onKeyUp="checkPasswordStrength();" class="form-control">
                                         </div>
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div id="password-strength-status"></div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -290,7 +296,7 @@ Change Password
                 </div>
                 <!-- end of row -->
                 <div class="text-center">
-                    <button type="submit" class="btn btn-primary waves-effect waves-light m-r-20">Save</button>
+                    <button type="submit" id="submit_button" class="btn btn-primary waves-effect waves-light m-r-20">Save</button>
                     <a href="#!" id="cancel-password" class="btn btn-danger waves-effect">Cancel</a>
                 </div>
             </form>
@@ -368,5 +374,35 @@ $("#change-password").click(function(){
     $(".edit-password").hide();
   });
 });
+</script>
+<script type="text/javascript">
+
+    function checkPasswordStrength() {
+        var number = /([0-9])/;
+        var alphabets = /([a-zA-Z])/;
+        var special_characters = /([~,!,@,#,$,%,^,&,*,-,_,+,=,?,>,<])/;
+        var status = false;
+
+        if ($('#password').val().length < 6) {
+            $('#password-strength-status').removeClass();
+            $('#password-strength-status').addClass('weak-password');
+            $('#password-strength-status').html("Weak (should be atleast 6 characters.)");
+            status = true;
+        } else {
+            if ($('#password').val().match(number) && $('#password').val().match(alphabets) && $('#password').val().match(special_characters)) {
+                $('#password-strength-status').removeClass();
+                $('#password-strength-status').addClass('strong-password');
+                $('#password-strength-status').html("Strong");
+                status = false;
+            } else {
+                $('#password-strength-status').removeClass();
+                $('#password-strength-status').addClass('medium-password');
+                $('#password-strength-status').html("Medium (should include alphabets, numbers and special characters.)");
+                status = true;
+            }
+        }
+
+        $("#submit_button").prop('disabled', status);
+    }
 </script>
 @endsection
