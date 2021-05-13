@@ -337,7 +337,20 @@ function sendValues(chiller_url){
 				console.log(response.model_values);
 				$("#calculate_button").prop('disabled', false);
 				model_values = response.model_values;
+				if(response.changed_value == 'model_number'){
+					evaporator_options = response.evaporator_options;
+					absorber_options = response.absorber_options;
+					condenser_options = response.condenser_options;
+					chiller_metallurgy_options = response.chiller_metallurgy_options;
+				}
+				
 				castToBoolean();
+				if(response.changed_value == 'model_number'){
+					updateEvaporatorOptions(chiller_metallurgy_options.eva_default_value,model_values.evaporator_thickness_change);
+					updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,model_values.absorber_thickness_change);
+					updateCondenserOptions(chiller_metallurgy_options.con_default_value,model_values.condenser_thickness_change);
+				}	        
+				
 				updateValues();				
 			}
 			else{

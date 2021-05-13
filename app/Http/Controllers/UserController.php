@@ -217,7 +217,6 @@ class UserController extends Controller
 		$this->validate($request, [
 		    'username' => 'required',
 		    'password' => 'required',
-		    'otp' => 'required',
 		]);
 
 		$user = DB::table('users')->where("username",$request->username)->first();
@@ -231,11 +230,11 @@ class UserController extends Controller
     	if(!$user->status)
     		return response()->json(['status'=>false,'msg'=>'Account Deactivated Contact Admin']);
 
-    	if($request->otp != $user->otp)
-    		return response()->json(['status'=>false,'msg'=>'Invalid Otp']);
+    	// if($request->otp != $user->otp)
+    	// 	return response()->json(['status'=>false,'msg'=>'Invalid Otp']);
 
 
-		if (Auth::attempt(['username' => $request->username, 'password' => $request->password, 'otp' => $request->otp, 'status' => 1])) {
+		if (Auth::attempt(['username' => $request->username, 'password' => $request->password, 'status' => 1])) {
             // Authentication passed...
 
 			$user = Auth::user();

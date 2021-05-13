@@ -109,7 +109,18 @@ class L1SeriesController extends Controller
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
        
 
-        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'changed_value'=>$this->changed_value]);
+        $model_number =(int)$this->model_values['model_number'];
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+        //$queries = DB::getQueryLog();
+
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_options = $chiller_options->where('type', 'eva');
+        $absorber_options = $chiller_options->where('type', 'abs');
+        $condenser_options = $chiller_options->where('type', 'con');
+
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'changed_value'=>$this->changed_value,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
     }
 
     public function postResetL1(Request $request){
@@ -514,9 +525,6 @@ class L1SeriesController extends Controller
             $this->calculation_values['VA'] = $this->calculation_values['GCW'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * ($this->calculation_values['TNAA'] / $this->calculation_values['TAP']));
         }
 
-        Log::info("VA = ".$this->calculation_values['VA']);
-        Log::info("IDA = ".$this->calculation_values['IDA']);
-        Log::info("TNAA = ".$this->calculation_values['TNAA']);
         if ($this->calculation_values['TAP'] == 1)          //PARAFLOW
         {
             $this->calculation_values['GCWAH'] = 0.5 * $this->calculation_values['GCW'];
@@ -717,16 +725,6 @@ class L1SeriesController extends Controller
         $this->calculation_values['UABSL'] = 1.0 / ((1.0 / $this->calculation_values['KABSL']) + $this->calculation_values['FFCOW1']);
         $this->calculation_values['UCON'] = 1.0 / ((1.0 / $this->calculation_values['KCON']) + $this->calculation_values['FFCOW1']);
 
-
-        Log::info("UEVAH = ".$this->calculation_values['UEVAH']);
-        Log::info("UABSH = ".$this->calculation_values['UABSH']);
-        Log::info("UABSL = ".$this->calculation_values['UABSL']);
-        Log::info("UCON = ".$this->calculation_values['UCON']);
-        Log::info("UGEN = ".$this->calculation_values['UGEN']);
-        Log::info("VEA = ".$this->calculation_values['VEA']);
-        Log::info("VA = ".$this->calculation_values['VA']);
-        Log::info("VC = ".$this->calculation_values['VC']);
-        Log::info("VG = ".$this->calculation_values['VG']);
 
         if ($this->calculation_values['TAP'] == 1) // 11.9.14
         {
@@ -3523,7 +3521,7 @@ class L1SeriesController extends Controller
           
        // }
 
-        Log::info($this->calculation_values);   
+        // Log::info($this->calculation_values);   
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
 

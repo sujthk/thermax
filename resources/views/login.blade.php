@@ -144,32 +144,32 @@
 
 			$( "#login_form" ).submit(function(event) {
 				event.preventDefault();
-				if(first_visit == 0){
-					sendOtp();
-					$(".disp").prop('disabled', true);
-					first_visit = 1;
-				}
-				else{
-					var username = $('#username').val();
-					var password = $('#password').val();
-					var otp = $('#otp').val();
-					var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-				   	$.ajax({
-						type: "POST",
-						url: "{{ url('login') }}",
-						data: { username : username,_token: CSRF_TOKEN,password: password,otp: otp},
-						success: function(response){
-							// console.log(response);
-							if(response.status){
-								 window.location = "{!! url('/dashboard') !!}";
-							}
-							else{
-								$('#error-display').addClass('weak-password');
-								$('#error-display').html(response.msg);
-							}					
-						},
-					});
-				}
+				// if(first_visit == 0){
+				// 	sendOtp();
+				// 	$(".disp").prop('disabled', true);
+				// 	first_visit = 1;
+				// }
+				// else{
+				var username = $('#username').val();
+				var password = $('#password').val();
+				var otp = $('#otp').val();
+				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+			   	$.ajax({
+					type: "POST",
+					url: "{{ url('login') }}",
+					data: { username : username,_token: CSRF_TOKEN,password: password,otp: otp},
+					success: function(response){
+						// console.log(response);
+						if(response.status){
+							 window.location = "{!! url('/dashboard') !!}";
+						}
+						else{
+							$('#error-display').addClass('weak-password');
+							$('#error-display').html(response.msg);
+						}					
+					},
+				});
+				// }
 			});
 
 			$("#resend_otp").click(function() {
