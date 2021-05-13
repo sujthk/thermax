@@ -93,7 +93,8 @@
 											</div>
 										</div>
 										<div class="col-sm-6 col-xs-12 forgot-phone text-right">
-											<a href="{{url('forgot-password')}}" class="text-right f-w-600 text-inverse"> Forgot Your Password?</a>
+											<!-- <a href="{{url('forgot-password')}}" class="text-right f-w-600 text-inverse"> Forgot Your Password?</a> -->
+											<a href="#" onclick="forgetPassword();" class="text-right f-w-600 text-inverse"> Forgot Your Password?</a>
 										</div>
 									</div>
 									<div class="row m-t-30">
@@ -177,6 +178,9 @@
 				$(".disp").prop('disabled', true);
 			});
 
+			function forgetPassword(){
+				alert("Kindly Contact Thermax Admin");
+			}
 			function sendOtp(){
 				var username = $('#username').val();
 				var password = $('#password').val();
