@@ -44,14 +44,15 @@
 			<!-- Container-fluid starts -->
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-11"></div>
+					<div class="col-sm-1">
 						<!-- Authentication card start -->
-						<div class="login-card card-block auth-body">
+						<div class="login-card card-block auth-body" style="padding-left: 117px; min-width: 500px;">
 							
 							<form class="md-float-material" id="login_form" method="post" action="{{ url('login') }}">
 								{{ csrf_field() }}
 								<div class="text-center">
-									<img src="{{asset('assets/images/thermax-logo.png')}}" alt="logo.png">
+									<img style="width: 300px; height: 76px;" src="{{asset('assets/images/ichill.png')}}" alt="logo.png">
 								</div>
 								<div class="auth-box">
 									<div class="row m-b-20">

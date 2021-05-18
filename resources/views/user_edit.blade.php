@@ -106,7 +106,7 @@ border: #0FA015 1px solid;
 										<div class="form-group row">
 											<label class="col-sm-4 col-form-label">Mobile Number</label>
 											<div class="col-sm-8">
-												<input id="mobile" name="mobile" type="number" value="{{ $user->mobile }}" required class="form-control" placeholder="Enter your Mobile Number">
+												<input id="mobile" name="mobile" type="number" value="{{ $user->mobile }}" class="form-control" placeholder="Enter your Mobile Number">
 											</div>
 										</div>
 										<div class="form-group row">
@@ -150,20 +150,14 @@ border: #0FA015 1px solid;
 										</div>
 
 										<div class="form-group row region">
-											<label class="col-sm-4 col-form-label">Regions</label>
+											<label class="col-sm-4 col-form-label"></label>
 											<div class="col-sm-8">
-												<select name="region_id" id="region_ids" required class="form-control">
-													<option value="">-- Regions --</option>
-													@foreach ($regions as $region)
-													<option  {{ $user->region_id == $region->id ? 'selected' : '' }} value="{{$region->id}}>{{$region->name}}</option>
-													@endforeach
-												</select>
+												
 											</div>
 										</div>
-									</div>
-									<div class="col-md-6">
+
 										<div class="form-group row">
-											<label class="col-sm-3 col-form-label">Language</label>
+											<label class="col-sm-4 col-form-label">Language</label>
 											<div class="col-sm-8">
 												<select name="language_id" id="language" required class="form-control">
                                                     @foreach ($languages as $language)

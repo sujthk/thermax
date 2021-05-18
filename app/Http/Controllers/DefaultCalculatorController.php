@@ -724,4 +724,38 @@ class DefaultCalculatorController extends Controller
                         ->with('status','success');
     }
 
+    public function getCalculatorList(){
+
+        $calculators = Calculator::get();
+
+
+        return view('calculator_list')->with('calculators',$calculators);
+    }
+
+    public function updateChillerCalculator(Request $request,$calculator_id){
+
+        $this->validate($request, [
+            'display_name' => 'required'
+        ]);
+
+        $calculator = Calculator::find($calculator_id);
+        $calculator->display_name = $request->display_name;
+        if($request->hasFile('image')){
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            $image_name = 'calculator-'.date("Ymdgis").'.'.$request->image->extension();  
+               
+            $request->image->move(public_path('calculators'), $image_name);
+
+            $calculator->image=$image_name;
+        }
+        $calculator->save();
+
+
+        return redirect('/default/calculator-list')->with('message','Calculator Updated')
+                        ->with('status','success');
+    }
+
 }

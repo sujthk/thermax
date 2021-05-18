@@ -190,6 +190,7 @@ class S1SeriesController extends Controller
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
 
+        // Log::info($this->calculation_values);
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
 
@@ -1344,10 +1345,12 @@ class S1SeriesController extends Controller
         $this->calculation_values['VAH'] = $this->calculation_values['GCWAH'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * (($this->calculation_values['TNAA'] / 2) / $this->calculation_values['TAPH']));
         $this->calculation_values['VAL'] = $this->calculation_values['GCWAL'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * (($this->calculation_values['TNAA'] / 2) / $this->calculation_values['TAPL']));
 
+
         $this->DERATE_KEVA();
         $this->DERATE_KABSH();
         $this->DERATE_KABSL();
         $this->DERATE_KCON();
+
 
         if ($this->calculation_values['MODEL'] < 3500)
         {
@@ -1404,6 +1407,7 @@ class S1SeriesController extends Controller
 
         if ($this->calculation_values['TUU'] != 'ari')
         {
+            $this->calculation_values['TCW1'] = $this->calculation_values['TCW11'];
             $this->EVAPORATOR();
             $this->HTG();
         }
@@ -1441,7 +1445,10 @@ class S1SeriesController extends Controller
             $this->calculation_values['TCHW1H'] = $this->calculation_values['TCHW11'];
             $this->calculation_values['TCHW2L'] = $this->calculation_values['TCHW12'];
             $this->calculation_values['TCW1'] = $this->calculation_values['TCW11'];
-            $TCW14 = $this->calculation_values['TCW4'];;
+
+            
+
+            $TCW14 = $this->calculation_values['TCW4'];
             $t11 = array();
             $t12 = array();
             $t3n1 = array();
@@ -1456,6 +1463,7 @@ class S1SeriesController extends Controller
                 }
                 $t11[$a] = $this->calculation_values['T1'];
                 $t3n1[$a] = $this->calculation_values['T3'];
+
                 $ARISSP = ($this->calculation_values['TCHW12'] - $this->calculation_values['T1']) * 1.8;
                 $ARIR = ($this->calculation_values['TCHW11'] - $this->calculation_values['TCHW12']) * 1.8;
                 $ARILMTD = $ARIR / log(1 + ($ARIR / $ARISSP));
@@ -1500,10 +1508,13 @@ class S1SeriesController extends Controller
                 $this->calculation_values['TCHW1H'] = $ARITCHWI;
                 $this->calculation_values['TCHW2L'] = $ARITCHWO;
                 $this->calculation_values['TCW1'] = $ARITCWI;
+
                 $this->EVAPORATOR();
                 $this->HTG();
                 $t12[$a] = $this->calculation_values['T1'];
                 $t3n2[$a] = $this->calculation_values['T3'];
+
+
             } while (abs($t11[$a] - $t12[$a]) > 0.005 || abs($t3n1[$a] - $t3n2[$a]) > 0.005);
         }
     }
@@ -1980,7 +1991,7 @@ class S1SeriesController extends Controller
 
             $this->calculation_values['T6'] = $vam_base->LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XCONC']);
 
-            $this->calculation_values['TCW1H'] = $this->calculation_values['TCW11'];
+            $this->calculation_values['TCW1H'] = $this->calculation_values['TCW1'];
             $this->CWABSHOUT();    //***FOR COOLING WATER OUTLET TEMPERATURE FOR ABSORBER ***//
             if ($this->calculation_values['TAP'] == 1)
             {
@@ -3789,7 +3800,7 @@ class S1SeriesController extends Controller
             do
             {
                 $this->calculation_values['VEA'] = $this->calculation_values['GCHW'] / (((3600 * 3.141593 * $this->calculation_values['IDE'] * $this->calculation_values['IDE']) / 4.0) * (($this->calculation_values['TNEV'] / 2) / $this->calculation_values['TP']));
-                if ($this->calculation_values['VEA'] < 1.5)
+                if ($this->calculation_values['VEA'] < $this->calculation_values['VEMIN'])
                     $this->calculation_values['TP'] = $this->calculation_values['TP'] + 1;
             } while ($this->calculation_values['VEA'] < $this->calculation_values['VEMIN'] && $this->calculation_values['TP'] <= $this->calculation_values['TEPMAX']);
             if ($this->calculation_values['TP'] > $this->calculation_values['TEPMAX'])

@@ -2903,13 +2903,17 @@ class DoubleH2SteamController extends Controller
     if ($this->calculation_values['HWI'] == 2)
     {
         $this->calculation_values['FG']  = ((1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * ((-0.1305 * $this->calculation_values['VG']) + 3.5)) * 1.12;
+
+        $this->calculation_values['FLG'] = ($this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
     }
     else
     {
         $this->calculation_values['FG'] = (1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * 1.12;
+
+        $this->calculation_values['FLG'] = (4 * $this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
     }
     //double FG = 0.0014 + (0.137 / pow(REG, 0.32));     //NOV 07 - ENDCROSSED SS IN GEN
-    $this->calculation_values['FLG'] = ($this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
+    
     $this->calculation_values['EXLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (4 * 9.81); //EXIT LOSS
     $this->calculation_values['ENLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (2 * 9.81); //ENTRY LOSS
     $this->calculation_values['TFLG']  = ($this->calculation_values['FLG'] + $this->calculation_values['EXLG'] + $this->calculation_values['ENLG']) * $this->calculation_values['TGP'] ; //TOTAL FR LOSS IN TUBES

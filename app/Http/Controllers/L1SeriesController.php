@@ -625,7 +625,12 @@ class L1SeriesController extends Controller
         {
             $this->calculation_values['F'] = (0.0014 + (0.137 / pow($this->calculation_values['RE'], 0.32))) * 1.12;
             $this->calculation_values['FE1'] = 2 * $this->calculation_values['F'] * $this->calculation_values['LE'] * $this->calculation_values['VEA'] * $this->calculation_values['VEA'] / (9.81 * $this->calculation_values['IDE']);
-        }            
+        } 
+        elseif ($this->calculation_values['TU2'] == 3 || $this->calculation_values['TU2'] == 7 || $this->calculation_values['TU2'] == 6 || $this->calculation_values['TU2'] == 9) {
+
+            $this->calculation_values['F'] = 1.325 / pow(log((1.53 / (3.7 * $this->calculation_values['IDE'] * 1000)) + (5.74 / pow($this->calculation_values['RE'], 0.9))), 2);
+            $this->calculation_values['FE1'] = $this->calculation_values['F'] * $this->calculation_values['LE'] * $this->calculation_values['VEA'] * $this->calculation_values['VEA'] / (2 * 9.81 * $this->calculation_values['IDE']);
+        }           
         else
         {
             $this->calculation_values['F'] = 0.0014 + (0.125 / pow($this->calculation_values['RE'], 0.32));
@@ -2065,7 +2070,7 @@ class L1SeriesController extends Controller
             array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
             array_push($notes,$this->notes['NOTES_CONF_WT']);
         }    
-        if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 40)
+        if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 28)
         {
             array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
@@ -3506,7 +3511,7 @@ class L1SeriesController extends Controller
 
 
 
-       // try {
+       try {
            $this->CALCULATIONS();
 
            $this->CONVERGENCE();
@@ -3514,12 +3519,12 @@ class L1SeriesController extends Controller
            $this->RESULT_CALCULATE();
        
            $this->loadSpecSheetData();
-       // }
-       // catch (\Exception $e) {
+       }
+       catch (\Exception $e) {
 
-       //      $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
-       // }
+       }
 
         // Log::info($this->calculation_values);   
         return $this->calculation_values;

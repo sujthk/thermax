@@ -2307,14 +2307,27 @@ class L5SeriesController extends Controller
 
         if ($this->calculation_values['VG'] < 1.25)
         {
-            //$this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (4750 / 11)) / 1000;
-            if ($this->calculation_values['AVGT'] <= 80)
+            if ($this->calculation_values['TG2'] == 1 || $this->calculation_values['TG2'] == 0)
             {
-                $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5300 / 11)) / 1050;
+                if ($this->calculation_values['AVGT'] <= 80)
+                {
+                    $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5300 / 11)) / 1050;
+                }
+                else if ($this->calculation_values['AVGT'] > 80)
+                {
+                    $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5850 / 11)) / 1100;
+                }
             }
-            else if ($this->calculation_values['AVGT'] > 80)
+            else if ($this->calculation_values['TG2'] == 2)
             {
-                $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5850 / 11)) / 1100;
+                if ($this->calculation_values['AVGT'] <= 80)
+                {
+                    $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5300 / 11)) * 0.95 / 1050;
+                }
+                else if ($this->calculation_values['AVGT'] > 80)
+                {
+                    $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5850 / 11)) * 0.95 / 1100;
+                }
             }
         }
         else
@@ -2345,7 +2358,7 @@ class L5SeriesController extends Controller
             $this->calculation_values['UGENH'] = 750;
         }
 
-        if ($this->calculation_values['THW1'] > 105)
+        if ($this->calculation_values['THW1'] > 105 || $this->calculation_values['TG2'] == 2)
         {
             $this->calculation_values['UGENH'] = $this->calculation_values['UGENH'] * 0.95;   //CUNI or SS Metallurgy above 105 DEG C
         }
@@ -2873,7 +2886,7 @@ class L5SeriesController extends Controller
 
             if ($this->calculation_values['CW'] == 1)
             {
-                $this->calculation_values['TCW1H'] = $this->calculation_values['TCW1L'] = $this->calculation_values['TCW11'];
+                $this->calculation_values['TCW1H'] = $this->calculation_values['TCW1L'] = $this->calculation_values['TCW1A'];
 
                 $this->CWABSHOUT();
                 $this->CWABSLOUT();
@@ -3349,6 +3362,8 @@ class L5SeriesController extends Controller
                 $this->calculation_values['TCHW11'] = $this->calculation_values['ARITCHWI'];
                 $this->calculation_values['TCHW12'] = $this->calculation_values['ARITCHWO'];
                 $this->calculation_values['TCW1A'] = $this->calculation_values['ARITCWI'];
+
+
                 do
                 {
                     $this->EVAPORATOR();

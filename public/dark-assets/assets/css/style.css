@@ -4382,7 +4382,6 @@ table tbody .border-bottom-info td {
 	display: flex;
 	float: left;
 	height: 3.5rem;
-	justify-content: center;
 	text-align: center;
 	text-transform: uppercase;
 	width: 240px
@@ -18297,10 +18296,8 @@ body.dark-layout .chat-bg {
 }
 
 .logo-img img{
-    width: 45px;
-    background: #ffff;
+    width: 150px;
     padding: 4px;
-    margin-right: 10px;
 }
 
 

@@ -23,12 +23,22 @@
                         <span data-i18n="nav.widget.main"> Dashboard</span>
                     </a>
                 </li>
+            <?php
+                 use App\Calculator;
+                 $calculator_full_list=Calculator::orderBy('created_at','asc')->where('status',1)->get();
 
-             @if(Auth::guard()->user()->user_type == 'ADMIN')      
+            ?>   
+            @if(Auth::guard()->user()->user_type == 'ADMIN')             
                 <li data-placement="bottom" title="Users" class="nav-item single-item {{ Nav::isRoute('users','has-class') }}">
                     <a href="{{ url('/users') }}">
                         <i class="ti-user"></i>
                         <span data-i18n="nav.widget.main"> Users</span>
+                    </a>
+                </li>
+                <li data-placement="bottom" title="Calculators" class="nav-item single-item {{ Nav::isRoute('calculator-list','has-class') }}">
+                    <a href="{{ url('/default/calculator-list') }}">              
+                        <i class="ti-package"></i>
+                        <span data-i18n="nav.widget.main"> Calculators</span>
                     </a>
                 </li>
                  <li data-placement="bottom" title="Group Calculator" class="nav-item single-item {{ Nav::isRoute('group-calcluation','has-class') }}">
@@ -112,70 +122,27 @@
                         <span data-i18n="nav.widget.main">Auto Testing</span>
                     </a>
                 </li>
-                 <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-s2','has-class') }}" >
-                    <a href="{{ url('/calculators/double-effect-s2') }}">
-                        <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">Double Effect S2 Steam</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/s1-series','has-class') }}" >
-                    <a href="{{ url('/calculators/s1-series') }}">
-                        <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">Single Effect S1 Steam</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Double Effect G2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/l5-series','has-class') }}" >
-                    <a href="{{ url('/calculators/l5-series') }}">
-                       <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">L5 Series</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Double Effect G2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/l5-series','has-class') }}" >
-                    <a href="{{ url('/calculators/l1-series') }}">
-                       <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">L1 Series</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Double Effect H2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-h2','has-class') }}" >
-                    <a href="{{ url('/calculators/double-effect-h2') }}">
-                        <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">Double Effect H2 Hot Water </span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Double Effect G2 Steam" class="nav-item single-item {{ Nav::isRoute('calculators/double-effect-g2','has-class') }}" >
-                    <a href="{{ url('/calculators/double-effect-g2') }}">
-                       <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">Double Effect G2 Steam</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Double Effect E2" class="nav-item single-item {{ Nav::isRoute('/calculators/e2-series','has-class') }}" >
-                    <a href="{{ url('/calculators/e2-series') }}">
-                       <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">Double Effect E2</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="H1 Series" class="nav-item single-item {{ Nav::isRoute('/calculators/h1-series','has-class') }}" >
-                    <a href="{{ url('/calculators/h1-series') }}">
-                       <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">H1 Series</span>
-                    </a>
-                </li>
-                <li data-placement="bottom" title="Chiller Heater S2 Series" class="nav-item single-item {{ Nav::isRoute('/calculators/chiller-heater-s2-series','has-class') }}" >
-                    <a href="{{ url('/calculators/chiller-heater-s2-series') }}">
-                       <i class="ti-package"></i>
-                        <span data-i18n="nav.widget.main">Chiller Heater S2 Series</span>
-                    </a>
-                </li>
-                @else
-                @foreach(Auth::guard()->user()->userCalculators as $userCalculator)
-                    <li data-placement="bottom" title="Double Effect S2 Steam" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >
-                        <a href="{{ route($userCalculator->calculator->route)}}">
-                            <i class="ti-package"></i>
-                            <span data-i18n="nav.widget.main">{{$userCalculator->calculator->name}}</span>
+                @foreach($calculator_full_list as $calculator)
+                    <li data-placement="bottom" title="{{ $calculator->display_name }}" class="nav-item single-item {{ Nav::isRoute( route($calculator->route),'has-class') }}" >
+                        <a href="{{ route($calculator->route)}}">
+                            <img src="{{ $calculator->image_path }}" width="32" height="32">
+                            <span data-i18n="nav.widget.main">{{$calculator->display_name}}</span>
                         </a>
                     </li> 
+                @endforeach 
+                 
+            @else
+                @foreach(Auth::guard()->user()->userCalculators as $userCalculator)
+                    <li data-placement="bottom" title="{{ $userCalculator->calculator->display_name }}" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >
+                        <a href="{{ route($userCalculator->calculator->route)}}">
+                            <img src="{{ $userCalculator->calculator->image_path }}" width="32" height="32">
+                            <span data-i18n="nav.widget.main">{{$userCalculator->calculator->display_name}}</span>
+                        </a>
+                    </li>
+                    
+                     
                 @endforeach  
-                @endif
+            @endif
             </ul>
         </div>
     </div>

@@ -63,7 +63,6 @@ class UserController extends Controller
             'user_type' => 'required',
 		    'unit_set_id' => 'required',
             'region_type' => 'required',
-            'mobile' => 'required',
             'language_id' => 'required',
 		]);
 
@@ -124,7 +123,6 @@ class UserController extends Controller
 		    'username' => 'required|unique:users,username,'.$user_id,
             'unit_set_id' => 'required',
             'region_type' => 'required',
-            'mobile' => 'required',
             'language_id' => 'required',
 		]);
 

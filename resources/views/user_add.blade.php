@@ -106,7 +106,7 @@
 											<div class="form-group row">
 												<label class="col-sm-4 col-form-label">Mobile Number</label>
 												<div class="col-sm-8">
-													<input id="mobile" name="mobile" type="number" value="{{ old('mobile') }}" required class="form-control" placeholder="Enter your Mobile Number">
+													<input id="mobile" name="mobile" type="number" value="{{ old('mobile') }}" class="form-control" placeholder="Enter your Mobile Number">
 												</div>
 											</div>
 											<div class="form-group row">

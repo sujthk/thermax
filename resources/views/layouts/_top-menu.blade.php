@@ -1,16 +1,14 @@
 <!-- Menu header start -->
 <nav class="navbar header-navbar">
-    <div class="navbar-wrapper">
+    <div style="    background-color: #eceeef;" class="navbar-wrapper">
         <div class="navbar-logo">
            <div class="logo-img">
-			     <img src="{{asset('assets/images/thermax-logo.png')}}" alt="logo.png">
+			     <img src="{{asset('assets/images/ichill.png')}}" alt="logo.png">
 			</div>
             <a class="mobile-menu" id="mobile-collapse" href="#!">
                 <i class="ti-menu"></i>
             </a>
-            <a href="{{url('/dashboard')}}">
-                <h6 class="mega-menu-title media-left" style="font-size: 1.5rem;color:#e10010;"> i-SelecTAC</h6>
-            </a>
+            
             <a class="mobile-options">
                 <i class="ti-more"></i>
             </a>
