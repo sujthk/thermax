@@ -95,6 +95,8 @@ border: #0FA015 1px solid;
 											<label class="col-sm-4 col-form-label">Name</label>
 											<div class="col-sm-8">
 												<input id="name" name="name" type="text" value="{{ $user->name }}" required class="form-control">
+
+												<input id="user_id" name="user_id" type="hidden" value="{{ $user->id }}">
 											</div>
 										</div>
 										<div class="form-group row">
@@ -148,6 +150,16 @@ border: #0FA015 1px solid;
 												</select>
 											</div>
 										</div>
+										<div class="form-group row">
+											<label class="col-sm-4 col-form-label">Regions</label>
+											<div class="col-sm-8">
+												<select name="region_id" id="region_id" required class="form-control">
+                                                    @foreach ($regions as $region)
+                                                        <option {{ $user->region_id == $region->id ? 'selected' : '' }} value="{{ $region->id }}">{{ $region->name }}</option>
+                                                    @endforeach
+												</select>
+											</div>
+										</div>
 
 										<div class="form-group row region">
 											<label class="col-sm-4 col-form-label"></label>
@@ -197,13 +209,7 @@ border: #0FA015 1px solid;
 										<div class="form-group row Calculator" >
 											<label class="col-sm-4 col-form-label">Calculators</label>
 											<div class="col-sm-8 calculator-append">
-												@foreach ($user->groupCalculator->groupCalculatorDetails as $groupCalculatorDetail)
-												@if (in_array($groupCalculatorDetail->id, $selected_calculators)) 
-                                    			<input type="checkbox"  name="calculators[]" value="{{ $groupCalculatorDetail->calculator_id }}" checked="">&nbsp;&nbsp;{{ ucwords($groupCalculatorDetail->calculator->name) }}<br>
-                                    			@else   
-												<input type="checkbox"  name="calculators[]" value="{{ $groupCalculatorDetail->calculator_id }}">&nbsp;&nbsp;{{ ucwords($groupCalculatorDetail->calculator->name) }}<br>
-												@endif
-												@endforeach
+												
 											</div>
 										</div>
 										@else
@@ -301,14 +307,19 @@ border: #0FA015 1px solid;
 			}
 			
 		});
-	$(document).on('change', '#group_calculator_id', function() {
 
-		var group_calculator_id = $('#group_calculator_id').val();
+		$(document).on('change', '#group_calculator_id', function() {
+			getCalculatorList();
+		});
+
+		function getCalculatorList(){
+			var group_calculator_id = $('#group_calculator_id').val();
+			var user_id = $('#user_id').val();
 			var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
 			$.ajax({
 				type: "POST",
 				url: "{{ url('/users/group_calculator/list') }}",
-				data: { group_calculator_id : group_calculator_id,_token: CSRF_TOKEN},
+				data: { group_calculator_id : group_calculator_id,user_id : user_id,_token: CSRF_TOKEN},
 				success: function(response){
 					if(response.status){
 						$('.Calculator').show();
@@ -320,7 +331,9 @@ border: #0FA015 1px solid;
 					}					
 				},
 			});
-		});
-		});
+		}
+
+		getCalculatorList();
+	});
 </script>
 @endsection

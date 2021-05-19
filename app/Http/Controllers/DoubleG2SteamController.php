@@ -1832,7 +1832,7 @@ class DoubleG2SteamController extends Controller
         }
     }
 
-    public function  HTHE()
+    public function HTHE()
     {
         $ferr10 = array();
         $t7 = array();

@@ -16,6 +16,7 @@ use App\UserReport;
 use App\Region;
 use App\TimeLine;
 use App\Language;
+use App\UserCalculator;
 use Validator;	
 use Hash;
 use Mail;
@@ -64,6 +65,7 @@ class UserController extends Controller
 		    'unit_set_id' => 'required',
             'region_type' => 'required',
             'language_id' => 'required',
+            'region_id' => 'required',
 		]);
 
         if($request->user_type =='THERMAX_USER' || $request->user_type == 'NON_THERMAX_USER')
@@ -124,6 +126,7 @@ class UserController extends Controller
             'unit_set_id' => 'required',
             'region_type' => 'required',
             'language_id' => 'required',
+            'region_id' => 'required',
 		]);
 
         //return $request->all();
@@ -131,10 +134,10 @@ class UserController extends Controller
         if($request->user_type =='THERMAX_USER' || $request->user_type == 'NON_THERMAX_USER')
         {   
             if(empty($request->group_calculator_id))
-                return Redirect::back()->with('status','error')->with('message', 'Please select group Calculoter');
+                return Redirect::back()->with('status','error')->with('message', 'Please select group Calculater');
 
             if(empty($request->calculators))
-                return Redirect::back()->with('status','error')->with('message', 'Please select  Calculoter');
+                return Redirect::back()->with('status','error')->with('message', 'Please select  Calculater');
         }
 
     	$user = User::find($user_id);
@@ -278,15 +281,24 @@ class UserController extends Controller
     public function getGroupCalcluation(Request $request){
 
         $group_calculator_id = $request->input('group_calculator_id');
+        $user_id = $request->input('user_id');
 
         $group_calculator = GroupCalculator::find($group_calculator_id);
         //log::info($group_calculator->groupCalculatorDetails);
+
+        $user_calculator_ids = UserCalculator::where('user_id',$user_id)->pluck('calculator_id')->toArray();
 
         if($group_calculator)
         {      
             $content ='';
             foreach ($group_calculator->groupCalculatorDetails as $groupCalculatorDetail ){
-              $content .='<input type="checkbox"  name="calculators[]" value="'.$groupCalculatorDetail->calculator_id.'" checked="">&nbsp;&nbsp;'. ucwords($groupCalculatorDetail->calculator->name).'<br>';
+                if(in_array($groupCalculatorDetail->calculator_id, $user_calculator_ids)){
+                    $content .='<input type="checkbox"  name="calculators[]" value="'.$groupCalculatorDetail->calculator_id.'" checked="checked">&nbsp;&nbsp;'. ucwords($groupCalculatorDetail->calculator->name).'<br>';
+                }
+                else{
+                    $content .='<input type="checkbox"  name="calculators[]" value="'.$groupCalculatorDetail->calculator_id.'" >&nbsp;&nbsp;'. ucwords($groupCalculatorDetail->calculator->name).'<br>';
+                }
+              
             }
              return response()->json(['status'=>true,'content'=>$content]);
         }

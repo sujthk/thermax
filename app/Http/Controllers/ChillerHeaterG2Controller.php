@@ -1014,6 +1014,1229 @@ class ChillerHeaterG2Controller extends Controller
         }
     }
 
+    public function DERATE_KEVA()
+    {
+        
+        $GLY_VIS = 0;
+        $GLY_TCON = 0;
+        $GLY_ROW = 0;
+        $GLY_SPHT = 0;
+        $RE = 0;
+        $PR = 0;
+        $NU1 = 0;
+        $HI = 0;
+        $HI1 = 0;
+        $VEVA = 0;
+        $R = 0;
+        $R1 = 0;
+        $HO = 0;
+
+        $vam_base = new VamBaseController();
+
+        $GLY_VIS = $vam_base->EG_VISCOSITY($this->calculation_values['TCHW12'], 0) / 1000;
+        $GLY_TCON = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCHW12'], 0);
+        $GLY_ROW = $vam_base->EG_ROW($this->calculation_values['TCHW12'], 0);
+        $GLY_SPHT = $vam_base->EG_SPHT($this->calculation_values['TCHW12'], 0) * 1000;
+
+        //if ($this->calculation_values['MODEL'] < 750 && $this->calculation_values['TU2'] == 0)                            //12.13.2011
+        //{
+        //    $VEVA = 0.7;
+        //}
+        //else 
+        if (($this->calculation_values['MODEL'] < 1200 && $this->calculation_values['TU2'] == 3))
+        {
+            $VEVA = 0.7;
+        }
+        else if ($this->calculation_values['MODEL'] > 1200 && $this->calculation_values['TU2'] == 3)
+        {
+            $VEVA = 0.75;
+        }
+        else
+        {
+            $VEVA = 1.5;
+        }
+        $RE = $GLY_ROW * $VEVA * $this->calculation_values['IDE'] / $GLY_VIS;
+        $PR = $GLY_VIS * $GLY_SPHT / $GLY_TCON;
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.3);
+        $HI1 = ($NU1 * $GLY_TCON / $this->calculation_values['IDE']) * 3600 / 4187;
+        //if ($this->calculation_values['TU2'] < 2.1 && $this->calculation_values['MODEL'] <750 && $this->calculation_values['VELEVA'] == 0)
+        //{
+        //    $HI1 = $HI1 * 2;
+        //}
+        //$R = log($this->calculation_values['ODE'] / $this->calculation_values['IDE']) * $this->calculation_values['ODE'] / (2 * 340);
+        //$HO = 1 / (1 / $this->calculation_values['KEVA'] - ($this->calculation_values['ODE'] / ($HI1 * $this->calculation_values['IDE'])) - $R);
+
+        if ($this->calculation_values['TU2'] == 2.0 || $this->calculation_values['TU2'] == 0)
+            $R1 = log($this->calculation_values['ODE'] / $this->calculation_values['IDE']) * $this->calculation_values['ODE'] / (2 * 340);
+        if ($this->calculation_values['TU2'] == 1.0)
+            $R1 = log($this->calculation_values['ODE'] / $this->calculation_values['IDE']) * $this->calculation_values['ODE'] / (2 * 37);
+        if ($this->calculation_values['TU2'] == 3.0 || $this->calculation_values['TU2'] == 4.0)
+            $R1 = log($this->calculation_values['ODE'] / $this->calculation_values['IDE']) * $this->calculation_values['ODE'] / (2 * 21);
+        if ($this->calculation_values['TU2'] == 5.0)
+            $R1 = log($this->calculation_values['ODE'] / $this->calculation_values['IDE']) * $this->calculation_values['ODE'] / (2 * 15);
+
+        $HO = 1 / (1 / $this->calculation_values['KEVA'] - ($this->calculation_values['ODE'] / ($HI1 * $this->calculation_values['IDE'])) - $R1);
+
+        if ($this->calculation_values['VEA'] < $VEVA)
+        {
+            $RE = $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['VEA'] * $this->calculation_values['IDE'] / $this->calculation_values['CHGLY_VIS12'];
+        }
+        else
+        {
+            $RE = $this->calculation_values['CHGLY_ROW12'] * $VEVA * $this->calculation_values['IDE'] / $this->calculation_values['CHGLY_VIS12'];
+        }
+        $PR = $this->calculation_values['CHGLY_VIS12'] * $this->calculation_values['CHGLY_SPHT12'] / $this->calculation_values['CHGLY_TCON12'];
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.3);
+        $HI = ($NU1 * $this->calculation_values['CHGLY_TCON12'] / $this->calculation_values['IDE']) * 3600 / 4187;
+
+        //if ($this->calculation_values['TU2'] < 2.1 && $this->calculation_values['MODEL'] < 750 && $this->calculation_values['VELEVA'] == 0)
+        //{
+        //    $HI = $HI * 2;
+        //}
+        $this->calculation_values['KEVA'] = 1 / (($this->calculation_values['ODE'] / ($HI * $this->calculation_values['IDE'])) + $R1 + 1 / $HO);
+        if ($this->calculation_values['CHGLY'] != 0)
+        {
+            $this->calculation_values['KEVA'] = $this->calculation_values['KEVA'] * 0.99;
+        }
+    }
+
+    public function DERATE_KABSH()
+    {
+        $GLY_VIS = 0;
+        $GLY_TCON = 0;
+        $GLY_ROW = 0;
+        $GLY_SPHT = 0;
+        $RE = 0;
+        $PR = 0;
+        $NU1 = 0;
+        $HI = 0;
+        $HI1 = 0;
+        $VABS = 0;
+        $R = 0;
+        $R1 = 0;
+        $HO = 0;
+
+        $vam_base = new VamBaseController();
+
+        $GLY_VIS = $vam_base->EG_VISCOSITY($this->calculation_values['TCW11'], 0) / 1000;
+        $GLY_TCON = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCW11'], 0);
+        $GLY_ROW = $vam_base->EG_ROW($this->calculation_values['TCW11'], 0);
+        $GLY_SPHT = $vam_base->EG_SPHT($this->calculation_values['TCW11'], 0) * 1000;
+
+        if ($this->calculation_values['MODEL'] < 1200)
+        {
+            $VABS = 1.5;
+        }
+        else
+        {
+            $VABS = 1.5;
+        }
+        $RE = $GLY_ROW * $VABS * $this->calculation_values['IDA'] / $GLY_VIS;
+        $PR = $GLY_VIS * $GLY_SPHT / $GLY_TCON;
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.4);
+        $HI1 = ($NU1 * $GLY_TCON / $this->calculation_values['IDA']) * 3600 / 4187;
+        //$R = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 340);
+        //$HO = 1 / (1 / $this->calculation_values['KABS'] - ($this->calculation_values['ODA'] / ($HI1 * $this->calculation_values['IDA'])) - $R);
+
+        if ($this->calculation_values['TU5'] == 2.0 || $this->calculation_values['TU5'] == 4.0 || $this->calculation_values['TU5'] == 0)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 340);
+        else if ($this->calculation_values['TU5'] == 1.0 || $this->calculation_values['TU5'] == 3.0)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 37);
+        else if ($this->calculation_values['TU5'] == 5 || $this->calculation_values['TU5'] == 6)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 21);
+        else if ($this->calculation_values['TU5'] == 7.0)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 15);
+
+        $HO = 1 / (1 / $this->calculation_values['KABS'] - ($this->calculation_values['ODA'] / ($HI1 * $this->calculation_values['IDA'])) - $R1);
+        if ($this->calculation_values['VAH'] < $VABS)
+        {
+            $RE = $this->calculation_values['COGLY_ROWH1'] * $this->calculation_values['VAH'] * $this->calculation_values['IDA'] / $this->calculation_values['COGLY_VISH1'];
+        }
+        else
+        {
+            $RE = $this->calculation_values['COGLY_ROWH1'] * $VABS * $this->calculation_values['IDA'] / $this->calculation_values['COGLY_VISH1'];
+        }
+        $PR = $this->calculation_values['COGLY_VISH1'] * $this->calculation_values['COGLY_SPHT1'] / $this->calculation_values['COGLY_TCONH1'];
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.4);
+        $HI = ($NU1 * $this->calculation_values['COGLY_TCONH1'] / $this->calculation_values['IDA']) * 3600 / 4187;
+
+        $this->calculation_values['KABSH'] = 1 / (($this->calculation_values['ODA'] / ($HI * $this->calculation_values['IDA'])) + $R1 + 1 / $HO);
+        if ($this->calculation_values['COGLY'] != 0)
+        {
+            $this->calculation_values['KABSH'] = $this->calculation_values['KABSH'] * 0.99;
+        }
+    }
+
+    public function DERATE_KABSL()
+    {
+         $GLY_VIS = 0;
+         $GLY_TCON = 0;
+         $GLY_ROW = 0;
+         $GLY_SPHT = 0;
+         $RE = 0;
+         $PR = 0;
+         $NU1 = 0;
+         $HI = 0;
+         $HI1 = 0;
+         $VABS = 0;
+         $R = 0;
+         $R1 = 0;
+         $HO = 0;
+
+        $vam_base = new VamBaseController();
+        
+        $GLY_VIS = $vam_base->EG_VISCOSITY($this->calculation_values['TCW11'], 0) / 1000;
+        $GLY_TCON = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCW11'], 0);
+        $GLY_ROW = $vam_base->EG_ROW($this->calculation_values['TCW11'], 0);
+        $GLY_SPHT = $vam_base->EG_SPHT($this->calculation_values['TCW11'], 0) * 1000;
+
+        if ($this->calculation_values['MODEL'] < 1200)
+        {
+            $VABS = 1.5;
+        }
+        else
+        {
+            $VABS = 1.5;
+        }
+
+        $RE = $GLY_ROW * $VABS * $this->calculation_values['IDA'] / $GLY_VIS;
+        $PR = $GLY_VIS * $GLY_SPHT / $GLY_TCON;
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.4);
+        $HI1 = ($NU1 * $GLY_TCON / $this->calculation_values['IDA']) * 3600 / 4187;
+        //$R = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 340);
+        //$HO = 1 / (1 / $this->calculation_values['KABS'] - ($this->calculation_values['ODA'] / ($HI1 * $this->calculation_values['IDA'])) - $R);
+
+        if ($this->calculation_values['TU5'] == 2.0 || $this->calculation_values['TU5'] == 4.0 || $this->calculation_values['TU5'] == 0)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 340);
+        else if ($this->calculation_values['TU5'] == 1.0 || $this->calculation_values['TU5'] == 3.0)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 37);
+        else if ($this->calculation_values['TU5'] == 5 || $this->calculation_values['TU5'] == 6)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 21);
+        else if ($this->calculation_values['TU5'] == 7.0)
+            $R1 = log($this->calculation_values['ODA'] / $this->calculation_values['IDA']) * $this->calculation_values['ODA'] / (2 * 15);
+        $HO = 1 / (1 / $this->calculation_values['KABS'] - ($this->calculation_values['ODA'] / ($HI1 * $this->calculation_values['IDA'])) - $R1);
+
+        if ($this->calculation_values['VAL'] < $VABS)
+        {
+            $RE = $this->calculation_values['COGLY_ROWH1'] * $this->calculation_values['VAL'] * $this->calculation_values['IDA'] / $this->calculation_values['COGLY_VISH1'];
+        }
+        else
+        {
+            $RE = $this->calculation_values['COGLY_ROWH1'] * $VABS * $this->calculation_values['IDA'] / $this->calculation_values['COGLY_VISH1'];
+        }
+        $PR = $this->calculation_values['COGLY_VISH1'] * $this->calculation_values['COGLY_SPHT1'] / $this->calculation_values['COGLY_TCONH1'];
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.4);
+        $HI = ($NU1 * $this->calculation_values['COGLY_TCONH1'] / $this->calculation_values['IDA']) * 3600 / 4187;
+
+        $this->calculation_values['KABSL'] = 1 / (($this->calculation_values['ODA'] / ($HI * $this->calculation_values['IDA'])) + $R1 + 1 / $HO);
+        if ($this->calculation_values['COGLY'] != 0)
+        {
+            $this->calculation_values['KABSL'] = $this->calculation_values['KABSL'] * 0.99;
+        }
+    }
+
+    public function DERATE_KCON()
+    {
+        $GLY_VIS = 0;
+        $GLY_TCON = 0;
+        $GLY_ROW = 0;
+        $GLY_SPHT = 0;
+        $RE = 0;
+        $PR = 0;
+        $NU1 = 0;
+        $HI = 0;
+        $HI1 = 0;
+        $VCON = 0;
+        $R = 0;
+        $R1 = 0;
+        $HO = 0;
+
+        $vam_base = new VamBaseController();
+
+        $GLY_VIS = $vam_base->EG_VISCOSITY($this->calculation_values['TCW11'], 0) / 1000;
+        $GLY_TCON = $vam_base->EG_THERMAL_CONDUCTIVITY($this->calculation_values['TCW11'], 0);
+        $GLY_ROW = $vam_base->EG_ROW($this->calculation_values['TCW11'], 0);
+        $GLY_SPHT = $vam_base->EG_SPHT($this->calculation_values['TCW11'], 0) * 1000;
+
+        if ($this->calculation_values['MODEL'] < 1200)
+        {
+            $VCON = 1.5;
+        }
+        else
+        {
+            $VCON = 1.5;
+        }
+        $RE = $GLY_ROW * $VCON * $this->calculation_values['IDC'] / $GLY_VIS;
+        $PR = $GLY_VIS * $GLY_SPHT / $GLY_TCON;
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.4);
+        $HI1 = ($NU1 * $GLY_TCON / $this->calculation_values['IDC']) * 3600 / 4187;
+        //$R = log($this->calculation_values['ODC'] / $this->calculation_values['IDC']) * $this->calculation_values['ODC'] / (2 * 340);
+        //$HO = 1 / (1 / $this->calculation_values['KCON'] - ($this->calculation_values['ODC'] / ($HI1 * $this->calculation_values['IDC'])) - $R);
+
+        if ($this->calculation_values['TV5'] == 2.0 || $this->calculation_values['TV5'] == 0 || $this->calculation_values['TV5'] == 4.0)
+            $R1 = log($this->calculation_values['ODC'] / $this->calculation_values['IDC']) * $this->calculation_values['ODC'] / (2 * 340);
+        if ($this->calculation_values['TV5'] == 1.0)
+            $R1 = log($this->calculation_values['ODC'] / $this->calculation_values['IDC']) * $this->calculation_values['ODC'] / (2 * 37);
+        if ($this->calculation_values['TV5'] == 3.0 )
+            $R1 = log($this->calculation_values['ODC'] / $this->calculation_values['IDC']) * $this->calculation_values['ODC'] / (2 * 21);
+        if ($this->calculation_values['TV5'] == 5.0)
+            $R1 = log($this->calculation_values['ODC'] / $this->calculation_values['IDC']) * $this->calculation_values['ODC'] / (2 * 15);
+        $HO = 1 / (1 / $this->calculation_values['KCON'] - ($this->calculation_values['ODC'] / ($HI1 * $this->calculation_values['IDC'])) - $R1);
+
+        if ($this->calculation_values['VC'] < $VCON)
+        {
+            $RE = $this->calculation_values['COGLY_ROWH1'] * $this->calculation_values['VC'] * $this->calculation_values['IDC'] / $this->calculation_values['COGLY_VISH1'];
+        }
+        else
+        {
+            $RE = $this->calculation_values['COGLY_ROWH1'] * $VCON * $this->calculation_values['IDC'] / $this->calculation_values['COGLY_VISH1'];
+        }
+        $PR = $this->calculation_values['COGLY_VISH1'] * $this->calculation_values['COGLY_SPHT1'] / $this->calculation_values['COGLY_TCONH1'];
+        $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.4);
+        $HI = ($NU1 * $this->calculation_values['COGLY_TCONH1'] / $this->calculation_values['IDC']) * 3600 / 4187;
+        $this->calculation_values['KCON'] = 1 / (($this->calculation_values['ODC'] / ($HI * $this->calculation_values['IDC'])) + $R1 + 1 / $HO);
+        if ($this->calculation_values['COGLY'] != 0)
+        {
+            $this->calculation_values['KCON'] = $this->calculation_values['KCON'] * 0.99;
+        }
+    }
+
+    public function EVAPORATOR()
+    {
+        $this->calculation_values['q'] = 0; $this->calculation_values['r'] = 0;
+        $ATCHW2H;
+
+        $this->calculation_values['LMTDEVA'] = ($this->calculation_values['TON'] * 3024) / ($this->calculation_values['AEVA'] * $this->calculation_values['UEVA']);
+        $this->calculation_values['T1'] = $this->calculation_values['TCHW2L'] - ($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2L']) / (exp(($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2L']) / $this->calculation_values['LMTDEVA']) - 1); // OVERALL LMTD & $this->calculation_values['T1'] CALCULATED FOR CHW CIRCUIT FOR ARI 
+
+        $this->calculation_values['GCHW'] = $this->calculation_values['TON'] * 3024 / (($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2L']) * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] / 4187);
+        $this->calculation_values['GDIL'] = 70 * $this->calculation_values['MODEL1'];
+        $this->calculation_values['QEVA'] = $this->calculation_values['TON'] * 3024;
+
+        $this->calculation_values['AGREF4'] = $this->calculation_values['HEATCAP'] / 572;
+        $this->calculation_values['COPE'] = ((((5.4 * $this->calculation_values['TON']) - $this->calculation_values['AGREF4']) * 1.4) + ($this->calculation_values['AGREF4'] * 0.7)) / (5.4 * $this->calculation_values['TON']);
+
+        $QAB = ($this->calculation_values['QEVA'] * (1 + 1 / $this->calculation_values['COPE']) - ($this->calculation_values['HEATCAP'])) * 0.8;
+        $QCO = ($this->calculation_values['QEVA'] * (1 + 1 / $this->calculation_values['COPE']) - ($this->calculation_values['HEATCAP'])) * 0.2;
+
+        $this->calculation_values['ATCW2'] = $this->calculation_values['TCW1H'] + $QAB / ($this->calculation_values['GCW'] * 1000);
+        $ATCW3 = $this->calculation_values['ATCW2'] + $QCO / ($this->calculation_values['GCW'] * 1000);
+        $LMTDCO = $QCO / ($this->calculation_values['KCON'] * $this->calculation_values['ACON']);
+        $this->calculation_values['AT3'] = $ATCW3 + ($ATCW3 - $this->calculation_values['ATCW2']) / (exp(($ATCW3 - $this->calculation_values['ATCW2']) / $LMTDCO) - 1);
+
+        /************** Int Chw temp assump **************/
+
+        $this->calculation_values['DT'] = $this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2L'];
+
+        if ($this->calculation_values['TCW11'] < 34.01)
+        {
+            if (((($this->calculation_values['TON'] / $this->calculation_values['MODEL']) > 0.8 && ($this->calculation_values['TON'] / $this->calculation_values['MODEL']) < 1.01) || ($this->calculation_values['TON'] / $this->calculation_values['MODEL']) < 0.66) && $this->calculation_values['DT'] <= 13)
+            {
+                $ATCHW2H = ($this->calculation_values['TCHW1H'] + $this->calculation_values['TCHW2L']) / 2;
+            }
+            else
+            {
+                $ATCHW2H = (($this->calculation_values['TCHW1H'] + $this->calculation_values['TCHW2L']) / 2) + ((-0.0082 * $this->calculation_values['DT'] * $this->calculation_values['DT']) + (0.0973 * $this->calculation_values['DT']) - 0.2802);
+            }
+        }
+        else
+        {
+            $ATCHW2H = (($this->calculation_values['TCHW1H'] + $this->calculation_values['TCHW2L']) / 2) + ((-0.0047 * $this->calculation_values['DT'] * $this->calculation_values['DT']) - (0.0849 * $this->calculation_values['DT']) + 0.0412);
+        }
+
+
+        /************** Int Chw temp assump **************/
+
+        $vam_base = new VamBaseController();
+
+        $err1 = array();
+        $ferr1 = array();
+        $tchw2h = array();
+
+        $ferr1[0] = 1;
+        $p = 1;
+        while (abs($ferr1[$p - 1]) > 0.1)
+        {
+            if ($p == 1)
+            {
+                if ($this->calculation_values['DT'] > 11)
+                {
+                    $tchw2h[$p] = $ATCHW2H;    // -2.5;
+                }
+                else
+                {
+                    $tchw2h[$p] = $ATCHW2H + 0.1;
+                }
+            }
+            if ($p == 2)
+            {
+                $tchw2h[$p] = $tchw2h[$p - 1] - 0.1;
+            }
+            if ($p >= 3)
+            {
+                if (($this->calculation_values['TON'] / $this->calculation_values['MODEL']) < 0.5)
+                {
+                    $tchw2h[$p] = $tchw2h[$p - 1] + $err1[$p - 1] * ($tchw2h[$p - 1] - $tchw2h[$p - 2]) / ($err1[$p - 2] - $err1[$p - 1]) / 4;
+                }
+                else
+                {
+                    $tchw2h[$p] = $tchw2h[$p - 1] + $err1[$p - 1] * ($tchw2h[$p - 1] - $tchw2h[$p - 2]) / ($err1[$p - 2] - $err1[$p - 1]) / 2;
+                }
+            }
+            $this->calculation_values['TCHW2H'] = $tchw2h[$p];
+            $this->calculation_values['TCHW1L'] = $this->calculation_values['TCHW2H'];
+
+            $this->calculation_values['QEVAH'] = $this->calculation_values['GCHW'] * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] * ($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2H']) / 4187;
+            $this->calculation_values['LMTDEVAH'] = $this->calculation_values['QEVAH'] / ($this->calculation_values['UEVAH'] * $this->calculation_values['AEVAH']);
+            $this->calculation_values['T1H'] = $this->calculation_values['TCHW2H'] - ($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2H']) / (exp(($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2H']) / $this->calculation_values['LMTDEVAH']) - 1);
+            $this->calculation_values['P1H'] = $vam_base->LIBR_PRESSURE($this->calculation_values['T1H'], 0);
+            $this->calculation_values['J1H'] = $vam_base->WATER_VAPOUR_ENTHALPY($this->calculation_values['T1H'], $this->calculation_values['P1H']);
+            $this->calculation_values['I1H'] = $this->calculation_values['T1H'] + 100;
+
+            $this->calculation_values['QEVAL'] = $this->calculation_values['GCHW'] * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] * ($this->calculation_values['TCHW1L'] - $this->calculation_values['TCHW2L']) / 4187;
+            $this->calculation_values['LMTDEVAL'] = $this->calculation_values['QEVAL'] / ($this->calculation_values['UEVAL'] * $this->calculation_values['AEVAL']);
+            $this->calculation_values['T1L'] = $this->calculation_values['TCHW2L'] - ($this->calculation_values['TCHW1L'] - $this->calculation_values['TCHW2L']) / (exp(($this->calculation_values['TCHW1L'] - $this->calculation_values['TCHW2L']) / $this->calculation_values['LMTDEVAL']) - 1);
+            $this->calculation_values['P1L'] = $vam_base->LIBR_PRESSURE($this->calculation_values['T1L'], 0);
+            $this->calculation_values['J1L'] = $vam_base->WATER_VAPOUR_ENTHALPY($this->calculation_values['T1L'], $this->calculation_values['P1L']);
+            $this->calculation_values['I1L'] = $this->calculation_values['T1L'] + 100;
+
+            $this->ABSORBER();
+
+            $this->calculation_values['QABSH'] = ($this->calculation_values['GREFH'] * $this->calculation_values['J1H']) + ($this->calculation_values['GCONCH'] * $this->calculation_values['I2L']) - ($this->calculation_values['GDIL'] * $this->calculation_values['I2']);
+            $err1[$p] = ($this->calculation_values['QLMTDABSH'] - $this->calculation_values['QABSH']);
+            $ferr1[$p] = ($this->calculation_values['QLMTDABSH'] - $this->calculation_values['QABSH']) / $this->calculation_values['QLMTDABSH'] * 100;
+            $p++;
+        }
+    }
+
+    public function ABSORBER()
+    {
+        $ferr2 = array();
+        $t2 = array();
+
+        $vam_base1 = new VamBaseController();
+
+        if ($this->calculation_values['q'] == 0)
+        {
+            $this->calculation_values['T2'] = $this->calculation_values['ATCW2'] + 5;
+        }
+        else
+        {
+            $this->calculation_values['T2'] = $this->calculation_values['T2'];
+        }
+
+        $this->calculation_values['q'] = 1;
+        $ferr2[0] = 1;
+        while (abs($ferr2[$this->calculation_values['q'] - 1]) > 0.1)
+        {
+            if ($this->calculation_values['q'] == 1)
+            {
+                $t2[$this->calculation_values['q']] = $this->calculation_values['T2'];
+            }
+            if ($this->calculation_values['q'] == 2)
+            {
+                $t2[$this->calculation_values['q']] = $t2[$this->calculation_values['q'] - 1] + 0.1;
+            }
+            if ($this->calculation_values['q'] >= 3)
+            {
+                if (($this->calculation_values['TON'] / $this->calculation_values['MODEL']) < 0.5)
+                {
+                    $t2[$this->calculation_values['q']] = $t2[$this->calculation_values['q'] - 1] + $ferr2[$this->calculation_values['q'] - 1] * ($t2[$this->calculation_values['q'] - 1] - $t2[$this->calculation_values['q'] - 2]) / ($ferr2[$this->calculation_values['q'] - 2] - $ferr2[$this->calculation_values['q'] - 1]) / 3;
+                }
+                else
+                {
+                    $t2[$this->calculation_values['q']] = $t2[$this->calculation_values['q'] - 1] + $ferr2[$this->calculation_values['q'] - 1] * ($t2[$this->calculation_values['q'] - 1] - $t2[$this->calculation_values['q'] - 2]) / ($ferr2[$this->calculation_values['q'] - 2] - $ferr2[$this->calculation_values['q'] - 1]) / 2;
+                }
+            }
+            $this->calculation_values['T2'] = $t2[$this->calculation_values['q']];
+            $this->calculation_values['XDIL'] = $vam_base1->LIBR_CONC($this->calculation_values['T2'], $this->calculation_values['P1H']);
+            $this->calculation_values['I2'] = $vam_base1->LIBR_ENTHALPY($this->calculation_values['T2'], $this->calculation_values['XDIL']);
+
+            $this->CONDENSER();
+
+            $this->calculation_values['QABSL'] = ($this->calculation_values['GCONC'] * $this->calculation_values['I8']) + ($this->calculation_values['GREFL'] * $this->calculation_values['J1L']) - ($this->calculation_values['GDILL'] * $this->calculation_values['I2L']);
+            $ferr2[$this->calculation_values['q']] = ($this->calculation_values['QLMTDABSL'] - $this->calculation_values['QABSL']) / $this->calculation_values['QLMTDABSL'] * 100;
+            $this->calculation_values['q']++;
+        }
+    }
+
+    public function CONDENSER()
+    {
+        $ferr3 = array();
+        $t3 = array();
+
+        $vam_base2 = new VamBaseController();
+
+        if ($this->calculation_values['r'] == 0)
+            $this->calculation_values['AT3'] = $this->calculation_values['AT3'];
+        else
+            $this->calculation_values['AT3'] = $this->calculation_values['T3'];
+
+        $ferr3[0] = 1;
+        $this->calculation_values['r'] = 1;
+
+        while (abs($ferr3[$this->calculation_values['r'] - 1]) > 0.1)
+        {
+            if ($this->calculation_values['r'] == 1)
+            {
+                $t3[$this->calculation_values['r']] = $this->calculation_values['AT3'];
+            }
+            if ($this->calculation_values['r'] == 2)
+            {
+                $t3[$this->calculation_values['r']] = $t3[$this->calculation_values['r'] - 1] + 0.1;
+            }
+            if ($this->calculation_values['r'] >= 3)
+            {
+                $t3[$this->calculation_values['r']] = $t3[$this->calculation_values['r'] - 1] + $ferr3[$this->calculation_values['r'] - 1] * ($t3[$this->calculation_values['r'] - 1] - $t3[$this->calculation_values['r'] - 2]) / ($ferr3[$this->calculation_values['r'] - 2] - $ferr3[$this->calculation_values['r'] - 1]);
+            }
+
+            $this->calculation_values['T3'] = $t3[$this->calculation_values['r']];
+            $this->calculation_values['P3'] = $vam_base2->LIBR_PRESSURE($this->calculation_values['T3'], 0);
+            $this->calculation_values['I3'] = $this->calculation_values['T3'] + 100;
+
+            $this->calculation_values['GREFL'] = $this->calculation_values['QEVAL'] / ($this->calculation_values['J1L'] - $this->calculation_values['I1H']);
+            $this->calculation_values['GREFH'] = ($this->calculation_values['QEVAH'] + $this->calculation_values['GREFL'] * ($this->calculation_values['I3'] - $this->calculation_values['I1H'])) / ($this->calculation_values['J1H'] - $this->calculation_values['I3']);
+
+            $this->calculation_values['GCONCH'] = $this->calculation_values['GDIL'] - $this->calculation_values['GREFH'];
+            $this->calculation_values['XCONCH'] = $this->calculation_values['GDIL'] * $this->calculation_values['XDIL'] / $this->calculation_values['GCONCH'];
+            $this->calculation_values['T6H'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1H'], $this->calculation_values['XCONCH']);
+            $this->calculation_values['I6H'] = $vam_base2->LIBR_ENTHALPY($this->calculation_values['T6H'], $this->calculation_values['XCONCH']);
+
+            $this->calculation_values['GDILL'] = $this->calculation_values['GCONCH'];
+            $this->calculation_values['XDILL'] = $this->calculation_values['XCONCH'];
+            $this->calculation_values['T2L'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XDILL']);
+            $this->calculation_values['I2L'] = $vam_base2->LIBR_ENTHALPY($this->calculation_values['T2L'], $this->calculation_values['XDILL']);
+
+            $this->calculation_values['GCONC'] = $this->calculation_values['GDILL'] - $this->calculation_values['GREFL'];
+            $this->calculation_values['XCONC'] = $this->calculation_values['GDILL'] * $this->calculation_values['XDILL'] / $this->calculation_values['GCONC'];
+            $this->calculation_values['GREF'] = $this->calculation_values['GREFH'] + $this->calculation_values['GREFL'];
+            $this->calculation_values['T6'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XCONC']);
+
+            $this->CWABSHOUT();
+            if ($this->calculation_values['TAP'] == 1)
+            {
+                $this->calculation_values['TCW1L'] = $this->calculation_values['TCW1H'];
+            }
+            else
+            {
+                $this->calculation_values['TCW1L'] = $this->calculation_values['TCW2H'];
+            }
+            $this->CWABSLOUT();
+            if ($this->calculation_values['TAP'] == 1)
+            {
+                $this->calculation_values['TCW3'] = ($this->calculation_values['TCW2H'] + $this->calculation_values['TCW2L']) / 2;
+            }
+            else
+            {
+                $this->calculation_values['TCW3'] = $this->calculation_values['TCW2L'];
+            }
+            $this->CWCONOUT();
+
+            $this->calculation_values['T9'] = $vam_base2->LIBR_TEMP($this->calculation_values['P3'], $this->calculation_values['XCONC']);
+            $this->calculation_values['J9'] = $vam_base2->WATER_VAPOUR_ENTHALPY($this->calculation_values['T9'], $this->calculation_values['P3']);
+            $this->calculation_values['I9'] = $vam_base2->LIBR_ENTHALPY($this->calculation_values['T9'], $this->calculation_values['XCONC']);
+
+            $this->DHE();
+            $this->LTHE();
+            $this->HTHE();
+
+            $this->calculation_values['QLTG'] = ($this->calculation_values['GCONC'] * $this->calculation_values['I9']) + ($this->calculation_values['GREF2'] * $this->calculation_values['J9']) - ($this->calculation_values['GMED'] * $this->calculation_values['I10']);
+            $ferr3[$this->calculation_values['r']] = ($this->calculation_values['QLMTDLTG'] - $this->calculation_values['QLTG']) / $this->calculation_values['QLMTDLTG'] * 100;
+            $this->calculation_values['r']++;
+        }
+    }
+
+    public function CWABSHOUT()
+    {
+
+        $ferr4 = array();
+        $tcw2h = array();
+        $s = 0;
+
+        $vam_base3 = new VamBaseController();
+
+        $ferr4[0] = 2;
+        $s = 1;
+        while (abs($ferr4[$s - 1]) > 0.1)
+        {
+            if ($s == 1)
+            {
+                $tcw2h[$s] = $this->calculation_values['TCW1H'] + 1.0;
+            }
+            if ($s == 2)
+            {
+                $tcw2h[$s] = $tcw2h[$s - 1] + 0.5;
+            }
+            if ($s >= 3)
+            {
+                $tcw2h[$s] = $tcw2h[$s - 1] + $ferr4[$s - 1] * ($tcw2h[$s - 1] - $tcw2h[$s - 2]) / ($ferr4[$s - 2] - $ferr4[$s - 1]);
+            }
+            if ($tcw2h[$s] > $this->calculation_values['T6H'] && $s > 2)
+            {
+                $tcw2h[$s] = $tcw2h[$s - 1] + $ferr4[$s - 1] * ($tcw2h[$s - 1] - $tcw2h[$s - 2]) / ($ferr4[$s - 2] - $ferr4[$s - 1]) / 5;
+            }
+
+            $this->calculation_values['TCW2H'] = $tcw2h[$s];
+
+            if ($this->calculation_values['GLL'] == 2)
+            {
+                $this->calculation_values['COGLY_ROWH1'] = $vam_base3->EG_ROW($this->calculation_values['TCW1H'], $this->calculation_values['COGLY']);
+                $this->calculation_values['COGLY_SPHT1H'] = $vam_base3->EG_SPHT($this->calculation_values['TCW1H'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHT2H'] = $vam_base3->EG_SPHT($this->calculation_values['TCW2H'], $this->calculation_values['COGLY']) * 1000;
+            }
+            else
+            {
+                $this->calculation_values['COGLY_ROWH1'] = $vam_base3->PG_ROW($this->calculation_values['TCW1H'], $this->calculation_values['COGLY']);
+                $this->calculation_values['COGLY_SPHT1H'] = $vam_base3->PG_SPHT($this->calculation_values['TCW1H'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHT2H'] = $vam_base3->PG_SPHT($this->calculation_values['TCW2H'], $this->calculation_values['COGLY']) * 1000;
+            }
+
+            $QCWABSH = $this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2H'] + $this->calculation_values['COGLY_SPHT1H']) * 0.5 * ($this->calculation_values['TCW2H'] - $this->calculation_values['TCW1H']) / 4187;
+            $this->calculation_values['LMTDABSH'] = (($this->calculation_values['T6H'] - $this->calculation_values['TCW2H']) - ($this->calculation_values['T2'] - $this->calculation_values['TCW1H'])) / log(($this->calculation_values['T6H'] - $this->calculation_values['TCW2H']) / ($this->calculation_values['T2'] - $this->calculation_values['TCW1H']));
+            $this->calculation_values['QLMTDABSH'] = $this->calculation_values['UABSH'] * $this->calculation_values['AABSH'] * $this->calculation_values['LMTDABSH'];
+            $ferr4[$s] = ($QCWABSH - $this->calculation_values['QLMTDABSH']) * 100 / $QCWABSH;
+            $s++;
+        }
+    }
+
+    public function CWABSLOUT()
+    {
+
+        $ferr5 = array();
+        $tcw2l = array();
+        $m = 0;
+
+        $vam_base = new VamBaseController();
+
+        $ferr5[0] = 2;
+        $m = 1;
+        while (abs($ferr5[$m - 1]) > 0.1)
+        {
+            if ($m == 1)
+            {
+                $tcw2l[$m] = $this->calculation_values['TCW1L'] + 1.0;
+            }
+            if ($m == 2)
+            {
+                $tcw2l[$m] = $tcw2l[$m - 1] + 0.5;
+            }
+            if ($m >= 3)
+            {
+                $tcw2l[$m] = $tcw2l[$m - 1] + $ferr5[$m - 1] * ($tcw2l[$m - 1] - $tcw2l[$m - 2]) / ($ferr5[$m - 2] - $ferr5[$m - 1]) / 3;
+            }
+            if ($tcw2l[$m] > $this->calculation_values['T6'] && $m > 2)
+            {
+                $tcw2l[$m] = $tcw2l[$m - 1] + $ferr5[$m - 1] * ($tcw2l[$m - 1] - $tcw2l[$m - 2]) / ($ferr5[$m - 2] - $ferr5[$m - 1]) / 5;
+            }
+            $this->calculation_values['TCW2L'] = $tcw2l[$m];
+
+            if ($this->calculation_values['GLL'] == 2)
+            {
+                $this->calculation_values['COGLY_SPHT1L'] = $vam_base->EG_SPHT($this->calculation_values['TCW1L'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHT2L'] = $vam_base->EG_SPHT($this->calculation_values['TCW2L'], $this->calculation_values['COGLY']) * 1000;
+            }
+            else
+            {
+                $this->calculation_values['COGLY_SPHT1L'] = $vam_base->PG_SPHT($this->calculation_values['TCW1L'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHT2L'] = $vam_base->PG_SPHT($this->calculation_values['TCW2L'], $this->calculation_values['COGLY']) * 1000;
+            }
+
+            $QCWABSL = $this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2L'] + $this->calculation_values['COGLY_SPHT1L']) * 0.5 * ($this->calculation_values['TCW2L'] - $this->calculation_values['TCW1L']) / 4187;
+            $this->calculation_values['LMTDABSL'] = (($this->calculation_values['T6'] - $this->calculation_values['TCW2L']) - ($this->calculation_values['T2L'] - $this->calculation_values['TCW1L'])) / log(($this->calculation_values['T6'] - $this->calculation_values['TCW2L']) / ($this->calculation_values['T2L'] - $this->calculation_values['TCW1L']));
+            $this->calculation_values['QLMTDABSL'] = $this->calculation_values['UABSL'] * $this->calculation_values['AABSL'] * $this->calculation_values['LMTDABSL'];
+            $ferr5[$m] = ($QCWABSL - $this->calculation_values['QLMTDABSL']) * 100 / $QCWABSL;
+            $m++;
+        }
+    }
+
+    public function CWCONOUT()
+    {
+
+        $ferr6 = array();
+        $tcw4 = array();
+        $b = 0;
+
+        $vam_base = new VamBaseController();
+
+        $ferr6[0] = 2;
+        $b = 1;
+        while (abs($ferr6[$b - 1]) > 0.1)
+        {
+            if ($b == 1)
+            {
+                $tcw4[$b] = $this->calculation_values['TCW3'] + 0.5;
+            }
+            if ($b == 2)
+            {
+                $tcw4[$b] = $tcw4[$b - 1] + 0.2;
+            }
+            if ($b >= 3)
+            {
+                $tcw4[$b] = $tcw4[$b - 1] + $ferr6[$b - 1] * ($tcw4[$b - 1] - $tcw4[$b - 2]) / ($ferr6[$b - 2] - $ferr6[$b - 1]);
+            }
+            if ($tcw4[$b] > $this->calculation_values['T3'] && $b > 2)
+            {
+                $tcw4[$b] = $tcw4[$b - 1] + $ferr6[$b - 1] * ($tcw4[$b - 1] - $tcw4[$b - 2]) / ($ferr6[$b - 2] - $ferr6[$b - 1]) / 5;
+            }
+
+            $this->calculation_values['TCW4'] = $tcw4[$b];
+
+            if ($this->calculation_values['GLL'] == 2)
+            {
+                $this->calculation_values['COGLY_SPHT3'] = $vam_base->EG_SPHT($this->calculation_values['TCW3'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHT4'] = $vam_base->EG_SPHT($this->calculation_values['TCW4'], $this->calculation_values['COGLY']) * 1000;
+            }
+            else
+            {
+                $this->calculation_values['COGLY_SPHT3'] = $vam_base->PG_SPHT($this->calculation_values['TCW3'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHT4'] = $vam_base->PG_SPHT($this->calculation_values['TCW4'], $this->calculation_values['COGLY']) * 1000;
+            }
+
+            $this->calculation_values['LMTDCON'] = (($this->calculation_values['T3'] - $this->calculation_values['TCW3']) - ($this->calculation_values['T3'] - $this->calculation_values['TCW4'])) / log(($this->calculation_values['T3'] - $this->calculation_values['TCW3']) / ($this->calculation_values['T3'] - $this->calculation_values['TCW4']));
+            $QLMTDCON = $this->calculation_values['UCON'] * $this->calculation_values['ACON'] * $this->calculation_values['LMTDCON'];
+            $this->calculation_values['QCON'] = $this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT4'] + $this->calculation_values['COGLY_SPHT3']) * 0.5 * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW3']) / 4187;
+            $ferr6[$b] = ($QLMTDCON - $this->calculation_values['QCON']) * 100 / $QLMTDCON;
+            $b++;
+        }
+    }
+
+    public function DHE()
+    {
+
+        $ferr7 = array();
+        $t22 = array();
+        $c = 0;
+        $vam_base = new VamBaseController();
+
+        $this->calculation_values['GDIL2'] = $this->calculation_values['GDIL'] * $this->calculation_values['FR1'];
+        $this->calculation_values['GDIL1'] = $this->calculation_values['GDIL'] - $this->calculation_values['GDIL2'];
+
+        $ferr7[0] = 1;
+        $c = 1;
+        while (abs($ferr7[$c - 1]) > 0.1)
+        {
+            if ($c == 1)
+            {
+                $t22[$c] = $this->calculation_values['T2'] + 2;
+            }
+            if ($c == 2)
+            {
+                $t22[$c] = $t22[$c - 1] + 1;
+            }
+            if ($c >= 3)
+            {
+                $t22[$c] = $t22[$c - 1] + $ferr7[$c - 1] * ($t22[$c - 1] - $t22[$c - 2]) / ($ferr7[$c - 2] - $ferr7[$c - 1]) / 2;
+            }
+
+            $this->calculation_values['T22'] = $t22[$c];
+            $this->calculation_values['I22'] = $this->calculation_values['T22'] + 100;
+
+            //$this->calculation_values['GREF1'] = ($this->calculation_values['QCON'] - $this->calculation_values['GREF'] * ($this->calculation_values['J9'] - $this->calculation_values['I3'])) / ($this->calculation_values['I22'] - $this->calculation_values['J9']);
+            //$this->calculation_values['GREF2'] = $this->calculation_values['GREF'] - $this->calculation_values['GREF1'];
+            //$this->calculation_values['GMED'] = $this->calculation_values['GDIL'] - $this->calculation_values['GREF1'];
+            //XMED = $this->calculation_values['GDIL'] * $this->calculation_values['XDIL'] / $this->calculation_values['GMED'];
+
+            $this->LTG();
+
+            $this->calculation_values['GREF2'] = $this->calculation_values['GREF'] - $this->calculation_values['GREF1'];
+            $QREFDHE = $this->calculation_values['GREF3'] * ($this->calculation_values['I13'] - $this->calculation_values['I22']);
+            $this->calculation_values['I21'] = $this->calculation_values['I2'] + ($QREFDHE / $this->calculation_values['GDIL2']);
+            $this->calculation_values['T21'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I21']);
+            $this->calculation_values['LMTDDHE'] = (($this->calculation_values['T13'] - $this->calculation_values['T21']) - ($this->calculation_values['T22'] - $this->calculation_values['T2'])) / log(($this->calculation_values['T13'] - $this->calculation_values['T21']) / ($this->calculation_values['T22'] - $this->calculation_values['T2']));
+            $QLIBRDHE = $this->calculation_values['UDHE'] * $this->calculation_values['ADHE'] * $this->calculation_values['LMTDDHE'];
+            $ferr7[$c] = ($QREFDHE - $QLIBRDHE) * 100 / $QREFDHE;
+            $c++;
+        }
+    }
+
+    public function LTG()
+    {
+        $ferr8 = array();
+        $t13 = array();
+        $d = 0;
+        $vam_base = new VamBaseController();
+
+        $ferr8[0] = 2;
+        $d = 1;
+        while (abs($ferr8[$d - 1]) > 0.1)
+        {
+            if ($d == 1)
+            {
+                $t13[$d] = $this->calculation_values['T9'] + 1;
+            }
+            if ($d == 2)
+            {
+                $t13[$d] = $t13[$d - 1] + 1;
+            }
+            if ($d >= 3)
+            {
+                $t13[$d] = $t13[$d - 1] + $ferr8[$d - 1] * ($t13[$d - 1] - $t13[$d - 2]) / ($ferr8[$d - 2] - $ferr8[$d - 1]) / 5;
+            }
+            $this->calculation_values['T13'] = $t13[$d];
+            $this->calculation_values['I13'] = $this->calculation_values['T13'] + 100;
+            $this->calculation_values['P4'] = $vam_base->LIBR_PRESSURE($this->calculation_values['T13'], 0);
+            
+            $this->SAREF();
+
+            //T4 = LIBR_TEMP($this->calculation_values['P4'], $this->calculation_values['XMED']);
+            //$this->calculation_values['J4'] = WATER_VAPOUR_ENTHALPY(T4, $this->calculation_values['P4']);
+            $this->calculation_values['T12'] = $vam_base->LIBR_TEMP($this->calculation_values['P3'], $this->calculation_values['XMED']);
+            $this->calculation_values['LMTDLTG'] = (($this->calculation_values['T13'] - $this->calculation_values['T12']) - ($this->calculation_values['T13'] - $this->calculation_values['T9'])) / log(($this->calculation_values['T13'] - $this->calculation_values['T12']) / ($this->calculation_values['T13'] - $this->calculation_values['T9']));
+            $this->calculation_values['QLMTDLTG'] = $this->calculation_values['ULTG'] * $this->calculation_values['ALTG'] * $this->calculation_values['LMTDLTG'];
+            $QREFLTG = $this->calculation_values['GREF3'] * ($this->calculation_values['J4'] - $this->calculation_values['I13']);
+            $ferr8[$d] = ($QREFLTG - $this->calculation_values['QLMTDLTG']) * 100 / $this->calculation_values['QLMTDLTG'];
+            $d++;
+        }
+    }
+
+
+    public function SAREF()
+    {
+
+        $ferr18 = array();
+        $gref4 = array();
+        $w = 0;
+        $vam_base = new VamBaseController();
+
+        $ferr18[0]=2;
+        $w=1;
+        while(abs($ferr18[$w-1])>0.01)
+        {
+            if($w==1)
+            {
+                $gref4[$w]=$this->calculation_values['AGREF4'];         
+            }
+            if($w==2)
+            {
+                $gref4[$w]=$gref4[$w-1]+1;
+            }
+            if($w>=3)
+            {
+                $gref4[$w]=$gref4[$w-1]+$ferr18[$w-1]*($gref4[$w-1]-$gref4[$w-2])/($ferr18[$w-2]-$ferr18[$w-1])/2;
+            }
+            $this->calculation_values['GREF4']=$gref4[$w];         // REF RELEASED IN SA
+            
+            $this->calculation_values['GREF3']=($this->calculation_values['QCON']+$this->calculation_values['GREF']*($this->calculation_values['I3']-$this->calculation_values['J9'])-$this->calculation_values['GREF4']*($this->calculation_values['I13']-$this->calculation_values['J9']))/($this->calculation_values['I22']-$this->calculation_values['J9']);  //REF USED IN LTG
+            $this->calculation_values['GREF1']=$this->calculation_values['GREF3']+$this->calculation_values['GREF4'];      // REF RELEASED IN HTG
+            $this->calculation_values['GMED']=$this->calculation_values['GDIL']-$this->calculation_values['GREF1'];
+            $this->calculation_values['XMED']=$this->calculation_values['GDIL']*$this->calculation_values['XDIL']/$this->calculation_values['GMED'];
+                    
+            $this->calculation_values['T4']=$vam_base->LIBR_TEMP($this->calculation_values['P4'],$this->calculation_values['XMED']);
+            $this->calculation_values['J4']=$vam_base->WATER_VAPOUR_ENTHALPY($this->calculation_values['T4'],$this->calculation_values['P4']);
+            
+            $this->calculation_values['QSA']=$this->calculation_values['HEATCAP'];
+            $this->calculation_values['QREFSA']=$this->calculation_values['GREF4']*($this->calculation_values['J4']-$this->calculation_values['I13']);
+            $ferr18[$w]=($this->calculation_values['QREFSA']-$this->calculation_values['QSA'])*100/$this->calculation_values['QSA'];
+            $w++;
+        }
+        $this->calculation_values['HW_ROW1']=$vam_base->HT_ROW($this->calculation_values['THW1']);
+        $this->calculation_values['HW_SPHT1']=$vam_base->HOT_WATER($this->calculation_values['THW1']);
+        $this->calculation_values['HW_SPHT2']=$vam_base->HOT_WATER($this->calculation_values['THW2']);
+        $this->calculation_values['GHW']=$this->calculation_values['QSA']/($this->calculation_values['HW_ROW1']*($this->calculation_values['HW_SPHT1']+$this->calculation_values['HW_SPHT2'])*0.5*($this->calculation_values['THW2']-$this->calculation_values['THW1']));
+        $this->calculation_values['LMTDSA']=(($this->calculation_values['T13']-$this->calculation_values['THW1'])-($this->calculation_values['T13']-$this->calculation_values['THW2']))/log(($this->calculation_values['T13']-$this->calculation_values['THW1'])/($this->calculation_values['T13']-$this->calculation_values['THW2']));
+        $this->calculation_values['ASA']=$this->calculation_values['QSA']/($this->calculation_values['LMTDSA']*$this->calculation_values['USA']);
+        $this->calculation_values['TNG']=$this->calculation_values['ASA']/(3.14*ODG*$this->calculation_values['LE']*0.985);
+    }
+
+    public function LTHE()
+    {
+
+        $ferr9 = array();
+        $t8 = array();
+        $h = 0;
+        $vam_base = new VamBaseController();
+
+        $ferr9[0] = 2;
+        $h = 1;
+        while (abs($ferr9[$h - 1]) > 0.1)
+        {
+            if ($h == 1)
+            {
+                $t8[$h] = $this->calculation_values['T6'] + 6;
+            }
+            if ($h == 2)
+            {
+                $t8[$h] = $t8[$h - 1] + 0.1;
+            }
+            if ($h >= 3)
+            {
+                $t8[$h] = $t8[$h - 1] + $ferr9[$h - 1] * ($t8[$h - 1] - $t8[$h - 2]) / ($ferr9[$h - 2] - $ferr9[$h - 1]);
+            }
+
+            $this->calculation_values['T8'] = $t8[$h];
+            $this->calculation_values['I8'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T8'], $this->calculation_values['XCONC']);
+            $QLIBRLTHE = $this->calculation_values['GCONC'] * ($this->calculation_values['I9'] - $this->calculation_values['I8']);
+            $this->calculation_values['I11'] = ($QLIBRLTHE / $this->calculation_values['GDIL1']) + $this->calculation_values['I2'];
+            $this->calculation_values['T11'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I11']);
+            $this->calculation_values['LMTDLTHE'] = (($this->calculation_values['T9'] - $this->calculation_values['T11']) - ($this->calculation_values['T8'] - $this->calculation_values['T2'])) / log(($this->calculation_values['T9'] - $this->calculation_values['T11']) / ($this->calculation_values['T8'] - $this->calculation_values['T2']));
+            $QLMTDLTHE = $this->calculation_values['ULTHE'] * $this->calculation_values['ALTHE'] * $this->calculation_values['LMTDLTHE'];
+            $ferr9[$h] = ($QLMTDLTHE - $QLIBRLTHE) * 100 / $QLMTDLTHE;
+            $h++;
+        }
+    }
+
+    public function HTHE()
+    {
+        $this->calculation_values['I14'] = ($this->calculation_values['GDIL2'] * $this->calculation_values['I21'] + $this->calculation_values['GDIL1'] * $this->calculation_values['I11']) / $this->calculation_values['GDIL'];
+        $this->calculation_values['T14'] = LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I14']);
+
+        $ferr10 = array();
+        $t7 = array();
+        $ht = 0;
+        $vam_base = new VamBaseController();
+
+        $ferr10[0] = 2;
+        $ht = 1;
+        while (abs($ferr10[$ht - 1]) > 0.1)
+        {
+            if ($ht == 1)
+            {
+                $t7[$ht] = $this->calculation_values['T4'] - 20;
+            }
+            if ($ht == 2)
+            {
+                $t7[$ht] = $t7[$ht - 1] - 5;
+            }
+            if ($ht >= 3)
+            {
+                $t7[$ht] = $t7[$ht - 1] + $ferr10[$ht - 1] * ($t7[$ht - 1] - $t7[$ht - 2]) / ($ferr10[$ht - 2] - $ferr10[$ht - 1]);
+            }
+
+            $this->calculation_values['T7'] = $t7[$ht];
+            $this->calculation_values['I7'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T7'], $this->calculation_values['XDIL']);
+            $this->calculation_values['I4'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T4'], $this->calculation_values['XMED']);
+
+            $this->HTG();
+
+            $QLIBRHTHE = $this->calculation_values['GDIL'] * ($this->calculation_values['I7'] - $this->calculation_values['I33']);
+            $this->calculation_values['I10'] = $this->calculation_values['I4'] - ($QLIBRHTHE / $this->calculation_values['GMED']);
+            $this->calculation_values['T10'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XMED'], $this->calculation_values['I10']);
+            $this->calculation_values['LMTDHTHE'] = (($this->calculation_values['T4'] - $this->calculation_values['T7']) - ($this->calculation_values['T10'] - $this->calculation_values['T33'])) / log(($this->calculation_values['T4'] - $this->calculation_values['T7']) / ($this->calculation_values['T10'] - $this->calculation_values['T33']));
+            $QLMTDHTHE = $this->calculation_values['UHTHE'] * $this->calculation_values['AHTHE'] * $this->calculation_values['LMTDHTHE'];
+            $ferr10[$ht] = ($QLIBRHTHE - $QLMTDHTHE) * 100 / $QLIBRHTHE;
+            $ht++;
+        }
+    }
+
+    public function HTG()
+    {
+        $vam_base = new VamBaseController();
+        
+        $this->calculation_values['QHTG'] = ($this->calculation_values['GMED'] * $this->calculation_values['I4']) + ($this->calculation_values['GREF1'] * $this->calculation_values['J4']) - ($this->calculation_values['GDIL'] * $this->calculation_values['I7']);
+        $this->calculation_values['T5'] = $vam_base->LIBR_TEMP($this->calculation_values['P4'], $this->calculation_values['XDIL']);
+        $this->calculation_values['LMTDHTG'] = $this->calculation_values['QHTG'] / ($this->calculation_values['AHTG'] * $this->calculation_values['UHTG']);
+        $this->calculation_values['TS'] = $this->calculation_values['T4'] + ($this->calculation_values['T4'] - $this->calculation_values['T5']) / (exp(($this->calculation_values['T4'] - $this->calculation_values['T5']) / $this->calculation_values['LMTDHTG']) - 1);
+
+        /********** $this->calculation_values['SFACTOR'] - STEAM *******/
+
+        if ($this->calculation_values['TCHW12'] < 5 || ($this->calculation_values['MODEL'] < 300 && $this->calculation_values['TCHW12'] < 6.7))
+        {
+            $SFACTOR1 = 1.0738 - 0.0068 * $this->calculation_values['TCHW12'];
+        }
+        else
+        {
+            $SFACTOR1 = 1.0;
+        }
+
+        if ($this->calculation_values['DT'] < 14.999)
+        {
+            $SFACTOR3 = 1.0;
+        }
+        else
+        {
+            $SFACTOR3 = (0.0006667 * $this->calculation_values['DT']) + 1.01;
+        }
+
+
+        if ($this->calculation_values['CV'] == 'Gross')
+        {
+            $this->calculation_values['CF'] = 0.88;
+        }
+        if ($this->calculation_values['CV'] == 'Normal')
+        {
+            $this->calculation_values['CF'] = 0.94;
+        }
+        $this->calculation_values['GFUEL'] = $this->calculation_values['QHTG'] / ($this->calculation_values['RCV1'] * $this->calculation_values['CF']);
+        $this->calculation_values['PERC'] = $this->calculation_values['HEATCAP']/ ($this->calculation_values['TON'] * 3024);
+        $this->calculation_values['SCH'] = 1.01 + ($this->calculation_values['PERC'] - 0.1) * 0.032308;
+
+        $this->calculation_values['GFUEL'] = $this->calculation_values['GFUEL'] * $this->calculation_values['SFACTOR'] * $SFACTOR1 * $SFACTOR3 * $this->calculation_values['SCH'];
+        $this->PRESSURE_DROP();
+        $this->HR();
+
+        if ($this->calculation_values['CV'] == 'Gross')
+        {
+            $this->calculation_values['GCFUEL'] = $this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] / 10960;
+        }
+        else if ($this->calculation_values['CV'] == 'Normal')
+        {
+            $this->calculation_values['GCFUEL'] = $this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] / 10200;
+        }
+    }
+
+    public function PRESSURE_DROP()
+    {
+        // PR_DROP_DATA();
+        $this->PR_DROP_CHILL();
+        $this->PR_DROP_COW();
+        $this->PR_DROP_HW();
+    }
+
+    public function HR()
+    {
+        $ex = 0;
+        $ferr = array();
+        $tex = array();
+        $vam_base = new VamBaseController();
+
+        $this->calculation_values['TEXH1'] = 200;
+        if ($ex == 0)
+        {
+            $this->calculation_values['TSTOUT'] = 130;
+        }
+
+        $ferr[0] = 1;
+        $ex = 1;
+
+        while (abs($ferr[$ex - 1]) > 0.1)
+        {
+            if ($ex == 1)
+            {
+                $tex[$ex] = $this->calculation_values['TSTOUT'];
+            }
+            if ($ex == 2)
+            {
+                $tex[$ex] = $tex[$ex - 1] + 5;
+            }
+            if ($ex > 2)
+            {
+                $tex[$ex] = $tex[$ex - 1] + $ferr[$ex - 1] * ($tex[$ex - 1] - $tex[$ex - 2]) / ($ferr[$ex - 2] - $ferr[$ex - 1]) / 5;
+            }
+            $this->calculation_values['TEXH2'] = $tex[$ex];
+
+            if ($this->calculation_values['GCV'] == 'NaturalGas')
+            {
+                $this->calculation_values['GEXFUEL'] = $this->calculation_values['GFUEL'] * 16;
+                $this->calculation_values['CPEX1'] = (0.00005625 * $this->calculation_values['TEXH1']) + 0.251875;
+                $this->calculation_values['CPEX2'] = (0.00005625 * $this->calculation_values['TEXH2']) + 0.251875;
+            }
+            else
+            {
+                $this->calculation_values['GEXFUEL'] = $this->calculation_values['GFUEL'] * 18;
+                $this->calculation_values['CPEX1'] = 0.256;
+                $this->calculation_values['CPEX2'] = 0.256;
+            }
+
+            $this->calculation_values['QEXFUEL'] = $this->calculation_values['GEXFUEL'] * ($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) * 0.5 * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXH2']) * 0.97;
+            $this->calculation_values['I33'] = $this->calculation_values['I14'] + ($this->calculation_values['QEXFUEL'] / $this->calculation_values['GDIL']);
+            $this->calculation_values['T33'] = $vam_base->LIBR_TEMPERATURE($this->calculation_values['XDIL'], $this->calculation_values['I33']);
+
+            $this->calculation_values['LMTDHR'] = (($this->calculation_values['TEXH1'] - $this->calculation_values['T33']) - ($this->calculation_values['TEXH2'] - $this->calculation_values['T14'])) / (log(($this->calculation_values['TEXH1'] - $this->calculation_values['T33']) / ($this->calculation_values['TEXH2'] - $this->calculation_values['T14'])));
+            $this->calculation_values['QLMTDHR'] = $this->calculation_values['UHR'] * $this->calculation_values['AHR'] * $this->calculation_values['LMTDHR'];
+
+            $ferr[$ex] = ($this->calculation_values['QLMTDHR'] - $this->calculation_values['QEXFUEL']) * 100 / $this->calculation_values['QLMTDHR'];
+            $ex++;
+
+        }
+    }
+
+    public function PR_DROP_COW()
+    {
+        $COGLY_ROWH33 = 0;
+        $COGLY_VISH33 = 0;
+        $FH = 0;
+        $FL = 0;
+        $F = 0;
+
+        $vam_base = new VamBaseController();
+
+        $this->calculation_values['PIDA'] = ($this->calculation_values['PODA'] - (2 * $this->calculation_values['THPA'])) / 1000;
+        $this->calculation_values['APA'] = 3.141593 * $this->calculation_values['PIDA'] * $this->calculation_values['PIDA'] / 4;
+        $this->calculation_values['VPA'] = ($this->calculation_values['GCW'] * 4) / (3.141593 * $this->calculation_values['PIDA'] * $this->calculation_values['PIDA'] * 3600);
+        //VD1 = $this->calculation_values['GCW'] / (3600 * DW1 * DH1);   //Duct 2
+
+        $TMA = ($this->calculation_values['TCW1H'] + $this->calculation_values['TCW2H'] + $this->calculation_values['TCW1L'] + $this->calculation_values['TCW2L']) / 4.0;
+        if ($this->calculation_values['GLL'] == 3)
+        {
+            $COGLY_ROWH33 = $vam_base->PG_ROW($TMA, $this->calculation_values['COGLY']);
+            $COGLY_VISH33 = $vam_base->PG_VISCOSITY($TMA, $this->calculation_values['COGLY']) / 1000;
+        }
+        else
+        {
+            $COGLY_ROWH33 = $vam_base->EG_ROW($TMA, $this->calculation_values['COGLY']);
+            $COGLY_VISH33 = $vam_base->EG_VISCOSITY($TMA, $this->calculation_values['COGLY']) / 1000;
+        }
+        $this->calculation_values['REPA'] = ($this->calculation_values['PIDA'] * $this->calculation_values['VPA'] * $COGLY_ROWH33) / $COGLY_VISH33;          //REYNOLDS NO IN PIPE1  
+        // RED1 = ((ED1NB) * VD1 * $COGLY_ROWH33) / $COGLY_VISH33;            //REYNOLDS NO IN DUCT1
+
+        $this->calculation_values['FFA'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDA'] * 1000)) + (5.74 / pow($this->calculation_values['REPA'], 0.9))), 2);     //FRICTION FACTOR CAL
+        //  FFD1 = 1.325 / pow(log((0.0457 / (3.7 * (ED1NB) * 1000)) + (5.74 / pow(RED1, 0.9))), 2);
+
+        $this->calculation_values['FLP1'] = ($this->calculation_values['FFA'] * ($this->calculation_values['PSL1'] + $this->calculation_values['PSL2']) / $this->calculation_values['PIDA']) * ($this->calculation_values['VPA'] * $this->calculation_values['VPA'] / (2 * 9.81)) + ((14 * $this->calculation_values['FT']) * ($this->calculation_values['VPA'] * $this->calculation_values['VPA']) / (2 * 9.81));        //FR LOSS IN PIPE                                   
+        //   FLD1 = ((FFD1 * DSL) / ED1NB) * (VD1 * VD1 / (2 * 9.81));                                  //FR LOSS IN DUCT
+        $this->calculation_values['FLOT'] = (1 + 0.5 + 1 + 0.5) * ($this->calculation_values['VPA'] * $this->calculation_values['VPA'] / (2 * 9.81));                                                                  //EXIT, ENTRY LOSS
+
+        $this->calculation_values['AFLP'] = ($this->calculation_values['FLP1'] + $this->calculation_values['FLOT']) * 1.075;               //7.5% SAFETY
+
+        $REH = ($this->calculation_values['VAH'] * $this->calculation_values['IDA'] * $COGLY_ROWH33) / $COGLY_VISH33;
+        $REL = ($this->calculation_values['VAL'] * $this->calculation_values['IDA'] * $COGLY_ROWH33) / $COGLY_VISH33;
+
+        if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6) && $this->calculation_values['MODEL'] < 1200)
+        {
+            $FH = (0.0014 + (0.137 / pow($REH, 0.32))) * 1.12;
+            $FL = (0.0014 + (0.137 / pow($REL, 0.32))) * 1.12;
+        }
+        else if (($this->calculation_values['TU5'] < 2.1 || $this->calculation_values['TU5'] == 6) && $this->calculation_values['MODEL'] > 1200)
+        {
+            $FH = (0.0014 + (0.137 / pow($REH, 0.32)));
+            $FL = (0.0014 + (0.137 / pow($REL, 0.32)));
+        }
+        else
+        {
+            $FH = 0.0014 + (0.125 / pow($REH, 0.32));
+            $FL = 0.0014 + (0.125 / pow($REL, 0.32));
+        }
+
+        $FA1H = 2 * $FH * $this->calculation_values['LE'] * $this->calculation_values['VAH'] * $this->calculation_values['VAH'] / (9.81 * $this->calculation_values['IDA']);
+        $FA2H = $this->calculation_values['VAH'] * $this->calculation_values['VAH'] / (4 * 9.81);
+        $FA3H = $this->calculation_values['VAH'] * $this->calculation_values['VAH'] / (2 * 9.81);
+        $FA4H = ($FA1H + $FA2H + $FA3H) * $this->calculation_values['TAPH'];                  //FRICTION LOSS IN ABSH TUBES
+
+        $FA1L = 2 * $FL * $this->calculation_values['LE'] * $this->calculation_values['VAL'] * $this->calculation_values['VAL'] / (9.81 * $this->calculation_values['IDA']);
+        $FA2L = $this->calculation_values['VAL'] * $this->calculation_values['VAL'] / (4 * 9.81);
+        $FA3L = $this->calculation_values['VAL'] * $this->calculation_values['VAL'] / (2 * 9.81);
+        $FA4L = ($FA1L + $FA2L + $FA3L) * $this->calculation_values['TAPL'];                  //FRICTION LOSS IN ABSL TUBES
+
+        if ($this->calculation_values['TAP'] == 1)
+        {
+            $this->calculation_values['FLA'] = $FA4H + $this->calculation_values['AFLP'];      //PARAFLOW WILL HAVE ONE ENTRY, ONE EXIT, ONE TUBE FRICTION LOSS
+        }
+        else
+        {
+            $this->calculation_values['FLA'] = $FA4H + $FA4L + $this->calculation_values['AFLP'];
+        }
+        $TMC = ($this->calculation_values['TCW3'] + $this->calculation_values['TCW4']) / 2.0;
+
+        if ($this->calculation_values['GLL'] == 3)
+        {
+            $COGLY_ROWH33 = $vam_base->PG_ROW($TMC, $this->calculation_values['COGLY']);
+            $COGLY_VISH33 = $vam_base->PG_VISCOSITY($TMC, $this->calculation_values['COGLY']) / 1000;
+        }
+        else
+        {
+            $COGLY_ROWH33 = $vam_base->EG_ROW($TMC, $this->calculation_values['COGLY']);
+            $COGLY_VISH33 = $vam_base->EG_VISCOSITY($TMC, $this->calculation_values['COGLY']) / 1000;
+        }
+        $RE1 = ($this->calculation_values['VC'] * $this->calculation_values['IDC'] * $COGLY_ROWH33) / $COGLY_VISH33;
+
+        if (($this->calculation_values['TV5'] < 2.1 || $this->calculation_values['TV5'] == 4) && $this->calculation_values['MODEL'] < 950)
+        {
+            $F = (0.0014 + (0.137 / pow($RE1, 0.32))) * 1.12;
+        }
+        else if (($this->calculation_values['TV5'] < 2.1 || $this->calculation_values['TV5'] == 4) && $this->calculation_values['MODEL'] > 950)
+        {
+            $F = 0.0014 + (0.137 / pow($RE1, 0.32));
+        }
+        else
+        {
+            $F = 0.0014 + (0.125 / pow($RE1, 0.32));
+        }
+
+        $FC1 = 2 * $F * $this->calculation_values['LE'] * $this->calculation_values['VC'] * $this->calculation_values['VC'] / (9.81 * $this->calculation_values['IDC']);
+        $FC2 = $this->calculation_values['VC'] * $this->calculation_values['VC'] / (4 * 9.81);
+        $FC3 = $this->calculation_values['VC'] * $this->calculation_values['VC'] / (2 * 9.81);
+        $this->calculation_values['FC4'] = ($FC1 + $FC2 + $FC3) * $this->calculation_values['TCP'];                      //FRICTION LOSS IN CONDENSER TUBES
+        $this->calculation_values['FLC'] = $this->calculation_values['FC4'];
+
+        $this->calculation_values['PDA'] = $this->calculation_values['FLA'] + $this->calculation_values['SHA'] + $this->calculation_values['FC4'];
+    }
+
+    public function PR_DROP_HW()
+    {
+        $vam_base = new VamBaseController();
+        
+        if ($this->calculation_values['GHW'] <= 20)
+            $this->calculation_values['NB'] = 50;
+        else if ($this->calculation_values['GHW'] <= 45)
+            $this->calculation_values['NB'] = 80;
+        else if ($this->calculation_values['GHW'] <= 80)
+            $this->calculation_values['NB'] = 100;
+        else if ($this->calculation_values['GHW'] <= 120)
+            $this->calculation_values['NB'] = 125;
+        else if ($this->calculation_values['GHW'] <= 180)
+            $this->calculation_values['NB'] = 150;
+        else if ($this->calculation_values['GHW'] <= 300)
+            $this->calculation_values['NB'] = 200;
+        else if ($this->calculation_values['GHW'] <= 500)
+            $this->calculation_values['NB'] = 250;
+        else if ($this->calculation_values['GHW'] <= 650)
+            $this->calculation_values['NB'] = 300;
+        else if ($this->calculation_values['GHW'] <= 800)
+            $this->calculation_values['NB'] = 350;
+        else
+            $this->calculation_values['NB'] = 400;
+
+        $this->PIPE_ID();
+
+        $this->calculation_values['GSL1'] = $this->calculation_values['PIDG'] * 3;
+        $this->calculation_values['GSL2'] = $this->calculation_values['PIDG'] * 3;
+
+        $this->calculation_values['VPG'] = ($this->calculation_values['GHW'] * 4) / (3.14153 * $this->calculation_values['PIDG'] * $this->calculation_values['PIDG'] * 3600);               //PIPE VELOCITY
+        $this->calculation_values['TMG'] = ($this->calculation_values['THW1'] + $this->calculation_values['THW2']) / 2.0;
+
+        $this->calculation_values['VISG'] = $vam_base->PG_VISCOSITY($this->calculation_values['TMG'], 0) / 1000;
+        $GLY_ROW = $vam_base->HT_ROW($this->calculation_values['TMG']);
+
+        $this->calculation_values['REPG'] = ($this->calculation_values['PIDG'] * $this->calculation_values['VPG'] * $GLY_ROW) / $this->calculation_values['VISG'];                       //REYNOLDS NO IN PIPE
+
+        $this->calculation_values['FFH'] = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDG'] * 1000)) + (5.74 / pow($this->calculation_values['REPG'], 0.9))), 2);
+
+        $this->calculation_values['FGP1'] = (($this->calculation_values['GSL1'] + $this->calculation_values['GSL2']) * $this->calculation_values['FFH'] / $this->calculation_values['PIDG']) * ($this->calculation_values['VPG'] * $this->calculation_values['VPG'] / (2 * 9.81));
+        $this->calculation_values['FGP2'] = (($this->calculation_values['VPG'] * $this->calculation_values['VPG'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VPG'] * $this->calculation_values['VPG'] / (2 * 9.81))) + (2 * 8 * $this->calculation_values['FFH'] * ($this->calculation_values['VPG'] * $this->calculation_values['VPG'] / (2 * 9.81))); //ENTRY/EXIT/2 45 DEG BENDS
+
+        $this->calculation_values['FGP'] = ($this->calculation_values['FGP1'] + $this->calculation_values['FGP2']) * 1.15;                             //FR LOSS IN PIPES
+
+
+        for ($this->calculation_values['TGP'] = 1; $this->calculation_values['TGP'] <= 6; $this->calculation_values['TGP']++)
+        {
+
+            $this->calculation_values['VG'] = $this->calculation_values['GHW'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
+            if ($this->calculation_values['VG'] > 1.0)
+            {
+                break;
+            }
+        }
+
+        if ($this->calculation_values['TGP'] > 1 && $this->calculation_values['VG'] > 1.61)
+        {
+            $this->calculation_values['TGP'] = $this->calculation_values['TGP'] - 1;
+            $this->calculation_values['VG'] = $this->calculation_values['GHW'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
+
+        }
+
+        $RE = ($GLY_ROW * $this->calculation_values['VG'] * $this->calculation_values['IDG']) / $this->calculation_values['VISG'];
+
+        if ($this->calculation_values['MODEL'] < 1200)
+        {
+            $F = (0.0014 + (0.137 / pow($RE, 0.32))) * 1.12;
+        }
+        else
+        {
+            $F = (0.0014 + (0.137 / pow($RE, 0.32)));
+        }
+
+        //double $F = (1.325 / pow(log((1.53 / (3.7 * $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($RE, 0.9))), 2)) * ((-0.0315 * $this->calculation_values['VG']) + 0.85); //19 mm corrugated tubes 
+
+        $this->calculation_values['FG1'] = $F * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG'] / (9.81 * $this->calculation_values['IDG'] * 2);
+        $this->calculation_values['FG2'] = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (4 * 9.81);
+        $this->calculation_values['FG3'] = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (2 * 9.81);
+        $this->calculation_values['FG5'] = ($this->calculation_values['FG1'] + $this->calculation_values['FG2'] + $this->calculation_values['FG3']) * ($this->calculation_values['TGP']);                        //FR LOSS IN TUBES
+
+        $this->calculation_values['GFL'] = $this->calculation_values['FGP'] + $this->calculation_values['FG5'];                                    //TOTAL FRICTION LOSS IN HW
+
+    }
+
+
     public function getFormValues($model_number){
 
         $model_number = (int)$model_number;
