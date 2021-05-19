@@ -332,8 +332,10 @@ border: #0FA015 1px solid;
 				},
 			});
 		}
-
-		getCalculatorList();
+		if($('#user_type').val() != 'ADMIN'){
+			getCalculatorList();
+		}
+		
 	});
 </script>
 @endsection
