@@ -11203,7 +11203,8 @@ table.footable-paging-center>tfoot>tr.footable-paging>td {
 .common-img-bg {
 	background-size: cover;
 	background: url(../images/bg.jpg) no-repeat center center fixed;
-	height: 100%
+	height: 100%;
+	background-size: cover;
 }
 .auth-body {
 	min-width: 450px

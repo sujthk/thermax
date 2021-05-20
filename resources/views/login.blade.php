@@ -44,8 +44,8 @@
 			<!-- Container-fluid starts -->
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-sm-11"></div>
-					<div class="col-sm-1">
+					<div class="col-sm-9"></div>
+					<div class="col-sm-3">
 						<!-- Authentication card start -->
 						<div class="login-card card-block auth-body" style="padding-left: 117px; min-width: 500px;">
 							

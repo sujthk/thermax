@@ -2236,6 +2236,229 @@ class ChillerHeaterG2Controller extends Controller
 
     }
 
+    public function CONVERGENCE()
+    {
+        $CC = array();
+        $j = 0;
+
+        $CC[0][0] = $this->calculation_values['GCHW'] * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] * ($this->calculation_values['TCHW1H'] - $this->calculation_values['TCHW2H']) / 4187;                //EVAPORATORH
+        $CC[1][0] = $this->calculation_values['UEVAH'] * $this->calculation_values['AEVAH'] * $this->calculation_values['LMTDEVAH'];
+        $CC[2][0] = ($this->calculation_values['GREFH'] * ($this->calculation_values['J1H'] - $this->calculation_values['I3'])) - ($this->calculation_values['GREFL'] * ($this->calculation_values['I3'] - $this->calculation_values['I1H']));
+
+        $CC[0][1] = $this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2H'] + $this->calculation_values['COGLY_SPHT1H']) * 0.5 * ($this->calculation_values['TCW2H'] - $this->calculation_values['TCW1H']) / 4187; //ABSORBERH
+        $CC[1][1] = $this->calculation_values['UABSH'] * $this->calculation_values['AABSH'] * $this->calculation_values['LMTDABSH'];
+        $CC[2][1] = $this->calculation_values['GREFH'] * $this->calculation_values['J1H'] + $this->calculation_values['GCONCH'] * $this->calculation_values['I2L'] - $this->calculation_values['GDIL'] * $this->calculation_values['I2'];
+
+        $CC[0][2] = $this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT4'] + $this->calculation_values['COGLY_SPHT3']) * 0.5 * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW3']) / 4187;   //CONDENSER
+        $CC[1][2] = $this->calculation_values['UCON'] * $this->calculation_values['ACON'] * $this->calculation_values['LMTDCON'];
+        $CC[2][2] = ($this->calculation_values['GREF2'] * $this->calculation_values['J9']) + ($this->calculation_values['GREF3'] * $this->calculation_values['I22']) + ($this->calculation_values['GREF4'] * $this->calculation_values['I13']) - ($this->calculation_values['GREF'] * $this->calculation_values['I3']);
+
+        $CC[0][3] = $this->calculation_values['GREF3'] * ($this->calculation_values['J4'] - $this->calculation_values['I13']);                                      //LTG
+        $CC[1][3] = $this->calculation_values['ULTG'] * $this->calculation_values['ALTG'] * $this->calculation_values['LMTDLTG'];
+        $CC[2][3] = $this->calculation_values['GCONC'] * $this->calculation_values['I9'] + $this->calculation_values['GREF2'] * $this->calculation_values['J9'] - $this->calculation_values['GMED'] * $this->calculation_values['I10'];
+
+        $CC[0][4] = $this->calculation_values['QHTG'];                                                    //HTG
+        $CC[1][4] = $this->calculation_values['UHTG'] * $this->calculation_values['AHTG'] * $this->calculation_values['LMTDHTG'];
+        $CC[2][4] = $this->calculation_values['GMED'] * $this->calculation_values['I4'] + $this->calculation_values['GREF1'] * $this->calculation_values['J4'] - $this->calculation_values['GDIL'] * $this->calculation_values['I7'];
+
+        $CC[0][5] = $this->calculation_values['GDIL1'] * ($this->calculation_values['I11'] - $this->calculation_values['I2']);                                      //LTHE
+        $CC[1][5] = $this->calculation_values['ULTHE'] * $this->calculation_values['ALTHE'] * $this->calculation_values['LMTDLTHE'];
+        $CC[2][5] = $this->calculation_values['GCONC'] * ($this->calculation_values['I9'] - $this->calculation_values['I8']);
+
+        $CC[0][6] = $this->calculation_values['GMED'] * ($this->calculation_values['I4'] - $this->calculation_values['I10']);                                           //HTHE
+        $CC[1][6] = $this->calculation_values['UHTHE'] * $this->calculation_values['AHTHE'] * $this->calculation_values['LMTDHTHE'];
+        $CC[2][6] = $this->calculation_values['GDIL'] * ($this->calculation_values['I7'] - $this->calculation_values['I14']);
+
+        $CC[0][7] = $this->calculation_values['GCHW'] * $this->calculation_values['CHGLY_ROW12'] * $this->calculation_values['CHGLY_SPHT12'] * ($this->calculation_values['TCHW1L'] - $this->calculation_values['TCHW2L']) / 4187;                //EVAPORATORL
+        $CC[1][7] = $this->calculation_values['UEVAL'] * $this->calculation_values['AEVAL'] * $this->calculation_values['LMTDEVAL'];
+        $CC[2][7] = $this->calculation_values['GREFL'] * ($this->calculation_values['J1L'] - $this->calculation_values['I1H']);
+
+        $CC[0][8] = $this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2L'] + $this->calculation_values['COGLY_SPHT1L']) * 0.5 * ($this->calculation_values['TCW2L'] - $this->calculation_values['TCW1L']) / 4187;  //ABSORBERL
+        $CC[1][8] = $this->calculation_values['UABSL'] * $this->calculation_values['AABSL'] * $this->calculation_values['LMTDABSL'];
+        $CC[2][8] = $this->calculation_values['GCONC'] * $this->calculation_values['I8'] + $this->calculation_values['GREFL'] * $this->calculation_values['J1L'] - $this->calculation_values['GDILL'] * $this->calculation_values['I2L'];
+
+        $CC[0][9] = $this->calculation_values['GDIL2'] * ($this->calculation_values['I21'] - $this->calculation_values['I2']);                                      //DHE
+        $CC[1][9] = $this->calculation_values['UDHE'] * $this->calculation_values['ADHE'] * $this->calculation_values['LMTDDHE'];
+        $CC[2][9] = $this->calculation_values['GREF3'] * ($this->calculation_values['I13'] - $this->calculation_values['I22']);
+
+        $CC[0][10] = $this->calculation_values['GREF4'] * ($this->calculation_values['J4'] - $this->calculation_values['I13']);                           //sa
+        $CC[1][10] = $this->calculation_values['GHW'] * $this->calculation_values['HW_ROW1'] * (($this->calculation_values['HW_SPHT1'] + $this->calculation_values['HW_SPHT2']) / 2) * ($this->calculation_values['THW2'] - $this->calculation_values['THW1']);
+        $CC[2][10] = $this->calculation_values['USA'] * $this->calculation_values['ASA'] * $this->calculation_values['LMTDSA'];
+
+        $CC[0][11] = $this->calculation_values['GDIL'] * ($this->calculation_values['I33'] - $this->calculation_values['I14']);
+        $CC[1][11] = $this->calculation_values['UHR'] * $this->calculation_values['AHR'] * $this->calculation_values['LMTDHR'];
+        $CC[2][11] = $this->calculation_values['GEXFUEL'] * ($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) * 0.5 * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXH2']) * 0.97; 
+
+        for ($j = 0; $j < 12; $j++)
+        {
+            if ($CC[0][$j] <= $CC[1][$j] && $CC[0][$j] <= $CC[2][$j])   //MIN
+                $CC[3][$j] = $CC[0][$j];
+            if ($CC[1][$j] <= $CC[0][$j] && $CC[1][$j] <= $CC[2][$j])
+                $CC[3][$j] = $CC[1][$j];
+            if ($CC[2][$j] <= $CC[0][$j] && $CC[2][$j] <= $CC[1][$j])
+                $CC[3][$j] = $CC[2][$j];
+
+            if ($CC[0][$j] >= $CC[1][$j] && $CC[0][$j] >= $CC[2][$j])   //MAX
+                $CC[4][$j] = $CC[0][$j];
+            if ($CC[1][$j] >= $CC[0][$j] && $CC[1][$j] >= $CC[2][$j])
+                $CC[4][$j] = $CC[1][$j];
+            if ($CC[2][$j] >= $CC[0][$j] && $CC[2][$j] >= $CC[1][$j])
+                $CC[4][$j] = $CC[2][$j];
+
+            $CC[5][$j] = ($CC[4][$j] - $CC[3][$j]) / $CC[4][$j] * 100.0;    //$R
+        }
+
+        $HEATIN = ($this->calculation_values['TON'] * 3024) + $this->calculation_values['QHTG'] + $this->calculation_values['QEXFUEL'];
+        $HEATOUT = ($this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2H'] + $this->calculation_values['COGLY_SPHT1H']) * 0.5 * ($this->calculation_values['TCW2H'] - $this->calculation_values['TCW1H']) / 4187) + ($this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT2L'] + $this->calculation_values['COGLY_SPHT1L']) * 0.5 * ($this->calculation_values['TCW2L'] - $this->calculation_values['TCW1L']) / 4187) + ($this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * ($this->calculation_values['COGLY_SPHT4'] + $this->calculation_values['COGLY_SPHT3']) * 0.5 * ($this->calculation_values['TCW4'] - $this->calculation_values['TCW3']) / 4187) + $this->calculation_values['QSA'];
+        $this->calculation_values['HBERROR'] = ($HEATIN - $HEATOUT) / $HEATIN * 100;
+    }
+
+    public function RESULT_CALCULATE(){
+
+
+        $notes = array();
+        $this->calculation_values['Notes'] = "";
+
+        if ($this->calculation_values['T13'] > $this->calculation_values['AT13'])
+        {
+            $this->calculation_values['Result'] = "FAILED";
+            $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_TEMP'];
+            return false;
+        }
+        if (!$this->CONCHECK())
+        {
+            $this->calculation_values['Result'] = "FAILED";
+            
+            return false;
+        }
+        
+
+        $this->HEATBALANCE();
+
+        //Assign the output properties of chiller
+        $this->calculation_values['HeatInput'] = $this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] + $this->calculation_values['QEXFUEL'];
+        $this->calculation_values['HeatRejected'] = $this->calculation_values['TON'] * 3024 + $this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * $this->calculation_values['CF'] + $this->calculation_values['QEXFUEL'];
+
+        $this->calculation_values['CoolingWaterOutTemperature'] = $this->calculation_values['TCWA4'];
+        $this->calculation_values['FuelType'] = $this->calculation_values['GCV'];
+        $this->calculation_values['FuelConsumption'] = $this->calculation_values['GFUEL'];
+        $this->calculation_values['EvaporatorPasses'] = $this->calculation_values['TP'] . "+" . $this->calculation_values['TP'];
+
+        if ($this->calculation_values['TAP'] == 1)
+        {
+            $this->calculation_values['AbsorberPasses'] = $this->calculation_values['TAPH'] . "," . $this->calculation_values['TAPL'];
+        }
+        else
+        {
+            $this->calculation_values['AbsorberPasses'] = $this->calculation_values['TAPH'] . "+" . $this->calculation_values['TAPL'];
+        }
+
+        $this->calculation_values['CondenserPasses'] = $this->calculation_values['TCP'];
+        $this->calculation_values['ChilledFrictionLoss'] = round($this->calculation_values['FLE'],1);
+        $this->calculation_values['CoolingFrictionLoss'] = round((($this->calculation_values['FLA'] + $this->calculation_values['FC4'])),1);
+        $this->calculation_values['ChilledPressureDrop'] = $this->calculation_values['PDE'];
+        $this->calculation_values['CoolingPressureDrop'] = $this->calculation_values['PDA'];
+        $this->calculation_values['ChilledWaterFlow'] = round($this->calculation_values['GCHW'],1);
+        $this->calculation_values['BypassFlow'] = $this->calculation_values['GCW'] - $this->calculation_values['GCWC'];
+        $this->calculation_values['COP'] = ($this->calculation_values['TON'] * 3024) / (($this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * $this->calculation_values['CF']) + $this->calculation_values['QEXFUEL']);
+
+        $this->calculation_values['HotWaterFlow'] = $this->calculation_values['GHW'] ;
+        $this->calculation_values['HotWaterFrictionLoss'] =$this->calculation_values['GFL'];
+        $this->calculation_values['GeneratorPasses'] =$this->calculation_values['TGP'];
+        $this->calculation_values['HotWaterConnectionDiameter'] =$this->calculation_values['NB'];
+
+        $this->calculation_values['ModeBCapacity'] = $this->calculation_values['TON'] * 0.5;
+        $this->calculation_values['ModeBChilledWaterOutTemperature'] = $this->calculation_values['TCHW11'] - ($this->calculation_values['DT'] / 2);
+        $this->calculation_values['ModeBCoolingWaterInTemperature'] = "40";
+        $this->calculation_values['ModeBCoolingWaterOutTemperature'] = isset($this->calculation_values['TCWS']) ?  $this->calculation_values['TCWS'] : "";
+        $this->calculation_values['ModeBFuelConsumption'] = $this->calculation_values['GFUEL']* 0.75;
+        $this->calculation_values['ModeBHeatInput'] = $this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * 0.75 + $this->calculation_values['QEXFUEL'];
+        $this->calculation_values['ModeBHeatRejected'] = ($this->calculation_values['TON'] * 1512) + ($this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * $this->calculation_values['CF'] * 0.75) + $this->calculation_values['QEXFUEL'];
+
+        
+        $this->calculation_values['Result'] = "FAILED";
+        if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 35)
+        {
+            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            $this->calculation_values['HHType'] = "NonStandard";
+        }
+        if (($this->calculation_values['P4'] - $this->calculation_values['P3']) < 350)
+        {
+            array_push($notes,$this->notes['NOTES_HTHE_PRDROP']);
+            $this->calculation_values['HHType'] = "NonStandard";
+        }
+        if ($this->calculation_values['VELEVA'] == 1)
+        {
+            array_push($notes,$this->notes['NOTES_EC_EVAP']);
+            $this->calculation_values['ECinEva'] = 1;
+        }
+        if (!$this->calculation_values['isStandard'])
+        {
+            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+
+        }
+
+        if ($this->calculation_values['TCHW12'] < 4.49)
+        {
+            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+        }
+        if ($this->calculation_values['TCHW12'] < 4.49)
+        {
+            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+        }
+        if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
+        {
+            array_push($notes,$this->notes['NOTES_OUTPUT_GA']);
+            $bypass = $this->notes['NOTES_OUTPUT_BYPASS'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
+            array_push($notes,$bypass);
+        }
+        
+        if ($this->calculation_values['TUU'] == 'ari')
+        {
+            array_push($notes,$this->notes['NOTES_ARI']);
+        }
+       
+        array_push($notes,$this->notes['NOTES_INSUL']);
+        array_push($notes,$this->notes['NOTES_NON_INSUL']);
+        array_push($notes,$this->notes['NOTES_ROOM_TEMP']);
+        array_push($notes,$this->notes['NOTES_CUSTOM']);
+
+        if ($this->calculation_values['XCONC'] < ($this->calculation_values['KM'] - 0.8))
+        {
+            if ($this->calculation_values['T13'] < ($this->calculation_values['AT13'] - 2))
+            {
+                $this->calculation_values['Result'] = "OverDesigned";
+            }
+            if ($this->calculation_values['T13'] >= ($this->calculation_values['AT13'] - 2) && $this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
+            {
+                array_push($notes,$this->notes['NOTES_RED_COW']);
+                $this->calculation_values['Result'] = "GoodSelection";
+            }
+            if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
+            {
+                $this->calculation_values['Result'] = "Optimal";
+            }
+        }
+        if ($this->calculation_values['XCONC'] < ($this->calculation_values['KM'] - 0.4) && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.8))
+        {
+            if ($this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
+            {
+                array_push($notes,$this->notes['NOTES_RED_COW']);
+                $this->calculation_values['Result'] = "GoodSelection";
+            }
+            if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
+            {
+                $this->calculation_values['Result'] = "Optimal";
+            }
+        }
+        if ($this->calculation_values['XCONC'] < $this->calculation_values['KM'] && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.4))
+        {
+            $this->calculation_values['Result'] = "Optimal";
+        }
+
+        $this->calculation_values['notes'] = $notes;
+    }
+
 
     public function getFormValues($model_number){
 
