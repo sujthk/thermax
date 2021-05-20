@@ -302,6 +302,7 @@
                                                      <option value="340">L5 E4</option>
                                                      <option value="380">L5 E5</option>
                                                      <option value="425">L5 E6</option>
+                                                     <option value="450">L5 F1</option>
                                                      <option value="485">L5 F2</option>
                                                      <option value="540">L5 F3</option>
                                                      <option value="630">L5 G1</option>

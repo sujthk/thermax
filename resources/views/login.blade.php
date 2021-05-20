@@ -52,7 +52,7 @@
 							<form class="md-float-material" id="login_form" method="post" action="{{ url('login') }}">
 								{{ csrf_field() }}
 								<div class="text-center">
-									<img style="width: 300px; height: 76px;" src="{{asset('assets/images/ichill.png')}}" alt="logo.png">
+									<!-- <img style="width: 300px; height: 76px;" src="{{asset('assets/images/ichill.png')}}" alt="logo.png"> -->
 								</div>
 								<div class="auth-box">
 									<div class="row m-b-20">
