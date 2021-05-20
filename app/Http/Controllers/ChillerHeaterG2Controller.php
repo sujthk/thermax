@@ -2459,6 +2459,652 @@ class ChillerHeaterG2Controller extends Controller
         $this->calculation_values['notes'] = $notes;
     }
 
+    public function CONCHECK()
+    {
+        if ($this->calculation_values['MODEL'] < 130)
+        {
+            if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+            else
+            {
+                if ($this->calculation_values['TCW11'] < 29.4)
+                    $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462);
+                else
+                {
+                    if ($this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                        $this->calculation_values['KM'] = 62.6 + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+                    else
+                        $this->calculation_values['KM'] = 62.6;
+                }
+            }
+        }
+        else if ($this->calculation_values['MODEL'] > 130)
+        {
+            if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+            else
+            {
+                if ($this->calculation_values['TCW11'] < 29.4)
+                    $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462);
+                else
+                {
+                    if ($this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                        $this->calculation_values['KM'] = 63.00 + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+                    else
+                        $this->calculation_values['KM'] = 63.00;
+                }
+            }
+        }
+        if (!$this->LMTDCHECK() || abs($this->calculation_values['HBERROR']) > 1)
+        {
+
+            $this->calculation_values['Notes'] = $this->notes['NOTES_ERROR'];
+            return false;
+        }
+        else
+        {
+            if (!$this->HCAP())
+            {
+                $this->calculation_values['Notes'] = $this->notes['NOTES_ELIM_VELO'];
+                return false;
+            }
+            else
+            {
+                if (!$this->SEPARATION_HEIGHT_HTG())
+                {
+                    $this->calculation_values['Notes'] = $this->notes['NOTES_SEP_HT_HTG'];
+                    return false;
+                }
+                else
+                {
+                    if (!$this->SEPARATION_HEIGHT_LTG())
+                    {
+                        $this->calculation_values['Notes'] = $this->notes['NOTES_SEP_HT_LTG'];
+                        return false;
+                    }
+                    else
+                    {
+                        if ($this->calculation_values['XCONC'] > $this->calculation_values['KM'])
+                        {
+                            $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_CONC'];
+                            return false;
+                        }
+                        else
+                        {
+                            if (!$this->FUELMAX())
+                            {
+                                $this->calculation_values['Notes'] = $this->notes['NOTES_H_IP_HI'];
+                                return false;
+                            }
+                            else
+                            {
+                                if ($this->calculation_values['SIDEARM'] == 1)
+                                {
+                                    $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_SIDEARM'];
+                                    return false;
+                                }
+                                else
+                                {
+                                    if ($this->calculation_values['ASA'] > $this->calculation_values['SAA'])
+                                    {
+                                        $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_HEATDUTY'];
+                                        return false;
+
+                                    }
+                                    else
+                                    {
+                                        if (($this->calculation_values['TCHW12'] >= 3.5 && $this->calculation_values['T1L'] < 0.5) || ($this->calculation_values['TCHW12'] < 3.5 && $this->calculation_values['T1L'] < (-3.999)))
+                                        {
+                                            $this->calculation_values['Notes'] = $this->notes['NOTES_REF_TEMP'];
+                                            return false;
+                                        }
+                                        else
+                                        {
+                                            if ($this->calculation_values['TON'] < ($this->calculation_values['MODEL1'] * 0.35))
+                                            {
+                                                $this->calculation_values['Notes'] = $this->notes['NOTES_CAPACITYLOW'];
+                                                return false;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public function LMTDCHECK()
+    {
+        if (!isset($this->calculation_values['LMTDEVAH']) || is_nan($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
+        {
+
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDEVAL']) || is_nan($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDABSH']) || is_nan($this->calculation_values['LMTDABSH']) || $this->calculation_values['LMTDABSH'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDABSL']) || is_nan($this->calculation_values['LMTDABSL']) || $this->calculation_values['LMTDABSL'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDCON']) || is_nan($this->calculation_values['LMTDCON']) || $this->calculation_values['LMTDCON'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDHTG']) || is_nan($this->calculation_values['LMTDHTG']) || $this->calculation_values['LMTDHTG'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDLTG']) || is_nan($this->calculation_values['LMTDLTG']) || $this->calculation_values['LMTDLTG'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDLTHE']) || is_nan($this->calculation_values['LMTDLTHE']) || $this->calculation_values['LMTDLTHE'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDHTHE']) || is_nan($this->calculation_values['LMTDHTHE']) || $this->calculation_values['LMTDHTHE'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDDHE']) || is_nan($this->calculation_values['LMTDDHE']) || $this->calculation_values['LMTDDHE'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDSA']) || is_nan($this->calculation_values['LMTDSA']) || $this->calculation_values['LMTDSA'] < 0)
+        {
+            return false;
+        }
+        elseif (!isset($this->calculation_values['LMTDHR']) || is_nan($this->calculation_values['LMTDHR']) || $this->calculation_values['LMTDHR'] < 0)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+    public function SEPARATION_HEIGHT_HTG()
+    {
+
+        $HTG_HSEP_DS = 0;
+
+        if ($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 90)
+        {
+            $HTG_HSEP_DS = 229.95 / 288.56;
+        }
+        if ($this->calculation_values['MODEL'] == 75 || $this->calculation_values['MODEL'] == 110)
+        {
+            $HTG_HSEP_DS = 208.95 / 288.56;
+        }
+        if ($this->calculation_values['MODEL'] == 150)
+        {
+            $HTG_HSEP_DS = 237.8 / 319.8;
+        }
+        if ($this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210)
+        {
+            $HTG_HSEP_DS = 216.8 / 324.4;
+        }
+        if ($this->calculation_values['MODEL'] == 250)
+        {
+            $HTG_HSEP_DS = 195.8 / 324.4;
+        }
+        if ($this->calculation_values['MODEL'] == 310 || $this->calculation_values['MODEL'] == 350 || $this->calculation_values['MODEL'] == 410)
+        {
+            $HTG_HSEP_DS = 237.0 / 377;
+        }
+        if ($this->calculation_values['MODEL'] == 470 || $this->calculation_values['MODEL'] == 530 || $this->calculation_values['MODEL'] == 580)
+        {
+            $HTG_HSEP_DS = 220 / 426.5;
+        }
+        if ($this->calculation_values['MODEL'] == 630 || $this->calculation_values['MODEL'] == 710)
+        {
+            $HTG_HSEP_DS = 238.3 / 476.5;
+        }
+        if ($this->calculation_values['MODEL'] == 760 || $this->calculation_values['MODEL'] == 810 || $this->calculation_values['MODEL'] == 900)
+        {
+            $HTG_HSEP_DS = 275 / 526.4;
+        }
+        if ($this->calculation_values['MODEL'] == 1010 || $this->calculation_values['MODEL'] == 1130)
+        {
+            $HTG_HSEP_DS = 275 / 526.4;
+        }
+        if ($this->calculation_values['MODEL'] == 1260 || $this->calculation_values['MODEL'] == 1380)
+        {
+            $HTG_HSEP_DS = 270 / 587.3;
+        }
+        if ($this->calculation_values['MODEL'] == 1560 || $this->calculation_values['MODEL'] == 1690 || $this->calculation_values['MODEL'] == 1890 || $this->calculation_values['MODEL'] == 2130 || $this->calculation_values['MODEL'] == 2270 || $this->calculation_values['MODEL'] == 2560)
+        {
+            $HTG_HSEP_DS = 257 / 635.6;
+        }
+
+
+        $HTG_HSEP_DS_REQ = (($this->calculation_values['QHTG'] / 860) / $this->calculation_values['AHTG']) * 0.015;
+
+        if ($HTG_HSEP_DS < $HTG_HSEP_DS_REQ)
+            return false;
+        else
+            return true;
+    }
+
+    public function SEPARATION_HEIGHT_LTG()
+    {
+
+        $LTG_HSEP_DS = 0;
+
+        if ($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 90)
+        {
+            $LTG_HSEP_DS = 192.8 / 228.35;
+        }
+        if ($this->calculation_values['MODEL'] == 75 || $this->calculation_values['MODEL'] == 110)
+        {
+            $LTG_HSEP_DS = 173.8 / 228.35;
+        }
+        if ($this->calculation_values['MODEL'] == 150)
+        {
+            $LTG_HSEP_DS = 211.8 / 250.4;
+        }
+        if ($this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210)
+        {
+            $LTG_HSEP_DS = 192.8 / 250.4;
+        }
+        if ($this->calculation_values['MODEL'] == 250)
+        {
+            $LTG_HSEP_DS = 173.8 / 250.4;
+        }
+        if ($this->calculation_values['MODEL'] == 310 || $this->calculation_values['MODEL'] == 350 || $this->calculation_values['MODEL'] == 410)
+        {
+            $LTG_HSEP_DS = 205 / 393.2;
+        }
+        if ($this->calculation_values['MODEL'] == 470 || $this->calculation_values['MODEL'] == 530 || $this->calculation_values['MODEL'] == 580)
+        {
+            $LTG_HSEP_DS = 219.9 / 481.2;
+        }
+        if ($this->calculation_values['MODEL'] == 630 || $this->calculation_values['MODEL'] == 710)
+        {
+            $LTG_HSEP_DS = 239.9 / 525.2;
+        }
+        if ($this->calculation_values['MODEL'] == 760 || $this->calculation_values['MODEL'] == 810 || $this->calculation_values['MODEL'] == 900 || $this->calculation_values['MODEL'] == 1010 || $this->calculation_values['MODEL'] == 1130)
+        {
+            $LTG_HSEP_DS = 244.4 / 548.2;
+        }
+        if ($this->calculation_values['MODEL'] == 1260 || $this->calculation_values['MODEL'] == 1380)
+        {
+            $LTG_HSEP_DS = 258.9 / 617.2;
+        }
+        if ($this->calculation_values['MODEL'] == 1560 || $this->calculation_values['MODEL'] == 1690)
+        {
+            $LTG_HSEP_DS = 309.4 / 732.2;
+        }
+        if ($this->calculation_values['MODEL'] == 1890 || $this->calculation_values['MODEL'] == 2130 || $this->calculation_values['MODEL'] == 2270 || $this->calculation_values['MODEL'] == 2560)
+        {
+            $LTG_HSEP_DS = 319.4 / 806.9;
+        }
+
+
+        $LTG_HSEP_DS_REQ = (($QREFLTG / 860) / $this->calculation_values['ALTG']) * 0.015;
+
+        if ($LTG_HSEP_DS < $LTG_HSEP_DS_REQ)
+            return false;
+        else
+            return true;
+    }
+
+
+    public function HCAP()
+    {
+
+        $HIGHCAP = 0;
+
+        if ($this->calculation_values['MODEL'] == 60)
+        {
+            $HIGHCAP = 70;
+        }
+        else if ($this->calculation_values['MODEL'] == 75)
+        {
+            $HIGHCAP = 88;
+        }
+        else if ($this->calculation_values['MODEL'] == 90)
+        {
+            $HIGHCAP = 105;
+        }
+        else if ($this->calculation_values['MODEL'] == 110)
+        {
+            $HIGHCAP = 128;
+        }
+        else if ($this->calculation_values['MODEL'] == 150)
+        {
+            $HIGHCAP = 174;
+        }
+        else if ($this->calculation_values['MODEL'] == 175)
+        {
+            $HIGHCAP = 203;
+        }
+        else if ($this->calculation_values['MODEL'] == 210)
+        {
+            $HIGHCAP = 244;
+        }
+        else if ($this->calculation_values['MODEL'] == 250)
+        {
+            $HIGHCAP = 290;
+        }
+        else if ($this->calculation_values['MODEL'] == 310)
+        {
+            $HIGHCAP = 360;
+        }
+        else if ($this->calculation_values['MODEL'] == 350)
+        {
+            $HIGHCAP = 410;
+        }
+        else if ($this->calculation_values['MODEL'] == 410)
+        {
+            $HIGHCAP = 490;
+        }
+        else if ($this->calculation_values['MODEL'] == 470)
+        {
+            $HIGHCAP = 550;
+        }
+        else if ($this->calculation_values['MODEL'] == 530)
+        {
+            $HIGHCAP = 630;
+        }
+        else if ($this->calculation_values['MODEL'] == 580)
+        {
+            $HIGHCAP = 680;
+        }
+        else if ($this->calculation_values['MODEL'] == 630)
+        {
+            $HIGHCAP = 750;
+        }
+        else if ($this->calculation_values['MODEL'] == 710)
+        {
+            $HIGHCAP = 830;
+        }
+        else if ($this->calculation_values['MODEL'] == 760)
+        {
+            $HIGHCAP = 900;
+        }
+        else if ($this->calculation_values['MODEL'] == 810)
+        {
+            $HIGHCAP = 960;
+        }
+        else if ($this->calculation_values['MODEL'] == 900)
+        {
+            $HIGHCAP = 1080;
+        }
+        else if ($this->calculation_values['MODEL'] == 1010)
+        {
+            $HIGHCAP = 1210;
+        }
+        else if ($this->calculation_values['MODEL'] == 1130)
+        {
+            $HIGHCAP = 1360;
+        }
+        else if ($this->calculation_values['MODEL'] == 1260)
+        {
+            $HIGHCAP = 1500;
+        }
+        else if ($this->calculation_values['MODEL'] == 1380)
+        {
+            $HIGHCAP = 1630;
+        }
+        else if ($this->calculation_values['MODEL'] == 1560)
+        {
+            $HIGHCAP = 1850;
+        }
+        else if ($this->calculation_values['MODEL'] == 1690)
+        {
+            $HIGHCAP = 2000;
+        }
+        else if ($this->calculation_values['MODEL'] == 1890)
+        {
+            $HIGHCAP = 2240;
+        }
+        else if ($this->calculation_values['MODEL'] == 2130)
+        {
+            $HIGHCAP = 2530;
+        }
+        else if ($this->calculation_values['MODEL'] == 2270)
+        {
+            $HIGHCAP = 2670;
+        }
+        else if ($this->calculation_values['MODEL'] == 2560)
+        {
+            $HIGHCAP = 2840;
+        }
+        //else if ($this->calculation_values['MODEL'] == 2600)
+        //{
+        //    $HIGHCAP = 3173;
+        //}
+        //else if ($this->calculation_values['MODEL'] == 2800)
+        //{
+        //    $HIGHCAP = 3378;
+        //}
+        else
+        {
+            $HIGHCAP = 0;
+        }
+
+
+        if ($this->calculation_values['TON'] > $HIGHCAP)
+            return false;
+        else
+            return true;
+    }
+
+
+    public function FUELMAX()
+    {
+        $GFUELMAX = 0;
+
+        if ($this->calculation_values['MODEL'] == 60)
+        {
+            $GFUELMAX = 11.78;
+        }
+        else if ($this->calculation_values['MODEL'] == 75)
+        {
+            $GFUELMAX = 14.88;
+        }
+        else if ($this->calculation_values['MODEL'] == 90)
+        {
+            $GFUELMAX = 18.19;
+        }
+        else if ($this->calculation_values['MODEL'] == 110)
+        {
+            $GFUELMAX = 21.5;
+        }
+        else if ($this->calculation_values['MODEL'] == 150)
+        {
+            $GFUELMAX = 29.35;
+        }
+        else if ($this->calculation_values['MODEL'] == 175)
+        {
+            $GFUELMAX = 36.59;
+        }
+        else if ($this->calculation_values['MODEL'] == 210)
+        {
+            $GFUELMAX = 41.96;
+        }
+        else if ($this->calculation_values['MODEL'] == 250)
+        {
+            $GFUELMAX = 50.02;
+        }
+        else if ($this->calculation_values['MODEL'] == 310)
+        {
+            $GFUELMAX = 63.7;
+        }
+        else if ($this->calculation_values['MODEL'] == 350)
+        {
+            $GFUELMAX = 71.7;
+        }
+        else if ($this->calculation_values['MODEL'] == 410)
+        {
+            $GFUELMAX = 85.0;
+        }
+        else if ($this->calculation_values['MODEL'] == 470)
+        {
+            $GFUELMAX = 96.1;
+        }
+        else if ($this->calculation_values['MODEL'] == 530)
+        {
+            $GFUELMAX = 109.6;
+        }
+        else if ($this->calculation_values['MODEL'] == 580)
+        {
+            $GFUELMAX = 118.9;
+        }
+        else if ($this->calculation_values['MODEL'] == 630)
+        {
+            $GFUELMAX = 130.6;
+        }
+        else if ($this->calculation_values['MODEL'] == 710)
+        {
+            $GFUELMAX = 145.7;
+        }
+        else if ($this->calculation_values['MODEL'] == 760)
+        {
+            $GFUELMAX = 155.7;
+        }
+        else if ($this->calculation_values['MODEL'] == 810)
+        {
+            $GFUELMAX = 167.4;
+        }
+        else if ($this->calculation_values['MODEL'] == 900)
+        {
+            $GFUELMAX = 186.4;
+        }
+        else if ($this->calculation_values['MODEL'] == 1010)
+        {
+            $GFUELMAX = 209.6;
+        }
+        else if ($this->calculation_values['MODEL'] == 1130)
+        {
+            $GFUELMAX = 234.2;
+        }
+        else if ($this->calculation_values['MODEL'] == 1260)
+        {
+            $GFUELMAX = 261.3;
+        }
+        else if ($this->calculation_values['MODEL'] == 1380)
+        {
+            $GFUELMAX = 284.0;
+        }
+        else if ($this->calculation_values['MODEL'] == 1560)
+        {
+            $GFUELMAX = 321.8;
+        }
+        else if ($this->calculation_values['MODEL'] == 1690)
+        {
+            $GFUELMAX = 348.9;
+        }
+
+        if ($this->calculation_values['GCFUEL'] < $GFUELMAX)
+        {
+            return true;
+        }
+        else
+            return false;
+    }
+
+    
+    public function HEATBALANCE()
+    {
+        $ii = 1;
+        $herr = array();
+        $tcwa4 = array();
+
+        $vam_base = new VamBaseController();
+
+        $ii = 1;
+        $herr[0] = 2;
+        while (abs($herr[$ii - 1]) > 0.001)
+        {
+            if ($ii == 1)
+            {
+                $tcwa4[$ii] = $this->calculation_values['TCW11'] + 5;
+            }
+            if ($ii == 2)
+            {
+                $tcwa4[$ii] = $tcwa4[$ii - 1] + 0.5;
+            }
+            if ($ii > 2)
+            {
+                $tcwa4[$ii] = $tcwa4[$ii - 1] + $herr[$ii - 1] * ($tcwa4[$ii - 1] - $tcwa4[$ii - 2]) / ($herr[$ii - 2] - $herr[$ii - 1]);
+            }
+
+            $this->calculation_values['TCWA4'] = $tcwa4[$ii];
+
+            if ($this->calculation_values['GLL'] == 2)
+            {
+                $this->calculation_values['COGLY_ROWH'] = $vam_base->EG_ROW($this->calculation_values['TCW11'], $this->calculation_values['COGLY']);
+                $this->calculation_values['COGLY_SPHT11'] = $vam_base->EG_SPHT($this->calculation_values['TCW11'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHTA4'] = $vam_base->EG_SPHT($this->calculation_values['TCWA4'], $this->calculation_values['COGLY']) * 1000;
+            }
+            else
+            {
+                $this->calculation_values['COGLY_ROWH'] = $vam_base->PG_ROW($this->calculation_values['TCW11'], $this->calculation_values['COGLY']);
+                $this->calculation_values['COGLY_SPHT11'] = $vam_base->PG_SPHT($this->calculation_values['TCW11'], $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHTA4'] = $vam_base->PG_SPHT($this->calculation_values['TCWA4'], $this->calculation_values['COGLY']) * 1000;
+            }
+
+            $this->calculation_values['QCW'] = $this->calculation_values['GCW'] * $this->calculation_values['COGLY_ROWH'] * ($this->calculation_values['COGLY_SPHTA4'] + $this->calculation_values['COGLY_SPHT11']) * 0.5 * ($this->calculation_values['TCWA4'] - $this->calculation_values['TCW11']) / 4187+$this->calculation_values['QSA'];
+            $this->calculation_values['QINPUT'] = ($this->calculation_values['TON'] * 3024) + ($this->calculation_values['GFUEL'] * $this->calculation_values['RCV1'] * $this->calculation_values['CF']) + $this->calculation_values['QEXFUEL'];
+            $herr[$ii] = ($this->calculation_values['QINPUT'] - $this->calculation_values['QCW']) * 100 / $this->calculation_values['QINPUT'];
+            $ii++;
+        }
+
+        $jj = 1;
+        $herr1 = array();
+        $tcws = array();
+
+        $herr1[0] = 2;
+        while (abs($herr[$jj - 1]) > 0.001)
+        {
+            if ($jj == 1)
+            {
+                $tcws[$jj] = 40 + 5;
+            }
+            if ($jj == 2)
+            {
+                $tcws[$jj] = $tcws[$jj - 1] + 0.5;
+            }
+            if ($jj > 2)
+            {
+                $tcws[$jj] = $tcws[$jj - 1] + $herr1[$jj - 1] * ($tcws[$jj - 1] - $tcws[$jj - 2]) / ($herr1[$jj - 2] - $herr1[$jj - 1]);
+            }
+
+            $this->calculation_values['TCWS'] = $tcws[$jj];
+
+            if ($this->calculation_values['GLL'] == 2)
+            {
+                $this->calculation_values['COGLY_ROWH'] = $vam_base->EG_ROW(40, $this->calculation_values['COGLY']);
+                $this->calculation_values['COGLY_SPHT'] = $vam_base->EG_SPHT(40, $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHTS'] = $vam_base->EG_SPHT($this->calculation_values['TCWS'], $this->calculation_values['COGLY']) * 1000;
+            }
+            else
+            {
+                $this->calculation_values['COGLY_ROWH'] = $vam_base->PG_ROW(40, $this->calculation_values['COGLY']);
+                $this->calculation_values['COGLY_SPHT'] = $vam_base->PG_SPHT(40, $this->calculation_values['COGLY']) * 1000;
+                $this->calculation_values['COGLY_SPHTS'] = $vam_base->PG_SPHT($this->calculation_values['TCWS'], $this->calculation_values['COGLY']) * 1000;
+            }
+
+            $QCWS = $this->calculation_values['GCW'] * $this->calculation_values['COGLY_ROWH'] * ($this->calculation_values['COGLY_SPHTS'] + $this->calculation_values['COGLY_SPHT']) * 0.5 * ($this->calculation_values['TCWS'] - 40) / 4187;
+            $this->calculation_values['QINPUTS'] = ($this->calculation_values['TON'] * 1512) + (($this->calculation_values['GFUEL'] - (($this->calculation_values['HEATCAP'] * 0.65) / ($this->calculation_values['RCV1'] * $this->calculation_values['CF']))) * $this->calculation_values['RCV1'] * $this->calculation_values['CF'] * 0.75) + $this->calculation_values['QEXFUEL'];
+            $herr1[$jj] = ($this->calculation_values['QINPUTS'] - $QCWS) * 100 / $this->calculation_values['QINPUTS'];
+            $jj++;
+        }
+    }
+
 
     public function getFormValues($model_number){
 
