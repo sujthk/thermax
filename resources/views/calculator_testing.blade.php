@@ -7,7 +7,7 @@
 @section('content')
 	<div class="main-body">
 	    <div class="page-wrapper">
-	        <div class="page-header">
+	        <!-- <div class="page-header">
 	            <div class="page-header-title">
 	                <h4>Chiller Calculation Testing</h4>
 	            </div>
@@ -22,7 +22,7 @@
 	                    </li>
 	                </ul>
 	            </div>
-	        </div>
+	        </div> -->
 	        <div class="page-body">
 	            <div class="row">
 	                <div class="col-sm-6">
@@ -37,6 +37,9 @@
 	                        </div>
 	                    @endif
 	                    <div class="card">
+	                        <div class="card-header">
+	                        	<h5>Auto Testing</h5>
+	                        </div>
 	                        <div class="card-header">
 	                        	<div class="">
 		                            <h5>Export Testing Format</h5>

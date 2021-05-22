@@ -187,6 +187,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::post('/unit-sets/add', 'UnitsetController@postUnitset');
 	Route::get('/unit-sets/edit/{unit_set_id}', 'UnitsetController@editUnitset');
 	Route::post('/unit-sets/edit/{unit_set_id}', 'UnitsetController@updateUnitset');
+	Route::get('/unit-sets/status/{unit_set_id}/{status}', 'UnitsetController@changeUnitsetStatus');
 
 	
 

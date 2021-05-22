@@ -3677,7 +3677,9 @@ class L5SeriesController extends Controller
     public function RESULT_CALCULATE()
     {   
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
 
 
         if (!$this->CONCHECK())
@@ -3724,49 +3726,50 @@ class L5SeriesController extends Controller
        
         if ($this->calculation_values['FLE'] > 10)
         {
-            array_push($notes,$this->notes['NOTES_PR_EVAP']);
+            // array_push($notes,$this->notes['NOTES_PR_EVAP']);
+            array_push($selection_notes,$this->notes['NOTES_PR_EVAP']);
         }
         if (($this->calculation_values['P3H'] - $this->calculation_values['P1H']) < 24 || ($this->calculation_values['P3L'] - $this->calculation_values['P1L']) < 24)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         
         if ($this->calculation_values['THW1'] > 99 && ($this->calculation_values['region_type'] == 1 || $this->calculation_values['region_type'] == 2))
         {
-            array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
-            array_push($notes,$this->notes['NOTES_CONF_WT']);
+            array_push($selection_notes,$this->notes['NOTES_PL_EC_CERTAPP']);
+            array_push($selection_notes,$this->notes['NOTES_CONF_WT']);
         }
         else if ($this->calculation_values['THW1'] > 105 && $this->calculation_values['region_type'] == 2){
-           array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
-           array_push($notes,$this->notes['NOTES_CONF_WT']);
+           array_push($selection_notes,$this->notes['NOTES_PL_EC_CERTAPP']);
+           array_push($selection_notes,$this->notes['NOTES_CONF_WT']);
        }           
 
         if ($this->calculation_values['VELEVA'] == 1)
         {
-            array_push($notes,$this->notes['NOTES_EC_EVAP']);
+            array_push($selection_notes,$this->notes['NOTES_EC_EVAP']);
             //notes.Add(LocalizedNote(NOTES_CON_DEL));
             $this->calculation_values['ECinEva'] = 1;
             //VELEVA=0;  SK 10TH APRIL
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
         }
         if ($this->calculation_values['TCHW2L'] < 4.49)
         {
 
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
         }
         if ($this->calculation_values['TCHW2L'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }
         if ($this->calculation_values['VELEVA'] == 1)
         {
             //notes.Add(LocalizedNote(NOTES_EC_EVAP));
 
-            array_push($notes,$this->notes['NOTES_CON_DEL']);
+            array_push($selection_notes,$this->notes['NOTES_CON_DEL']);
             $this->calculation_values['ECinEva'] = 1;
             //VELEVA=0;  SK 10TH APRIL
         }              
@@ -3779,7 +3782,7 @@ class L5SeriesController extends Controller
 
         if ($this->calculation_values['THW1'] > 105)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_GEN_MET']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_GEN_MET']);
         }
 
 
@@ -3791,7 +3794,7 @@ class L5SeriesController extends Controller
             }
             if ($this->calculation_values['XCONC'] < ($this->calculation_values['KM'] - 0.4) && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.8))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             if ($this->calculation_values['XCONC'] < $this->calculation_values['KM'] && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.4))
@@ -3803,7 +3806,7 @@ class L5SeriesController extends Controller
         {
             if ($this->calculation_values['XCONC'] < ($this->calculation_values['KM'] - 0.8))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             else
@@ -3817,6 +3820,7 @@ class L5SeriesController extends Controller
         }
 
         $this->calculation_values['notes'] = $notes;
+        $this->calculation_values['selection_notes'] = $selection_notes;
         
     }
 

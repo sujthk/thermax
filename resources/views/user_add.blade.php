@@ -43,7 +43,7 @@
 @section('content')
 <div class="main-body">
 	<div class="page-wrapper">
-		<div class="page-header">
+		<!-- <div class="page-header">
 			<div class="page-header-title">
 				<h4>Add User</h4>
 			</div>
@@ -60,7 +60,7 @@
 					</li>
 				</ul>
 			</div>
-		</div>
+		</div> -->
 		<div class="page-body">
 			<div class="row">
 				<div class="col-sm-12">

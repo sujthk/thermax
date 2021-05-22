@@ -285,16 +285,17 @@ function submitValues(chiller_url){
 					//swal(calculation_values.Notes, "", "error");
 				}
 				else{
-					var notes = calculation_values.notes;
+					var notes = calculation_values.selection_notes;
 					$("#notes_div").html("");	
 					for(var i = notes.length - 1; i >= 0; --i)
 					{
-						if(!model_values.metallurgy_standard)
-						{
-							if (i < 1){
-								$( "#notes_div" ).append("<p>"+notes[i]+"</p>");
-							}
-						}
+						
+						// if(!model_values.metallurgy_standard)
+						// {
+							// if (i < 1){
+								$( "#notes_div" ).append("<p style='text-align: left;'>"+notes[i]+"</p>");
+							// }
+						// }
 					}
 				
 					$("#notes_head_div").html('<h4>'+calculation_values.Result+'</h4>');	

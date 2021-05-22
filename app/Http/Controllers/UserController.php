@@ -46,7 +46,7 @@ class UserController extends Controller
     public function addUser(){
 
         
-        $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->get();
+        $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->where('status',1)->get();
         $regions = Region::orderBy('created_at', 'desc')->get();
         $group_calculators = GroupCalculator::get();
         $languages = Language::where('status',1)->get();
@@ -111,7 +111,7 @@ class UserController extends Controller
 
         $selected_calculators = $user->calculators->pluck('id')->toArray();
         $group_calculators = GroupCalculator::get();
-        $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->get();
+        $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->where('status',1)->get();
         $regions = Region::orderBy('created_at', 'desc')->get();
         $languages = Language::where('status',1)->get();
 
@@ -389,11 +389,11 @@ class UserController extends Controller
 
         if($user->user_type=='ADMIN')
         {
-            $unit_sets = UnitSet::select('name','id')->where('user_type','ADMIN')->get();
+            $unit_sets = UnitSet::select('name','id')->where('status',1)->where('user_type','ADMIN')->get();
         }
         else
         {
-            $unit_sets = UnitSet::select('name','id')->where(function ($query) use ($user) {
+            $unit_sets = UnitSet::select('name','id')->where('status',1)->where(function ($query) use ($user) {
                                         $query->where('user_type','ADMIN');
             
                                     })->orWhere(function ($query) use ($user){

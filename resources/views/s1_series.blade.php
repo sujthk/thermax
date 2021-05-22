@@ -652,6 +652,10 @@
 									<div class="summary-head" id="notes_head_div">
 					 		
 				 					</div>
+				 					<div id="notes_div" >
+
+				 					</div>
+				 					</br>
 									<div class="row">
 									
 									 	<div class="col-md-6">
@@ -661,9 +665,7 @@
 										 	<button type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">  <i class="fas fa-file-pdf"></i> Export to Pdf</button>
 										</div>
 								 	</div>                           
-				 					<div id="notes_div" >
-
-				 					</div>
+				 					
 									<div id="showreportlist">
 										
 									</div>

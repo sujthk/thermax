@@ -3365,8 +3365,11 @@ class ChillerHeaterS2Controller extends Controller
 
 
     public function RESULT_CALCULATE(){
+
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
 
         if ($this->calculation_values['T13'] > $this->calculation_values['AT13'])
         {

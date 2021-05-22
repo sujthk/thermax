@@ -652,6 +652,9 @@ class S1SeriesController extends Controller
 
     public function validateAllChillerAttributes(){
 
+        $this->model_values['glycol_chilled_water'] = floatval($this->model_values['glycol_chilled_water']);
+        $this->model_values['glycol_cooling_water'] = floatval($this->model_values['glycol_cooling_water']);
+
         // "CAPACITY"
         $capacity = floatval($this->model_values['capacity']);
         if($capacity <= 0){
@@ -3115,7 +3118,9 @@ class S1SeriesController extends Controller
 
     public function RESULT_CALCULATE(){
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
 
         if (!$this->CONCHECK())
         {
@@ -3186,32 +3191,32 @@ class S1SeriesController extends Controller
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
 
         }
 
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }
         if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
         {
 
-            array_push($notes,$this->notes['NOTES_OUTPUT_GA']);
+            array_push($selection_notes,$this->notes['NOTES_OUTPUT_GA']);
             $bypass = $this->notes['NOTES_OUTPUT_BYPASS'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
-            array_push($notes,$bypass);
+            array_push($selection_notes,$bypass);
             if (($this->calculation_values['FLA'] + $this->calculation_values['FC4']) > 12)
             {
-                array_push($notes,$this->notes['NOTES_OUTPUT_PRDROP']);
+                array_push($selection_notes,$this->notes['NOTES_OUTPUT_PRDROP']);
             }
         }
         if ($this->calculation_values['TUU'] == "ari")
         {
-            array_push($notes,$this->notes['NOTES_ARI']);
+            array_push($selection_notes,$this->notes['NOTES_ARI']);
         }
         
 
@@ -3240,7 +3245,7 @@ class S1SeriesController extends Controller
         {
             if ($this->calculation_values['PS'] < ($this->calculation_values['PST1'] - 0.2))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             else
@@ -3252,6 +3257,7 @@ class S1SeriesController extends Controller
         {
             if ($this->calculation_values['PS'] < ($this->calculation_values['PST1'] - 0.2))
             {
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             else
@@ -3265,6 +3271,7 @@ class S1SeriesController extends Controller
         }
 
         $this->calculation_values['notes'] = $notes;
+        $this->calculation_values['selection_notes'] = $selection_notes;
 
     }
 

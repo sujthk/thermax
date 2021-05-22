@@ -91,11 +91,11 @@
 		      			  		<thead class="thead-dark">
 		      			    		<tr>
 										<td class="dark-cell font-class" scope="col" style="padding-right: 40px;">{{ $language_datas['client'] }} <span class="cn">:</span> {{ $name }}</td>
-										<td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : 5.1.2.0</td>     
+										<td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : 0.9 Dt: 24May2021</td>     
 		  			    			</tr>
 		      			     		<tr>
 		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['enquiry'] }} : {{ $phone }}</td>
-		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['date'] }} <span class="dn">:</span> {{ date('m/d/Y, h:i A') }}</td>     
+		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['date'] }} <span class="dn">:</span> {{ date('M/d/Y, H:i ') }}</td>     
 		      			    		</tr>
 		  			     			<tr>
 

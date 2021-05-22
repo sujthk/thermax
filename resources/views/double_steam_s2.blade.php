@@ -701,6 +701,10 @@
 									<div class="summary-head" id="notes_head_div">
 					 		
 				 					</div>
+				 					<div id="notes_div" >
+
+				 					</div>
+				 					</br>
 									<div class="row">
 									
 									 	<div class="col-md-6">
@@ -713,9 +717,7 @@
 						  			<!-- <div class="summary-head">
 					 				<h4> Summary : </h4>
 				 					</div> -->
-				 					<div id="notes_div" >
-
-				 					</div>
+				 					
 									<div id="showreportlist">
 										
 									</div>

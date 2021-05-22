@@ -172,4 +172,14 @@ class UnitsetController extends Controller
 		return redirect('unit-sets')->with('message','Unit Set Updated')
                         ->with('status','success');
     }
+
+    public function changeUnitsetStatus($unit_set_id,$status){
+
+    	$unit_set = UnitSet::find($unit_set_id);
+    	$unit_set->status = $status;
+    	$unit_set->save();
+
+    	return redirect('unit-sets')->with('message','Unit Set Status Changed')
+                        ->with('status','success');
+    }
 }

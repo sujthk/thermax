@@ -4414,7 +4414,7 @@ table tbody .border-bottom-info td {
 }
 .header-navbar .navbar-wrapper .navbar-container .nav-left a,
 .header-navbar .navbar-wrapper .navbar-container .nav-right a {
-	color: #fff;
+	color: #0e0e0e;
 	padding: 1.5rem .6rem
 }
 .header-navbar .navbar-wrapper .navbar-container .nav-left .mega-menu-top i,
@@ -11329,8 +11329,8 @@ table.footable-paging-center>tfoot>tr.footable-paging>td {
 .auth-box {
 	background-color: #fff;
 	border-radius: 8px;
-	margin: 20px 0 0 0;
-	padding: 20px
+	/*margin: 20px 0 0 0;
+	padding: 20px*/
 }
 .auth-box .confirm h3 {
 	color: #e10010;

@@ -10,7 +10,7 @@
 @section('content')
 	<div class="main-body">
 	    <div class="page-wrapper">
-	        <div class="page-header">
+	        <!-- <div class="page-header">
 	            <div class="page-header-title">
 	                <h4>Unit Sets</h4>
 	            </div>
@@ -25,7 +25,7 @@
 	                    </li>
 	                </ul>
 	            </div>
-	        </div>
+	        </div> -->
 	        <div class="page-body">
 	            <div class="row">
 	                <div class="col-sm-12">
@@ -56,6 +56,9 @@
 	                                            <th>LengthUnit</th>
 	                                            <th>WeightUnit</th>
 	                                            <th>PressureUnit</th>
+	                                            @if(auth()->user()->user_type == 'ADMIN')
+	                                            	<th style="width: 10%">Status</th>
+	                                            @endif	
 	                                            <th style="width: 8%">Action</th>
 	                                        </tr>
 	                                    </thead>
@@ -67,6 +70,15 @@
 	                                    		    <td>{{ $unit_set->LengthUnit }}</td>	
 	                                    		    <td>{{ $unit_set->WeightUnit }}</td>
 	                                    		    <td>{{ $unit_set->PressureUnit }}</td>
+	                                    		    @if(auth()->user()->user_type == 'ADMIN')
+		                                    		    <td>
+			                                                @if ($unit_set->status)
+			                                                    <a href="{{ url('unit-sets/status',[$unit_set->id]) }}/0" class="btn btn-success btn-sm">Active</a>
+			                                                @else    
+			                                                    <a href="{{ url('unit-sets/status',[$unit_set->id]) }}/1" class="btn btn-danger btn-sm">Deactivate</a></td>
+			                                                @endif 
+			                                            </td>
+		                                            @endif
 		                                            <td>
 		                                                <a href="{{ url('unit-sets/edit',[$unit_set->id]) }}" class="btn btn-primary btn-sm">Edit</a>
 		                                            </td> 

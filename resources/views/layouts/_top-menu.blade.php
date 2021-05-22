@@ -1,10 +1,14 @@
 <!-- Menu header start -->
 <nav class="navbar header-navbar">
-    <div style="    background-color: #eceeef;" class="navbar-wrapper">
+    <div style=" background-color: #eceeef;" class="navbar-wrapper">
         <div class="navbar-logo">
            <div class="logo-img">
-			     <img src="{{asset('assets/images/ichill.png')}}" alt="logo.png">
+			     <img style="width: 55px; padding-left: 10px;" src="{{asset('assets/images/thermax_logo.png')}}" alt="logo.png">
 			</div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div class="logo-img">
+                 <img src="{{asset('assets/images/ichill.png')}}" alt="logo.png">
+            </div>
             <a class="mobile-menu" id="mobile-collapse" href="#!">
                 <i class="ti-menu"></i>
             </a>

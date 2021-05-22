@@ -222,6 +222,7 @@ class DoubleSteamController extends Controller
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
 
+        // Log::info($calculated_values);
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -1184,6 +1185,9 @@ class DoubleSteamController extends Controller
 
     public function validateAllChillerAttributes(){
 
+        $this->model_values['glycol_chilled_water'] = floatval($this->model_values['glycol_chilled_water']);
+        $this->model_values['glycol_cooling_water'] = floatval($this->model_values['glycol_cooling_water']);
+
         // "CAPACITY"
         $capacity = floatval($this->model_values['capacity']);
         if($capacity <= 0){
@@ -1232,13 +1236,11 @@ class DoubleSteamController extends Controller
 
 
         // "GLYCOL_CHILLED_WATER":
-        
         if (($this->model_values['glycol_chilled_water'] > $this->model_values['glycol_max_chilled_water'] || $this->model_values['glycol_chilled_water'] < $this->model_values['glycol_min_chilled_water'])) 
         {
             
             if ($this->model_values['glycol_min_chilled_water'] == 10)
             {
-
                 return array('status' => false,'msg' => $this->notes['NOTES_CHW_GL_OR1']);
             }
             else if ($this->model_values['glycol_min_chilled_water'] == 7.5)
@@ -3607,8 +3609,11 @@ class DoubleSteamController extends Controller
     }
 
     public function RESULT_CALCULATE(){
+
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
 
         if ($this->calculation_values['T13'] > $this->calculation_values['AT13'])
         {   
@@ -3681,53 +3686,53 @@ class DoubleSteamController extends Controller
 
         if ($this->calculation_values['CW'] == 2)
         {
-            array_push($notes,$this->notes['NOTES_COWIL_COND']);
+            array_push($selection_notes,$this->notes['NOTES_COWIL_COND']);
 
         }
         if ($this->calculation_values['PST1'] < 6.01)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
                        
         }
         if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 35)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if (($this->calculation_values['P4'] - $this->calculation_values['P3']) < 350)
         {
-            array_push($notes,$this->notes['NOTES_HTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_HTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if ($this->calculation_values['VELEVA'] == 1)
         {
-            array_push($notes,$this->notes['NOTES_EC_EVAP']);
+            array_push($selection_notes,$this->notes['NOTES_EC_EVAP']);
             $this->calculation_values['ECinEva'] = 1;
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
 
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
 
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }
         if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
         {
-            array_push($notes,$this->notes['NOTES_OUTPUT_GA']);
+            array_push($selection_notes,$this->notes['NOTES_OUTPUT_GA']);
             $bypass = $this->notes['NOTES_OUTPUT_BYPASS'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
-            array_push($notes,$bypass);
+            array_push($selection_notes,$bypass);
         }
                 
         if ($this->calculation_values['TUU'] == "ari")
         {
-            array_push($notes,$this->notes['NOTES_ARI']);
+            array_push($selection_notes,$this->notes['NOTES_ARI']);
         }
 
         array_push($notes,$this->notes['NOTES_INSUL']);
@@ -3744,7 +3749,7 @@ class DoubleSteamController extends Controller
             }
             if ($this->calculation_values['T13'] >= ($this->calculation_values['AT13'] - 2) && $this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
 
             }
@@ -3758,7 +3763,7 @@ class DoubleSteamController extends Controller
         {
             if ($this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
@@ -3775,11 +3780,12 @@ class DoubleSteamController extends Controller
 
         if ($this->calculation_values['Result'] == "FAILED" && $this->calculation_values['TAP'] == 1)
         {
-            array_push($notes,$this->notes['NOTES_RED_CW_FLOW']);
+            array_push($selection_notes,$this->notes['NOTES_RED_CW_FLOW']);
 
         }
 
         $this->calculation_values['notes'] = $notes;
+        $this->calculation_values['selection_notes'] = $selection_notes;
         
     }
 

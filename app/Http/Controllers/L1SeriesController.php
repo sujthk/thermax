@@ -2020,7 +2020,9 @@ class L1SeriesController extends Controller
 
     public function RESULT_CALCULATE(){
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
 
         if (!$this->CONCHECK())
         {
@@ -2063,26 +2065,26 @@ class L1SeriesController extends Controller
 
         if ($this->calculation_values['TUU'] == 'ari')
         {
-            array_push($notes,$this->notes['NOTES_ARI']);
+            array_push($selection_notes,$this->notes['NOTES_ARI']);
         }
         if ($this->calculation_values['THW1'] > 99)
         {
-            array_push($notes,$this->notes['NOTES_PL_EC_CERTAPP']);
-            array_push($notes,$this->notes['NOTES_CONF_WT']);
+            array_push($selection_notes,$this->notes['NOTES_PL_EC_CERTAPP']);
+            array_push($selection_notes,$this->notes['NOTES_CONF_WT']);
         }    
         if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 28)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
         }            
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }            
         //if (CW == 2)
         //{
@@ -2101,7 +2103,7 @@ class L1SeriesController extends Controller
 
         if ($this->calculation_values['THW1'] > 105)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_GEN_MET']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_GEN_MET']);
         }
 
         if ($this->calculation_values['LMTDGEN'] < ($this->calculation_values['LMTDGENA'] - 2))
@@ -2113,7 +2115,7 @@ class L1SeriesController extends Controller
             if ($this->calculation_values['XCONC'] < ($this->calculation_values['KM'] - 0.4) && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.8))
             {
 
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             if ($this->calculation_values['XCONC'] < $this->calculation_values['KM'] && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.4))
@@ -2127,7 +2129,7 @@ class L1SeriesController extends Controller
             {
                 if ($this->calculation_values['XCONC'] < ($this->calculation_values['KM'] - 0.8))
                 {
-                    array_push($notes,$this->notes['NOTES_RED_COW']);
+                    array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                     $this->calculation_values['Result'] = "GoodSelection";
                 }
                 if ($this->calculation_values['XCONC'] < $this->calculation_values['KM'] && $this->calculation_values['XCONC'] > ($this->calculation_values['KM'] - 0.8))
@@ -2143,7 +2145,7 @@ class L1SeriesController extends Controller
 
 
         $this->calculation_values['notes'] = $notes;
-
+        $this->calculation_values['selection_notes'] = $selection_notes;
 
 
     }
@@ -2492,6 +2494,9 @@ class L1SeriesController extends Controller
     }
 
     public function validateAllChillerAttributes(){
+
+        $this->model_values['glycol_chilled_water'] = floatval($this->model_values['glycol_chilled_water']);
+        $this->model_values['glycol_cooling_water'] = floatval($this->model_values['glycol_cooling_water']);
 
         // "CAPACITY"
         $capacity = floatval($this->model_values['capacity']);
@@ -3044,6 +3049,7 @@ class L1SeriesController extends Controller
         $this->calculation_values['TGP'] = 0;
         $this->calculation_values['HHType'] = "Standard";
         $this->calculation_values['TCHW2L'] = $this->calculation_values['TCHW12'];
+        
 
         // $this->calculation_values['EVAPDROP'] = 0;
         

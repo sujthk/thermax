@@ -22,7 +22,7 @@
 @section('content')
 <div class="main-body">
 	<div class="page-wrapper">
-		<div class="page-header">
+		<!-- <div class="page-header">
 			<div class="page-header-title">
 				<h4>Dashboard</h4>
 			</div>
@@ -39,7 +39,7 @@
 					</li>
 				</ul>
 			</div>
-		</div>
+		</div> -->
 		<!-- Horizontal Timeline start -->
 		<div class="col-md-12 ">
 			<div class="col-sm-12">

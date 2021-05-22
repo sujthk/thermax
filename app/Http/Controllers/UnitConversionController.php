@@ -324,7 +324,10 @@ class UnitConversionController extends Controller
         $calculated_values['CoolingFrictionLoss'] = $this->convertPressureUnit($calculated_values['CoolingFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
         if($calculator_code == "D_H2" || $calculator_code == "L5" || $calculator_code == "L1")
         {
-            $calculated_values['HotWaterFrictionLoss'] = $this->convertPressureUnit($calculated_values['HotWaterFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
+            if(isset($calculated_values['HotWaterFrictionLoss'])){
+                $calculated_values['HotWaterFrictionLoss'] = $this->convertPressureUnit($calculated_values['HotWaterFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
+            }
+            
         }
 
 

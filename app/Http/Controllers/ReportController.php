@@ -20,7 +20,7 @@ class ReportController extends Controller
 
 
         $calculation_values = json_decode($user_report->calculation_values,true);
-        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+        $date = date('M/d/Y, H:i ', strtotime($user_report->created_at));
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
                                         ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
@@ -46,7 +46,7 @@ class ReportController extends Controller
 
         
         
-        $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
+        // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
         $section->addTextBreak(1);
         $description = "Technical Specification : Vapour Absorption Chiller";
 
@@ -74,7 +74,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("5.1.2.0"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24May2021"),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -538,7 +538,7 @@ class ReportController extends Controller
 
 
         $calculation_values = json_decode($user_report->calculation_values,true);
-        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+        $date = date('M/d/Y, H:i ', strtotime($user_report->created_at));
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
                                         ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
@@ -565,7 +565,7 @@ class ReportController extends Controller
 
         
         
-        $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
+        // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
         $section->addTextBreak(1);
         $description = "Technical Specification : Vapour Absorption Chiller";
 
@@ -593,7 +593,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("5.1.2.0"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24May2021"),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -1107,7 +1107,7 @@ class ReportController extends Controller
 
 
         $calculation_values = json_decode($user_report->calculation_values,true);
-        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+        $date = date('M/d/Y, H:i ', strtotime($user_report->created_at));
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
                                         ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
@@ -1134,7 +1134,7 @@ class ReportController extends Controller
 
         
         
-        $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
+        // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
         $section->addTextBreak(1);
         $description = "Technical Specification : Vapour Absorption Chiller";
 
@@ -1162,7 +1162,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("5.1.2.0"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24May2021"),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -1665,7 +1665,7 @@ class ReportController extends Controller
 
 
         $calculation_values = json_decode($user_report->calculation_values,true);
-        $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+        $date = date('M/d/Y, H:i ', strtotime($user_report->created_at));
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
                                         ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
@@ -1691,7 +1691,7 @@ class ReportController extends Controller
 
         
         
-        $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
+        // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
         $section->addTextBreak(1);
         $description = "Technical Specification : Vapour Absorption Chiller";
 
@@ -1719,7 +1719,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("5.1.2.0"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24May2021"),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -2187,7 +2187,7 @@ class ReportController extends Controller
        
 
        $calculation_values = json_decode($user_report->calculation_values,true);
-       $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+       $date = date('M/d/Y, H:i ', strtotime($user_report->created_at));
 
        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
@@ -2212,7 +2212,7 @@ class ReportController extends Controller
        $section = $phpWord->addSection();
 
 
-       $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
+       // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
        $section->addTextBreak(1);
        $description = "Technical Specification : Vapour Absorption Chiller";
 
@@ -2240,7 +2240,7 @@ class ReportController extends Controller
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("5.1.2.0"),$header);
+       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24May2021"),$header);
 
        $header_table->addRow();
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -2706,7 +2706,7 @@ class ReportController extends Controller
 
 
        $calculation_values = json_decode($user_report->calculation_values,true);
-       $date = date('m/d/Y, h:i A', strtotime($user_report->created_at));
+       $date = date('M/d/Y, H:i ', strtotime($user_report->created_at));
 
        // Log::info($calculation_values['MODEL']);
        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
@@ -2734,7 +2734,7 @@ class ReportController extends Controller
 
        
        
-       $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
+       // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
        $section->addTextBreak(1);
        $description = "Technical Specification : Vapour Absorption Chiller";
 
@@ -2762,7 +2762,7 @@ class ReportController extends Controller
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("5.1.2.0"),$header);
+       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24May2021"),$header);
 
        $header_table->addRow();
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);

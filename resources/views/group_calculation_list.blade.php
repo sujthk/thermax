@@ -8,7 +8,7 @@
 @section('content')
 	<div class="main-body">
 	    <div class="page-wrapper">
-	        <div class="page-header">
+	        <!-- <div class="page-header">
 	            <div class="page-header-title">
 	                <h4>Group Calculator</h4>
 	            </div>
@@ -23,7 +23,7 @@
 	                    </li>
 	                </ul>
 	            </div>
-	        </div>
+	        </div> -->
 	        <div class="page-body">
 	            <div class="row">
 	                <div class="col-sm-12">
@@ -40,7 +40,7 @@
 	                    <div class="card">
 	                        <div class="card-header">
 	                        	<div class="">
-		                            <h5>Unit Sets</h5>
+		                            <h5>Group Calculators</h5>
 		                            <a href="{{ url('/group-calcluation/add') }}" class="btn btn-sm btn-primary">New Group Calculator +</a>
                             	</div>
 	                        </div>

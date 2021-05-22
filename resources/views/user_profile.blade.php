@@ -218,14 +218,16 @@ Change Password
                                         <div class="input-group">
                                             <span class="input-group-addon"> Unit Set</span>
                                             @if($user->unitset_status == 0)
-                                            <select name="unit_set_id" id="unit_set_id"  class="form-control" disabled>
+                                                <input id="unit_set_id" name="unit_set_id" type="text" value="{{ $user->unit_set_id }}"  required class="form-control" readonly>
                                             @else
-                                            <select name="unit_set_id" id="unit_set_id" required class="form-control">
+                                                <select name="unit_set_id" id="unit_set_id" required class="form-control">
+                                                    @foreach ($unit_sets as $unit_set)
+                                                        <option {{ $user->unit_set_id == $unit_set->id ? 'selected' : '' }} value="{{ $unit_set->id }}">{{ $unit_set->name }}</option>
+                                                    @endforeach
+                                                </select>    
                                             @endif
-                                                @foreach ($unit_sets as $unit_set)
-                                                    <option {{ $user->unit_set_id == $unit_set->id ? 'selected' : '' }} value="{{ $unit_set->id }}">{{ $unit_set->name }}</option>
-                                                @endforeach
-                                            </select>
+                                                
+                                            
                                         </div>
                                     </td>
                                 </tr>

@@ -10,7 +10,7 @@
 @section('content')
 	<div class="main-body">
 	    <div class="page-wrapper">
-	        <div class="page-header">
+	        <!-- <div class="page-header">
 	            <div class="page-header-title">
 	                <h4>Calculators</h4>
 	            </div>
@@ -25,7 +25,7 @@
 	                    </li>
 	                </ul>
 	            </div>
-	        </div>
+	        </div> -->
 	        <div class="page-body">
 	            <div class="row">
 	                <div class="col-sm-12">
@@ -40,6 +40,11 @@
 	                        </div>
 	                    @endif
 	                    <div class="card">
+	                        <div class="card-header">
+	                        	<div class="">
+		                            <h5>Calculators</h5>
+                            	</div>
+	                        </div>
 	                        <div class="card-block">
 	                            <div class="dt-responsive table-responsive">
 	                                <table id="simpletable" class="table table-striped table-bordered nowrap">

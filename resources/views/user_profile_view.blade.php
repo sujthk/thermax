@@ -14,7 +14,7 @@
 <div class="main-body user-profile">
 <div class="page-wrapper">
 <!-- Page-header start -->
-<div class="page-header">
+<!-- <div class="page-header">
 <div class="page-header-title">
 <h4>User Reports</h4>
 </div>
@@ -31,7 +31,7 @@
     </li>
 </ul>
 </div>
-</div>
+</div> -->
 <!-- Page-header end -->
 <!-- Page-body start -->
 <div class="page-body">
