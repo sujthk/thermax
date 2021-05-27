@@ -16,6 +16,7 @@
 // Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
 Route::get('/user/ldap', 'UserController@ldapUsers');
 // Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
+Route::get('/word/template', 'ReportController@templateCheck');
 
 
 
@@ -50,6 +51,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/calculators/l1-series/download-report/{user_report_id}/{type}', 'L1SeriesController@downloadReport')->name('download.l1report');
     Route::get('/calculators/s1-series/download-report/{user_report_id}/{type}', 'S1SeriesController@downloadReport')->name('download.s1report');
     Route::get('/calculators/g2-series/download-report/{user_report_id}/{type}', 'DoubleG2SteamController@downloadReport')->name('download.g2report');
+    Route::get('/calculators/e2-series/download-report/{user_report_id}/{type}', 'E2SeriesController@downloadReport')->name('download.e2report');
 
 });	
 

@@ -294,35 +294,35 @@
 											</div>
 											<div class="col-lg-2">
 												<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-													 <option value="60">S1 M1</option>
-                                                     <option value="75">S1 M2</option>
-                                                     <option value="90">S1 N1</option>
-                                                     <option value="110">S1 N2</option>
-                                                     <option value="150">S1 N3</option>
-													 <option value="175">S1 N4</option>
-													 <option value="210">S1 P1</option>
-													 <option value="250">S1 P2</option>
-													 <option value="310">S1 D3</option>
-													 <option value="350">S1 D4</option>
-													 <option value="410">S1 E1</option>
-													 <option value="470">S1 E2</option>
-													 <option value="530">S1 E3</option>
-													 <option value="580">S1 E4</option>
-													 <option value="630">S1 E5</option>
-													 <option value="710">S1 E6</option>
-													 <option value="760">S1 F1</option>
-													 <option value="810">S1 F2</option>
-													 <option value="900">S1 F3</option>
-													 <option value="1010">S1 G1</option>
-													 <option value="1130">S1 G2</option>
-													 <option value="1260">S1 G3</option>
-													 <option value="1380">S1 G4</option>
-													 <option value="1560">S1 G5</option>
-													 <option value="1690">S1 G6</option>
-													 <option value="1890">S1 H1</option>
-													 <option value="2130">S1 H2</option>
-													 <option value="2270">S1 J1</option>
-													 <option value="2560">S1 J2</option>
+													 <option value="60">S2 M1</option>
+                                                     <option value="75">S2 M2</option>
+                                                     <option value="90">S2 N1</option>
+                                                     <option value="110">S2 N2</option>
+                                                     <option value="150">S2 N3</option>
+													 <option value="175">S2 N4</option>
+													 <option value="210">S2 P1</option>
+													 <option value="250">S2 P2</option>
+													 <option value="310">S2 D3</option>
+													 <option value="350">S2 D4</option>
+													 <option value="410">S2 E1</option>
+													 <option value="470">S2 E2</option>
+													 <option value="530">S2 E3</option>
+													 <option value="580">S2 E4</option>
+													 <option value="630">S2 E5</option>
+													 <option value="710">S2 E6</option>
+													 <option value="760">S2 F1</option>
+													 <option value="810">S2 F2</option>
+													 <option value="900">S2 F3</option>
+													 <option value="1010">S2 G1</option>
+													 <option value="1130">S2 G2</option>
+													 <option value="1260">S2 G3</option>
+													 <option value="1380">S2 G4</option>
+													 <option value="1560">S2 G5</option>
+													 <option value="1690">S2 G6</option>
+													 <option value="1890">S2 H1</option>
+													 <option value="2130">S2 H2</option>
+													 <option value="2270">S2 J1</option>
+													 <option value="2560">S2 J2</option>
 												</select>
 											</div>
 											<div class="col-lg-1">
@@ -683,6 +683,9 @@
 									<div class="summary-head" id="notes_head_div">
 					 		
 				 					</div>
+				 					<div id="notes_div" >
+
+				 					</div>
 									<div class="row">
 									
 									 	<div class="col-md-6">
@@ -692,9 +695,7 @@
 										 	<button type="button" name="submit" id="save_pdf" value="Export to Pdf" class="contact-submit save_report">  <i class="fas fa-file-pdf"></i> Export to Pdf</button>
 										</div>
 								 	</div>                           
-				 					<div id="notes_div" >
-
-				 					</div>
+				 					
 									<div id="showreportlist">
 										
 									</div>

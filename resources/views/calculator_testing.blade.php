@@ -128,6 +128,16 @@
                                                 <label class="col-sm-12 col-form-label">4. Fouling Factor - standard, non_standard, ari</label> 
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">5. Fuel Value Type - NaturalGas, HSD, SKO</label> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">6. Fuel Type - Normal, Gross</label> 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

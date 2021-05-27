@@ -294,7 +294,7 @@ class H1SeriesController extends Controller
         $VCMAX = $condenser_option->metallurgy->con_max_velocity;
 
         $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;     //min required flow in condenser
-        $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / $TCP;
+        $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / 1;
 
 
         if ($GCWMIN > $GCWMIN1)
@@ -1005,7 +1005,8 @@ class H1SeriesController extends Controller
         }
         else
         {
-            $this->calculation_values['VPE2'] = $this->calculation_values['VPBR'] = 0;
+            $this->calculation_values['VPE2'] = 0;
+            $this->calculation_values['VPBR'] = 0;
         }
 
         $TME = ($this->calculation_values['TCHW11'] + $this->calculation_values['TCHW12']) / 2.0;
@@ -1030,7 +1031,8 @@ class H1SeriesController extends Controller
         }
         else
         {
-            $this->calculation_values['REPE2'] = $this->calculation_values['REBR'] = 0;
+            $this->calculation_values['REPE2'] = 0;
+            $this->calculation_values['REBR'] = 0;
         }
 
         $FF1 = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE1'] * 1000)) + (5.74 / pow($REPE1, 0.9))), 2);       //FRICTION FACTOR CAL
@@ -1042,7 +1044,8 @@ class H1SeriesController extends Controller
         }
         else
         {
-            $this->calculation_values['FF2'] = $this->calculation_values['FF3'] = 0;
+            $this->calculation_values['FF2'] = 0;
+            this->calculation_values['FF3'] = 0;
         }
 
 
@@ -1057,7 +1060,9 @@ class H1SeriesController extends Controller
         }
         else
         {
-            $this->calculation_values['FL2'] = $this->calculation_values['FL3'] = $this->calculation_values['FL4'] = 0;
+            $this->calculation_values['FL2'] = 0;
+            $this->calculation_values['FL3'] = 0;
+            $this->calculation_values['FL4'] = 0;
             $this->calculation_values['FL5'] = ($this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81));
         }
 
@@ -1990,10 +1995,10 @@ class H1SeriesController extends Controller
         $this->calculation_values['QHTG'] = $this->calculation_values['GCONC'] * $this->calculation_values['I4'] + $this->calculation_values['GREF'] * $this->calculation_values['J4'] - $this->calculation_values['GDIL'] * $this->calculation_values['I7'];
         $this->calculation_values['T5'] = $vam_base2->LIBR_TEMP($this->calculation_values['P3'], $this->calculation_values['XDIL']);
         
-        $this->calculation_values['CPH2'] = $vam_base2->HT_SPHT($this->calculation_values['THW1']);
-        $this->calculation_values['CPH3'] = $vam_base2->HT_SPHT($this->calculation_values['THW2']);
+        $this->calculation_values['CPH2'] = $this->HT_SPHT($this->calculation_values['THW1']);
+        $this->calculation_values['CPH3'] = $this->HT_SPHT($this->calculation_values['THW2']);
         $this->calculation_values['CPHAV'] = ($this->calculation_values['CPH2'] + $this->calculation_values['CPH3']) / 2;
-        $ROWH = $vam_base2->WATER_DENSITY($this->calculation_values['THW1']);
+        $ROWH = $this->WATER_DENSITY($this->calculation_values['THW1']);
 
         $this->calculation_values['GHOT'] = $this->calculation_values['QHTG'] / ($this->calculation_values['CPHAV'] * ($this->calculation_values['THW1'] - $this->calculation_values['THW2']) * $ROWH);
         if ($this->calculation_values['TCHW12'] < 5 || ($this->calculation_values['MODEL'] < 300 && $this->calculation_values['TCHW12'] < 6.7))
@@ -2043,6 +2048,22 @@ class H1SeriesController extends Controller
         $FR1 = $FR11 / $FR12;
         $this->calculation_values['LMTDGENA'] = (($this->calculation_values['THW1'] - $this->calculation_values['T4']) - ($this->calculation_values['THW2'] - $this->calculation_values['T5'])) / log(($this->calculation_values['THW1'] - $this->calculation_values['T4']) / ($this->calculation_values['THW2'] - $this->calculation_values['T5'])) * $FR1;   
         $this->PRESSURE_DROP();
+    }
+
+    public function WATER_DENSITY($TH)
+    {
+        if ($TH < 100.1)
+        {
+            $this->calculation_values['XMU'] = (-6.325 - 0.033974 * $TH + 2.829 * pow(10, -4) * $TH * $TH - 1.8309 * pow(10, -6) * pow($TH, 3.0) + 5.5184 * pow(10, -9) * pow($TH, 4.0));
+            $this->calculation_values['MU'] = exp($this->calculation_values['XMU']);
+            $this->calculation_values['NU']  = exp(-13.232 - 0.034086 * $TH + 2.9287 * pow(10, -4) * $TH * $TH - 1.9052 * pow(10, -6) * pow($TH, 3.0) + 5.8 * pow(10, -9) * pow($TH, 4.0));
+            $this->calculation_values['ROWH1']  = $this->calculation_values['MU'] / $this->calculation_values['NU'];
+        }
+        else
+        {
+            $this->calculation_values['ROWH1'] = (1.001 * 1000 - 0.0842 * $TH - 3.72402 / 1000 * $TH * $TH + 3.65121 / 1000000 * $TH * $TH * $TH);
+        }
+        return ($this->calculation_values['ROWH1']);
     }
 
     public function PRESSURE_DROP()
@@ -2272,23 +2293,6 @@ class H1SeriesController extends Controller
         }
     }
 
-    public function WATER_DENSITY($TH)
-    {
-        if ($TH < 100.1)
-        {
-            $XMU = (-6.325 - 0.033974 * $TH + 2.829 * pow(10, -4) * $TH * $TH - 1.8309 * pow(10, -6) * pow($TH, 3.0) + 5.5184 * pow(10, -9) * pow($TH, 4.0));
-            $MU = exp($XMU);
-            $NU = exp(-13.232 - 0.034086 * $TH + 2.9287 * pow(10, -4) * $TH * $TH - 1.9052 * pow(10, -6) * pow($TH, 3.0) + 5.8 * pow(10, -9) * pow($TH, 4.0));
-            $this->calculation_values['ROWH1'] = $MU / $NU;
-        }
-        else
-        {
-            $this->calculation_values['ROWH1'] = (1.001 * 1000 - 0.0842 * $TH - 3.72402 / 1000 * $TH * $TH + 3.65121 / 1000000 * $TH * $TH * $TH);
-        }
-
-        return $this->calculation_values['ROWH1'];
-    }
-
     public function WATER_VISCOSITY($TH)
     {
         if ($TH < 100.1)
@@ -2402,7 +2406,9 @@ class H1SeriesController extends Controller
     public function RESULT_CALCULATE()
     {
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
 
         if (!$this->CONCHECK())
         {
@@ -2410,7 +2416,7 @@ class H1SeriesController extends Controller
             return;
         }
 
-        $ROWH = WATER_DENSITY($this->calculation_values['THW1']);
+        $ROWH = $this->WATER_DENSITY($this->calculation_values['THW1']);
 
         $this->calculation_values['COP'] = ($this->calculation_values['TON'] * 3024) / ($this->calculation_values['GHOT'] * ($this->calculation_values['CPHAV'] * ($this->calculation_values['THW1'] - $this->calculation_values['THW2']) * $ROWH));
 
@@ -2466,39 +2472,39 @@ class H1SeriesController extends Controller
 
         if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 40)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
 
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
         }
         if ($this->calculation_values['HWI'] == 2)
         {
-            array_push($notes,$this->notes['NOTES_HW_INSERTS_PRESENT']);
+            array_push($selection_notes,$this->notes['NOTES_HW_INSERTS_PRESENT']);
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }           
         if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
         {
             $bypass = $this->notes['NOTES_OUTPUT_GA'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
-            array_push($notes,$bypass);
+            array_push($selection_notes,$bypass);
             if (($this->calculation_values['FLA'] + $this->calculation_values['FC4']) > 12)
             {
-                array_push($notes,$this->notes['NOTES_PR_DR_ER']);
+                array_push($selection_notes,$this->notes['NOTES_PR_DR_ER']);
             }
         }
         
         if ($this->calculation_values['TUU'] == "ari")
         {
-            array_push($notes,$this->notes['NOTES_ARI']);
+            array_push($selection_notes,$this->notes['NOTES_ARI']);
         }
       
         array_push($notes,$this->notes['NOTES_INSUL']);
@@ -2525,7 +2531,7 @@ class H1SeriesController extends Controller
         {
             if ($this->calculation_values['LMTDGEN'] < ($this->calculation_values['LMTDGENA'] - 2))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection"; 
             }
             else
@@ -2550,6 +2556,7 @@ class H1SeriesController extends Controller
         }
 
         $this->calculation_values['notes'] = $notes;
+        $this->calculation_values['selection_notes'] = $selection_notes;
     }
 
     public function CONCHECK()

@@ -298,35 +298,35 @@
 														</div>
 														<div class="col-lg-2">
 															<select name="model_number" id="model_number" class="form-control" onchange="updateModelValues('model_number')">
-			                                                    <option value="60">H2 M1</option>
-                                                                <option value="75">H2 M2</option>
-                                                                <option value="90">H2 N1</option>
-                                                                <option value="110">H2 N2</option>
-                                                                <option value="150">H2 N3</option>
-                                                                <option value="175">H2 N4</option>
-                                                                <option value="210">H2 P1</option>
-                                                                <option value="250">H2 P2</option>
-																<option value="310">H2 D3</option>
-																<option value="350">H2 D4</option>
-																<option value="410">H2 E1</option>
-																<option value="470">H2 E2</option>
-																<option value="530">H2 E3</option>
-																<option value="580">H2 E4</option>
-																<option value="630">H2 E5</option>
-																<option value="710">H2 E6</option>
-																<option value="760">H2 F1</option>
-																<option value="810">H2 F2</option>
-																<option value="900">H2 F3</option>
-																<option value="1010">H2 G1</option>
-																<option value="1130">H2 G2</option>
-																<option value="1260">H2 G3</option>
-																<option value="1380">H2 G4</option>
-																<option value="1560">H2 G5</option>
-																<option value="1690">H2 G6</option>
-																<option value="1890">H2 H1</option>
-																<option value="2130">H2 H2</option>
-																<option value="2270">H2 J1</option>
-																<option value="2560">H2 J2</option>
+			                                                    <option value="60">H1 M1</option>
+                                                                <option value="75">H1 M2</option>
+                                                                <option value="90">H1 N1</option>
+                                                                <option value="110">H1 N2</option>
+                                                                <option value="150">H1 N3</option>
+                                                                <option value="175">H1 N4</option>
+                                                                <option value="210">H1 P1</option>
+                                                                <option value="250">H1 P2</option>
+																<option value="310">H1 D3</option>
+																<option value="350">H1 D4</option>
+																<option value="410">H1 E1</option>
+																<option value="470">H1 E2</option>
+																<option value="530">H1 E3</option>
+																<option value="580">H1 E4</option>
+																<option value="630">H1 E5</option>
+																<option value="710">H1 E6</option>
+																<option value="760">H1 F1</option>
+																<option value="810">H1 F2</option>
+																<option value="900">H1 F3</option>
+																<option value="1010">H1 G1</option>
+																<option value="1130">H1 G2</option>
+																<option value="1260">H1 G3</option>
+																<option value="1380">H1 G4</option>
+																<option value="1560">H1 G5</option>
+																<option value="1690">H1 G6</option>
+																<option value="1890">H1 H1</option>
+																<option value="2130">H1 H2</option>
+																<option value="2270">H1 J1</option>
+																<option value="2560">H1 J2</option>
 															</select>
 														</div>
 														<div class="col-lg-1">
@@ -721,6 +721,9 @@
 									<div class="summary-head" id="notes_head_div">
 
 									</div>
+									<div id="notes_div" >
+
+					 				</div>
 									<div class="row">
 
 										<div class="col-md-6">
@@ -733,9 +736,7 @@
 						  			<!-- <div class="summary-head">
 					 				<h4> Summary : </h4>
 					 			</div> -->
-					 			<div id="notes_div" >
-
-					 			</div>
+					 			
 					 			<div id="showreportlist">
 
 					 			</div>

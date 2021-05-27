@@ -1148,7 +1148,8 @@ class ChillerHeaterS2Controller extends Controller
         }
         else
         {
-            $this->calculation_values['VPE2'] = $this->calculation_values['VPBR'] = 0;
+            $this->calculation_values['VPE2'] = 0;
+            $this->calculation_values['VPBR'] = 0;
         }
 
         //PIPE1
@@ -1176,7 +1177,8 @@ class ChillerHeaterS2Controller extends Controller
         }
         else
         {
-            $this->calculation_values['REPE2'] = $this->calculation_values['REBR'] = 0;
+            $this->calculation_values['REPE2'] = 0;
+            $this->calculation_values['REBR'] = 0;
         }
 
         $FF1 = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['PIDE1'] * 1000)) + (5.74 / pow($REPE1, 0.9))), 2);       //FRICTION FACTOR CAL
@@ -1188,7 +1190,8 @@ class ChillerHeaterS2Controller extends Controller
         }
         else
         {
-            $this->calculation_values['FF2'] = $this->calculation_values['FF3'] = 0;
+            $this->calculation_values['FF2'] = 0;
+            $this->calculation_values['FF3'] = 0;
         }
 
 
@@ -1203,7 +1206,9 @@ class ChillerHeaterS2Controller extends Controller
         }
         else
         {
-            $this->calculation_values['FL2'] = $this->calculation_values['FL3'] = $this->calculation_values['FL4'] = 0;
+            $this->calculation_values['FL2'] = 0;
+            $this->calculation_values['FL3'] = 0;
+            $this->calculation_values['FL4'] = 0;
             $this->calculation_values['FL5'] = ($VPE1 * $VPE1 / (2 * 9.81)) + (0.5 * $VPE1 * $VPE1 / (2 * 9.81));
         }
 
@@ -3430,42 +3435,42 @@ class ChillerHeaterS2Controller extends Controller
         $this->calculation_values['Result'] = "FAILED";
         if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 35)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if (($this->calculation_values['P4'] - $this->calculation_values['P3']) < 350)
         {
-            array_push($notes,$this->notes['NOTES_HTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_HTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if ($this->calculation_values['VELEVA'] == 1)
         {
-            array_push($notes,$this->notes['NOTES_EC_EVAP']);
+            array_push($selection_notes,$this->notes['NOTES_EC_EVAP']);
             $this->calculation_values['ECinEva'] = 1;
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
 
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }
         if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
         {
-           array_push($notes,$this->notes['NOTES_OUTPUT_GA']);
+           array_push($selection_notes,$this->notes['NOTES_OUTPUT_GA']);
            $bypass = $this->notes['NOTES_OUTPUT_BYPASS'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
-           array_push($notes,$bypass);
+           array_push($selection_notes,$bypass);
         }
         
         if ($this->calculation_values['TUU'] == 'ari')
         {
-            array_push($notes,$this->notes['NOTES_ARI']);
+            array_push($selection_notes,$this->notes['NOTES_ARI']);
         }
         
         array_push($notes,$this->notes['NOTES_INSUL']);
@@ -3481,7 +3486,7 @@ class ChillerHeaterS2Controller extends Controller
             }
             if ($this->calculation_values['T13'] >= ($this->calculation_values['AT13'] - 2) && $this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";  
             }
             if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
@@ -3493,7 +3498,7 @@ class ChillerHeaterS2Controller extends Controller
         {
             if ($this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
             {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
             }
             if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
@@ -3507,6 +3512,7 @@ class ChillerHeaterS2Controller extends Controller
         }
         
         $this->calculation_values['notes'] = $notes;
+        $this->calculation_values['selection_notes'] = $selection_notes;
     }
 
     

@@ -2,7 +2,7 @@
 <html lang="en">
 
 	<head>
-		<title>Thermax</title>
+		<title>Thermax iChill</title>
 		<!-- HTML5 Shim and Respond.js IE9 support of HTML5 elements and media queries -->
 		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
 		<!--[if lt IE 9]>
@@ -14,7 +14,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
 		<!-- Favicon icon -->
 		
-		<link rel="icon" href="{{asset('assets/images/thermax-logo.png')}}" type="image/x-icon">
+		<link rel="icon" href="{{asset('assets/images/thermax_fav.png')}}" type="image/x-icon">
 		<!-- Google font-->
 		<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800" rel="stylesheet">
 		<!-- Required Fremwork -->

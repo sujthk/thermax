@@ -131,8 +131,8 @@ class UnitConversionController extends Controller
 
         // ExhaustGasFlowUnit
         if($calculator_code == "D_E2"){
-            $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
-            $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            // $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            // $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
         }
 
 
@@ -366,10 +366,14 @@ class UnitConversionController extends Controller
         
 
         // WeightUnit
-        $calculated_values['OperatingWeight'] = $this->convertWeightUnit($calculated_values['OperatingWeight'],"Ton",$unit_set->WeightUnit);
-        $calculated_values['MaxShippingWeight'] = $this->convertWeightUnit($calculated_values['MaxShippingWeight'],"Ton",$unit_set->WeightUnit);
-        $calculated_values['FloodedWeight'] = $this->convertWeightUnit($calculated_values['FloodedWeight'],"Ton",$unit_set->WeightUnit);
-        $calculated_values['DryWeight'] = $this->convertWeightUnit($calculated_values['DryWeight'],"Ton",$unit_set->WeightUnit);
+        if(isset($calculated_values['OperatingWeight']))
+            $calculated_values['OperatingWeight'] = $this->convertWeightUnit($calculated_values['OperatingWeight'],"Ton",$unit_set->WeightUnit);
+        if(isset($calculated_values['MaxShippingWeight']))
+            $calculated_values['MaxShippingWeight'] = $this->convertWeightUnit($calculated_values['MaxShippingWeight'],"Ton",$unit_set->WeightUnit);
+        if(isset($calculated_values['FloodedWeight']))
+            $calculated_values['FloodedWeight'] = $this->convertWeightUnit($calculated_values['FloodedWeight'],"Ton",$unit_set->WeightUnit);
+        if(isset($calculated_values['DryWeight']))
+            $calculated_values['DryWeight'] = $this->convertWeightUnit($calculated_values['DryWeight'],"Ton",$unit_set->WeightUnit);
 
         
 

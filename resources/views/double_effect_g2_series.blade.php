@@ -714,6 +714,9 @@
 										<div class="showreport" style="display: none;">                 
 											<div class="summary-head" id="notes_head_div">
 											</div>
+											<div id="notes_div" >
+
+								 			</div>
 											<div class="row">
 
 												<div class="col-md-6">
@@ -724,9 +727,7 @@
 												</div>
 											</div>                           
 								  			
-								 			<div id="notes_div" >
-
-								 			</div>
+								 			
 								 			<div id="showreportlist">
 
 								 			</div>

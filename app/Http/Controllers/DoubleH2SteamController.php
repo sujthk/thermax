@@ -3298,7 +3298,7 @@ class DoubleH2SteamController extends Controller
         $VCMAX = $condenser_option->metallurgy->con_max_velocity;
 
         $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;     //min required flow in condenser
-        $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / $TCP;
+        $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / 1;
 
 
         if ($GCWMIN > $GCWMIN1)
@@ -3489,7 +3489,10 @@ class DoubleH2SteamController extends Controller
 
     public function RESULT_CALCULATE(){
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
+
         if ($this->calculation_values['T13'] > $this->calculation_values['AT13'])
         {   
             $this->calculation_values['Result'] = "FAILED";
@@ -3557,53 +3560,53 @@ class DoubleH2SteamController extends Controller
 
         if ($this->calculation_values['all_work_pr_hw'] > 10.55)
         {
-            array_push($notes,$this->notes['NOTES_NSTD_HTG']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_HTG']);
 
         }
         if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 35)
         {
-            array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if (($this->calculation_values['P4'] - $this->calculation_values['P3']) < 350)
         {
-            array_push($notes,$this->notes['NOTES_HTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_HTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
         }
         if ($this->calculation_values['HWI'] > 10.55)
         {
-            array_push($notes,$this->notes['NOTES_HW_INSERTS_PRESENT']);
+            array_push($selection_notes,$this->notes['NOTES_HW_INSERTS_PRESENT']);
 
         }
         if ($this->calculation_values['VELEVA'] == 1)
         {
-            array_push($notes,$this->notes['NOTES_EC_EVAP']);
+            array_push($selection_notes,$this->notes['NOTES_EC_EVAP']);
             $this->calculation_values['ECinEva'] = 1;
         }
         if (!$this->calculation_values['isStandard'])
         {
-            array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+            array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
 
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+            array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
 
         }
         if ($this->calculation_values['TCHW12'] < 4.49)
         {
-            array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+            array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
         }
         if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
         {
-            array_push($notes,$this->notes['NOTES_OUTPUT_GA']);
+            array_push($selection_notes,$this->notes['NOTES_OUTPUT_GA']);
             $bypass = $this->notes['NOTES_OUTPUT_BYPASS'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
-            array_push($notes,$bypass);
+            array_push($selection_notes,$bypass);
         }
 
         if ($this->calculation_values['TUU'] == "ari")
         {
-            array_push($notes,$this->notes['NOTES_ARI']);
+            array_push($selection_notes,$this->notes['NOTES_ARI']);
         }
 
         array_push($notes,$this->notes['NOTES_INSUL']);
@@ -3623,7 +3626,7 @@ class DoubleH2SteamController extends Controller
                 }
                 else if (($this->calculation_values['LMTDGENA'] - $this->calculation_values['LMTDHTG']) > 1.0 && ($this->calculation_values['LMTDGENA'] - $this->calculation_values['LMTDHTG']) < 1.5)
                 {
-                    array_push($notes,$this->notes['NOTES_RED_COW']);
+                    array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                     $this->calculation_values['Result'] = "GoodSelection";  
                 }
                 else
@@ -3635,7 +3638,7 @@ class DoubleH2SteamController extends Controller
             {
                 if (($this->calculation_values['LMTDGENA'] - $this->calculation_values['LMTDHTG']) > 1.0)
                 {
-                    array_push($notes,$this->notes['NOTES_RED_COW']);
+                    array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                     $this->calculation_values['Result'] = "GoodSelection";
                 }
                 else
@@ -3654,7 +3657,7 @@ class DoubleH2SteamController extends Controller
             {
                 if (( $this->calculation_values['LMTDGENA'] -$this->calculation_values['LMTDHTG'] ) > 1.0)
                 {
-                    array_push($notes,$this->notes['NOTES_RED_COW']);
+                    array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                     $this->calculation_values['Result'] = "GoodSelection";
                 }
                 else
@@ -3676,6 +3679,7 @@ class DoubleH2SteamController extends Controller
         }
 
         $this->calculation_values['notes'] = $notes;
+        $this->calculation_values['selection_notes'] = $selection_notes;
 
     }
 

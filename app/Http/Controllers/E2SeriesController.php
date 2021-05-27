@@ -207,22 +207,22 @@ class E2SeriesController extends Controller
 
         $this->updateInputs();
 
-        
-        try {
+        // Log::info($this->calculation_values);
+        // try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        } 
-        catch (\Exception $e) {
+        // } 
+        // catch (\Exception $e) {
 
-            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        }
+        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        // }
     
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        try {
+        // try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -230,16 +230,16 @@ class E2SeriesController extends Controller
             $this->RESULT_CALCULATE();
     
             $this->loadSpecSheetData();
-        }
-        catch (\Exception $e) {
+        // }
+        // catch (\Exception $e) {
 
 
-            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        }
+        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        // }
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
-
+        // Log::info($calculated_values);
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -251,6 +251,122 @@ class E2SeriesController extends Controller
         }
 
   
+    }
+
+    public function postShowReport($calculated_values,$name,$project,$phone){
+
+        $calculation_values = $calculated_values;
+        
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>',(int)$calculation_values['MODEL'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+        $evaporator_name = $evaporator_option->metallurgy->display_name;
+        $absorber_name = $absorber_option->metallurgy->display_name;
+        $condenser_name = $condenser_option->metallurgy->display_name;
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+
+
+
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+        $units_data = $vam_base->getUnitsData();
+        
+        $view = view("reports.e2_report", ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas])->render();
+
+        return $view;
+    
+    }
+
+    public function postSaveReport(Request $request){
+        $calculation_values = $request->input('calculation_values');
+        $name = $request->input('name',"");
+        $project = $request->input('project',"");
+        $phone = $request->input('phone',"");
+        $report_type = $request->input('report_type',"save_pdf");
+
+        
+
+        $user = Auth::user();
+
+        $user_report = new UserReport;
+        $user_report->user_id = $user->id;
+        $user_report->name = $name;
+        $user_report->project = $project;
+        $user_report->phone = $phone;
+        $user_report->calculator_code = $this->model_code;
+        $user_report->unit_set_id = $user->unit_set_id;
+        $user_report->report_type = $report_type;
+        $user_report->region_type = $calculation_values['region_type'];
+        $user_report->calculation_values = json_encode($calculation_values);
+        $user_report->language = Auth::user()->language_id;
+        $user_report->save();
+
+        $redirect_url = route('download.e2report', ['user_report_id' => $user_report->id,'type' => $report_type]);
+        
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','redirect_url'=>$redirect_url]);
+        
+    }
+
+    public function downloadReport($user_report_id,$type){
+
+        $user_report = UserReport::find($user_report_id);
+        if(!$user_report){
+            return response()->json(['status'=>false,'msg'=>'Invalid Report']);
+        }
+
+        if($type == 'save_word'){
+            $report_controller = new ReportController();
+            $file_name = $report_controller->wordFormatE2($user_report_id,$this->model_code);
+
+            // $file_name = "S2-Steam-Fired-Series-".Auth::user()->id.".docx";
+            return response()->download(storage_path($file_name));
+        }
+
+        $calculation_values = json_decode($user_report->calculation_values,true);
+        
+        $name = $user_report->name;
+        $project = $user_report->project;
+        $phone = $user_report->phone;
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+        $evaporator_name = $evaporator_option->metallurgy->report_name;
+        $absorber_name = $absorber_option->metallurgy->report_name;
+        $condenser_name = $condenser_option->metallurgy->report_name;
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+
+        $language = $user_report->language;
+
+
+        $vam_base = new VamBaseController();
+        $language_datas = $vam_base->getLanguageDatas();
+        $units_data = $vam_base->getUnitsData();
+
+
+
+
+        $pdf = PDF::loadView('reports.report_e2_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
+
+        return $pdf->download('e2.pdf');
+
     }
 
     public function validateChillerAttribute($attribute){
@@ -1023,11 +1139,11 @@ class E2SeriesController extends Controller
         $APA = 3.141593 * $PIDA * $PIDA / 4;
 
 
-        if ($MODEL == 130 || $MODEL == 810 || $MODEL == 900)  //change
+        if ($model_number == 130 || $model_number == 810 || $model_number == 900)  //change
         {
             $GCWPMAX = $APA * 3.5 * 3600;
         }
-        else if ($MODEL == 310 || $MODEL == 350 || $MODEL == 410 || $MODEL == 470 || $MODEL == 530 || $MODEL == 580 || $MODEL == 630 || $MODEL == 710)
+        else if ($model_number == 310 || $model_number == 350 || $model_number == 410 || $model_number == 470 || $model_number == 530 || $model_number == 580 || $model_number == 630 || $model_number == 710)
         {
             $GCWPMAX = $APA * 3.8 * 3600;
         }
@@ -1157,6 +1273,7 @@ class E2SeriesController extends Controller
         $this->calculation_values['TEXH1'] = $this->model_values['exhaust_gas_in']; 
         $this->calculation_values['TEXH2'] = $this->model_values['exhaust_gas_out']; 
         $this->calculation_values['TEXHOUT'] = $this->model_values['exhaust_gas_out']; 
+        $this->calculation_values['engine_type'] = $this->model_values['engine_type']; 
 
 
         if ($this->model_values['engine_type'] == 'gas')
@@ -1637,6 +1754,8 @@ class E2SeriesController extends Controller
         else
             $this->calculation_values['TCWA'] = 32.0;
 
+        $this->calculation_values['SFACTOR'] = $this->calculation_values['A_SFACTOR'] - ($this->calculation_values['B_SFACTOR'] * $this->calculation_values['TCWA']);
+
         if ($this->calculation_values['TCW11'] < 29.4)
             $this->calculation_values['AT13'] = 99.99;
         else
@@ -1841,6 +1960,26 @@ class E2SeriesController extends Controller
 
     public function VELOCITY()
     {
+
+
+        $model_number =(int)$this->calculation_values['MODEL'];
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$this->calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->calculation_values['TV5'])->first();
+
+        $this->calculation_values['VAMIN'] = $absorber_option->metallurgy->abs_min_velocity;          
+        $this->calculation_values['VAMAX'] = $absorber_option->metallurgy->abs_max_velocity;
+        $this->calculation_values['VCMIN'] = $condenser_option->metallurgy->con_min_velocity;
+        $this->calculation_values['VCMAX'] = $condenser_option->metallurgy->con_max_velocity;
+        $this->calculation_values['VEMIN'] = $evaporator_option->metallurgy->eva_min_velocity;
+        $this->calculation_values['VEMAX'] = $evaporator_option->metallurgy->eva_max_velocity;
+
         $this->calculation_values['VELEVA'] = 0;
 
         $this->calculation_values['TAP'] = 0;
@@ -2102,13 +2241,13 @@ class E2SeriesController extends Controller
 
         if ($this->calculation_values['GLL'] == 3)
         {
-            $this->calculation_values['CHGLY_ROW22'] = PG_ROW($this->calculation_values['TME'], $this->calculation_values['CHGLY']);
-            $this->calculation_values['CHGLY_VIS22'] = PG_VISCOSITY($this->calculation_values['TME'], $this->calculation_values['CHGLY']) / 1000;
+            $this->calculation_values['CHGLY_ROW22'] = $vam_base->PG_ROW($this->calculation_values['TME'], $this->calculation_values['CHGLY']);
+            $this->calculation_values['CHGLY_VIS22'] = $vam_base->PG_VISCOSITY($this->calculation_values['TME'], $this->calculation_values['CHGLY']) / 1000;
         }
         else
         {
-            $this->calculation_values['CHGLY_ROW22'] = EG_ROW($this->calculation_values['TME'], $this->calculation_values['CHGLY']);
-            $this->calculation_values['CHGLY_VIS22'] = EG_VISCOSITY($this->calculation_values['TME'], $this->calculation_values['CHGLY']) / 1000;
+            $this->calculation_values['CHGLY_ROW22'] = $vam_base->EG_ROW($this->calculation_values['TME'], $this->calculation_values['CHGLY']);
+            $this->calculation_values['CHGLY_VIS22'] = $vam_base->EG_VISCOSITY($this->calculation_values['TME'], $this->calculation_values['CHGLY']) / 1000;
         }
 
         $this->calculation_values['REPE1'] = ($this->calculation_values['PIDE1'] * $this->calculation_values['VPE1'] * $this->calculation_values['CHGLY_ROW22']) / $this->calculation_values['CHGLY_VIS22'];
@@ -2149,7 +2288,9 @@ class E2SeriesController extends Controller
         }
         else
         {
-            $this->calculation_values['FL2'] = $this->calculation_values['FL3'] = $this->calculation_values['FL4'] = 0;
+            $this->calculation_values['FL2'] = 0;
+            $this->calculation_values['FL3'] = 0;
+            $this->calculation_values['FL4'] = 0;
             $this->calculation_values['FL5'] = ($this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VPE1'] * $this->calculation_values['VPE1'] / (2 * 9.81));
         }
 
@@ -2193,6 +2334,8 @@ class E2SeriesController extends Controller
 
     public function CALCULATIONS()
     {
+        $this->calculation_values['HHType'] = "Standard";
+
         if ($this->calculation_values['TON'] < ($this->calculation_values['MODEL'] * 0.5))
         {
             $this->calculation_values['FR1'] = 0.10;
@@ -2299,10 +2442,11 @@ class E2SeriesController extends Controller
         //$this->calculation_values['UABSL'] = $this->calculation_values['UABSL'] * 0.96;
         /*************************/      
 
+
         if ($this->calculation_values['TUU'] != 'ari')
         {
             $this->EVAPORATOR();
-            if ($this->calculation_values['ECO'] = 'yes')
+            if ($this->calculation_values['ECO'] == 'yes')
             {
                 $this->EHTG();
             }
@@ -2340,7 +2484,7 @@ class E2SeriesController extends Controller
             }
 
             $this->EVAPORATOR();
-            if ($this->calculation_values['ECO'] = 'yes')
+            if ($this->calculation_values['ECO'] == 'yes')
             {
                 $this->EHTG();
             }
@@ -2417,7 +2561,7 @@ class E2SeriesController extends Controller
                 $this->calculation_values['TCHW2L'] = $ARITCHWO;
                 $this->calculation_values['TCW1H'] = $ARITCWI;
                 $this->EVAPORATOR();
-                if ($this->calculation_values['ECO'] = 'yes')
+                if ($this->calculation_values['ECO'] == 'yes')
                 {
                     $this->EHTG();
                 }
@@ -2935,7 +3079,7 @@ class E2SeriesController extends Controller
             $this->calculation_values['GCONC'] = $this->calculation_values['GDILL'] - $this->calculation_values['GREFL'];
             $this->calculation_values['XCONC'] = $this->calculation_values['GDILL'] * $this->calculation_values['XDILL'] / $this->calculation_values['GCONC'];
             $this->calculation_values['GREF'] = $this->calculation_values['GREFH'] + $this->calculation_values['GREFL'];
-            $this->calculation_values['T6'] = LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XCONC']);
+            $this->calculation_values['T6'] = $vam_base2->LIBR_TEMP($this->calculation_values['P1L'], $this->calculation_values['XCONC']);
 
             $this->CWABSHOUT();
             if ($this->calculation_values['TAP'] == 1)
@@ -3204,8 +3348,8 @@ class E2SeriesController extends Controller
             $this->calculation_values['T12'] = $vam_base->LIBR_TEMP($this->calculation_values['P3'], $this->calculation_values['XMED']);
             $this->calculation_values['LMTDLTG'] = (($this->calculation_values['T13'] - $this->calculation_values['T12']) - ($this->calculation_values['T13'] - $this->calculation_values['T9'])) / log(($this->calculation_values['T13'] - $this->calculation_values['T12']) / ($this->calculation_values['T13'] - $this->calculation_values['T9']));
             $this->calculation_values['QLMTDLTG'] = $this->calculation_values['ULTG'] * $this->calculation_values['ALTG'] * $this->calculation_values['LMTDLTG'];
-            $QREFLTG = $this->calculation_values['GREF1'] * ($this->calculation_values['J4'] - $this->calculation_values['I13']);
-            $ferr8[$d] = ($QREFLTG - $this->calculation_values['QLMTDLTG']) * 100 / $this->calculation_values['QLMTDLTG'];
+            $this->calculation_values['QREFLTG'] = $this->calculation_values['GREF1'] * ($this->calculation_values['J4'] - $this->calculation_values['I13']);
+            $ferr8[$d] = ($this->calculation_values['QREFLTG'] - $this->calculation_values['QLMTDLTG']) * 100 / $this->calculation_values['QLMTDLTG'];
             $d++;
         }
     }
@@ -3253,7 +3397,7 @@ class E2SeriesController extends Controller
 
         $vam_base = new VamBaseController();
 
-        if ($this->calculation_values['ECO'] = 'yes')
+        if ($this->calculation_values['ECO'] == 'yes')
         {
             $this->calculation_values['I99'] = $this->calculation_values['I11'];
             $this->calculation_values['T99'] = $this->calculation_values['T11'];
@@ -3290,7 +3434,7 @@ class E2SeriesController extends Controller
 
             $this->calculation_values['T7'] = $t7[$ht];
             $this->calculation_values['I7'] = $vam_base->LIBR_ENTHALPY($this->calculation_values['T7'], $this->calculation_values['XDIL']);
-            if ($this->calculation_values['ECO'] = 'yes')
+            if ($this->calculation_values['ECO'] == 'yes')
             {
                 $QLIBRHTHE = $this->calculation_values['GDIL1'] * ($this->calculation_values['I7'] - $this->calculation_values['I99']);
             }
@@ -3446,6 +3590,8 @@ class E2SeriesController extends Controller
 
     public function HR()
     {
+        $i = 0;
+        $vam_base = new VamBaseController();
 
         if ($i == 0)
             $this->calculation_values['TSTOUT1'] = 85;
@@ -3960,7 +4106,7 @@ class E2SeriesController extends Controller
 
         $CC[0][4] = $this->calculation_values['QHTG'];                                                    //HTG
         $CC[1][4] = $this->calculation_values['UHTG'] * $this->calculation_values['AHTG'] * $this->calculation_values['LMTDHTG'];
-        if ($this->calculation_values['ECO'] = 'yes')
+        if ($this->calculation_values['ECO'] == 'yes')
         {
             $CC[2][4] = $this->calculation_values['GMED'] * $this->calculation_values['I4'] + $this->calculation_values['GREF1'] * $this->calculation_values['J4'] - $this->calculation_values['GDIL'] * $this->calculation_values['I14'];
         }
@@ -3975,7 +4121,7 @@ class E2SeriesController extends Controller
 
         $CC[0][6] = $this->calculation_values['GMED'] * ($this->calculation_values['I4'] - $this->calculation_values['I10']);                                           //HTHE
         $CC[1][6] = $this->calculation_values['UHTHE'] * $this->calculation_values['AHTHE'] * $this->calculation_values['LMTDHTHE'];
-        if ($this->calculation_values['ECO'] = 'yes')
+        if ($this->calculation_values['ECO'] == 'yes')
         {
             $CC[2][6] = $this->calculation_values['GDIL1'] * ($this->calculation_values['I7'] - $this->calculation_values['I99']);
         }
@@ -4015,7 +4161,7 @@ class E2SeriesController extends Controller
             $CC[5][$j] = ($CC[4][$j] - $CC[3][$j]) / $CC[4][$j] * 100.0;    //R
         }
 
-        if ($this->calculation_values['ECO'] = 'yes')
+        if ($this->calculation_values['ECO'] == 'yes')
         {
             $HEATIN = ($this->calculation_values['TON'] * 3024) + $this->calculation_values['QHTG'] + $this->calculation_values['QHR'];
             $HEATOUT = $this->calculation_values['GCWAH'] * $this->calculation_values['COGLY_ROWH1'] * (($this->calculation_values['TCW2H'] * $this->calculation_values['COGLY_SPHT2H']) - ($this->calculation_values['TCW1H'] * $this->calculation_values['COGLY_SPHT1'])) / 4187 + $this->calculation_values['GCWAL'] * $this->calculation_values['COGLY_ROWH1'] * (($this->calculation_values['TCW2L'] * $this->calculation_values['COGLY_SPHT2L']) - ($this->calculation_values['TCW1L'] * $this->calculation_values['COGLY_SPHT1L'])) / 4187 + $this->calculation_values['GCWC'] * $this->calculation_values['COGLY_ROWH1'] * (($this->calculation_values['TCW4'] * $this->calculation_values['COGLY_SPHT4']) - ($this->calculation_values['TCW3'] * $this->calculation_values['COGLY_SPHT3'])) / 4187;
@@ -4394,12 +4540,12 @@ class E2SeriesController extends Controller
                                }
                                else
                                {
-                                   if (($this->calculation_values['ECO'] = 'yes') && ($this->calculation_values['QEXR'] > $this->calculation_values['QEXAV'] || $this->calculation_values['TEXHOUT'] > $this->calculation_values['TEXH3']))
+                                   if (($this->calculation_values['ECO'] == 'yes') && ($this->calculation_values['QEXR'] > $this->calculation_values['QEXAV'] || $this->calculation_values['TEXHOUT'] > $this->calculation_values['TEXH3']))
                                    {
                                        $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_EDFLOW'];
                                        return false;
                                    }
-                                   else if (($this->calculation_values['ECO'] = 'no') && ($this->calculation_values['QEXR'] > $this->calculation_values['QEXAV'] || $this->calculation_values['TEXHAUSTREQ'] < $this->calculation_values['TEXHOUT']))
+                                   else if (($this->calculation_values['ECO'] == 'no') && ($this->calculation_values['QEXR'] > $this->calculation_values['QEXAV'] || $this->calculation_values['TEXHAUSTREQ'] < $this->calculation_values['TEXHOUT']))
                                    {
                                        $this->calculation_values['Notes'] = $this->notes['NOTES_FAIL_EDFLOW'];
                                        return false;
@@ -4757,7 +4903,10 @@ class E2SeriesController extends Controller
     public function RESULT_CALCULATE()
     {
         $notes = array();
+        $selection_notes = array();
         $this->calculation_values['Notes'] = "";
+        $this->calculation_values['selection_notes'] = "";
+
          if ($this->calculation_values['T13'] > $this->calculation_values['AT13'])
          {
             $this->calculation_values['Result'] = "FAILED";
@@ -4765,7 +4914,7 @@ class E2SeriesController extends Controller
             return false;
          }           
 
-         if ($this->calculation_values['ECO'] = 'no')
+         if ($this->calculation_values['ECO'] == 'no')
          {
              $this->calculation_values['COP'] = ($this->calculation_values['TON'] * 3024) / ($this->calculation_values['GEXHAUST'] * (($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) / 2) * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXHAUSTREQ']) * 0.97);
 
@@ -4814,7 +4963,7 @@ class E2SeriesController extends Controller
              $this->calculation_values['ModeBHeatRejected'] = ($this->calculation_values['TON'] * 1512) + ($this->calculation_values['QHTG1'] * 0.75);
              $this->calculation_values['ModeBExhaustConnectionDiameter'] = $this->calculation_values['IEXHC'];
          }
-         else if ($this->calculation_values['ECO'] = 'yes')
+         else if ($this->calculation_values['ECO'] == 'yes')
          {
 
              $this->calculation_values['COP'] = ($this->calculation_values['TON'] * 3024) / ($this->calculation_values['GEXHAUST'] * (($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX3']) / 2) * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXH3']) * 0.97);
@@ -4879,54 +5028,54 @@ class E2SeriesController extends Controller
 
          if (($this->calculation_values['P3'] - $this->calculation_values['P1L']) < 35)
          {
-             array_push($notes,$this->notes['NOTES_LTHE_PRDROP']);
+             array_push($selection_notes,$this->notes['NOTES_LTHE_PRDROP']);
              $this->calculation_values['HHType'] = "NonStandard";
          }
          if (($this->calculation_values['P4'] - $this->calculation_values['P3']) < 350)
          {
-            array_push($notes,$this->notes['NOTES_HTHE_PRDROP']);
+            array_push($selection_notes,$this->notes['NOTES_HTHE_PRDROP']);
             $this->calculation_values['HHType'] = "NonStandard";
          }
          if ($this->calculation_values['VELEVA'] == 1)
          {
-             array_push($notes,$this->notes['NOTES_EC_EVAP']);
+             array_push($selection_notes,$this->notes['NOTES_EC_EVAP']);
              $this->calculation_values['ECinEva'] = 1;
          }
          if (!$this->calculation_values['isStandard'])
          {
-             array_push($notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
+             array_push($selection_notes,$this->notes['NOTES_NSTD_TUBE_METAL']);
 
          }
          if ($this->calculation_values['TCHW12'] < 4.49)
          {
-             array_push($notes,$this->notes['NOTES_COST_COW_SOV']);
+             array_push($selection_notes,$this->notes['NOTES_COST_COW_SOV']);
 
          }
          if ($this->calculation_values['TCHW12'] < 4.49)
          {
-             array_push($notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
+             array_push($selection_notes,$this->notes['NOTES_NONSTD_XSTK_MC']);
          }
          if ($this->calculation_values['GCWC'] < $this->calculation_values['GCW'])
          {
-             array_push($notes,$this->notes['NOTES_OUTPUT_GA']);
+             array_push($selection_notes,$this->notes['NOTES_OUTPUT_GA']);
              $bypass = $this->notes['NOTES_OUTPUT_BYPASS'].round($this->calculation_values['GCW'] - $this->calculation_values['GCWC'], 2)."m3/hr";
-             array_push($notes,$bypass);
+             array_push($selection_notes,$bypass);
          }
               
          if ($this->calculation_values['QEXR'] < (0.95 * $this->calculation_values['QEXAV']))
          {
-            array_push($notes,$this->notes['NOTES_EG_REC']);
-            $bypass = $this->notes['NOTES_TEMP'].round($this->calculation_values['TEXHAUSTREQ'], 2)." ºC";
-            array_push($notes,$bypass);
+            array_push($selection_notes,$this->notes['NOTES_EG_REC']);
+            $bypass = $this->notes['NOTES_TEMP']." ".round($this->calculation_values['TEXHAUSTREQ'], 2)." ºC";
+            array_push($selection_notes,$bypass);
          }
          if ($this->calculation_values['TUU'] == "ari")
          {
-             array_push($notes,$this->notes['NOTES_ARI']);
+             array_push($selection_notes,$this->notes['NOTES_ARI']);
          }
          
          if ($this->calculation_values['IEXHC'] == 0)
          {
-            array_push($notes,$this->notes['NOTES_EXH_CON']);
+            array_push($selection_notes,$this->notes['NOTES_EXH_CON']);
             
          }
       
@@ -4945,7 +5094,7 @@ class E2SeriesController extends Controller
              }
              if ($this->calculation_values['T13'] >= ($this->calculation_values['AT13'] - 2) && $this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
              {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
              }
              if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
@@ -4957,7 +5106,7 @@ class E2SeriesController extends Controller
          {
              if ($this->calculation_values['T13'] <= ($this->calculation_values['AT13'] - 1))
              {
-                array_push($notes,$this->notes['NOTES_RED_COW']);
+                array_push($selection_notes,$this->notes['NOTES_RED_COW']);
                 $this->calculation_values['Result'] = "GoodSelection";
              }
              if ($this->calculation_values['T13'] > ($this->calculation_values['AT13'] - 1) && $this->calculation_values['T13'] < $this->calculation_values['AT13'])
@@ -4971,6 +5120,7 @@ class E2SeriesController extends Controller
          }
 
          $this->calculation_values['notes'] = $notes;
+         $this->calculation_values['selection_notes'] = $selection_notes;
      }
 
 
@@ -5040,5 +5190,107 @@ class E2SeriesController extends Controller
         $form_values = collect($form_values)->union($standard_values);
 
         return $form_values;
-    }       
+    }  
+
+    public function getCalculationValues($model_number){
+
+        $model_number = (int)$model_number;
+        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_number)->first();
+
+        $calculation_values = $chiller_calculation_values->calculation_values;
+        $calculation_values = json_decode($calculation_values,true);
+
+        $calculation_values = array_only($calculation_values, ['LE',
+            'AHR',
+            'ODA',
+            'ODE',
+            'PNB',
+            'SHA',
+            'SHE',
+            'SL1',
+            'SL2',
+            'SL3',
+            'SL3',
+            'SL4',
+            'SL5',
+            'SL6',
+            'SL7',
+            'SL8',
+            'TNC',
+            'UHR',
+            'AABS',
+            'ACON',
+            'ADHE',
+            'AEVA',
+            'AHTG',
+            'ALTG',
+            'AT13',
+            'KABS',
+            'KCON',
+            'KEVA',
+            'PNB1',
+            'PNB2',
+            'PSL2',
+            'PSLI',
+            'PSLO',
+            'TCWA',
+            'TNAA',
+            'TNEV',
+            'UDHE',
+            'UHTG',
+            'ULTG',
+            'AHTHE',
+            'ALTHE',
+            'UHTHE',
+            'ULTHE',
+            'MODEL1',
+            'VEMIN1',
+            'TEPMAX',
+            'm_maxCHWWorkPressure',
+            'm_maxCOWWorkPressure',
+            'm_maxHWWorkPressure',
+            'm_maxSteamWorkPressure',
+            'm_maxSteamDesignPressure',
+            'm_DesignPressure',
+            'm_maxHWDesignPressure',
+            'm_dCondensateDrainPressure',
+            'm_dMinCondensateDrainTemperature',
+            'm_dMaxCondensateDrainTemperature',
+            'ChilledConnectionDiameter',
+            'CoolingConnectionDiameter',
+            'Length',
+            'Width',
+            'Height',
+            'ClearanceForTubeRemoval',
+            'AbsorbentPumpMotorKW',
+            'AbsorbentPumpMotorAmp',
+            'RefrigerantPumpMotorKW',
+            'RefrigerantPumpMotorAmp',
+            'PurgePumpMotorKW',
+            'PurgePumpMotorAmp',
+            'A_SFACTOR',
+            'B_SFACTOR',
+            'A_AT13',
+            'B_AT13',
+            'ALTHE_F',
+            'AHTHE_F',
+            'AHR_F',
+            'EX_AT13',
+            'EX_KEVA',
+            'EX_KABS',
+            'EX_DryWeight',
+            'USA_AbsorbentPumpMotorAmp',
+            'USA_RefrigerantPumpMotorAmp',
+            'USA_AbsorbentPumpMotorKW',
+            'USA_RefrigerantPumpMotorKW',
+            'USA_PurgePumpMotorAmp',
+            'USA_PurgePumpMotorKW',
+            'MCA',
+            'MOP',
+            'min_chilled_water_out'
+
+        ]);
+
+        return $calculation_values;
+    }     
 }
