@@ -173,9 +173,9 @@
                                         <td> 7 </td>
                                         <td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
                                         <td > </td>
-                                        @if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
+                                        @if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
                                             <td class="optimal-r1"> NA </td>
-                                        @elseif($calculation_values['GL'] == 2)
+                                        @elseif($calculation_values['GLL'] == 2)
                                             <td class="optimal-r1">Ethylene</td>
                                         @else
                                             <td class="optimal-r1">Proplylene</td>
@@ -259,9 +259,9 @@
                                         <td> 8 </td>
                                         <td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
                                         <td > </td>
-                                        @if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
+                                        @if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
                                             <td class="optimal-r1"> NA </td>
-                                        @elseif($calculation_values['GL'] == 2)
+                                        @elseif($calculation_values['GLL'] == 2)
                                             <td class="optimal-r1">Ethylene</td>
                                         @else
                                             <td class="optimal-r1">Proplylene</td>
@@ -306,13 +306,13 @@
                                         <td> 2 </td>
                                         <td class="font-class"> {{ $language_datas['hot_water_in_temp'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-                                        <td class="optimal-r1"> {{ round($calculation_values['hot_water_in'],1) }}</td>
+                                        <td class="optimal-r1"> {{ round($calculation_values['THW1'],1) }}</td>
                                     </tr>
                                     <tr>
                                         <td> 3 </td>
                                         <td class="font-class"> {{ $language_datas['hot_water_out_temp'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-                                        <td class="optimal-r1"> {{ round($calculation_values['hot_water_out'],1) }} </td>
+                                        <td class="optimal-r1"> {{ round($calculation_values['THW2'],1) }} </td>
                                     </tr>
                                     <tr>
                                         <td> 4 </td>

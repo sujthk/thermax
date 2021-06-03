@@ -3091,7 +3091,7 @@ class DoubleSteamController extends Controller
         $PR = $GLY_VIS * $GLY_SPHT / $GLY_TCON;
         $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.3);
         $HI1 = ($NU1 * $GLY_TCON / $this->calculation_values['IDE']) * 3600 / 4187;
-        if ($this->calculation_values['TU2'] < 2.1 || $this->calculation_values['TU2'] == 3 || $this->calculation_values['TU2'] == 8 )
+        if ($this->calculation_values['TU2'] < 2.1 || $this->calculation_values['TU2'] == 3 || $this->calculation_values['TU2'] == 8 && $this->calculation_values['VELEVA'] == 0)
         {
             $HI1 = $HI1 * 2;
         }
@@ -3119,7 +3119,7 @@ class DoubleSteamController extends Controller
         $NU1 = 0.023 * pow($RE, 0.8) * pow($PR, 0.3);
         $HI = ($NU1 * $this->calculation_values['CHGLY_TCON12'] / $this->calculation_values['IDE']) * 3600 / 4187;
 
-        if ($this->calculation_values['TU2'] < 2.1 || $this->calculation_values['TU2'] == 3 || $this->calculation_values['TU2'] == 8 )
+        if ($this->calculation_values['TU2'] < 2.1 || $this->calculation_values['TU2'] == 3 || $this->calculation_values['TU2'] == 8 && $this->calculation_values['VELEVA'] == 0)
         {
             $HI = $HI * 2;
         }

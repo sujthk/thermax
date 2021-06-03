@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/calculators/s1-series/download-report/{user_report_id}/{type}', 'S1SeriesController@downloadReport')->name('download.s1report');
     Route::get('/calculators/g2-series/download-report/{user_report_id}/{type}', 'DoubleG2SteamController@downloadReport')->name('download.g2report');
     Route::get('/calculators/e2-series/download-report/{user_report_id}/{type}', 'E2SeriesController@downloadReport')->name('download.e2report');
+    Route::get('/calculators/h1-series/download-report/{user_report_id}/{type}', 'H1SeriesController@downloadReport')->name('download.h1report');
 
 });	
 

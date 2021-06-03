@@ -2,8 +2,7 @@
 <html lang="en">
 
 	<head>
-
-		<style>
+<style>
 	        .weak-password {
 	            background-color: #ce1d14;
 	            border: #AA4502 1px solid;
@@ -18,7 +17,7 @@
 	        	color: #fff;
 	        }
 
-	        .report-table .table td{
+	         .report-table .table td{
 	        	border:1px solid #676767;
 	        	
 	        }
@@ -48,42 +47,23 @@
 	<body class="fix-menu">
 		<section class="report-table">
 			<!-- Container-fluid starts -->
-			<div class="">
 				<div class="row">
 					<div class="col-sm-12">
 						<!-- Authentication card start -->
-		      			<!-- <div class="table table-responsive">
-		      			    <table class="table table-bordered">
-		      			  		<thead class="thead-dark">
-		      			    		<tr>
-										<th scope="col">Client : {{ $name  }}</th>
-										<th scope="col">Version : 5.1.2.0</th>     
-		  			    			</tr>
-		      			     		<tr>
-		      			      			<th scope="col">Enquiry : {{ $phone  }}</th>
-		      			      			<th scope="col">Date : {{ date('m/d/Y, h:i A') }}</th>     
-		      			    		</tr>
-		  			     			<tr>
-		      			      			<th scope="col">Project : {{ $project }}</th>
-		      			      			<th scope="col">Model : {{ $calculation_values['model_name'] }}</th>     
-		      			    		</tr>
-		      			  		</thead>  
-		      				</table>
-		      			</div> -->
-		      			
+		      		
 		      			<div class="table">
-		      				<table class=" table-bordered report-top">
+		      				<table class="table-bordered report-top">
 		      			  		<thead>
 								<tr>
 									
 									<th scope="col">{{ $language_datas['description'] }}</th>
-									<th class="optimal-r1" scope="col">{{ $language_datas['unit'] }}</th>
-									<th class="optimal-r1" scope="col">{{ $language_datas['value'] }}</th>      
+                                    <th class="optimal-r1" scope="col">{{ $language_datas['unit'] }}</th>
+                                    <th class="optimal-r1" scope="col">{{ $language_datas['value'] }}</th>     
 								</tr>
 
 								<tr>
 									
-									<th  scope="col"> {{ $calculation_values['model_name'] }}</th>
+									<th scope="col"> {{ $calculation_values['model_name'] }}</th>
 									<th class="optimal-r1" scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </th>
 									<th class="optimal-r1" scope="col"> {{ $calculation_values['TON'] }}</th>      
 								</tr>
@@ -124,19 +104,19 @@
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['chilled_pressure_loss'] }}</td>
+										<td> {{ $language_datas['chilled_pressure_loss'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['ChilledFrictionLoss'],1) }} </td>
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['chilled_connection_diameter'] }}</td>
+										<td> {{ $language_datas['chilled_connection_diameter'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['ChilledConnectionDiameter'],1) }} </td>
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['glycol_type'] }}</td>
+										<td> {{ $language_datas['glycol_type'] }} </td>
 										<td> </td>
 										@if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
 											<td class="optimal-r1"> NA </td>
@@ -163,7 +143,8 @@
 										@endif	
 									</tr>
 									<tr>     
-										<td> {{ $language_datas['max_working_pressure'] }}</td>
+										
+										<td> {{ $language_datas['max_working_pressure'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
 										<td class="optimal-r1">  {{ ceil($calculation_values['m_maxCHWWorkPressure']) }}</td>
 									</tr>
@@ -193,7 +174,7 @@
 									</tr>
 									<tr>
 										
-										<td>{{ $language_datas['absorber_condenser_pass'] }}</td>
+										<td> {{ $language_datas['absorber_condenser_pass'] }}</td>
 										<td class="optimal-r1"> No.</td>
 										<td class="optimal-r1"> {{ $calculation_values['AbsorberPasses'] }}/{{ $calculation_values['CondenserPasses'] }} </td>
 									</tr>
@@ -209,7 +190,7 @@
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['cooling_pressure_loss'] }}</td>
+										<td> {{ $language_datas['cooling_pressure_loss'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['CoolingFrictionLoss'],1) }} </td>
 									</tr>
@@ -223,7 +204,6 @@
 										
 										<td> {{ $language_datas['glycol_type'] }} </td>
 										<td> </td>
-									
 										@if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
 											<td class="optimal-r1"> NA </td>
 										@elseif($calculation_values['GLL'] == 2)
@@ -234,7 +214,7 @@
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['cooling_gylcol'] }} ( % )  </td>
+										<td> {{ $language_datas['cooling_gylcol'] }} ( % ) </td>
 										<td class="optimal-r1"> %</td>
 										<td class="optimal-r1"> {{ $calculation_values['COGLY'] }} </td>
 									</tr>
@@ -250,71 +230,58 @@
 									</tr>
 									<tr>     
 										
-										<td> {{ $language_datas['max_working_pressure'] }}</td>
+										<td> {{ $language_datas['max_working_pressure'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
-										<td class="optimal-r1"> {{ ceil($calculation_values['m_maxCOWWorkPressure']) }} </td>
+										<td class="optimal-r1">  {{ ceil($calculation_values['m_maxCOWWorkPressure']) }} </td>
 									</tr>
 									<tr>
 										
-										<th scope="col"> {{ $language_datas['exhaust_gas_circuit'] }}</th>
+										<th scope="col">{{ $language_datas['hot_water_circuit'] }}</th>
 										<th scope="col"> </th>
 										<th scope="col"> </th>      
 									</tr>
 									<tr>
-									
-										<td> {{ $language_datas['engine_type'] }}</td>
-										<td class="optimal-r1"> - </td>
-										<td class="optimal-r1"> {{ $calculation_values['engine_type'] }}</td>
+										
+										<td>{{ $language_datas['hot_water_flow'] }}(+/- 3%)</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
 									</tr>
 									<tr>
 										
-										<td> {{ $language_datas['exhaust_gas_flow'] }}(+/-3%)</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->ExhaustGasFlowUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['GEXHAUST'],1) }}</td>
-									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['exhaust_gas_in_temp'] }}</td>
+										<td> {{ $language_datas['hot_water_in_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['TEXH1'],1) }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['THW1'],1) }}</td>
 									</tr>
 									<tr>
 										
-										<td> {{ $language_datas['exhaust_gas_out_temp'] }}</td>
+										<td> {{ $language_datas['hot_water_out_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['TEXHOUT'],1) }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['THW2'],1) }} </td>
 									</tr>
 									<tr>
 										
-										<td> {{ $language_datas['exhaust_connection_diameter'] }}</td>
+										<td> {{ $language_datas['generator_passes'] }}</td>
+										<td class="optimal-r1"> No. </td>
+										<td class="optimal-r1"> {{ round($calculation_values['GeneratorPasses'],1) }} </td>
+									</tr>
+									<tr>     
+										
+										<td> {{ $language_datas['hot_water_pressure_loss'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HotWaterFrictionLoss'],1) }}</td>
+									</tr>
+									<tr>     
+										
+										<td> {{ $language_datas['hot_water_connection_dia'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['ExhaustConnectionDiameter'],1) }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HotWaterConnectionDiameter'],1) }} </td>
 									</tr>
-									<tr>
+									<tr>     
 										
-										<td> {{ $language_datas['exhaust_gas_sp_heat_capacity'] }}</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatCapacityUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['AvgExhGasCp'],1) }}</td>
+										<td>{{ $language_datas['max_working_pressure'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->AllWorkPrHWUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['all_work_pr_hw'],1) }} </td>
 									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['exhaust_gas_flow'] }}</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->ExhaustGasFlowUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['GEXHAUST'],1) }}</td>
-									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['percentage_engine_load_considered'] }}</td>
-										<td class="optimal-r1"> %</td>
-										<td class="optimal-r1"> {{ round($calculation_values['LOAD'],1) }}</td>
-									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['pressure_drop'] }}</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['FURNPRDROP'],1) }}</td>
-									</tr>
-
 									<tr>
 										
 										<th scope="col"> {{ $language_datas['electrical_data'] }}</th>
@@ -325,7 +292,7 @@
 										
 										<td> {{ $language_datas['power_supply'] }}</td>
 										<td> </td>
-										<td class="optimal-r1"> 
+										<td class="optimal-r1">
 											@php($i=1)
 										@foreach(explode(',', $calculation_values['PowerSupply']) as $PowerSupply) 
 										    {{$PowerSupply}},
@@ -343,48 +310,102 @@
 										<td class="optimal-r1">kVA</td>
 										<td class="optimal-r1"> {{ round($calculation_values['TotalPowerConsumption'],1) }}</td>
 									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['absorbent_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
+                                    <tr>
+                                        
+                                        <td> {{ $language_datas['absorbent_pump_rating'] }}</td>
+                                        <td class="optimal-r1"> kW (A)</td>
                                         @if($calculation_values['region_type'] == 2)
                                             <td class="optimal-r1"> {{ round($calculation_values['USA_AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['USA_AbsorbentPumpMotorAmp'],2) }} ) </td>
                                         @else
-										  <td class="optimal-r1"> {{ round($calculation_values['AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['AbsorbentPumpMotorAmp'],2) }} ) </td>
+                                          <td class="optimal-r1"> {{ round($calculation_values['AbsorbentPumpMotorKW'],2) }}( {{ round($calculation_values['AbsorbentPumpMotorAmp'],2) }} ) </td>
                                         @endif
-									</tr>
-									<tr>
-										
-										<td> {{ $language_datas['refrigerant_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
+                                    </tr>
+                                    <tr>
+                                        
+                                        <td> {{ $language_datas['refrigerant_pump_rating'] }}</td>
+                                        <td class="optimal-r1"> kW (A)</td>
                                          @if($calculation_values['region_type'] == 2)
                                             <td class="optimal-r1"> {{ round($calculation_values['USA_RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['USA_RefrigerantPumpMotorAmp'],2) }}) </td>
                                          @else
-										  <td class="optimal-r1"> {{ round($calculation_values['RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['RefrigerantPumpMotorAmp'],2) }}) </td>
+                                          <td class="optimal-r1"> {{ round($calculation_values['RefrigerantPumpMotorKW'],2) }}( {{ round($calculation_values['RefrigerantPumpMotorAmp'],2) }}) </td>
                                         @endif  
-									</tr>
-									<tr>     
-									
-										<td>{{ $language_datas['vaccum_pump_rating'] }}</td>
-										<td class="optimal-r1"> kW (A)</td>
+                                    </tr>
+                                    <tr>     
+                                    
+                                        <td>{{ $language_datas['vaccum_pump_rating'] }}</td>
+                                        <td class="optimal-r1"> kW (A)</td>
                                         @if($calculation_values['region_type'] == 2)
                                             <td class="optimal-r1"> {{ round($calculation_values['USA_PurgePumpMotorKW'],2) }}({{ round($calculation_values['USA_PurgePumpMotorAmp'],2) }}) </td>
                                         @else
-										  <td class="optimal-r1"> {{ round($calculation_values['PurgePumpMotorKW'],2) }}({{ round($calculation_values['PurgePumpMotorAmp'],2) }}) </td>
+                                          <td class="optimal-r1"> {{ round($calculation_values['PurgePumpMotorKW'],2) }}({{ round($calculation_values['PurgePumpMotorAmp'],2) }}) </td>
                                         @endif
+                                    </tr>
+                                    @if($calculation_values['region_type'] == 2)
+                                        <tr>     
+                                            <td>MOP</td>
+                                            <td> </td>
+                                            <td class="optimal-r1"> {{ round($calculation_values['MOP'],2) }}</td>
+                                        </tr>
+                                        <tr>     
+                                            <td> MCA</td>
+                                            <td> </td>
+                                            <td class="optimal-r1"> {{ round($calculation_values['MCA'],2) }} </td>
+                                        </tr>
+                                    @endif
+									<tr>
+										
+										<th scope="col"> {{ $language_datas['physical_data'] }}</th>
+										<th scope="col"> </th>
+										<th scope="col"> </th>      
 									</tr>
-									@if($calculation_values['region_type'] == 2)
+									<tr>
+										
+										<td> {{ $language_datas['length'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
+										<td class="optimal-r1"> {{ ceil($calculation_values['Length']) }}</td>
+									</tr>
+									<tr>
+										
+										<td> {{ $language_datas['width'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
+										<td class="optimal-r1"> {{ ceil($calculation_values['Width']) }}</td>
+									</tr>
+									<tr>
+										
+										<td> {{ $language_datas['height'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
+										<td class="optimal-r1"> {{ ceil($calculation_values['Height']) }} </td>
+									</tr>
+									<tr>
+										
+										<td> {{ $language_datas['operating_weight'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['OperatingWeight'],1) }}</td>
+									</tr>
 									<tr>     
-										<td>MOP</td>
-										<td> </td>
-										<td class="optimal-r1"> {{ round($calculation_values['MOP'],2) }}</td>
+										
+										<td> {{ $language_datas['shipping_weight'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['MaxShippingWeight'],1) }} </td>
 									</tr>
 									<tr>     
-										<td> MCA</td>
-										<td> </td>
-										<td class="optimal-r1"> {{ round($calculation_values['MCA'],2) }} </td>
+										
+										<td> {{ $language_datas['flooded_weight'] }} </td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['FloodedWeight'],1) }} </td>
 									</tr>
-									@endif
+									<tr>     
+										
+										<td> {{ $language_datas['dry_weight'] }} </td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->WeightUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['DryWeight'],1) }} </td>
+									</tr>
+									<tr>     
+										
+										<td> {{ $language_datas['tube_clearing_space'] }} <br>({{ $language_datas['one_side_length_wise'] }}) </td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['ClearanceForTubeRemoval'],1) }} </td>
+									</tr>
 									<tr>
 										
 										<th scope="col"> {{ $language_datas['tube_metallurgy'] }}</th>
@@ -414,7 +435,7 @@
 											
 											<td> {{ $language_datas['evaporator_tube_thickness'] }}</td>
 											<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
-											<td class="optimal-r1">  {{ $calculation_values['TU3'] }}</td>
+											<td class="optimal-r1"> {{ $calculation_values['TU3'] }}</td>
 										</tr>
 										<tr>     
 											
@@ -437,25 +458,18 @@
 									</tr>				
 								</tbody>
 
-		      				</table><br>
-		      				<!-- <div class="report-end">
-								<h4> Caption Notes: </h4>
-								@foreach($calculation_values['notes'] as $note)
-									<p>{{ $note }}</p>
-								@endforeach
-							</div> -->
+		      				</table>
+		      				
 		      			</div>
 		     		</div>
 						<!-- Authentication card end -->
-					</div>
 					<!-- end of col-sm-12 -->
 				</div>
 				<!-- end of row -->
 			</div>
 			<!-- end of container-fluid -->
 		</section>
-		<!-- Warning Section Starts -->
-		<!-- Warning Section Ends -->
+
 	</body>
 
 </html>

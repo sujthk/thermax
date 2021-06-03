@@ -243,7 +243,7 @@
 									<tr>
 										
 										<td>{{ $language_datas['hot_water_flow'] }}(+/- 3%)</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
 									</tr>
 									<tr>
@@ -261,7 +261,7 @@
 									<tr>
 										
 										<td> {{ $language_datas['generator_passes'] }}</td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
+										<td class="optimal-r1">No.</td>
 										<td class="optimal-r1"> {{ round($calculation_values['GeneratorPasses'],1) }} </td>
 									</tr>
 									<tr>     

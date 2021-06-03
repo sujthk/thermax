@@ -138,6 +138,16 @@
                                                 <label class="col-sm-12 col-form-label">6. Fuel Type - Normal, Gross</label> 
                                             </div>
                                         </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">6. Engine Type - gas, oil</label> 
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="col-sm-12 col-form-label">6. Economizer - yes, no</label> 
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

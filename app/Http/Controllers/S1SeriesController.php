@@ -1281,24 +1281,10 @@ class S1SeriesController extends Controller
 
     public function THICKNESS()
     {
-        if ($this->calculation_values['TU3'] == 0.0)
-        {
-            $this->calculation_values['THE'] = 0.65;
-        }
-        else
-        {
-            $this->calculation_values['THE'] = $this->calculation_values['TU3'];
-        }
 
-        if ($this->calculation_values['TU6'] == 0.0)
-            $this->calculation_values['THA'] = 0.65;
-        else
-            $this->calculation_values['THA'] = $this->calculation_values['TU6'];
-
-        if ($this->calculation_values['TV6'] == 0.0)
-            $this->calculation_values['THC'] = 0.65;
-        else
-            $this->calculation_values['THC'] = $this->calculation_values['TV6'];
+        $this->calculation_values['THE'] = $this->calculation_values['TU3'];
+        $this->calculation_values['THA'] = $this->calculation_values['TU6'];
+        $this->calculation_values['THC'] = $this->calculation_values['TV6'];
 
 
         if ($this->calculation_values['TU2'] < 2.1 || $this->calculation_values['TU2'] == 4 || $this->calculation_values['TU2'] == 9)

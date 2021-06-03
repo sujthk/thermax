@@ -98,6 +98,9 @@ class UnitConversionController extends Controller
             $chiller_values['steam_pressure_max_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_max_range'],"KgPerCmSqGauge",$unit_set->PressureUnit);
 
         }
+        if($calculator_code == "D_E2"){
+            $chiller_values['pressure_drop'] = $this->convertPressureUnit($chiller_values['pressure_drop'],"KgPerCmSqGauge",$unit_set->PressureUnit);
+        }
        
 
         // AllWorkPrHWUnit
@@ -131,8 +134,8 @@ class UnitConversionController extends Controller
 
         // ExhaustGasFlowUnit
         if($calculator_code == "D_E2"){
-            // $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
-            // $chiller_values['normal_hsd_calorific_value'] = $this->convertExhaustGasFlowUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['gas_flow'] = $this->convertExhaustGasFlowUnit($chiller_values['gas_flow'],"KilogramsPerHr",$unit_set->ExhaustGasFlowUnit);
+            $chiller_values['gas_flow_load'] = $this->convertExhaustGasFlowUnit($chiller_values['gas_flow_load'],"KilogramsPerHr",$unit_set->ExhaustGasFlowUnit);
         }
 
 
@@ -228,6 +231,9 @@ class UnitConversionController extends Controller
             $chiller_values['steam_pressure_min_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_min_range'],$unit_set->PressureUnit,"KgPerCmSqGauge");
             $chiller_values['steam_pressure_max_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_max_range'],$unit_set->PressureUnit,"KgPerCmSqGauge");
         }
+        if($calculator_code == "D_E2"){
+            $chiller_values['pressure_drop'] = $this->convertPressureUnit($chiller_values['pressure_drop'],$unit_set->PressureUnit,"KgPerCmSqGauge");
+        }
         
 
 
@@ -248,6 +254,12 @@ class UnitConversionController extends Controller
             if($chiller_values['fuel_value_type'] != 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['calorific_value'],$unit_set->CalorificValueOilUnit,"kCPerKilogram");
              }
+        }
+
+        // ExhaustGasFlowUnit
+        if($calculator_code == "D_E2"){
+            $chiller_values['gas_flow'] = $this->convertExhaustGasFlowUnit($chiller_values['gas_flow'],$unit_set->ExhaustGasFlowUnit,"KilogramsPerHr");
+            $chiller_values['gas_flow_load'] = $this->convertExhaustGasFlowUnit($chiller_values['gas_flow_load'],$unit_set->ExhaustGasFlowUnit,"KilogramsPerHr");
         }
         
 
@@ -286,12 +298,21 @@ class UnitConversionController extends Controller
             $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['THW2'] = $this->convertTemperatureUnit($calculated_values['THW2'],"Centigrade",$unit_set->TemperatureUnit);
         }
+        if($calculator_code == "D_E2"){
+            $calculated_values['TEXH1'] = $this->convertTemperatureUnit($calculated_values['TEXH1'],"Centigrade",$unit_set->TemperatureUnit);
+            $calculated_values['TEXHOUT'] = $this->convertTemperatureUnit($calculated_values['TEXHOUT'],"Centigrade",$unit_set->TemperatureUnit);
+        }
+        if($calculator_code == "H1")
+        {
+            $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
+            $calculated_values['THW2'] = $this->convertTemperatureUnit($calculated_values['THW2'],"Centigrade",$unit_set->TemperatureUnit);
+        }
 
         // FlowRateUnit
         $calculated_values['GCW'] = $this->convertFlowRateUnit($calculated_values['GCW'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         $calculated_values['ChilledWaterFlow'] = $this->convertFlowRateUnit($calculated_values['ChilledWaterFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         $calculated_values['BypassFlow'] = $this->convertFlowRateUnit($calculated_values['BypassFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
-        if($calculator_code == "D_H2")
+        if($calculator_code == "D_H2" || $calculator_code == "H1")
         {
             $calculated_values['HotWaterFlow']= $this->convertFlowRateUnit($calculated_values['HotWaterFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         }
@@ -322,7 +343,7 @@ class UnitConversionController extends Controller
         // PressureDropUnit
         $calculated_values['ChilledFrictionLoss'] = $this->convertPressureUnit($calculated_values['ChilledFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
         $calculated_values['CoolingFrictionLoss'] = $this->convertPressureUnit($calculated_values['CoolingFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
-        if($calculator_code == "D_H2" || $calculator_code == "L5" || $calculator_code == "L1")
+        if($calculator_code == "D_H2" || $calculator_code == "L5" || $calculator_code == "L1" || $calculator_code == "H1")
         {
             if(isset($calculated_values['HotWaterFrictionLoss'])){
                 $calculated_values['HotWaterFrictionLoss'] = $this->convertPressureUnit($calculated_values['HotWaterFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
@@ -346,6 +367,9 @@ class UnitConversionController extends Controller
             $calculated_values['m_dCondensateDrainPressure'] = $this->convertPressureUnit($calculated_values['m_dCondensateDrainPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
             $calculated_values['m_DesignPressure'] = $this->convertPressureUnit($calculated_values['m_DesignPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
         }
+        if($calculator_code == "D_E2"){
+            $calculated_values['FURNPRDROP'] = $this->convertPressureUnit($calculated_values['FURNPRDROP'],"KgPerCmSqGauge",$unit_set->PressureUnit);
+        }
 
 
         // NozzleDiameterUnit
@@ -357,6 +381,9 @@ class UnitConversionController extends Controller
         }
         if($calculator_code == "L5"){
             $calculated_values['GENNB'] = $this->convertNozzleDiameterUnit($calculated_values['GENNB'],"DN",$unit_set->NozzleDiameterUnit);
+        }
+        if($calculator_code == "D_E2"){
+            $calculated_values['ExhaustConnectionDiameter'] = $this->convertNozzleDiameterUnit($calculated_values['ExhaustConnectionDiameter'],"DN",$unit_set->NozzleDiameterUnit);
         }
 
         // SteamConsumptionUnit
@@ -394,6 +421,23 @@ class UnitConversionController extends Controller
             if($calculated_values['GCV'] != 'NaturalGas'){
                 $calculated_values['RCV1'] = $this->convertCalorificValueOilUnit($calculated_values['RCV1'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
              }
+        }
+
+        // ExhaustGasFlowUnit
+        if($calculator_code == "D_E2"){
+            $calculated_values['GEXHAUST'] = $this->convertExhaustGasFlowUnit($calculated_values['GEXHAUST'],"KilogramsPerHr",$unit_set->ExhaustGasFlowUnit);
+            $calculated_values['LOAD'] = $this->convertExhaustGasFlowUnit($calculated_values['LOAD'],"KilogramsPerHr",$unit_set->ExhaustGasFlowUnit);
+        }
+
+
+        // HeatCapacityUnit
+        if($calculator_code == "D_E2"){
+            $calculated_values['AvgExhGasCp'] = $this->convertHeatCapacityUnit($calculated_values['AvgExhGasCp'],"kcalperkgdegC",$unit_set->HeatCapacityUnit);
+        }
+
+        // AllWorkPrHWUnit
+        if($calculator_code == "D_H2" || $calculator_code == "H1"){
+            $calculated_values['all_work_pr_hw'] = $this->convertAllWorkPrHWUnit($calculated_values['all_work_pr_hw'],"KgPerCmSqGauge",$unit_set->AllWorkPrHWUnit);
         }
 
     	return $calculated_values;

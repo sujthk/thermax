@@ -330,13 +330,13 @@
 										<td> 6 </td>
 										<td class="font-class"> {{ $language_datas['exhaust_gas_sp_heat_capacity'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatCapacityUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['ExhaustConnectionDiameter'],1) }} </td>
+										<td class="optimal-r1"> {{ round($calculation_values['AvgExhGasCp'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 7 </td>
 										<td class="font-class"> {{ $language_datas['exhaust_gas_flow'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->ExhaustGasFlowUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['LOAD'],1) }} </td>
+										<td class="optimal-r1"> {{ round($calculation_values['GEXHAUST'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 8 </td>
