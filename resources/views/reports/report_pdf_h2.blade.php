@@ -122,7 +122,7 @@
                                         <td class="dark-cell" scope="col"></td>
                                         <td class="dark-cell font-class" scope="col"> {{ $language_datas['capacity'] }}(+/-3%)</td>
                                         <td class="dark-cell" class="optimal-r1" scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </td>
-                                        <td class="dark-cell" class="optimal-r1" scope="col"> {{ $calculation_values['TON'] }}</td>      
+                                        <td class="dark-cell" class="optimal-r1" scope="col"> {{ round($calculation_values['TON'],1) }}</td>      
                                     </tr>
                                     <tr>
                                         <td colspan="4"></td>

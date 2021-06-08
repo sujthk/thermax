@@ -103,7 +103,6 @@ class DoubleSteamController extends Controller
 		$changed_value = $request->input('changed_value');
         // update user values with model values
 
-
         $unit_conversions = new UnitConversionController;
         if(!empty($changed_value)){
 
@@ -133,7 +132,6 @@ class DoubleSteamController extends Controller
         if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
             $this->model_values['min_chilled_water_out'] = $min_chilled_water_out;
 
- 
         $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
 
         $model_number =(int)$this->model_values['model_number'];

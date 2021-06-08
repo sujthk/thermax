@@ -826,16 +826,16 @@
 		updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
 
 		$("#model_number").val(model_values.model_number);
-		$('#capacity').val(model_values.capacity);
+		$('#capacity').val(model_values.capacity.toFixed(1));
 		$('#model_name').html(model_values.model_name);
-		$('#chilled_water_in').val(model_values.chilled_water_in);
-		$('#chilled_water_out').val(model_values.chilled_water_out);
-		$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
-		var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
+		$('#chilled_water_in').val(model_values.chilled_water_in.toFixed(1));
+		$('#chilled_water_out').val(model_values.chilled_water_out.toFixed(1));
+		$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out.toFixed(1));
+		var cooling_water_in_range = model_values.cooling_water_in_min_range.toFixed(1)+" - "+model_values.cooling_water_in_max_range.toFixed(1);
 		$('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
 		//$('#cooling_water_in_range').attr(cooling_water_in_range);
-		$('#cooling_water_in').val(model_values.cooling_water_in);
-		$('#cooling_water_flow').val(model_values.cooling_water_flow);
+		$('#cooling_water_in').val(model_values.cooling_water_in.toFixed(1));
+		$('#cooling_water_flow').val(model_values.cooling_water_flow.toFixed(1));
 		var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
 
 		$('.cooling_water_ranges').attr('data-original-title',cooling_water_ranges);
@@ -912,15 +912,15 @@
 
 		}
 
-		$('#exhaust_gas_in').val(model_values.exhaust_gas_in);
-		var gas_in_range = model_values.gas_in_min+" - "+model_values.gas_in_max;
+		$('#exhaust_gas_in').val(model_values.exhaust_gas_in.toFixed(1));
+		var gas_in_range = model_values.gas_in_min.toFixed(1)+" - "+model_values.gas_in_max.toFixed(1);
 		$('.exhaust_gas_in_range').attr('data-original-title', gas_in_range);
-		$('#exhaust_gas_flow').val(model_values.gas_flow);
-		$('#exhaust_gas_load').val(model_values.gas_flow_load);
+		$('#exhaust_gas_flow').val(model_values.gas_flow.toFixed(1));
+		$('#exhaust_gas_load').val(model_values.gas_flow_load.toFixed(1));
 		$('#design_load').val(model_values.design_load);
-		$('#pressure_drop').val(model_values.pressure_drop);
-		$('#exhaust_gas_out').val(model_values.exhaust_gas_out);
-		$('.exhaust_gas_out_range').attr('data-original-title',"min "+model_values.gas_out_min);
+		$('#pressure_drop').val(model_values.pressure_drop.toFixed(1));
+		$('#exhaust_gas_out').val(model_values.exhaust_gas_out.toFixed(1));
+		$('.exhaust_gas_out_range').attr('data-original-title',"min "+model_values.gas_out_min.toFixed(1));
 		engine_type_change();
 	}
 
@@ -1057,9 +1057,12 @@
 		}
 		else{
 			$("#engine_type_oil").prop('checked', true);
+			$("#economizer_no").prop('checked', true);
 			$(".economizer_status").prop('disabled', true);
+			model_values.economizer = 'no';
+			
 		}
-		$("#economizer_no").prop('checked', true);
+		
 	}	
 
 

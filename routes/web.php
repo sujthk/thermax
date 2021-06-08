@@ -238,6 +238,8 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 
     Route::get('/calculators/chiller-heater-s2-series', 'ChillerHeaterS2Controller@getCHS2Series')->name('calculators/chiller-heater-s2-series');
     Route::post('/calculators/chiller-heater-s2-series/ajax-calculate', 'ChillerHeaterS2Controller@postAjaxCHS2');
+    Route::post('/calculators/chiller-heater-s2-series/reset-calculate', 'ChillerHeaterS2Controller@postResetCHS2');
+    Route::post('/calculators/chiller-heater-s2-series/submit-calculate', 'ChillerHeaterS2Controller@postCHS2');
 
     Route::get('/calculators/chiller-heater-g2-series', 'ChillerHeaterG2Controller@getCHG2Series')->name('calculators/chiller-heater-g2-series');
 

@@ -125,7 +125,7 @@ class ReportController extends Controller
         $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
         $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
         $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
         $section->addTextBreak(1);
 
@@ -644,7 +644,7 @@ class ReportController extends Controller
         $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
         $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
         $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
         $section->addTextBreak(1);
 
@@ -1213,7 +1213,7 @@ class ReportController extends Controller
         $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
         $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
         $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
         $section->addTextBreak(1);
 
@@ -1770,7 +1770,7 @@ class ReportController extends Controller
         $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
         $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
         $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
         $section->addTextBreak(1);
 
@@ -2291,7 +2291,7 @@ class ReportController extends Controller
        $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
        $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-       $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+       $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
        $section->addTextBreak(1);
 
@@ -2813,7 +2813,7 @@ class ReportController extends Controller
        $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
        $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-       $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+       $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
        $section->addTextBreak(1);
 
@@ -3322,7 +3322,7 @@ class ReportController extends Controller
         $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
         $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
         $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
         $section->addTextBreak(1);
 
@@ -3798,7 +3798,7 @@ class ReportController extends Controller
         $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
         $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
         $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['TON']),$header);
+        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
 
         $section->addTextBreak(1);
 

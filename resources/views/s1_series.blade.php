@@ -740,16 +740,16 @@
 		updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
 
 		$("#model_number").val(model_values.model_number);
-		$('#capacity').val(model_values.capacity);
+		$('#capacity').val(model_values.capacity.toFixed(1));
 		$('#model_name').html(model_values.model_name);
-		$('#chilled_water_in').val(model_values.chilled_water_in);
-		$('#chilled_water_out').val(model_values.chilled_water_out);
-		$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
-		var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
+		$('#chilled_water_in').val(model_values.chilled_water_in.toFixed(1));
+		$('#chilled_water_out').val(model_values.chilled_water_out.toFixed(1));
+		$('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out.toFixed(1));
+		var cooling_water_in_range = model_values.cooling_water_in_min_range.toFixed(1)+" - "+model_values.cooling_water_in_max_range.toFixed(1);
 		$('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
 		//$('#cooling_water_in_range').attr(cooling_water_in_range);
-		$('#cooling_water_in').val(model_values.cooling_water_in);
-		$('#cooling_water_flow').val(model_values.cooling_water_flow);
+		$('#cooling_water_in').val(model_values.cooling_water_in.toFixed(1));
+		$('#cooling_water_flow').val(model_values.cooling_water_flow.toFixed(1));
 		var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
 
 		$('.cooling_water_ranges').attr('data-original-title',cooling_water_ranges);
@@ -763,8 +763,8 @@
 		$("#evaporator_material").val(model_values.evaporator_material_value);
 		$("#absorber_material").val(model_values.absorber_material_value);
 		$("#condenser_material").val(model_values.condenser_material_value);
-		$("#steam_pressure").val(model_values.steam_pressure);
-		var steam_pressure_range = model_values.steam_pressure_min_range+" - "+model_values.steam_pressure_max_range;
+		$("#steam_pressure").val(model_values.steam_pressure.toFixed(1));
+		var steam_pressure_range = model_values.steam_pressure_min_range.toFixed(1)+" - "+model_values.steam_pressure_max_range.toFixed(1);
 		
 		$('.steam_pressure_range').attr('data-original-title',steam_pressure_range);
 		// $("#tube_metallurgy").attr('disabled', model_values.glycol_none);

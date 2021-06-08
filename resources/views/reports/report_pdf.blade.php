@@ -104,7 +104,7 @@
 			      			  			<th scope="col"></th>
 			      			  			<th scope="col"> Capacity(+/-3%)</th>
 			      			  			<th class="optimal-r1" scope="col"> {{ $units_data[$unit_set->CapacityUnit] }} </th>
-			      			  			<th class="optimal-r1" scope="col"> {{ $calculation_values['TON'] }}</th>      
+			      			  			<th class="optimal-r1" scope="col"> {{ round($calculation_values['TON'],1) }}</th>      
 			      			  		</tr>
 			      			  		<tr>
 			      			  			<td colspan="4"></td>

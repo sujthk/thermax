@@ -24,7 +24,7 @@ function getCoolingWaterRanges(cooling_water_ranges){
 	}
 	
 	for (var i = 0; i < cooling_water_ranges.length; i+=2) {
-		range_values += "("+cooling_water_ranges[i]+" - "+cooling_water_ranges[i+1]+") /";
+		range_values += "("+cooling_water_ranges[i].toFixed(1)+" - "+cooling_water_ranges[i+1].toFixed(1)+") /";
 
 	}
 return range_values.replace(/\/$/, "");

@@ -92,7 +92,7 @@ class E2SeriesController extends Controller
         if(!$attribute_validator['status'])
             return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'changed_value'=>$this->changed_value]);
 
-        // $this->updateInputs();
+        $this->updateInputs();
         $this->loadSpecSheetData();
         
         $this->model_values['min_chilled_water_out'] = $this->calculation_values['min_chilled_water_out']; 
