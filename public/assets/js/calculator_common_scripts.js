@@ -368,3 +368,48 @@ function sendValues(chiller_url){
 	});
 
 }
+
+function castToBoolean(){
+
+    model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
+
+    model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
+    model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
+    model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);
+    model_values.fouling_chilled_water_checked = getBoolean(model_values.fouling_chilled_water_checked);
+    model_values.fouling_cooling_water_checked = getBoolean(model_values.fouling_cooling_water_checked);
+    model_values.fouling_chilled_water_disabled = getBoolean(model_values.fouling_chilled_water_disabled);
+    model_values.fouling_cooling_water_disabled = getBoolean(model_values.fouling_cooling_water_disabled);
+    model_values.fouling_chilled_water_value_disabled = getBoolean(model_values.fouling_chilled_water_value_disabled);
+    model_values.fouling_cooling_water_value_disabled = getBoolean(model_values.fouling_cooling_water_value_disabled);
+
+    if (typeof model_values.fouling_hot_water_checked !== 'undefined') {
+	  model_values.fouling_hot_water_checked = getBoolean(model_values.fouling_hot_water_checked);
+	}
+
+	if (typeof model_values.fouling_hot_water_disabled !== 'undefined') {
+	  model_values.fouling_hot_water_disabled = getBoolean(model_values.fouling_hot_water_disabled);
+	}
+
+	if (typeof model_values.fouling_hot_water_value_disabled !== 'undefined') {
+	  model_values.fouling_hot_water_value_disabled = getBoolean(model_values.fouling_hot_water_value_disabled);
+	}
+
+
+}
+
+function roundCommonValues(){
+	model_values.capacity = parseFloat(model_values.capacity).toFixed(1);
+	model_values.chilled_water_in = parseFloat(model_values.chilled_water_in).toFixed(1);
+	model_values.chilled_water_out = parseFloat(model_values.chilled_water_out).toFixed(1);
+	model_values.min_chilled_water_out = parseFloat(model_values.min_chilled_water_out).toFixed(1);
+	model_values.cooling_water_in_min_range = parseFloat(model_values.cooling_water_in_min_range).toFixed(1);
+	model_values.cooling_water_in_max_range = parseFloat(model_values.cooling_water_in_max_range).toFixed(1);
+	model_values.cooling_water_in = parseFloat(model_values.cooling_water_in).toFixed(1);
+	model_values.cooling_water_flow = parseFloat(model_values.cooling_water_flow).toFixed(1);
+	model_values.glycol_min_chilled_water = parseFloat(model_values.glycol_min_chilled_water).toFixed(1);
+	model_values.glycol_max_chilled_water = parseFloat(model_values.glycol_max_chilled_water).toFixed(1);
+	model_values.glycol_min_cooling_water = parseFloat(model_values.glycol_min_cooling_water).toFixed(1);
+	model_values.glycol_max_cooling_water = parseFloat(model_values.glycol_max_cooling_water).toFixed(1);
+
+}

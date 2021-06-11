@@ -439,22 +439,14 @@
 										 <label>{{ $language_datas['chilled_water'] }} </label>
 									 </div>
 									<div class="col-md-2">
-										 <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control">
-
-										 <!-- <span class="messages emsg hidden" id="glycol_chilled_water_error">
-											 <p class="text-danger error">Please Enter a Valid Glycol Chilled Water</p>
-										 </span> -->
+										 <input type="text" name="glycol_chilled_water" id="glycol_chilled_water" value="0" onchange="updateModelValues('glycol_chilled_water')" value="" class="form-control glycol_chilled_water_ranges" data-placement="bottom" data-original-title>
 									</div>
 							
 									<div class="col-md-2">
 										 <label>{{ $language_datas['cooling_water'] }} </label>
 									</div>
 									<div class="col-md-2">
-										 <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control">
-
-										 <!-- <span class="messages emsg hidden" id="glycol_cooling_water_error">
-											 <p class="text-danger error">Please Enter a Valid Glycol Cooling Water</p>
-										 </span> -->
+										 <input type="text" name="glycol_cooling_water" id="glycol_cooling_water" value="0" onchange="updateModelValues('glycol_cooling_water')" class="form-control glycol_cooling_water_ranges" data-placement="bottom" data-original-title>
 									</div>
 									<div class="col-md-2">
 										 <label>{{ $language_datas['hot_water_glycol'] }} </label>
@@ -843,27 +835,35 @@
 
         function updateValues() {
 
+        	roundCommonValues();
+        	roundValues();
+
             updateEvaporatorOptions(model_values.evaporator_material_value,model_values.evaporator_thickness_change);
             updateAbsorberOptions(model_values.absorber_material_value,model_values.absorber_thickness_change);
             updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
 
             $("#model_number").val(model_values.model_number);
-            $('#capacity').val(model_values.capacity.toFixed(1));
+            $('#capacity').val(model_values.capacity);
             $('#model_name').html(model_values.model_name);
-            $('#chilled_water_in').val(model_values.chilled_water_in.toFixed(1));
-            $('#chilled_water_out').val(model_values.chilled_water_out.toFixed(1));
-            $('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out.toFixed(1));
-            var cooling_water_in_range = model_values.cooling_water_in_min_range.toFixed(1)+" - "+model_values.cooling_water_in_max_range.toFixed(1);
+            $('#chilled_water_in').val(model_values.chilled_water_in);
+            $('#chilled_water_out').val(model_values.chilled_water_out);
+            $('.min_chilled_water_out').attr('data-original-title',"min "+model_values.min_chilled_water_out);
+            var cooling_water_in_range = model_values.cooling_water_in_min_range+" - "+model_values.cooling_water_in_max_range;
             $('.cooling_water_in_range').attr('data-original-title', cooling_water_in_range);
             //$('#cooling_water_in_range').attr(cooling_water_in_range);
-            $('#cooling_water_in').val(model_values.cooling_water_in.toFixed(1));
-            $('#cooling_water_flow').val(model_values.cooling_water_flow.toFixed(1));
+            $('#cooling_water_in').val(model_values.cooling_water_in);
+            $('#cooling_water_flow').val(model_values.cooling_water_flow);
             var cooling_water_ranges = getCoolingWaterRanges(model_values.cooling_water_ranges);
 
             $('.cooling_water_ranges').attr('data-original-title',cooling_water_ranges);
             // $("#glycol_none").attr('disabled', model_values.glycol_none);
             $('#glycol_chilled_water').val(model_values.glycol_chilled_water ?  model_values.glycol_chilled_water : 0);
+            var glycol_chilled_water_in_range = model_values.glycol_min_chilled_water+" - "+model_values.glycol_max_chilled_water;
+            $('.glycol_chilled_water_ranges').attr('data-original-title', glycol_chilled_water_in_range);
             $('#glycol_cooling_water').val(model_values.glycol_cooling_water ?  model_values.glycol_cooling_water : 0);
+            var glycol_cooling_water_in_range = model_values.glycol_min_cooling_water+" - "+model_values.glycol_max_cooling_water;
+            $('.glycol_cooling_water_ranges').attr('data-original-title', glycol_cooling_water_in_range);
+
             $('#glycol_hot_water').val(model_values.glycol_hot_water ?  model_values.glycol_hot_water : 0);
             var glycol_hot_water_range = model_values.glycol_min_hot_water+" - "+model_values.glycol_max_hot_water;
             $('.glycol_hot_water_ranges').attr('data-original-title', glycol_hot_water_range);
@@ -874,9 +874,9 @@
             $("#evaporator_material").val(model_values.evaporator_material_value);
             $("#absorber_material").val(model_values.absorber_material_value);
             $("#condenser_material").val(model_values.condenser_material_value);
-            $("#hot_water_flow").val(model_values.hot_water_flow.toFixed(1));
-            $("#hot_water_in").val(model_values.hot_water_in.toFixed(1));
-            var hot_water_in_ranges = model_values.how_water_temp_min_range.toFixed(1)+" - "+model_values.how_water_temp_max_range.toFixed(1);
+            $("#hot_water_flow").val(model_values.hot_water_flow);
+            $("#hot_water_in").val(model_values.hot_water_in);
+            var hot_water_in_ranges = model_values.how_water_temp_min_range+" - "+model_values.how_water_temp_max_range;
             $('.hot_water_in_ranges').attr('data-original-title', hot_water_in_ranges);
 
             if(model_values.glycol_none === 'true')
@@ -1312,22 +1312,15 @@
         });
 
    
-        function castToBoolean(){
-
-            model_values.metallurgy_standard = getBoolean(model_values.metallurgy_standard);
-
-            model_values.evaporator_thickness_change = getBoolean(model_values.evaporator_thickness_change);
-            model_values.absorber_thickness_change = getBoolean(model_values.absorber_thickness_change);
-            model_values.condenser_thickness_change = getBoolean(model_values.condenser_thickness_change);
-            model_values.fouling_chilled_water_checked = getBoolean(model_values.fouling_chilled_water_checked);
-            model_values.fouling_cooling_water_checked = getBoolean(model_values.fouling_cooling_water_checked);
-            model_values.fouling_hot_water_checked = getBoolean(model_values.fouling_hot_water_checked);
-            model_values.fouling_chilled_water_disabled = getBoolean(model_values.fouling_chilled_water_disabled);
-            model_values.fouling_cooling_water_disabled = getBoolean(model_values.fouling_cooling_water_disabled);
-            model_values.fouling_hot_water_disabled = getBoolean(model_values.fouling_hot_water_disabled);
-            model_values.fouling_chilled_water_value_disabled = getBoolean(model_values.fouling_chilled_water_value_disabled);
-            model_values.fouling_cooling_water_value_disabled = getBoolean(model_values.fouling_cooling_water_value_disabled);
-            model_values.fouling_hot_water_value_disabled = getBoolean(model_values.fouling_hot_water_value_disabled);
+        function roundValues(){
+        	model_values.glycol_hot_water = parseFloat(model_values.glycol_hot_water).toFixed(1);
+        	model_values.glycol_min_hot_water = parseFloat(model_values.glycol_min_hot_water).toFixed(1);
+        	model_values.glycol_max_hot_water = parseFloat(model_values.glycol_max_hot_water).toFixed(1);
+        	model_values.hot_water_flow = parseFloat(model_values.hot_water_flow).toFixed(1);
+        	model_values.hot_water_in = parseFloat(model_values.hot_water_in).toFixed(1);
+        	model_values.how_water_temp_min_range = parseFloat(model_values.how_water_temp_min_range).toFixed(1);
+        	model_values.how_water_temp_max_range = parseFloat(model_values.how_water_temp_max_range).toFixed(1);
+        	
         }
 
        

@@ -571,6 +571,73 @@ class ChillerHeaterS2Controller extends Controller
 
     }
 
+    public function chilledWaterValidating(){
+        if($this->model_values['chilled_water_out'] < 1){
+            $this->model_values['glycol_none'] = 'true';
+            $this->model_values['glycol_selected'] = 2;
+        }
+        else{
+            $this->model_values['glycol_none'] = 'false';
+            // $this->model_values['glycol_selected'] = 2;
+        }
+        
+
+        $glycol_validator = $this->validateChillerAttribute('GLYCOL_TYPE_CHANGED');
+        if(!$glycol_validator['status'])
+            return array('status'=>false,'msg'=>$glycol_validator['msg']);
+
+
+        $metallurgy_validator = $this->metallurgyValidating();
+        if(!$metallurgy_validator['status'])
+            return array('status'=>false,'msg'=>$metallurgy_validator['msg']);
+        
+
+        return  array('status' => true,'msg' => "process run successfully");
+    }
+
+    public function metallurgyValidating(){
+        
+        if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
+        {
+            $this->model_values['tube_metallurgy_standard'] = 'false';
+            $this->model_values['metallurgy_standard'] = false;
+            $this->model_values['evaporator_material_value'] = 4;
+            // $this->model_values['evaporator_thickness'] = 0.8;
+            $this->model_values['evaporator_thickness_change'] = true;
+            // $this->chillerAttributesChanged("EVAPORATORTUBETYPE");
+
+        }
+        else
+        {   $this->model_values['tube_metallurgy_standard'] = 'true';
+            $this->model_values['metallurgy_standard'] = true;
+            $this->model_values['evaporator_thickness_change'] = true;
+        }
+
+        $evaporator_validator = $this->validateChillerAttribute('EVAPORATOR_TUBE_TYPE');
+        if(!$evaporator_validator['status'])
+            return array('status'=>false,'msg'=>$evaporator_validator['msg']);
+
+        
+        $this->onChangeMetallurgyOption();
+
+        return  array('status' => true,'msg' => "process run successfully");
+    }
+
+    public function onChangeMetallurgyOption(){
+        if($this->model_values['metallurgy_standard']){
+            $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
+
+            $this->model_values['evaporator_material_value'] = $chiller_metallurgy_options->eva_default_value;
+            // $this->model_values['evaporator_thickness'] = $this->default_model_values['evaporator_thickness'];
+            $this->model_values['absorber_material_value'] = $chiller_metallurgy_options->abs_default_value;
+            // $this->model_values['absorber_thickness'] = $this->default_model_values['absorber_thickness'];
+            $this->model_values['condenser_material_value'] = $chiller_metallurgy_options->con_default_value;
+            // $this->model_values['condenser_thickness'] = $this->default_model_values['condenser_thickness'];
+        }
+
+    }
+
     public function validateAllChillerAttributes(){
 
         $this->model_values['glycol_chilled_water'] = floatval($this->model_values['glycol_chilled_water']);

@@ -462,6 +462,7 @@ class L5SeriesController extends Controller
                 if(floatval($this->model_values['glycol_selected']) == 1){
                     $this->model_values['glycol_chilled_water'] = 0;
                     $this->model_values['glycol_cooling_water'] = 0;
+                    $this->model_values['glycol_hot_water'] = 0;
                     $this->model_values['glycol_min_chilled_water'] = 0;
                 
                     $metallurgy_validator = $this->metallurgyValidating();
