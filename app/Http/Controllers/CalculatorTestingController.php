@@ -121,7 +121,8 @@ class CalculatorTestingController extends Controller
     public function testingCalculator(Request $request){
         $code = $request->input('code');
         $calculator_input = $request->input('calculator_input');
-        // Log::info($calculator_input);
+
+
         if(empty($code) || empty($calculator_input)){
             return response()->json(['status'=>false,'msg'=>'Input Error']);
         }
@@ -1010,7 +1011,7 @@ class CalculatorTestingController extends Controller
         $data['engine_type'] = isset($output_values['engine_type']) ?  $output_values['engine_type'] : "";
         $data['exhaust_gas_flow'] = isset($output_values['GEXHAUST']) ?  $output_values['GEXHAUST'] : "";
         $data['exhaust_gas_in_temp'] = isset($output_values['TEXH1']) ?  $output_values['TEXH1'] : "";
-        $data['exhaust_gas_out_temp'] = isset($output_values['TEXHOUT']) ?  $output_values['TEXHOUT'] : "";
+        $data['exhaust_gas_out_temp'] = isset($output_values['ActExhaustGasTempOut']) ?  $output_values['ActExhaustGasTempOut'] : "";
         $data['exhaust_gas_flow'] = isset($output_values['GEXHAUST']) ?  $output_values['GEXHAUST'] : "";
         $data['percentage_engine_load_considered'] = isset($output_values['LOAD']) ?  $output_values['LOAD'] : "";
         $data['vam_eg_pressure_drop'] = isset($output_values['FURNPRDROP']) ?  $output_values['FURNPRDROP'] : "";

@@ -204,7 +204,7 @@ class DoubleG2SteamController extends Controller
         //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         // }
     
-
+        // Log::info($this->calculation_values);    
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
@@ -226,7 +226,7 @@ class DoubleG2SteamController extends Controller
             
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
       
-        // Log::info($calculated_values);
+        Log::info($calculated_values);
         if($calculated_values['Result'] == "FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -762,10 +762,12 @@ class DoubleG2SteamController extends Controller
         $this->calculation_values['VAL'] = $this->calculation_values['GCWAL'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * (($this->calculation_values['TNAA'] / 2) / $this->calculation_values['TAPL']));
 
 
+
         $this->DERATE_KEVA();
         $this->DERATE_KABSH();
         $this->DERATE_KABSL();
         $this->DERATE_KCON();
+
 
         if ($this->calculation_values['MODEL'] < 3500)
         {
@@ -1837,6 +1839,7 @@ class DoubleG2SteamController extends Controller
         }
         $this->calculation_values['GFUEL'] = $this->calculation_values['QHTG'] / ($this->calculation_values['RCV1'] * $this->calculation_values['CF']);
         $this->calculation_values['GFUEL'] = $this->calculation_values['GFUEL'] * $this->calculation_values['SFACTOR'] * $SFACTOR1 * $SFACTOR3;
+
         $this->PRESSURE_DROP();
 
         $this->HR();
@@ -2020,6 +2023,8 @@ class DoubleG2SteamController extends Controller
 
 
             $this->calculation_values['LMTDHR'] = (($this->calculation_values['TEXH1'] - $this->calculation_values['T33']) - ($this->calculation_values['TEXH2'] - $this->calculation_values['T14'])) / (log(($this->calculation_values['TEXH1'] - $this->calculation_values['T33']) / ($this->calculation_values['TEXH2'] - $this->calculation_values['T14'])));
+
+
             $this->calculation_values['QLMTDHR'] = $this->calculation_values['UHR'] * $this->calculation_values['AHR'] * $this->calculation_values['LMTDHR'];
 
 
@@ -2992,11 +2997,11 @@ class DoubleG2SteamController extends Controller
             case 60:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 M1";
+                    $this->calculation_values['model_name'] = "TZC G2 M1";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 M1";
+                    $this->calculation_values['model_name'] = "TAC G2 M1";
                 }
 
                 break;
@@ -3004,11 +3009,11 @@ class DoubleG2SteamController extends Controller
             case 75:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 M2";
+                    $this->calculation_values['model_name'] = "TZC G2 M2";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 M2";
+                    $this->calculation_values['model_name'] = "TAC G2 M2";
                 }
 
                 break;    
@@ -3016,11 +3021,11 @@ class DoubleG2SteamController extends Controller
             case 90:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 N1";
+                    $this->calculation_values['model_name'] = "TZC G2 N1";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 N1";
+                    $this->calculation_values['model_name'] = "TAC G2 N1";
                 }
 
                 break;     
@@ -3028,11 +3033,11 @@ class DoubleG2SteamController extends Controller
             case 110:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 N2";
+                    $this->calculation_values['model_name'] = "TZC G2 N2";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 N2";
+                    $this->calculation_values['model_name'] = "TAC G2 N2";
                 }
 
                 break;     
@@ -3040,11 +3045,11 @@ class DoubleG2SteamController extends Controller
             case 150:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 N3";
+                    $this->calculation_values['model_name'] = "TZC G2 N3";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 N3";
+                    $this->calculation_values['model_name'] = "TAC G2 N3";
                 }
 
                 break;      
@@ -3052,11 +3057,11 @@ class DoubleG2SteamController extends Controller
             case 175:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 N4";
+                    $this->calculation_values['model_name'] = "TZC G2 N4";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 N4";
+                    $this->calculation_values['model_name'] = "TAC G2 N4";
                 }
 
                 break;     
@@ -3065,22 +3070,22 @@ class DoubleG2SteamController extends Controller
             case 210:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 P1";
+                    $this->calculation_values['model_name'] = "TZC G2 P1";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 P1";
+                    $this->calculation_values['model_name'] = "TAC G2 P1";
                 }
                 break;     
 
             case 250:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 P2";
+                    $this->calculation_values['model_name'] = "TZC G2 P2";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 P2";
+                    $this->calculation_values['model_name'] = "TAC G2 P2";
                 }
 
                 break; 
@@ -3088,11 +3093,11 @@ class DoubleG2SteamController extends Controller
             case 310:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 D3";
+                    $this->calculation_values['model_name'] = "TZC G2 D3";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 D3";
+                    $this->calculation_values['model_name'] = "TAC G2 D3";
                 }
 
             break;
@@ -3100,22 +3105,22 @@ class DoubleG2SteamController extends Controller
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
 
-                    $this->model_values['model_name'] = "TZC G2 D4";
+                    $this->calculation_values['model_name'] = "TZC G2 D4";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 D4";
+                    $this->calculation_values['model_name'] = "TAC G2 D4";
                 }
 
             break;
             case 410:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 E1";
+                    $this->calculation_values['model_name'] = "TZC G2 E1";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 E1";
+                    $this->calculation_values['model_name'] = "TAC G2 E1";
 
                 }
 
@@ -3125,12 +3130,12 @@ class DoubleG2SteamController extends Controller
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
 
-                    $this->model_values['model_name'] = "TZC G2 E2";
+                    $this->calculation_values['model_name'] = "TZC G2 E2";
                 }
                 else
                 {
 
-                    $this->model_values['model_name'] = "TAC G2 E2";
+                    $this->calculation_values['model_name'] = "TAC G2 E2";
                 }
 
             break;
@@ -3139,11 +3144,11 @@ class DoubleG2SteamController extends Controller
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
 
-                    $this->model_values['model_name'] = "TZC G2 E3";
+                    $this->calculation_values['model_name'] = "TZC G2 E3";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 E3";
+                    $this->calculation_values['model_name'] = "TAC G2 E3";
 
                 }
 
@@ -3152,11 +3157,11 @@ class DoubleG2SteamController extends Controller
             case 580:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 E4";     
+                    $this->calculation_values['model_name'] = "TZC G2 E4";     
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 E4";
+                    $this->calculation_values['model_name'] = "TAC G2 E4";
                 }
 
 
@@ -3165,11 +3170,11 @@ class DoubleG2SteamController extends Controller
             case 630:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 E5";
+                    $this->calculation_values['model_name'] = "TZC G2 E5";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 E5";
+                    $this->calculation_values['model_name'] = "TAC G2 E5";
                 }
 
             break;
@@ -3177,11 +3182,11 @@ class DoubleG2SteamController extends Controller
             case 710:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 E6";
+                    $this->calculation_values['model_name'] = "TZC G2 E6";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 E6";
+                    $this->calculation_values['model_name'] = "TAC G2 E6";
 
                 }
 
@@ -3191,12 +3196,12 @@ class DoubleG2SteamController extends Controller
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
 
-                    $this->model_values['model_name'] = "TZC G2 F1";
+                    $this->calculation_values['model_name'] = "TZC G2 F1";
                 }
                 else
                 {
 
-                    $this->model_values['model_name'] = "TAC G2 F1";
+                    $this->calculation_values['model_name'] = "TAC G2 F1";
 
                 }
 
@@ -3205,11 +3210,11 @@ class DoubleG2SteamController extends Controller
             case 810:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {   
-                    $this->model_values['model_name'] = "TZC G2 F2";  
+                    $this->calculation_values['model_name'] = "TZC G2 F2";  
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 F2"; 
+                    $this->calculation_values['model_name'] = "TAC G2 F2"; 
                 }
 
             break;
@@ -3217,12 +3222,12 @@ class DoubleG2SteamController extends Controller
             case 900:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 F3"; 
+                    $this->calculation_values['model_name'] = "TZC G2 F3"; 
                 }
                 else
                 {
 
-                    $this->model_values['model_name'] = "TAC G2 F3";
+                    $this->calculation_values['model_name'] = "TAC G2 F3";
                 }
 
 
@@ -3232,13 +3237,13 @@ class DoubleG2SteamController extends Controller
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
 
-                    $this->model_values['model_name'] = "TZC G2 G1";
+                    $this->calculation_values['model_name'] = "TZC G2 G1";
 
                 }
                 else
                 {
 
-                    $this->model_values['model_name'] = "TAC G2 G1";
+                    $this->calculation_values['model_name'] = "TAC G2 G1";
 
                 }
 
@@ -3247,11 +3252,11 @@ class DoubleG2SteamController extends Controller
             case 1130:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 G2";
+                    $this->calculation_values['model_name'] = "TZC G2 G2";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 G2";
+                    $this->calculation_values['model_name'] = "TAC G2 G2";
 
                 }
 
@@ -3261,12 +3266,12 @@ class DoubleG2SteamController extends Controller
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
 
-                    $this->model_values['model_name'] = "TZC G2 G3"; 
+                    $this->calculation_values['model_name'] = "TZC G2 G3"; 
                 }
                 else
                 {
 
-                    $this->model_values['model_name'] = "TAC G2 G3";
+                    $this->calculation_values['model_name'] = "TAC G2 G3";
                 }
 
             break;
@@ -3274,11 +3279,11 @@ class DoubleG2SteamController extends Controller
             case 1380:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 G4";
+                    $this->calculation_values['model_name'] = "TZC G2 G4";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 G4";
+                    $this->calculation_values['model_name'] = "TAC G2 G4";
                 }
 
             break;
@@ -3286,11 +3291,11 @@ class DoubleG2SteamController extends Controller
             case 1560:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 G5";
+                    $this->calculation_values['model_name'] = "TZC G2 G5";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 G5";
+                    $this->calculation_values['model_name'] = "TAC G2 G5";
                 }
 
             break;
@@ -3298,11 +3303,11 @@ class DoubleG2SteamController extends Controller
             case 1690:
                 if ($this->calculation_values['TCHW12'] < 3.5)
                 {
-                    $this->model_values['model_name'] = "TZC G2 G6";
+                    $this->calculation_values['model_name'] = "TZC G2 G6";
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC G2 G6";
+                    $this->calculation_values['model_name'] = "TAC G2 G6";
                 }
 
             break;

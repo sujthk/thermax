@@ -146,22 +146,22 @@ class DoubleH2SteamController extends Controller
 
         $this->updateInputs();
 
-        try {
+        // try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        } 
-        catch (\Exception $e) {
-            // Log::info($e);
+        // } 
+        // catch (\Exception $e) {
+        //     // Log::info($e);
 
-            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        }
+        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        // }
          //Log::info(print_r($this->calculation_values,true));
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        try {
+        // try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -169,17 +169,17 @@ class DoubleH2SteamController extends Controller
             $this->RESULT_CALCULATE();
 
             $this->loadSpecSheetData();
-        }
-        catch (\Exception $e) {
-            // Log::info($e);
+        // }
+        // catch (\Exception $e) {
+        //     // Log::info($e);
 
-            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        }
+        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        // }
         
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
-        // log::info($this->calculation_values);
+        log::info($this->calculation_values);
 
         if($calculated_values['Result'] =="FAILED")
         {
@@ -513,6 +513,13 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['HotWaterFlow'] = 0;
         $this->calculation_values['HotWaterFrictionLoss'] = 0;
 
+        if($this->calculation_values['region_type'] == 1){
+            $this->calculation_values['SS_FACTOR'] = 1;
+        }
+        else{
+            $this->calculation_values['SS_FACTOR'] = 0.96;
+        }
+
 
         $this->DATA();
 
@@ -614,9 +621,9 @@ class DoubleH2SteamController extends Controller
         if ($this->calculation_values['TU2'] == 1 || $this->calculation_values['TU2'] == 6)
             $this->calculation_values['KEVA'] = 1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 37000.0));
         if ($this->calculation_values['TU2'] == 4)
-            $this->calculation_values['KEVA'] = (1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 21000.0))) * 0.93;
+            $this->calculation_values['KEVA'] = (1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 21000.0))) * $this->calculation_values['SS_FACTOR'];
         if ($this->calculation_values['TU2'] == 3)
-           $this->calculation_values['KEVA'] = 1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 21000.0)) * 0.93;  
+           $this->calculation_values['KEVA'] = 1 / ((1 / $this->calculation_values['KEVA1']) + ($this->calculation_values['TU3'] / 21000.0)) * $this->calculation_values['SS_FACTOR'];  
        if ($this->calculation_values['TU2'] == 5)
         $this->calculation_values['KEVA'] = 1 / ((1 / 1600.0) + ($this->calculation_values['TU3'] / 15000.0));
     
@@ -1759,10 +1766,18 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['VAL'] = $this->calculation_values['GCWAL'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * (($this->calculation_values['TNAA'] / 2) / $this->calculation_values['TAPL']));
 
 
+        Log::info("KEVA = ".$this->calculation_values['KEVA']);
+        Log::info("KABS = ".$this->calculation_values['KABS']);
+        Log::info("KCON = ".$this->calculation_values['KCON']);
+
         $this->DERATE_KEVA();
         $this->DERATE_KABSH();
         $this->DERATE_KABSL();
         $this->DERATE_KCON();
+
+        Log::info("KEVA = ".$this->calculation_values['KEVA']);
+        Log::info("KABS = ".$this->calculation_values['KABS']);
+        Log::info("KCON = ".$this->calculation_values['KCON']);
 
 
         if ($this->calculation_values['MODEL'] < 3500)
@@ -2674,7 +2689,7 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['TGPMAX'] = 0;
 
         if ($this->calculation_values['MODEL'] < 275)//RESTRICTION IN PASSES DUE TO LOWER TUBE NO IN HTG AS COMM BY DETAILING
-        $this->calculation_values['TGPMAX'] = 4;
+            $this->calculation_values['TGPMAX'] = 4;
         else
             $this->calculation_values['TGPMAX'] = 4;
 
@@ -2691,20 +2706,20 @@ class DoubleH2SteamController extends Controller
                 $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
                 break;
             }
-        } while ($this->calculation_values['VG'] < 1.3);
+        } while ($this->calculation_values['VG'] < 1.2);
 
         $this->calculation_values['VG'] = $this->calculation_values['GHOT'] / (((3600 * 3.141593 *$this->calculation_values['IDG']  * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP']));
 
-        if ($this->calculation_values['VG'] < 1.3)
-        {
-            $this->calculation_values['HWI'] = 2;
-        }
-        if ($this->calculation_values['VG'] < 0.8)
+        // if ($this->calculation_values['VG'] < 1.3)
+        // {
+        //     $this->calculation_values['HWI'] = 2;
+        // }
+        if ($this->calculation_values['VG'] < 1.2)
         {
             
-            $this->calculation_values['UHTG'] = $this->calculation_values['UHTG'] * (1 - ((0.8 - $this->calculation_values['VG']) * 0.5));
+            $this->calculation_values['UHTG'] = $this->calculation_values['UHTG'] * (1 - ((1.2 - $this->calculation_values['VG']) * 0.5));
         }
-        if ($this->calculation_values['VG'] < 0.4)
+        if ($this->calculation_values['VG'] < 0.8)
         {
             $this->calculation_values['HTEMP'] = 1;
         }
@@ -2916,7 +2931,8 @@ class DoubleH2SteamController extends Controller
     }
     else
     {
-        $this->calculation_values['FG'] = (1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * 1.12;
+        
+        $this->calculation_values['FG'] = 0.0014 + (0.137 / pow($this->calculation_values['REG'], 0.32)) * 1.12;
 
         $this->calculation_values['FLG'] = (4 * $this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
     }
@@ -2927,6 +2943,7 @@ class DoubleH2SteamController extends Controller
     $this->calculation_values['TFLG']  = ($this->calculation_values['FLG'] + $this->calculation_values['EXLG'] + $this->calculation_values['ENLG']) * $this->calculation_values['TGP'] ; //TOTAL FR LOSS IN TUBES
 
     $this->calculation_values['GFL'] = $this->calculation_values['GLP'] + $this->calculation_values['TFLG']; //TOTAL FR LOSS IN HW  
+    $this->calculation_values['GFL'] = $this->calculation_values['GFL'] * 1.05;
     }
 
     public function HR()

@@ -239,7 +239,7 @@ class E2SeriesController extends Controller
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
-        // Log::info($calculated_values);
+        Log::info($calculated_values);
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -1973,6 +1973,7 @@ class E2SeriesController extends Controller
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
                                         ->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
 
+        // Log::info($chiller_metallurgy_options);                                
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
         $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$this->calculation_values['TU2'])->first();
@@ -5244,16 +5245,16 @@ class E2SeriesController extends Controller
 
 
         $this->calculation_values['msg'] = '';
-       try {
+       // try {
            $this->WATERPROP();
 
            $velocity_status = $this->VELOCITY();
 
-       } 
-       catch (\Exception $e) {
-            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+       // } 
+       // catch (\Exception $e) {
+       //      $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
-       }
+       // }
        
 
        if(isset($velocity_status['status']) && !$velocity_status['status']){
@@ -5263,7 +5264,7 @@ class E2SeriesController extends Controller
 
 
 
-       try {
+       // try {
            $this->CALCULATIONS();
     
            $this->CONVERGENCE();
@@ -5271,12 +5272,12 @@ class E2SeriesController extends Controller
            $this->RESULT_CALCULATE();
     
            $this->loadSpecSheetData();
-       }
-       catch (\Exception $e) {
+       // }
+       // catch (\Exception $e) {
 
-            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+       //      $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
-       }
+       // }
 
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
