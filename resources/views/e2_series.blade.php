@@ -559,12 +559,12 @@
 											 	<i class="helper"></i>Non Standard
 										 	</label>
 									 	</div>
-									 	<div class="radio radio-inline">
+									 	<!-- <div class="radio radio-inline">
 										 	<label>
 											 	<input type="radio" name="fouling_factor" id="fouling_factor_ari" value="ari">
 											 	<i class="helper"></i><span id="fouling_ari">ARI</span><span id="fouling_factor_ahri"></span>
 										 	</label>
-										</div>
+										</div> -->
 								 	</div>
 							 	</div>
 					 		</div>
@@ -681,7 +681,7 @@
 										 <input type="text" name="pressure_drop" id="pressure_drop" value="0" onchange="updateModelValues('pressure_drop')" value="" class="form-control">
 									</div>
 									<div class="col-lg-1">
-										<label>({{ $units_data[$unit_set->PressureUnit] }})</label>
+										<label>({{ $units_data[$unit_set->FurnacePressureDropUnit] }})</label>
 									</div>
 					 		
 					 			</div>

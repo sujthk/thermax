@@ -3522,7 +3522,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_out_temp']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TEXHOUT'],1)));
+        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ActExhaustGasTempOut'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
@@ -3540,7 +3540,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_flow']));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->ExhaustGasFlowUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['GEXHAUST'],1)));
+        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ExhaustGasFlowRate'],1)));
 
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("8."));
@@ -3551,7 +3551,7 @@ class ReportController extends Controller
         $chilled_table->addRow();
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['pressure_drop']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->PressureUnit]));
+        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->FurnacePressureDropUnit]));
         $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['FURNPRDROP'],1)));
 
 

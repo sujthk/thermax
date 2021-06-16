@@ -101,7 +101,7 @@ class UnitConversionController extends Controller
 
         }
         if($calculator_code == "D_E2"){
-            $chiller_values['pressure_drop'] = $this->convertPressureUnit($chiller_values['pressure_drop'],"KgPerCmSqGauge",$unit_set->PressureUnit);
+            $chiller_values['pressure_drop'] = $this->convertPressureUnit($chiller_values['pressure_drop'],"mmWC",$unit_set->FurnacePressureDropUnit);
         }
        
 
@@ -234,7 +234,7 @@ class UnitConversionController extends Controller
             $chiller_values['steam_pressure_max_range'] = $this->convertPressureUnit($chiller_values['steam_pressure_max_range'],$unit_set->PressureUnit,"KgPerCmSqGauge");
         }
         if($calculator_code == "D_E2"){
-            $chiller_values['pressure_drop'] = $this->convertPressureUnit($chiller_values['pressure_drop'],$unit_set->PressureUnit,"KgPerCmSqGauge");
+            $chiller_values['pressure_drop'] = $this->convertPressureUnit($chiller_values['pressure_drop'],$unit_set->FurnacePressureDropUnit,"mmWC");
         }
         
 
@@ -303,6 +303,7 @@ class UnitConversionController extends Controller
         if($calculator_code == "D_E2"){
             $calculated_values['TEXH1'] = $this->convertTemperatureUnit($calculated_values['TEXH1'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['TEXHOUT'] = $this->convertTemperatureUnit($calculated_values['TEXHOUT'],"Centigrade",$unit_set->TemperatureUnit);
+            $calculated_values['ActExhaustGasTempOut'] = $this->convertTemperatureUnit($calculated_values['ActExhaustGasTempOut'],"Centigrade",$unit_set->TemperatureUnit);
         }
         if($calculator_code == "H1")
         {

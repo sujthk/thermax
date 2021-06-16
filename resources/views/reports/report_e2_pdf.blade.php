@@ -318,7 +318,7 @@
 										<td> 4 </td> 
 										<td class="font-class"> {{ $language_datas['exhaust_gas_out_temp'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['TEXHOUT'],1) }} </td>
+										<td class="optimal-r1"> {{ round($calculation_values['ActExhaustGasTempOut'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 5 </td>
@@ -336,7 +336,7 @@
 										<td> 7 </td>
 										<td class="font-class"> {{ $language_datas['exhaust_gas_flow'] }} </td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->ExhaustGasFlowUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['GEXHAUST'],1) }} </td>
+										<td class="optimal-r1"> {{ round($calculation_values['ExhaustGasFlowRate'],1) }} </td>
 									</tr>
 									<tr>     
 										<td> 8 </td>
@@ -347,7 +347,7 @@
 									<tr>     
 										<td> 9 </td>
 										<td class="font-class"> {{ $language_datas['pressure_drop'] }} </td>
-										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->FurnacePressureDropUnit] }}</td>
 										<td class="optimal-r1"> {{ round($calculation_values['FURNPRDROP'],1) }} </td>
 									</tr>
 									<tr>

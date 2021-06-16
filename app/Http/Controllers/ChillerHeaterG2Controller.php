@@ -668,7 +668,17 @@ class ChillerHeaterG2Controller extends Controller
         else
             $this->calculation_values['TCWA'] = 32.0;
 
-        $this->calculation_values['SFACTOR'] = $this->calculation_values['A_SFACTOR'] - ($this->calculation_values['B_SFACTOR'] * $this->calculation_values['TCWA']);    
+        $this->calculation_values['SFACTOR'] = $this->calculation_values['A_SFACTOR'] - ($this->calculation_values['B_SFACTOR'] * $this->calculation_values['TCWA']);
+
+        if($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 75){
+            $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.025;
+        }
+        elseif ($this->calculation_values['MODEL'] == 110 || $this->calculation_values['MODEL'] == 150 || $this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250) {
+            $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.015;
+        }
+        else{
+            $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1;
+        }    
 
         // $this->calculation_values['AT13'] = 101;         // 100.7;   
         if ($this->calculation_values['TCW11'] < 29.4)

@@ -239,7 +239,7 @@ class E2SeriesController extends Controller
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
-        // Log::info($calculated_values);
+        Log::info($calculated_values);
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -1198,6 +1198,7 @@ class E2SeriesController extends Controller
 
     public function updateInputs(){
 
+
         $model_number = (int)$this->model_values['model_number'];
         $calculation_values = $this->getCalculationValues($model_number);
 
@@ -1314,6 +1315,9 @@ class E2SeriesController extends Controller
         $this->calculation_values['ChilledFrictionLoss'] = 0;
         $this->calculation_values['CoolingFrictionLoss'] = 0;
         $this->calculation_values['SteamConsumption'] = 0;
+        $this->calculation_values['ActExhaustGasTempOut'] = 0;
+        $this->calculation_values['ExhaustConnectionDiameter'] = 0;
+        $this->calculation_values['AvgExhGasCp'] = 0;
 
         if($this->calculation_values['region_type'] == 1){
             $this->calculation_values['SS_FACTOR'] = 1;
@@ -1772,7 +1776,19 @@ class E2SeriesController extends Controller
         else
             $this->calculation_values['TCWA'] = 32.0;
 
+
+
         $this->calculation_values['SFACTOR'] = $this->calculation_values['A_SFACTOR'] - ($this->calculation_values['B_SFACTOR'] * $this->calculation_values['TCWA']);
+
+        if($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 75){
+            $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.025;
+        }
+        elseif ($this->calculation_values['MODEL'] == 110 || $this->calculation_values['MODEL'] == 150 || $this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250) {
+            $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.015;
+        }
+        else{
+            $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1;
+        }
 
         if ($this->calculation_values['TCW11'] < 29.4)
             $this->calculation_values['AT13'] = 99.99;
@@ -2104,6 +2120,8 @@ class E2SeriesController extends Controller
 
         // PR_DROP_DATA();
         $this->PR_DROP_CHILL();
+        Log::info("VEA = ".$this->calculation_values['VEA']);
+        Log::info("FLE = ".$this->calculation_values['FLE']);
 
         if ($this->calculation_values['FLE'] > 12)
         {
@@ -3274,7 +3292,7 @@ class E2SeriesController extends Controller
         $this->calculation_values['QEXR'] = $this->calculation_values['GEXHAUSTR'] * (($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) / 2) * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXH2']) * .97;
         $this->calculation_values['QEXAV'] = $this->calculation_values['GEXHAUST'] * (($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) / 2) * ($this->calculation_values['TEXH1'] - $this->calculation_values['TEXH2']) * .97;
 
-        if ($this->calculation_values['CPEX1'] == 0.256)
+        if ($this->calculation_values['engine_type'] == 'oil')
         {
             $this->calculation_values['TEXHAUSTREQ'] = ($this->calculation_values['TEXH1'] - ($this->calculation_values['QEXR'] / ($this->calculation_values['GEXHAUST'] * (($this->calculation_values['CPEX1'] + $this->calculation_values['CPEX2']) / 2) * 0.97))) - 2;
         }
@@ -3614,103 +3632,103 @@ class E2SeriesController extends Controller
         {
             $this->calculation_values['IEXHC']=50;
         }
-        $this->calculation_values['ODENEXH']=1.293*(273/(273+$this->calculation_values['TEXHAUSTREQ']));
-        $this->calculation_values['OAEXH']=$this->calculation_values['GEXHAUST']/(3600*$this->calculation_values['ODENEXH']*25);
-        $this->calculation_values['OA1']=$this->calculation_values['OAEXH'] * 28/22;
-        $this->calculation_values['OEXH']=(sqrt($this->calculation_values['OA1']))*1000;
+        // $this->calculation_values['ODENEXH']=1.293*(273/(273+$this->calculation_values['TEXHAUSTREQ']));
+        // $this->calculation_values['OAEXH']=$this->calculation_values['GEXHAUST']/(3600*$this->calculation_values['ODENEXH']*25);
+        // $this->calculation_values['OA1']=$this->calculation_values['OAEXH'] * 28/22;
+        // $this->calculation_values['OEXH']=(sqrt($this->calculation_values['OA1']))*1000;
         
-        if($this->calculation_values['OEXH']>1000)
-        {
-            $this->calculation_values['OEXHC']=0;
-        }
-        else if($this->calculation_values['OEXH']>950)
-        {
-            $this->calculation_values['OEXHC']=950;
-        }
-        else if($this->calculation_values['OEXH']>900)
-        {
-            $this->calculation_values['OEXHC']=950;
-        }
-        else if($this->calculation_values['OEXH']>850)
-        {
-            $this->calculation_values['OEXHC']=900;
-        }
-        else if($this->calculation_values['OEXH']>800)
-        {
-            $this->calculation_values['OEXHC']=850;
-        }
-        else if($this->calculation_values['OEXH']>750)
-        {
-            $this->calculation_values['OEXHC']=800;
-        }
-        else if($this->calculation_values['OEXH']>700)
-        {
-            $this->calculation_values['OEXHC']=750;
-        }
-        else if($this->calculation_values['OEXH']>650)
-        {
-            $this->calculation_values['OEXHC']=700;
-        }
-        else if($this->calculation_values['OEXH']>600)
-        {
-            $this->calculation_values['OEXHC']=650;
-        }
-        else if($this->calculation_values['OEXH']>550)
-        {
-            $this->calculation_values['OEXHC']=600;
-        }
-        else if($this->calculation_values['OEXH']>500)
-        {
-            $this->calculation_values['OEXHC']=550;
-        }
-        else if($this->calculation_values['OEXH']>450)
-        {
-            $this->calculation_values['OEXHC']=500;
-        }
-        else if($this->calculation_values['OEXH']>400)
-        {
-            $this->calculation_values['OEXHC']=450;
-        }
-        else if($this->calculation_values['OEXH']>350)
-        {
-            $this->calculation_values['OEXHC']=400;
-        }
-        else if($this->calculation_values['OEXH']>300)
-        {
-            $this->calculation_values['OEXHC']=350;
-        }
-        else if($this->calculation_values['OEXH']>250)
-        {
-            $this->calculation_values['OEXHC']=300;
-        }
-        else if($this->calculation_values['OEXH']>200)
-        {
-            $this->calculation_values['OEXHC']=250;
-        }
-        else if($this->calculation_values['OEXH']>150)
-        {
-            $this->calculation_values['OEXHC']=200;
-        }
-        else if($this->calculation_values['OEXH']>125)
-        {
-            $this->calculation_values['OEXHC']=150;
-        }
-        else if($this->calculation_values['OEXH']>100)
-        {
-            $this->calculation_values['OEXHC']=125;
-        }
-        else if($this->calculation_values['OEXH']>80)
-        {
-            $this->calculation_values['OEXHC']=100;
-        }
-        else if($this->calculation_values['OEXH']>65)
-        {
-            $this->calculation_values['OEXHC']=80;
-        }
-        else
-        {
-            $this->calculation_values['OEXHC']=50;
-        }
+        // if($this->calculation_values['OEXH']>1000)
+        // {
+        //     $this->calculation_values['OEXHC']=0;
+        // }
+        // else if($this->calculation_values['OEXH']>950)
+        // {
+        //     $this->calculation_values['OEXHC']=950;
+        // }
+        // else if($this->calculation_values['OEXH']>900)
+        // {
+        //     $this->calculation_values['OEXHC']=950;
+        // }
+        // else if($this->calculation_values['OEXH']>850)
+        // {
+        //     $this->calculation_values['OEXHC']=900;
+        // }
+        // else if($this->calculation_values['OEXH']>800)
+        // {
+        //     $this->calculation_values['OEXHC']=850;
+        // }
+        // else if($this->calculation_values['OEXH']>750)
+        // {
+        //     $this->calculation_values['OEXHC']=800;
+        // }
+        // else if($this->calculation_values['OEXH']>700)
+        // {
+        //     $this->calculation_values['OEXHC']=750;
+        // }
+        // else if($this->calculation_values['OEXH']>650)
+        // {
+        //     $this->calculation_values['OEXHC']=700;
+        // }
+        // else if($this->calculation_values['OEXH']>600)
+        // {
+        //     $this->calculation_values['OEXHC']=650;
+        // }
+        // else if($this->calculation_values['OEXH']>550)
+        // {
+        //     $this->calculation_values['OEXHC']=600;
+        // }
+        // else if($this->calculation_values['OEXH']>500)
+        // {
+        //     $this->calculation_values['OEXHC']=550;
+        // }
+        // else if($this->calculation_values['OEXH']>450)
+        // {
+        //     $this->calculation_values['OEXHC']=500;
+        // }
+        // else if($this->calculation_values['OEXH']>400)
+        // {
+        //     $this->calculation_values['OEXHC']=450;
+        // }
+        // else if($this->calculation_values['OEXH']>350)
+        // {
+        //     $this->calculation_values['OEXHC']=400;
+        // }
+        // else if($this->calculation_values['OEXH']>300)
+        // {
+        //     $this->calculation_values['OEXHC']=350;
+        // }
+        // else if($this->calculation_values['OEXH']>250)
+        // {
+        //     $this->calculation_values['OEXHC']=300;
+        // }
+        // else if($this->calculation_values['OEXH']>200)
+        // {
+        //     $this->calculation_values['OEXHC']=250;
+        // }
+        // else if($this->calculation_values['OEXH']>150)
+        // {
+        //     $this->calculation_values['OEXHC']=200;
+        // }
+        // else if($this->calculation_values['OEXH']>125)
+        // {
+        //     $this->calculation_values['OEXHC']=150;
+        // }
+        // else if($this->calculation_values['OEXH']>100)
+        // {
+        //     $this->calculation_values['OEXHC']=125;
+        // }
+        // else if($this->calculation_values['OEXH']>80)
+        // {
+        //     $this->calculation_values['OEXHC']=100;
+        // }
+        // else if($this->calculation_values['OEXH']>65)
+        // {
+        //     $this->calculation_values['OEXHC']=80;
+        // }
+        // else
+        // {
+        //     $this->calculation_values['OEXHC']=50;
+        // }
 
     }
 
@@ -4979,7 +4997,13 @@ class E2SeriesController extends Controller
          if ($this->calculation_values['QEXR'] < (0.95 * $this->calculation_values['QEXAV']))
          {
             array_push($selection_notes,$this->notes['NOTES_EG_REC']);
-            $bypass = $this->notes['NOTES_TEMP']." ".round($this->calculation_values['TEXHAUSTREQ'], 2)." ºC";
+            if($this->calculation_values['ECO'] == 'yes'){
+                $bypass = $this->notes['NOTES_TEMP']." ".round($this->calculation_values['TEXH3'], 2)." ºC";
+            }
+            else{
+                $bypass = $this->notes['NOTES_TEMP']." ".round($this->calculation_values['TEXHAUSTREQ'], 2)." ºC";
+            }
+            
             array_push($selection_notes,$bypass);
          }
          if ($this->calculation_values['TUU'] == "ari")
