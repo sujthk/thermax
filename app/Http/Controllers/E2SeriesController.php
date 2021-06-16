@@ -239,7 +239,7 @@ class E2SeriesController extends Controller
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
-        Log::info($calculated_values);
+        // Log::info($calculated_values);
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -1318,6 +1318,7 @@ class E2SeriesController extends Controller
         $this->calculation_values['ActExhaustGasTempOut'] = 0;
         $this->calculation_values['ExhaustConnectionDiameter'] = 0;
         $this->calculation_values['AvgExhGasCp'] = 0;
+        $this->calculation_values['TCWS'] = 0;
 
         if($this->calculation_values['region_type'] == 1){
             $this->calculation_values['SS_FACTOR'] = 1;
@@ -2120,8 +2121,6 @@ class E2SeriesController extends Controller
 
         // PR_DROP_DATA();
         $this->PR_DROP_CHILL();
-        Log::info("VEA = ".$this->calculation_values['VEA']);
-        Log::info("FLE = ".$this->calculation_values['FLE']);
 
         if ($this->calculation_values['FLE'] > 12)
         {
