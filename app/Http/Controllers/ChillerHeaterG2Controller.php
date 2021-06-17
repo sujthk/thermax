@@ -673,12 +673,12 @@ class ChillerHeaterG2Controller extends Controller
         if($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 75){
             $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.025;
         }
-        elseif ($this->calculation_values['MODEL'] == 110 || $this->calculation_values['MODEL'] == 150 || $this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250) {
+        elseif ($this->calculation_values['MODEL'] == 110 || $this->calculation_values['MODEL'] == 150 || $this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250 || $this->calculation_values['MODEL'] == 90) {
             $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.015;
         }
         else{
             $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1;
-        }    
+        }   
 
         // $this->calculation_values['AT13'] = 101;         // 100.7;   
         if ($this->calculation_values['TCW11'] < 29.4)
@@ -1359,8 +1359,8 @@ class ChillerHeaterG2Controller extends Controller
             }
             else
             {
-                $this->calculation_values['TAPH'] = $this->calculation_values['TAP'] / 2;
-                $this->calculation_values['TAPL'] = $this->calculation_values['TAP'] / 2;
+                $this->calculation_values['TAPH'] = floor($this->calculation_values['TAP'] / 2);
+                $this->calculation_values['TAPL'] = floor($this->calculation_values['TAP'] / 2);
             }
         }
 

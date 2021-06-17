@@ -1783,8 +1783,8 @@ class ChillerHeaterS2Controller extends Controller
             }
             else
             {
-                $this->calculation_values['TAPH'] = $this->calculation_values['TAP'] / 2;
-                $this->calculation_values['TAPL'] = $this->calculation_values['TAP'] / 2;
+                $this->calculation_values['TAPH'] = floor($this->calculation_values['TAP'] / 2);
+                $this->calculation_values['TAPL'] = floor($this->calculation_values['TAP'] / 2);
             }
         }
 

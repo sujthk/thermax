@@ -443,6 +443,20 @@ class UnitConversionController extends Controller
             $calculated_values['all_work_pr_hw'] = $this->convertAllWorkPrHWUnit($calculated_values['all_work_pr_hw'],"KgPerCmSqGauge",$unit_set->AllWorkPrHWUnit);
         }
 
+        // FuelConsumptionGasUnit
+        if($calculator_code == "D_G2"){
+            if($calculated_values['GCV'] == 'NaturalGas'){
+                $calculated_values['FuelConsumption'] = $this->convertFuelConsumptionGasUnit($calculated_values['FuelConsumption'],"NCubicMeterPerHr",$unit_set->FuelConsumptionGasUnit);
+            }      
+        }
+
+        // FuelConsumptionOilUnit
+        if($calculator_code == "D_G2"){
+            if($calculated_values['GCV'] != 'NaturalGas'){
+                $calculated_values['FuelConsumption'] = $this->convertFuelConsumptionOilUnit($calculated_values['FuelConsumption'],"KilogramsPerHr",$unit_set->FuelConsumptionOilUnit);
+             }
+        }
+
     	return $calculated_values;
 
     }

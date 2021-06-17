@@ -2994,7 +2994,7 @@ class ReportController extends Controller
        $chilled_table->addRow();
        $chilled_table->addCell(700)->addText(htmlspecialchars("1."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['fuel_type']));
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("Gas"));
+       $chilled_table->addCell(1750)->addTextRun($alignment)->addText("");
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['CV']));
 
        $chilled_table->addRow();
@@ -3023,7 +3023,7 @@ class ReportController extends Controller
        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_duct_size']));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['RCV1'],1)));
+       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ExhaustDuctSize'],1)));
 
        $section->addTextBreak(1);
 

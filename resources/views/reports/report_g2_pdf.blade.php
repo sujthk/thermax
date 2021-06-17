@@ -299,13 +299,13 @@
 									<tr>
 										<td> 1 </td>
 										<td class="font-class"> {{ $language_datas['fuel_type'] }}</td>
-										<td class="optimal-r1"> Gas</td>
+										<td class="optimal-r1"> </td>
 										<td class="optimal-r1"> {{ $calculation_values['CV'] }}</td>
 									</tr>
 									<tr>
 										<td> 2 </td>
 										<td class="font-class"> {{ $language_datas['calorific_fuel_type'] }}</td>
-										<td class="optimal-r1"> GCV</td>
+										<td class="optimal-r1"> </td>
 										<td class="optimal-r1"> {{ $calculation_values['GCV'] }}</td>
 									</tr>
 									<tr>
@@ -328,7 +328,7 @@
 										<td> 5 </td>
 										<td class="font-class"> {{ $language_datas['exhaust_gas_duct_size'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['RCV1'],1) }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['ExhaustDuctSize'],1) }}</td>
 									</tr>
 									<tr>
 										<td class="dark-cell" scope="col"> D  </td>

@@ -1784,7 +1784,7 @@ class E2SeriesController extends Controller
         if($this->calculation_values['MODEL'] == 60 || $this->calculation_values['MODEL'] == 75){
             $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.025;
         }
-        elseif ($this->calculation_values['MODEL'] == 110 || $this->calculation_values['MODEL'] == 150 || $this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250) {
+        elseif ($this->calculation_values['MODEL'] == 110 || $this->calculation_values['MODEL'] == 150 || $this->calculation_values['MODEL'] == 175 || $this->calculation_values['MODEL'] == 210 || $this->calculation_values['MODEL'] == 250 || $this->calculation_values['MODEL'] == 90) {
             $this->calculation_values['SFACTOR'] = $this->calculation_values['SFACTOR'] * 1.015;
         }
         else{
@@ -2188,8 +2188,8 @@ class E2SeriesController extends Controller
             }
             else
             {
-                $this->calculation_values['TAPH'] = $this->calculation_values['TAP'] / 2;
-                $this->calculation_values['TAPL'] = $this->calculation_values['TAP'] / 2;
+                $this->calculation_values['TAPH'] = floor($this->calculation_values['TAP'] / 2);
+                $this->calculation_values['TAPL'] = floor($this->calculation_values['TAP'] / 2);
             }
         }
 
