@@ -861,7 +861,7 @@
         $("#condenser_material").val(model_values.condenser_material_value);
 
         $('#heat_duty').val(model_values.heat_duty);
-        $('.heat_duty_range').attr('data-original-title',"min "+model_values.heat_duty_min);
+        $('.heat_duty_range').attr('data-original-title',model_values.heat_duty_min+" - "+model_values.heat_duty_max);
 
         $("#hot_water_in").val(model_values.hot_water_in);
         $("#hot_water_out").val(model_values.hot_water_out);

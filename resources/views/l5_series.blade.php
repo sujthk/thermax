@@ -1083,6 +1083,7 @@
                 updateAbsorberOptions(chiller_metallurgy_options.abs_default_value,true);
                 updateCondenserOptions(chiller_metallurgy_options.con_default_value,true);
                 updateValues();
+                loadGeneratorOptions();
             }
             
         });

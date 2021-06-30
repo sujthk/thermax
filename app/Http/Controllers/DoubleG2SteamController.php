@@ -201,20 +201,20 @@ class DoubleG2SteamController extends Controller
 
         
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
     
         // Log::info($this->calculation_values);    
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
-        // try {
+        try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -222,17 +222,17 @@ class DoubleG2SteamController extends Controller
             $this->RESULT_CALCULATE();
     
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
 
             
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
       
-        Log::info($calculated_values);
+        // Log::info($calculated_values);
         if($calculated_values['Result'] == "FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -4093,7 +4093,6 @@ class DoubleG2SteamController extends Controller
         else
             $this->calculation_values['AT13'] = ($this->calculation_values['A_AT13'] * $this->calculation_values['TCWA']) + $this->calculation_values['B_AT13'];
 
-        Log::info("KEVA = ".$this->calculation_values['KEVA']);
 
         $this->calculation_values['ALTHE'] = $this->calculation_values['ALTHE'] * $this->calculation_values['ALTHE_F'];
         $this->calculation_values['AHTHE'] = $this->calculation_values['AHTHE'] * $this->calculation_values['AHTHE_F'];
@@ -4124,7 +4123,6 @@ class DoubleG2SteamController extends Controller
             $this->calculation_values['KEVA'] = 1 / ((1 / 1600.0) + ($this->calculation_values['TU3'] / 15000.0));
 
 
-        Log::info("KEVA = ".$this->calculation_values['KEVA']);
 
         $this->calculation_values['KM5'] = 1;
         /********* DETERMINATION OF KABS FOR NONSTD. SELECTION****/
@@ -4518,16 +4516,16 @@ class DoubleG2SteamController extends Controller
 
 
         $this->calculation_values['msg'] = '';
-       // try {
+       try {
            $this->WATERPROP();
 
            $velocity_status = $this->VELOCITY();
 
-       // } 
-       // catch (\Exception $e) {
-       //      $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+       } 
+       catch (\Exception $e) {
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
-       // }
+       }
        
 
        if(isset($velocity_status['status']) && !$velocity_status['status']){
@@ -4537,7 +4535,7 @@ class DoubleG2SteamController extends Controller
 
 
 
-       // try {
+       try {
            $this->CALCULATIONS();
     
            $this->CONVERGENCE();
@@ -4545,12 +4543,12 @@ class DoubleG2SteamController extends Controller
            $this->RESULT_CALCULATE();
     
            $this->loadSpecSheetData();
-       // }
-       // catch (\Exception $e) {
+       }
+       catch (\Exception $e) {
 
-       //      $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
-       // }
+       }
 
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);

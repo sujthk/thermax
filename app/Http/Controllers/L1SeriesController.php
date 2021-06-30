@@ -3500,16 +3500,16 @@ class L1SeriesController extends Controller
 
 
         $this->calculation_values['msg'] = '';
-       // try {
+       try {
            $this->WATERPROP();
 
            $velocity_status = $this->VELOCITY();
 
-       // } 
-       // catch (\Exception $e) {
-       //      $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+       } 
+       catch (\Exception $e) {
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
-       // }
+       }
        
 
        if(isset($velocity_status['status']) && !$velocity_status['status']){
@@ -3532,8 +3532,7 @@ class L1SeriesController extends Controller
             $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
        }
-
-        // Log::info($this->calculation_values);   
+  
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
 

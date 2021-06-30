@@ -185,9 +185,10 @@ class L5SeriesController extends Controller
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
 
-        // Log::info($this->calculation_values);
+        
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
+        // Log::info($calculated_values);
         if($calculated_values['Result'] =="FAILED")
         {
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values]);
@@ -1245,6 +1246,10 @@ class L5SeriesController extends Controller
             }
         }
 
+        if($this->model_values['hot_water_in'] > 105){
+            $this->calculation_values['TG2'] = 2;
+            $this->calculation_values['TG3'] = 0.8;
+        }
 
 
         $this->calculation_values['GCW'] = $this->model_values['cooling_water_flow'];
@@ -2308,8 +2313,8 @@ class L5SeriesController extends Controller
 
         if ($this->calculation_values['VG'] < 1.25)
         {
-            if ($this->calculation_values['TG2'] == 1 || $this->calculation_values['TG2'] == 0)
-            {
+            // if ($this->calculation_values['TG2'] == 1 || $this->calculation_values['TG2'] == 0)
+            // {
                 if ($this->calculation_values['AVGT'] <= 80)
                 {
                     $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5300 / 11)) / 1050;
@@ -2318,18 +2323,18 @@ class L5SeriesController extends Controller
                 {
                     $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5850 / 11)) / 1100;
                 }
-            }
-            else if ($this->calculation_values['TG2'] == 2)
-            {
-                if ($this->calculation_values['AVGT'] <= 80)
-                {
-                    $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5300 / 11)) * 0.95 / 1050;
-                }
-                else if ($this->calculation_values['AVGT'] > 80)
-                {
-                    $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5850 / 11)) * 0.95 / 1100;
-                }
-            }
+            // }
+            // else if ($this->calculation_values['TG2'] == 2)
+            // {
+            //     if ($this->calculation_values['AVGT'] <= 80)
+            //     {
+            //         $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5300 / 11)) * 0.95 / 1050;
+            //     }
+            //     else if ($this->calculation_values['AVGT'] > 80)
+            //     {
+            //         $this->calculation_values['FACT1'] = ((5000 / 11) * $this->calculation_values['VG'] + (5850 / 11)) * 0.95 / 1100;
+            //     }
+            // }
         }
         else
         {

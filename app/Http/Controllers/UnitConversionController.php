@@ -295,6 +295,8 @@ class UnitConversionController extends Controller
         if($calculator_code == "L5"){
             $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['THW4'] = $this->convertTemperatureUnit($calculated_values['THW4'],"Centigrade",$unit_set->TemperatureUnit);
+            $calculated_values['TCHW1H'] = $this->convertTemperatureUnit($calculated_values['TCHW1H'],"Centigrade",$unit_set->TemperatureUnit);
+            $calculated_values['TCHW2L'] = $this->convertTemperatureUnit($calculated_values['TCHW2L'],"Centigrade",$unit_set->TemperatureUnit);
         }
         if($calculator_code == "L1"){
             $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
@@ -371,7 +373,7 @@ class UnitConversionController extends Controller
             $calculated_values['m_DesignPressure'] = $this->convertPressureUnit($calculated_values['m_DesignPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
         }
         if($calculator_code == "D_E2"){
-            $calculated_values['FURNPRDROP'] = $this->convertPressureUnit($calculated_values['FURNPRDROP'],"KgPerCmSqGauge",$unit_set->PressureUnit);
+            $calculated_values['FURNPRDROP'] = $this->convertPressureUnit($calculated_values['FURNPRDROP'],"mmWC",$unit_set->FurnacePressureDropUnit);
         }
 
 
@@ -408,9 +410,13 @@ class UnitConversionController extends Controller
         
 
         // Heat Unit
-        if($calculator_code == "D_G2"){
+        if(isset($calculated_values['HeatRejected'])){
             $calculated_values['HeatRejected'] = $this->convertHeatUnit($calculated_values['HeatRejected'],"kCPerHour",$unit_set->HeatUnit);
         }
+        if(isset($calculated_values['HeatInput'])){
+            $calculated_values['HeatInput'] = $this->convertHeatUnit($calculated_values['HeatInput'],"kCPerHour",$unit_set->HeatUnit);
+        }
+        
 
         // CalorificValueGasUnit
         if($calculator_code == "D_G2"){

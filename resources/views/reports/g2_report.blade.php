@@ -88,6 +88,11 @@
 									<th class="optimal-r1" scope="col"> {{ round($calculation_values['TON'],1) }}</th>      
 								</tr>
 								<tr>
+									<th  scope="col"> </th>
+									<th class="optimal-r1" scope="col"> COP </th>
+									<th class="optimal-r1" scope="col"> {{ round($calculation_values['COP'],2) }}</th>      
+								</tr>
+								<tr>
 									<td colspan="3"></td>
 								</tr>
 		      			  		</thead>
@@ -172,6 +177,11 @@
 										<th scope="col"> {{ $language_datas['cooling_water_circuit'] }}</th>
 										<th scope="col"> </th>
 										<th scope="col"> </th>      
+									</tr>
+									<tr>
+										<td> {{ $language_datas['heat_rejected'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HeatRejected'],1) }}</td>
 									</tr>
 									<tr>
 										
@@ -259,6 +269,11 @@
 										<th scope="col"> {{ $language_datas['direct_fired_circuit'] }}</th>
 										<th scope="col"> </th>
 										<th scope="col"> </th>      
+									</tr>
+									<tr>
+										<td> {{ $language_datas['heat_input'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HeatInput'],1) }}</td>
 									</tr>
 									<tr>
 										<td> {{ $language_datas['fuel_type'] }}</td>

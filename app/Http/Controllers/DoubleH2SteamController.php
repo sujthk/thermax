@@ -147,27 +147,25 @@ class DoubleH2SteamController extends Controller
                                   
 
         $this->model_values = $converted_values;
-// log::info($this->model_values);
         $this->castToBoolean();
 
         $this->updateInputs();
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
-        //     // Log::info($e);
+        } 
+        catch (\Exception $e) {
+            // Log::info($e);
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
-         //Log::info(print_r($this->calculation_values,true));
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        // try {
+        try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -175,17 +173,17 @@ class DoubleH2SteamController extends Controller
             $this->RESULT_CALCULATE();
 
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
-        //     // Log::info($e);
+        }
+        catch (\Exception $e) {
+            // Log::info($e);
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
         
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
-        log::info($this->calculation_values);
+        // log::info($this->calculation_values);
 
         if($calculated_values['Result'] =="FAILED")
         {
@@ -265,7 +263,7 @@ class DoubleH2SteamController extends Controller
         // $this->model_values['condenser_material_value']=$model_values['condenser_material_value'];
 
         $this->model_values['metallurgy_standard'] = false;
-        //Log::info("Metallurgy Standard false");
+
         }
         else{
 
@@ -280,7 +278,6 @@ class DoubleH2SteamController extends Controller
             $this->model_values['absorber_thickness_change'] = true;
             $this->model_values['condenser_thickness_change'] = true;
 
-        //Log::info("Metallurgy Standard true");
         }
     }
 
@@ -434,7 +431,7 @@ class DoubleH2SteamController extends Controller
         // $this->calculation_values['AHR'] = $default_values['AHR'];
         // $this->calculation_values['KCON'] = $default_values['KCON'];
 
-        // log::info("update inputs = ".print_r($this->calculation_values,true));
+
         // $constant_data = $this->getConstantData();
         // $this->calculation_values = array_merge($this->calculation_values,$constant_data);
 
@@ -444,7 +441,7 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['PODA'] = $pid_ft3['POD'];
         $this->calculation_values['THPA'] = $pid_ft3['THP'];
 
-        // Log::info(print_r($this->calculation_values,true));
+
         $this->calculation_values['PSL1'] = $this->calculation_values['PSLI'] + $this->calculation_values['PSLO'];
         $this->calculation_values['KM2'] = 0;
 
@@ -990,7 +987,6 @@ class DoubleH2SteamController extends Controller
 
             break;
             case "FOULING_COOLING_VALUE":
-    // Log::info(print_r($this->model_values,true));
             if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
                 if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
                     return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
@@ -1189,7 +1185,7 @@ class DoubleH2SteamController extends Controller
            
 
         // "FOULING_COOLING_VALUE":
-        // Log::info(print_r($this->model_values,true));
+
         if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
             if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
                 return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
@@ -1277,7 +1273,7 @@ class DoubleH2SteamController extends Controller
     }
 
     public function metallurgyValidating(){
-        // Log::info("metallurgy = ".print_r($this->model_values,true));
+
         if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
         {
             $this->model_values['tube_metallurgy_standard'] = 'false';
@@ -1299,14 +1295,12 @@ class DoubleH2SteamController extends Controller
         if(!$evaporator_validator['status'])
             return array('status'=>false,'msg'=>$evaporator_validator['msg']);
 
-    // Log::info("metallurgy updated = ".print_r($this->model_values,true));
         $this->onChangeMetallurgyOption();
 
         return  array('status' => true,'msg' => "process run successfully");
     }
 
-    public function VELOCITY(){
-    // Log::info(print_r($this->calculation_values,true));    
+    public function VELOCITY(){   
 
        $IDA = floatval($this->calculation_values['IDA']);
        $TNAA = floatval($this->calculation_values['TNAA']);
@@ -1793,18 +1787,12 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['VAL'] = $this->calculation_values['GCWAL'] / (((3600 * 3.141593 * $this->calculation_values['IDA'] * $this->calculation_values['IDA']) / 4.0) * (($this->calculation_values['TNAA'] / 2) / $this->calculation_values['TAPL']));
 
 
-        Log::info("KEVA = ".$this->calculation_values['KEVA']);
-        Log::info("KABS = ".$this->calculation_values['KABS']);
-        Log::info("KCON = ".$this->calculation_values['KCON']);
 
         $this->DERATE_KEVA();
         $this->DERATE_KABSH();
         $this->DERATE_KABSL();
         $this->DERATE_KCON();
 
-        Log::info("KEVA = ".$this->calculation_values['KEVA']);
-        Log::info("KABS = ".$this->calculation_values['KABS']);
-        Log::info("KCON = ".$this->calculation_values['KCON']);
 
 
         if ($this->calculation_values['MODEL'] < 3500)
@@ -2502,7 +2490,6 @@ class DoubleH2SteamController extends Controller
 
             $this->calculation_values['T22'] = $t22[$c];
 
-            //Log::info("T22 =".$this->calculation_values['T22']);
             
             $this->calculation_values['I22'] = $this->calculation_values['T22'] + 100;
    
@@ -2678,7 +2665,6 @@ class DoubleH2SteamController extends Controller
 
         $this->calculation_values['QHTG']= $this->calculation_values['GMED'] * $this->calculation_values['I4'] + $this->calculation_values['GREF1'] * $this->calculation_values['J4'] - $this->calculation_values['GDIL'] * $this->calculation_values['I7'];
     
-        //Log::info("GREF1 =".$this->calculation_values['GREF1']);
      
         $this->calculation_values['T5'] = $vam_base2->LIBR_TEMP($this->calculation_values['P4'],$this->calculation_values['XDIL']);
 
@@ -2825,7 +2811,6 @@ class DoubleH2SteamController extends Controller
 
             $this->calculation_values['Y0']  = $CPHT[$x0];
             $this->calculation_values['Y1']  = $CPHT[$x1];
-            //log::info($this->calculation_values['Y0']);
             $this->calculation_values['YY11']  = ($TH - $x1) / ($x0 - $x1) * $this->calculation_values['Y0'];
             $this->calculation_values['YY22']  = ($TH - $x0) / ($x1 - $x0) * $this->calculation_values['Y1'];
             $this->calculation_values['YY2']  = $this->calculation_values['YY11'] + $this->calculation_values['YY22'];
@@ -2937,40 +2922,40 @@ class DoubleH2SteamController extends Controller
         $this->calculation_values['GPID']  = ($this->calculation_values['PODG'] - (2 * $this->calculation_values['THH'])) / 1000;
         $this->calculation_values['VGP'] = $this->calculation_values['GHOT'] / (3.1415 * $this->calculation_values['GPID'] * $this->calculation_values['GPID'] / 4) / 3600;
 
-    $this->calculation_values['SLH']  = 2 * $this->calculation_values['GPID']; //NOZZLE LENGTH
-    $this->calculation_values['REH']  = ($this->calculation_values['GPID'] * $this->calculation_values['VGP'] * $this->calculation_values['ROWH']) / $this->calculation_values['VISG']; //REYNOLDS NO IN PIPE
+        $this->calculation_values['SLH']  = 2 * $this->calculation_values['GPID']; //NOZZLE LENGTH
+        $this->calculation_values['REH']  = ($this->calculation_values['GPID'] * $this->calculation_values['VGP'] * $this->calculation_values['ROWH']) / $this->calculation_values['VISG']; //REYNOLDS NO IN PIPE
 
-    $this->calculation_values['FFH']  = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['GPID'] * 1000)) + (5.74 / pow($this->calculation_values['REH'], 0.9))), 2); //FR FACTOR FOR LENGTH
+        $this->calculation_values['FFH']  = 1.325 / pow(log((0.0457 / (3.7 * $this->calculation_values['GPID'] * 1000)) + (5.74 / pow($this->calculation_values['REH'], 0.9))), 2); //FR FACTOR FOR LENGTH
 
-    $this->calculation_values['GL2']  = (($this->calculation_values['FFH'] * $this->calculation_values['SLH'] * 2) / $this->calculation_values['GPID']) * ($this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)); //PIPE LOSS IN LENGTH
-    $this->calculation_values['GL3']  = ($this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)); //PIPE LOSS AT ENTRY AND EXIT
-    $this->calculation_values['GLP']  = $this->calculation_values['GL2'] + $this->calculation_values['GL3']; //TOTAL FR LOSS IN PIPE
+        $this->calculation_values['GL2']  = (($this->calculation_values['FFH'] * $this->calculation_values['SLH'] * 2) / $this->calculation_values['GPID']) * ($this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)); //PIPE LOSS IN LENGTH
+        $this->calculation_values['GL3']  = ($this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)) + (0.5 * $this->calculation_values['VGP'] * $this->calculation_values['VGP'] / (2 * 9.81)); //PIPE LOSS AT ENTRY AND EXIT
+        $this->calculation_values['GLP']  = $this->calculation_values['GL2'] + $this->calculation_values['GL3']; //TOTAL FR LOSS IN PIPE
 
-    $this->calculation_values['VG']  = $this->calculation_values['GHOT'] / (((3600 * 3.142 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP'] ));
+        $this->calculation_values['VG']  = $this->calculation_values['GHOT'] / (((3600 * 3.142 * $this->calculation_values['IDG'] * $this->calculation_values['IDG']) / 4.0) * ($this->calculation_values['TNG'] / $this->calculation_values['TGP'] ));
 
-    $this->calculation_values['REG']  = ($this->calculation_values['ROWH'] * $this->calculation_values['VG'] *  $this->calculation_values['IDG']) / $this->calculation_values['VISG']; //REYNOLDS NO IN TUBES
+        $this->calculation_values['REG']  = ($this->calculation_values['ROWH'] * $this->calculation_values['VG'] *  $this->calculation_values['IDG']) / $this->calculation_values['VISG']; //REYNOLDS NO IN TUBES
 
-    if ($this->calculation_values['HWI'] == 2)
-    {
-        $this->calculation_values['FG']  = ((1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * ((-0.1305 * $this->calculation_values['VG']) + 3.5)) * 1.12;
+        if ($this->calculation_values['HWI'] == 2)
+        {
+            $this->calculation_values['FG']  = ((1.325 / pow(log((0.02 / (3.7 *  $this->calculation_values['IDG'] * 1000)) + (5.74 / pow($this->calculation_values['REG'] , 0.9))), 2)) * ((-0.1305 * $this->calculation_values['VG']) + 3.5)) * 1.12;
 
-        $this->calculation_values['FLG'] = ($this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
-    }
-    else
-    {
+            $this->calculation_values['FLG'] = ($this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
+        }
+        else
+        {
+            
+            $this->calculation_values['FG'] = 0.0014 + (0.137 / pow($this->calculation_values['REG'], 0.32)) * 1.12;
+
+            $this->calculation_values['FLG'] = (4 * $this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
+        }
+        //double FG = 0.0014 + (0.137 / pow(REG, 0.32));     //NOV 07 - ENDCROSSED SS IN GEN
         
-        $this->calculation_values['FG'] = 0.0014 + (0.137 / pow($this->calculation_values['REG'], 0.32)) * 1.12;
+        $this->calculation_values['EXLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (4 * 9.81); //EXIT LOSS
+        $this->calculation_values['ENLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (2 * 9.81); //ENTRY LOSS
+        $this->calculation_values['TFLG']  = ($this->calculation_values['FLG'] + $this->calculation_values['EXLG'] + $this->calculation_values['ENLG']) * $this->calculation_values['TGP'] ; //TOTAL FR LOSS IN TUBES
 
-        $this->calculation_values['FLG'] = (4 * $this->calculation_values['FG'] * $this->calculation_values['LE'] * $this->calculation_values['VG'] * $this->calculation_values['VG']) / ( $this->calculation_values['IDG'] * 9.81*2);
-    }
-    //double FG = 0.0014 + (0.137 / pow(REG, 0.32));     //NOV 07 - ENDCROSSED SS IN GEN
-    
-    $this->calculation_values['EXLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (4 * 9.81); //EXIT LOSS
-    $this->calculation_values['ENLG']  = $this->calculation_values['VG'] * $this->calculation_values['VG'] / (2 * 9.81); //ENTRY LOSS
-    $this->calculation_values['TFLG']  = ($this->calculation_values['FLG'] + $this->calculation_values['EXLG'] + $this->calculation_values['ENLG']) * $this->calculation_values['TGP'] ; //TOTAL FR LOSS IN TUBES
-
-    $this->calculation_values['GFL'] = $this->calculation_values['GLP'] + $this->calculation_values['TFLG']; //TOTAL FR LOSS IN HW  
-    $this->calculation_values['GFL'] = $this->calculation_values['GFL'] * 1.05;
+        $this->calculation_values['GFL'] = $this->calculation_values['GLP'] + $this->calculation_values['TFLG']; //TOTAL FR LOSS IN HW  
+        $this->calculation_values['GFL'] = $this->calculation_values['GFL'] * 1.05;
     }
 
     public function HR()
@@ -3444,7 +3429,7 @@ class DoubleH2SteamController extends Controller
 
 
 
-        // Log::info("init = ".$INIT);
+
         $range_values = array();
         foreach ($FLOWMN as $key => $min) {
             if(!empty($FLOWMX[$key])){
@@ -3461,7 +3446,7 @@ class DoubleH2SteamController extends Controller
 
         $this->model_values['cooling_water_ranges'] = $range_values;
 
-        //log::info($this->model_values['cooling_water_ranges']);
+
         return array('status' => true,'msg' => "process run successfully");
     }
 
@@ -3873,7 +3858,6 @@ class DoubleH2SteamController extends Controller
     {
         if (!isset($this->calculation_values['LMTDEVAH']) || is_nan($this->calculation_values['LMTDEVAH']) || $this->calculation_values['LMTDEVAH'] < 0)
         {
-        //Log::info($this->calculation_values['LMTDEVAH']);
             return false;
         }
         else if (!isset($this->calculation_values['LMTDEVAL']) || is_nan($this->calculation_values['LMTDEVAL']) || $this->calculation_values['LMTDEVAL'] < 0)
@@ -5115,15 +5099,21 @@ class DoubleH2SteamController extends Controller
         $this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
         $this->updateInputs();
 
+        $this->notes = $vam_base->getNotesError();
+
+
         $this->calculation_values['msg'] = '';
        try {
            $this->WATERPROP();
            $velocity_status = $this->VELOCITY();
+          
        } 
        catch (\Exception $e) {
             $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
           
        }
+       
+
        
 
        if(isset($velocity_status['status']) && !$velocity_status['status']){
@@ -5148,8 +5138,6 @@ class DoubleH2SteamController extends Controller
        }
 
         
-
-        // Log::info($this->calculation_values);
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
 

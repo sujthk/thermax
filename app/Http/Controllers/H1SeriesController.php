@@ -200,27 +200,27 @@ class H1SeriesController extends Controller
                                   
 
         $this->model_values = $converted_values;
-// log::info($this->model_values);
+
         $this->castToBoolean();
 
         $this->updateInputs();
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
-        //     // Log::info($e);
+        } 
+        catch (\Exception $e) {
+            // Log::info($e);
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
-         //Log::info(print_r($this->calculation_values,true));
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
+   
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        // try {
+        try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -228,17 +228,17 @@ class H1SeriesController extends Controller
             $this->RESULT_CALCULATE();
 
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
-        //     // Log::info($e);
+        }
+        catch (\Exception $e) {
+            // Log::info($e);
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
         
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
 
-        log::info($this->calculation_values);
+        // log::info($this->calculation_values);
 
         if($calculated_values['Result'] =="FAILED")
         {
@@ -250,7 +250,6 @@ class H1SeriesController extends Controller
             return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$calculated_values,'report'=>$showreport]);
         }
 
-        //log::info($calculated_values);
 
     }
 
@@ -504,8 +503,6 @@ class H1SeriesController extends Controller
         }
 
 
-
-        // Log::info("init = ".$INIT);
         $range_values = array();
         foreach ($FLOWMN as $key => $min) {
             if(!empty($FLOWMX[$key])){
@@ -522,7 +519,6 @@ class H1SeriesController extends Controller
 
         $this->model_values['cooling_water_ranges'] = $range_values;
 
-        //log::info($this->model_values['cooling_water_ranges']);
         return array('status' => true,'msg' => "process run successfully");
     }
 
@@ -605,7 +601,6 @@ class H1SeriesController extends Controller
         $this->calculation_values['PODA'] = $pid_ft3['POD'];
         $this->calculation_values['THPA'] = $pid_ft3['THP'];
 
-        // Log::info(print_r($this->calculation_values,true));
         $this->calculation_values['PSL1'] = $this->calculation_values['PSLI'] + $this->calculation_values['PSLO'];
         $this->calculation_values['KM2'] = 0;
 
@@ -3452,7 +3447,6 @@ class H1SeriesController extends Controller
 
             break;
             case "FOULING_COOLING_VALUE":
-    // Log::info(print_r($this->model_values,true));
             if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
                 if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
                     return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
@@ -3513,7 +3507,7 @@ class H1SeriesController extends Controller
     }
 
     public function metallurgyValidating(){
-        // Log::info("metallurgy = ".print_r($this->model_values,true));
+
         if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
         {
             $this->model_values['tube_metallurgy_standard'] = 'false';
@@ -3535,7 +3529,7 @@ class H1SeriesController extends Controller
         if(!$evaporator_validator['status'])
             return array('status'=>false,'msg'=>$evaporator_validator['msg']);
 
-    // Log::info("metallurgy updated = ".print_r($this->model_values,true));
+
         $this->onChangeMetallurgyOption();
 
         return  array('status' => true,'msg' => "process run successfully");
@@ -4120,7 +4114,6 @@ class H1SeriesController extends Controller
            
 
         // "FOULING_COOLING_VALUE":
-        // Log::info(print_r($this->model_values,true));
         if($this->model_values['fouling_factor'] == 'non_standard' && !empty($this->model_values['fouling_cooling_water_checked'])){
             if($this->model_values['fouling_cooling_water_value'] < $this->model_values['fouling_non_cooling']){
                 return array('status' => false,'msg' => $this->notes['NOTES_COW_FF_MIN']);
@@ -4344,8 +4337,6 @@ class H1SeriesController extends Controller
        }
 
         
-
-        // Log::info($this->calculation_values);
         return $this->calculation_values;
         // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
 

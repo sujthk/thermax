@@ -38,7 +38,7 @@
                 <ul class="nav-right">
                 <li class="user-profile header-notification">
                     <a href="#!">
-                        <img src="{{asset('dark-assets/assets/images/user.png')}}" alt="User-Profile-Image">
+                        <img src="{{ Auth::guard()->user()->image_path }}" alt="User-Profile-Image">
                         <span>{{ Auth::guard()->user()->name }}</span>
                         <i class="ti-angle-down"></i>
                     </a>

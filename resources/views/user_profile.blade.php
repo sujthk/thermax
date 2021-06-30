@@ -43,7 +43,7 @@
 <div class="col-md-12">
 <div class="media-left">
     <a href="#" class="profile-image">
-        <img class="user-img img-circle" src="{{asset('assets/images/avatar-1.png')}}" alt="user-img">
+        <img class="user-img img-circle" src="{{$user->image_path}}" alt="user-img">
     </a>
 </div>
 <div class="media-body row">
@@ -185,7 +185,14 @@ Change Password
                                     </td>
                                 </tr>
                                 
-                                
+                                <tr>
+                                    <td>
+                                         <div class="input-group">
+                                            <span class="input-group-addon"> New Image</span>
+                                             <input id="image" name="image" type="file" value="" class="form-control">
+                                        </div>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
                     </div>
@@ -256,7 +263,7 @@ Change Password
     <div class="row">
         <div class="col-lg-12">
             <div class="general-info">
-                 <form id="add_user" method="post" action="{{ url('/password_change') }}" enctype="multipart/form-data">
+                 <form id="password_change_form" method="post" action="{{ url('/password_change') }}" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-lg-6">
@@ -282,6 +289,9 @@ Change Password
                                         <div class="input-group">
                                             
                                             <input name="password" type="Password" placeholder="New Password" id="password" required onKeyUp="checkPasswordStrength();" class="form-control">
+                                        </div>
+                                        <div class="input-group">
+                                            <input name="confirm_password" type="Password" placeholder="Confirm Password" id="confirm_password" required class="form-control">
                                         </div>
                                     </td>
                                     
@@ -406,5 +416,14 @@ $("#change-password").click(function(){
 
         $("#submit_button").prop('disabled', status);
     }
+
+    $( "#password_change_form" ).submit(function( event ) {
+        if($('#password').val() != $('#confirm_password').val()){
+            alert("password and confirm password not matching");
+            return false;
+        }
+      
+        return true;
+    });
 </script>
 @endsection

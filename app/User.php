@@ -28,6 +28,9 @@ class User extends Authenticatable
     ];
 
 
+    protected $appends = ['image_path'];
+
+
 
     public function getLastLoggedInAttribute($value)
     {
@@ -67,5 +70,13 @@ class User extends Authenticatable
     public function language()
     {
         return $this->belongsTo('App\Language');
+    }
+
+    public function getImagePathAttribute() { 
+        if(empty($this->image) || $this->image == "")
+                return asset('user-images/user.png');
+        else
+            return asset('user-images').'/'.$this->image;               
+           
     }
 }

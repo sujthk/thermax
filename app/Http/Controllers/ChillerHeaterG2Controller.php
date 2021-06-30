@@ -32,7 +32,6 @@ class ChillerHeaterG2Controller extends Controller
 
         $chiller_form_values = $this->getFormValues(60);
 
-
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
                                         ->where('code',$this->model_code)
                                         ->where('min_model','<=',60)->where('max_model','>=',60)->first();
@@ -72,6 +71,119 @@ class ChillerHeaterG2Controller extends Controller
                                         ->with('chiller_metallurgy_options',$chiller_metallurgy_options) 
                                         ->with('language_datas',$language_datas) 
                                         ->with('regions',$regions);
+    }
+
+    public function postAjaxCHG2(Request $request){
+
+        $model_values = $request->input('values');
+        $changed_value = $request->input('changed_value');
+        // update user values with model values
+
+
+        $unit_conversions = new UnitConversionController;
+        if(!empty($changed_value)){
+
+            $model_values = $unit_conversions->calculationUnitConversion($model_values,$this->model_code);
+        }
+        $this->changed_value =$changed_value;
+
+        $this->model_values = $model_values;
+        $this->castToBoolean();
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
+
+        //$this->model_values = $this->calculation_values;
+        $attribute_validator = $this->validateChillerAttribute($this->changed_value);
+
+        
+        if(!$attribute_validator['status'])
+            return response()->json(['status'=>false,'msg'=>$attribute_validator['msg'],'changed_value'=>$this->changed_value]);
+
+        $this->updateInputs();
+        $this->loadSpecSheetData();
+        
+        $this->model_values['min_chilled_water_out'] = $this->calculation_values['min_chilled_water_out']; 
+
+        $min_chilled_water_out = Auth::user()->min_chilled_water_out;
+        if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
+            $this->model_values['min_chilled_water_out'] = $min_chilled_water_out;
+
+    
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
+
+       
+
+        $model_number =(int)$this->model_values['model_number'];
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+        //$queries = DB::getQueryLog();
+
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_options = $chiller_options->where('type', 'eva');
+        $absorber_options = $chiller_options->where('type', 'abs');
+        $condenser_options = $chiller_options->where('type', 'con');
+
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'changed_value'=>$this->changed_value,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
+    }
+
+    public function postResetCHG2(Request $request){
+        $model_number =(int)$request->input('model_number');
+        $model_values = $request->input('values');
+
+        $chiller_form_values = $this->getFormValues($model_number);
+
+        $chiller_form_values['region_type'] = $model_values['region_type'];
+        if($model_values['region_type'] == 2 || $model_values['region_type'] == 3)
+        {
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+            $chiller_form_values['heat_duty'] =  $chiller_form_values['USA_heat_duty'];
+            $chiller_form_values['heat_duty_min'] =  $chiller_form_values['USA_heat_duty_min'];
+            $chiller_form_values['heat_duty_max'] =  $chiller_form_values['USA_heat_duty_max'];
+
+            if($chiller_form_values['region_type'] == 2)
+                $chiller_form_values['fouling_factor']="ari";
+            else
+                $chiller_form_values['fouling_factor']="standard";
+
+        }
+
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+        //$queries = DB::getQueryLog();
+
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_options = $chiller_options->where('type', 'eva');
+        $absorber_options = $chiller_options->where('type', 'abs');
+        $condenser_options = $chiller_options->where('type', 'con');
+
+
+        $unit_set_id = Auth::user()->unit_set_id;
+        $unit_set = UnitSet::find($unit_set_id);
+
+            
+        $this->model_values = $chiller_form_values;
+
+        $this->castToBoolean();
+        $range_calculation = $this->RANGECAL();
+
+        $min_chilled_water_out = Auth::user()->min_chilled_water_out;
+        if($min_chilled_water_out > $this->model_values['min_chilled_water_out'])
+            $this->model_values['min_chilled_water_out'] = $min_chilled_water_out;
+        
+
+        $unit_conversions = new UnitConversionController;
+        $converted_values = $unit_conversions->formUnitConversion($this->model_values,$this->model_code);
+
+        return response()->json(['status'=>true,'msg'=>'Ajax Datas','model_values'=>$converted_values,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options]);
+
     }
 
     public function validateChillerAttribute($attribute){
@@ -3672,6 +3784,21 @@ class ChillerHeaterG2Controller extends Controller
         }
     }
 
+    public function castToBoolean(){
+        $vam_base = new VamBaseController();
+
+
+        $this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
+        $this->model_values['evaporator_thickness_change'] = $vam_base->getBoolean($this->model_values['evaporator_thickness_change']);
+        $this->model_values['absorber_thickness_change'] = $vam_base->getBoolean($this->model_values['absorber_thickness_change']);
+        $this->model_values['condenser_thickness_change'] = $vam_base->getBoolean($this->model_values['condenser_thickness_change']);
+        $this->model_values['fouling_chilled_water_checked'] = $vam_base->getBoolean($this->model_values['fouling_chilled_water_checked']);
+        $this->model_values['fouling_cooling_water_checked'] = $vam_base->getBoolean($this->model_values['fouling_cooling_water_checked']);
+        $this->model_values['fouling_chilled_water_disabled'] = $vam_base->getBoolean($this->model_values['fouling_chilled_water_disabled']);
+        $this->model_values['fouling_cooling_water_disabled'] = $vam_base->getBoolean($this->model_values['fouling_cooling_water_disabled']);
+        $this->model_values['fouling_chilled_water_value_disabled'] = $vam_base->getBoolean($this->model_values['fouling_chilled_water_value_disabled']);
+        $this->model_values['fouling_cooling_water_value_disabled'] = $vam_base->getBoolean($this->model_values['fouling_cooling_water_value_disabled']);
+    }
 
     public function getFormValues($model_number){
 
@@ -3680,6 +3807,7 @@ class ChillerHeaterG2Controller extends Controller
 
         $calculation_values = $chiller_calculation_values->calculation_values;
         $calculation_values = json_decode($calculation_values,true);
+
 
         $form_values = array_only($calculation_values, ['capacity',
             'model_name',
@@ -3708,6 +3836,7 @@ class ChillerHeaterG2Controller extends Controller
             'cooling_water_in_min_range',
             'heat_duty',
             'heat_duty_min',
+            'heat_duty_max',
             'hot_water_out',
             'hot_water_in',
             'min_hot_water_in',
@@ -3725,7 +3854,10 @@ class ChillerHeaterG2Controller extends Controller
             'normal_sko_calorific_value',
             'gross_sko_calorific_value',
             'fuel_type',
-            'fuel_value_type'
+            'fuel_value_type',
+            'USA_heat_duty',
+            'USA_heat_duty_min',
+            'USA_heat_duty_max'
 
         ]);
 
@@ -3745,5 +3877,108 @@ class ChillerHeaterG2Controller extends Controller
         $form_values = collect($form_values)->union($standard_values);
 
         return $form_values;
+    }
+
+    public function getCalculationValues($model_number){
+
+        $model_number = (int)$model_number;
+        $chiller_calculation_values = ChillerCalculationValue::where('code',$this->model_code)->where('min_model',$model_number)->first();
+
+        $calculation_values = $chiller_calculation_values->calculation_values;
+        $calculation_values = json_decode($calculation_values,true);
+
+        $calculation_values = array_only($calculation_values, ['LE',
+            'AHR',
+            'ODA',
+            'PNB',
+            'SHA',
+            'SHE',
+            'SL1',
+            'SL2',
+            'SL3',
+            'SL3',
+            'SL4',
+            'SL5',
+            'SL6',
+            'SL7',
+            'SL8',
+            'TNC',
+            'UHR',
+            'SAA',
+            'AABS',
+            'ACON',
+            'ADHE',
+            'AEVA',
+            'AHTG',
+            'ALTG',
+            'AT13',
+            'KABS',
+            'KCON',
+            'KEVA',
+            'PNB1',
+            'PNB2',
+            'PSL2',
+            'PSLI',
+            'PSLO',
+            'TCWA',
+            'TNAA',
+            'TNEV',
+            'UDHE',
+            'UHTG',
+            'ULTG',
+            'AHTHE',
+            'ALTHE',
+            'UHTHE',
+            'ULTHE',
+            'MODEL1',
+            'VEMIN1',
+            'TEPMAX',
+            'm_maxCHWWorkPressure',
+            'm_maxCOWWorkPressure',
+            'm_maxHWWorkPressure',
+            'm_DesignPressure',
+            'm_maxHWDesignPressure',
+            'ChilledConnectionDiameter',
+            'CoolingConnectionDiameter',
+            'ExhaustDuctSize',
+            'Length',
+            'Width',
+            'Height',
+            'ClearanceForTubeRemoval',
+            'DryWeight',
+            'MaxShippingWeight',
+            'OperatingWeight',
+            'FloodedWeight',
+            'AbsorbentPumpMotorKW',
+            'AbsorbentPumpMotorAmp',
+            'RefrigerantPumpMotorKW',
+            'RefrigerantPumpMotorAmp',
+            'PurgePumpMotorKW',
+            'PurgePumpMotorAmp',
+            'A_SFACTOR',
+            'B_SFACTOR',
+            'A_AT13',
+            'B_AT13',
+            'ALTHE_F',
+            'AHTHE_F',
+            'AHR_F',
+            'EX_AT13',
+            'EX_KEVA',
+            'EX_KABS',
+            'EX_DryWeight',
+            'USA_AbsorbentPumpMotorAmp',
+            'USA_RefrigerantPumpMotorAmp',
+            'USA_AbsorbentPumpMotorKW',
+            'USA_RefrigerantPumpMotorKW',
+            'USA_PurgePumpMotorAmp',
+            'USA_PurgePumpMotorKW',
+            'MCA',
+            'MOP',
+            'ODC',
+            'min_chilled_water_out'
+
+        ]);
+
+        return $calculation_values;
     }
 }

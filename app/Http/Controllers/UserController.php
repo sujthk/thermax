@@ -272,6 +272,19 @@ class UserController extends Controller
         $user->mobile = $request->mobile;
         $user->unit_set_id = $request->unit_set_id;
         $user->language_id = $request->language_id;
+
+        if($request->hasFile('image')){
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            ]);
+
+            $image_name = 'user-'.date("Ymdgis").'.'.$request->image->extension();  
+               
+            $request->image->move(public_path('user-images'), $image_name);
+
+            $user->image=$image_name;
+        }
+
         $user->save();
 
         return redirect('profile')->with('message','Profile Updated')

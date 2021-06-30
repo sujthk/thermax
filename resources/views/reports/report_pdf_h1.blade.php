@@ -211,30 +211,36 @@
                                     </tr>
                                     <tr>
                                         <td> 1 </td>
+                                        <td class="font-class"> {{ $language_datas['heat_rejected'] }}</td>
+                                        <td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
+                                        <td class="optimal-r1"> {{ round($calculation_values['HeatRejected'],1) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td> 2 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_water_flow'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['GCW'],1) }}</td>
                                     </tr>
                                     <tr>
-                                        <td> 2 </td>
+                                        <td> 3 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_inlet_temp'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['TCW11'],1) }}</td>
                                     </tr>
                                     <tr>
-                                        <td> 3 </td>
+                                        <td> 4 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_outlet_temp'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['CoolingWaterOutTemperature'],1) }}</td>
                                     </tr>
                                     <tr>
-                                        <td> 4 </td> 
+                                        <td> 5 </td> 
                                         <td class="font-class"> {{ $language_datas['absorber_condenser_pass'] }}</td>
                                         <td class="optimal-r1"> No.</td>
                                         <td class="optimal-r1"> {{ $calculation_values['AbsorberPasses'] }}/{{ $calculation_values['CondenserPasses'] }} </td>
                                     </tr>
                                     <tr>     
-                                        <td> 5 </td>
+                                        <td> 6 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_bypass_flow'] }}</td>
                                         <td class="optimal-r1">{{ $units_data[$unit_set->FlowRateUnit] }} </td>
                                         @if(empty($calculation_values['BypassFlow']))
@@ -244,19 +250,19 @@
                                         @endif  
                                     </tr>
                                     <tr>     
-                                        <td> 6 </td>
+                                        <td> 7 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_pressure_loss'] }} </td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['CoolingFrictionLoss'],1) }} </td>
                                     </tr>
                                     <tr>     
-                                        <td> 7 </td>
+                                        <td> 8 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_connection_diameter'] }} </td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['CoolingConnectionDiameter'],1) }} </td>
                                     </tr>
                                     <tr>     
-                                        <td> 8 </td>
+                                        <td> 9 </td>
                                         <td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
                                         <td > </td>
                                         @if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
@@ -268,13 +274,13 @@
                                         @endif          
                                     </tr>
                                     <tr>     
-                                        <td> 9 </td>
+                                        <td> 10 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_gylcol'] }} %  </td>
                                         <td class="optimal-r1"> %</td>
                                         <td class="optimal-r1"> {{ $calculation_values['COGLY'] }} </td>
                                     </tr>
                                     <tr>     
-                                        <td> 10 </td>
+                                        <td> 11 </td>
                                         <td class="font-class"> {{ $language_datas['cooling_fouling_factor'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->FoulingFactorUnit] }}</td>
                                         @if($calculation_values['TUU'] == "standard")
@@ -285,7 +291,7 @@
                                         @endif
                                     </tr>
                                     <tr>     
-                                        <td> 11 </td>
+                                        <td> 12 </td>
                                         <td class="font-class"> {{ $language_datas['max_working_pressure'] }} </td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
                                         <td class="optimal-r1"> {{ ceil($calculation_values['m_maxCOWWorkPressure']) }} </td>
@@ -298,42 +304,48 @@
                                     </tr>
                                     <tr>
                                         <td> 1 </td>
+                                        <td class="font-class"> {{ $language_datas['heat_input'] }}</td>
+                                        <td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
+                                        <td class="optimal-r1"> {{ round($calculation_values['HeatInput'],1) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td> 2 </td>
                                         <td class="font-class">{{ $language_datas['hot_water_flow'] }}(+/- 3%)</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
                                     </tr>
                                     <tr>
-                                        <td> 2 </td>
+                                        <td> 3 </td>
                                         <td class="font-class"> {{ $language_datas['hot_water_in_temp'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['THW1'],1) }}</td>
                                     </tr>
                                     <tr>
-                                        <td> 3 </td>
+                                        <td> 4 </td>
                                         <td class="font-class"> {{ $language_datas['hot_water_out_temp'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['THW2'],1) }} </td>
                                     </tr>
                                     <tr>
-                                        <td> 4 </td>
+                                        <td> 5 </td>
                                         <td class="font-class"> {{ $language_datas['generator_passes'] }}</td>
                                         <td class="optimal-r1"> No.</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['GeneratorPasses'],1) }} </td>
                                     </tr>
                                     <tr>     
-                                        <td> 5 </td>
+                                        <td> 6 </td>
                                         <td class="font-class"> {{ $language_datas['hot_water_pressure_loss'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['HotWaterFrictionLoss'],1) }}</td>
                                     </tr>
                                     <tr>     
-                                        <td> 6 </td>
+                                        <td> 7 </td>
                                         <td class="font-class"> {{ $language_datas['hot_water_connection_dia'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['HotWaterConnectionDiameter'],1) }} </td>
                                     </tr>
                                     <tr>     
-                                        <td> 7 </td>
+                                        <td> 8 </td>
                                         <td class="font-class">{{ $language_datas['max_working_pressure'] }}</td>
                                         <td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
                                         <td class="optimal-r1"> {{ round($calculation_values['all_work_pr_hw'],1) }} </td>
