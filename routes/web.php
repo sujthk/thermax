@@ -14,9 +14,9 @@
 // Delete Routes strictly for developer access
 
 // Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
-Route::get('/user/ldap', 'UserController@ldapUsers');
+// Route::get('/user/ldap', 'UserController@ldapUsers');
 // Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
-Route::get('/word/template', 'ReportController@templateCheck');
+// Route::get('/word/template', 'ReportController@templateCheck');
 
 
 
