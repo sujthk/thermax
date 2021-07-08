@@ -312,14 +312,22 @@
 										<td> 2 </td>
 										<td class="font-class"> {{ $language_datas['fuel_type'] }}</td>
 										<td class="optimal-r1"> </td>
-										<td class="optimal-r1"> {{ $calculation_values['CV'] }}</td>
+										<td class="optimal-r1"> {{ $calculation_values['GCV'] }}</td>
 									</tr>
 									<tr>
 										<td> 3 </td>
 										<td class="font-class"> {{ $language_datas['calorific_fuel_type'] }}</td>
 										<td class="optimal-r1"> </td>
-										<td class="optimal-r1"> {{ $calculation_values['GCV'] }}</td>
+										<td class="optimal-r1"> {{ $calculation_values['CV'] }}</td>
 									</tr>
+									@if($calculation_values['GCV'] == 'NaturalGas')
+	                                    <tr>
+	                                    	<td>  </td>
+	                                       <td class="font-class">{{ $language_datas['gas_pressure'] }}</td>
+	                                        <td class="optimal-r1">mbar </td>
+	                                        <td class="optimal-r1"> 100</td>
+	                                    </tr>
+	                                @endif 
 									<tr>
 										<td> 4 </td>
 										<td class="font-class"> {{ $language_datas['calorific_value'] }}</td>

@@ -3067,14 +3067,20 @@ class ReportController extends Controller
        $chilled_table->addCell(700)->addText(htmlspecialchars("2."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['fuel_type']));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText("");
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['CV']));
+       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['GCV']));
 
        $chilled_table->addRow();
        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['calorific_fuel_type']));
        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("GCV"));
-       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['GCV']));
-
+       $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['CV']));
+       if($calculation_values['GCV'] == 'NaturalGas'){
+            $chilled_table->addRow();
+            $chilled_table->addCell(700)->addText(htmlspecialchars(""));
+            $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['gas_pressure']));
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("mbar"));
+            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("100"));
+       }
        $chilled_table->addRow();
        $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['calorific_value']));
