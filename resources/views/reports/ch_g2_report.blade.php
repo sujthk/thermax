@@ -174,6 +174,59 @@
 									</tr>
 									<tr>
 										
+										<th scope="col">{{ $language_datas['hot_water_circuit'] }}</th>
+										<th scope="col"> </th>
+										<th scope="col"> </th>      
+									</tr>
+									<tr>
+										<td> {{ $language_datas['heat_duty'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HEATCAP'],1) }}</td>
+									</tr>
+									<tr>
+										
+										<td>{{ $language_datas['hot_water_flow'] }}(+/- 3%)</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
+									</tr>
+									<tr>
+										
+										<td> {{ $language_datas['hot_water_in_temp'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['THW1'],1) }}</td>
+									</tr>
+									<tr>
+										
+										<td> {{ $language_datas['hot_water_out_temp'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['THW2'],1) }} </td>
+									</tr>
+									<tr>
+										
+										<td> {{ $language_datas['side_arm_passes'] }}</td>
+										<td class="optimal-r1">No.</td>
+										<td class="optimal-r1"> {{ round($calculation_values['TGP'],1) }} </td>
+									</tr>
+									<tr>     
+										
+										<td> {{ $language_datas['hot_water_pressure_loss'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HotWaterFrictionLoss'],1) }}</td>
+									</tr>
+									<tr>     
+										
+										<td> {{ $language_datas['hot_water_connection_dia'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['HotWaterConnectionDiameter'],1) }} </td>
+									</tr>
+									<tr>     
+										
+										<td>{{ $language_datas['max_working_pressure'] }}</td>
+										<td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['m_maxHWWorkPressure'],1) }} </td>
+									</tr>
+									<tr>
+										
 										<th scope="col"> {{ $language_datas['cooling_water_circuit'] }}</th>
 										<th scope="col"> </th>
 										<th scope="col"> </th>      
@@ -316,7 +369,8 @@
                                         <td class="optimal-r1">{{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
                                         <td class="optimal-r1"> {{ $calculation_values['ExhaustDuctSize'] }}</td>
                                     </tr>
-									<tr>							
+									<tr>
+										
 										<th scope="col"> {{ $language_datas['electrical_data'] }}</th>
 										<th scope="col"> </th>
 										<th scope="col"> </th>      
@@ -400,7 +454,7 @@
 									</tr>
 									<tr>
 										
-										<td> {{ $language_datas['length'] }} (Without Burner)</td>
+										<td> {{ $language_datas['length'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
 										<td class="optimal-r1"> {{ ceil($calculation_values['Length']) }}</td>
 									</tr>

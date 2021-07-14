@@ -24,7 +24,7 @@ class UnitConversionController extends Controller
         $chiller_values['cooling_water_in'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in'],"Centigrade",$unit_set->TemperatureUnit);
         $chiller_values['cooling_water_in_min_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_min_range'],"Centigrade",$unit_set->TemperatureUnit);
         $chiller_values['cooling_water_in_max_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_max_range'],"Centigrade",$unit_set->TemperatureUnit);
-       if($calculator_code == "D_H2" || $calculator_code == "H1" || $calculator_code == "CH_S2")
+       if($calculator_code == "D_H2" || $calculator_code == "H1" || $calculator_code == "CH_S2" || $calculator_code == "CH_G2")
        {
            $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],"Centigrade",$unit_set->TemperatureUnit);
            $chiller_values['hot_water_out'] = $this->convertTemperatureUnit($chiller_values['hot_water_out'],"Centigrade",$unit_set->TemperatureUnit);
@@ -116,7 +116,7 @@ class UnitConversionController extends Controller
         }
 
         // CalorificValueGasUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($chiller_values['fuel_value_type'] == 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
                 $chiller_values['std_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['std_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
@@ -128,7 +128,7 @@ class UnitConversionController extends Controller
         }
 
         // CalorificValueOilUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($chiller_values['fuel_value_type'] != 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
                 $chiller_values['std_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['std_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
@@ -167,7 +167,7 @@ class UnitConversionController extends Controller
         $chiller_values['cooling_water_in'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in'],$unit_set->TemperatureUnit,"Centigrade");
         $chiller_values['cooling_water_in_min_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_min_range'],$unit_set->TemperatureUnit,"Centigrade");
         $chiller_values['cooling_water_in_max_range'] = $this->convertTemperatureUnit($chiller_values['cooling_water_in_max_range'],$unit_set->TemperatureUnit,"Centigrade");
-        if($calculator_code == "D_H2" || $calculator_code == "H1" || $calculator_code == "CH_S2")
+        if($calculator_code == "D_H2" || $calculator_code == "H1" || $calculator_code == "CH_S2" || $calculator_code == "CH_G2")
        {
            $chiller_values['hot_water_in'] = $this->convertTemperatureUnit($chiller_values['hot_water_in'],$unit_set->TemperatureUnit,"Centigrade");
            $chiller_values['hot_water_out'] = $this->convertTemperatureUnit($chiller_values['hot_water_out'],$unit_set->TemperatureUnit,"Centigrade");
@@ -255,14 +255,14 @@ class UnitConversionController extends Controller
         }
 
         // CalorificValueGasUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($chiller_values['fuel_value_type'] == 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['calorific_value'],$unit_set->CalorificValueGasUnit,"kCPerNcubicmetre");
             }      
         }
 
         // CalorificValueOilUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($chiller_values['fuel_value_type'] != 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['calorific_value'],$unit_set->CalorificValueOilUnit,"kCPerKilogram");
              }
@@ -308,7 +308,7 @@ class UnitConversionController extends Controller
             $calculated_values['TCHW1H'] = $this->convertTemperatureUnit($calculated_values['TCHW1H'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['TCHW2L'] = $this->convertTemperatureUnit($calculated_values['TCHW2L'],"Centigrade",$unit_set->TemperatureUnit);
         }
-        if($calculator_code == "L1" || $calculator_code == "H1" || $calculator_code == "CH_S2"){
+        if($calculator_code == "L1" || $calculator_code == "H1" || $calculator_code == "CH_S2" || $calculator_code == "CH_G2"){
             $calculated_values['THW1'] = $this->convertTemperatureUnit($calculated_values['THW1'],"Centigrade",$unit_set->TemperatureUnit);
             $calculated_values['THW2'] = $this->convertTemperatureUnit($calculated_values['THW2'],"Centigrade",$unit_set->TemperatureUnit);
         }
@@ -323,7 +323,7 @@ class UnitConversionController extends Controller
         $calculated_values['GCW'] = $this->convertFlowRateUnit($calculated_values['GCW'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         $calculated_values['ChilledWaterFlow'] = $this->convertFlowRateUnit($calculated_values['ChilledWaterFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         $calculated_values['BypassFlow'] = $this->convertFlowRateUnit($calculated_values['BypassFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
-        if($calculator_code == "D_H2" || $calculator_code == "H1" || $calculator_code == "CH_S2")
+        if($calculator_code == "D_H2" || $calculator_code == "H1" || $calculator_code == "CH_S2" || $calculator_code == "CH_G2")
         {
             $calculated_values['HotWaterFlow']= $this->convertFlowRateUnit($calculated_values['HotWaterFlow'],"CubicMeterPerHr",$unit_set->FlowRateUnit);
         }
@@ -354,7 +354,7 @@ class UnitConversionController extends Controller
         // PressureDropUnit
         $calculated_values['ChilledFrictionLoss'] = $this->convertPressureUnit($calculated_values['ChilledFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
         $calculated_values['CoolingFrictionLoss'] = $this->convertPressureUnit($calculated_values['CoolingFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
-        if($calculator_code == "D_H2" || $calculator_code == "L5" || $calculator_code == "L1" || $calculator_code == "H1" || $calculator_code == "CH_S2")
+        if($calculator_code == "D_H2" || $calculator_code == "L5" || $calculator_code == "L1" || $calculator_code == "H1" || $calculator_code == "CH_S2" || $calculator_code == "CH_G2")
         {
             if(isset($calculated_values['HotWaterFrictionLoss'])){
                 $calculated_values['HotWaterFrictionLoss'] = $this->convertPressureUnit($calculated_values['HotWaterFrictionLoss'],"mLC",$unit_set->PressureDropUnit);
@@ -366,7 +366,7 @@ class UnitConversionController extends Controller
         //WorkPressureUnit
         $calculated_values['m_maxCHWWorkPressure'] = $this->convertPressureUnit($calculated_values['m_maxCHWWorkPressure'],"KgPerCmSqGauge",$unit_set->WorkPressureUnit);
         $calculated_values['m_maxCOWWorkPressure'] = $this->convertPressureUnit($calculated_values['m_maxCOWWorkPressure'],"KgPerCmSqGauge",$unit_set->WorkPressureUnit);
-        if($calculator_code == "L5" || $calculator_code == "CH_S2"){
+        if($calculator_code == "L5" || $calculator_code == "CH_S2" || $calculator_code == "CH_G2"){
             $calculated_values['m_maxHWWorkPressure'] = $this->convertPressureUnit($calculated_values['m_maxHWWorkPressure'],"KgPerCmSqGauge",$unit_set->WorkPressureUnit);
         }        
 
@@ -377,6 +377,9 @@ class UnitConversionController extends Controller
             $calculated_values['PST1'] = $this->convertPressureUnit($calculated_values['PST1'],"KgPerCmSqGauge",$unit_set->PressureUnit);
             $calculated_values['m_dCondensateDrainPressure'] = $this->convertPressureUnit($calculated_values['m_dCondensateDrainPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
             $calculated_values['m_DesignPressure'] = $this->convertPressureUnit($calculated_values['m_DesignPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
+        }
+        if($calculator_code == "CH_G2"){
+          $calculated_values['m_DesignPressure'] = $this->convertPressureUnit($calculated_values['m_DesignPressure'],"KgPerCmSqGauge",$unit_set->PressureUnit);
         }
         if($calculator_code == "D_E2"){
             $calculated_values['FURNPRDROP'] = $this->convertPressureUnit($calculated_values['FURNPRDROP'],"mmWC",$unit_set->FurnacePressureDropUnit);
@@ -396,7 +399,7 @@ class UnitConversionController extends Controller
         if($calculator_code == "D_E2"){
             $calculated_values['ExhaustConnectionDiameter'] = $this->convertNozzleDiameterUnit($calculated_values['ExhaustConnectionDiameter'],"DN",$unit_set->NozzleDiameterUnit);
         }
-        if($calculator_code == "CH_S2"){
+        if($calculator_code == "CH_S2" || $calculator_code == "CH_G2"){
           $calculated_values['HotWaterConnectionDiameter'] = $this->convertNozzleDiameterUnit($calculated_values['HotWaterConnectionDiameter'],"DN",$unit_set->NozzleDiameterUnit);
         }
 
@@ -428,14 +431,14 @@ class UnitConversionController extends Controller
         
 
         // CalorificValueGasUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($calculated_values['GCV'] == 'NaturalGas'){
                 $calculated_values['RCV1'] = $this->convertCalorificValueGasUnit($calculated_values['RCV1'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
             }      
         }
 
         // CalorificValueOilUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($calculated_values['GCV'] != 'NaturalGas'){
                 $calculated_values['RCV1'] = $this->convertCalorificValueOilUnit($calculated_values['RCV1'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
              }
@@ -459,14 +462,14 @@ class UnitConversionController extends Controller
         }
 
         // FuelConsumptionGasUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($calculated_values['GCV'] == 'NaturalGas'){
                 $calculated_values['FuelConsumption'] = $this->convertFuelConsumptionGasUnit($calculated_values['FuelConsumption'],"NCubicMeterPerHr",$unit_set->FuelConsumptionGasUnit);
             }      
         }
 
         // FuelConsumptionOilUnit
-        if($calculator_code == "D_G2"){
+        if($calculator_code == "D_G2" || $calculator_code == "CH_G2"){
             if($calculated_values['GCV'] != 'NaturalGas'){
                 $calculated_values['FuelConsumption'] = $this->convertFuelConsumptionOilUnit($calculated_values['FuelConsumption'],"KilogramsPerHr",$unit_set->FuelConsumptionOilUnit);
              }

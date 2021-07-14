@@ -4497,7 +4497,9 @@ class DoubleG2SteamController extends Controller
             'MOP',
             'ODC',
             'min_chilled_water_out',
-            'ExhaustDuctSize'
+            'ExhaustDuctSize',
+            'Burner_Rating_kW',
+            'Burner_Rating_Amp'
 
         ]);
 

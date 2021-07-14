@@ -91,11 +91,11 @@
 		      			  		<thead class="thead-dark">
 		      			    		<tr>
 										<td class="dark-cell font-class" scope="col" style="padding-right: 40px;">{{ $language_datas['client'] }} <span class="cn">:</span> {{ $name }}</td>
-										<td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : 5.1.2.0</td>     
+										<td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : 0.9 Dt: 24-May-2021</td>     
 		  			    			</tr>
 		      			     		<tr>
 		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['enquiry'] }} : {{ $phone }}</td>
-		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['date'] }} <span class="dn">:</span> {{ date('m/d/Y, h:i A') }}</td>     
+		      			      			<td class="dark-cell font-class" scope="col">{{ $language_datas['date'] }} <span class="dn">:</span> {{ date('d-M-Y, H:i ') }}</td>     
 		      			    		</tr>
 		  			     			<tr>
 
@@ -173,9 +173,9 @@
 										<td> 7 </td>
 										<td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
 										<td > </td>
-										@if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
+										@if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
 											<td class="optimal-r1"> NA </td>
-										@elseif($calculation_values['GL'] == 2)
+										@elseif($calculation_values['GLL'] == 2)
 											<td class="optimal-r1">Ethylene</td>
 										@else
 											<td class="optimal-r1">Proplylene</td>
@@ -204,7 +204,61 @@
 										<td class="optimal-r1">  {{ ceil($calculation_values['m_maxCHWWorkPressure']) }}</td>
 									</tr>
 									<tr>
-										<td class="dark-cell" scope="col"> B  </td>
+									    <td class="dark-cell" scope="col"> B </td>
+									    <td class="dark-cell font-class" scope="col"> {{ $language_datas['hot_water_circuit'] }}</td>
+									    <td class="dark-cell" scope="col"> </td>
+									    <td class="dark-cell" scope="col"> </td>      
+									</tr>
+									<tr>
+									    <td> 1 </td>
+									    <td class="font-class"> {{ $language_datas['heat_input'] }}</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->HeatUnit] }}</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['HeatInput'],1) }}</td>
+									</tr>
+									<tr>
+									    <td> 2 </td>
+									    <td class="font-class">{{ $language_datas['hot_water_flow'] }}(+/- 3%)</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
+									</tr>
+									<tr>
+									    <td> 3 </td>
+									    <td class="font-class"> {{ $language_datas['hot_water_in_temp'] }}</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['THW1'],1) }}</td>
+									</tr>
+									<tr>
+									    <td> 4 </td>
+									    <td class="font-class"> {{ $language_datas['hot_water_out_temp'] }}</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->TemperatureUnit] }}</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['THW2'],1) }} </td>
+									</tr>
+									<tr>
+									    <td> 5 </td>
+									    <td class="font-class"> {{ $language_datas['side_arm_passes'] }}</td>
+									    <td class="optimal-r1"> No.</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['TGP'],1) }} </td>
+									</tr>
+									<tr>     
+									    <td> 6 </td>
+									    <td class="font-class"> {{ $language_datas['hot_water_pressure_loss'] }}</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->PressureDropUnit] }}</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['HotWaterFrictionLoss'],1) }}</td>
+									</tr>
+									<tr>     
+									    <td> 7 </td>
+									    <td class="font-class"> {{ $language_datas['hot_water_connection_dia'] }}</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
+									    <td class="optimal-r1"> {{ round($calculation_values['HotWaterConnectionDiameter'],1) }} </td>
+									</tr>
+									<tr>     
+									    <td> 8 </td>
+									    <td class="font-class">{{ $language_datas['max_working_pressure'] }}</td>
+									    <td class="optimal-r1"> {{ $units_data[$unit_set->WorkPressureUnit] }}</td>
+									    <td class="optimal-r1">{{ round($calculation_values['m_maxHWWorkPressure'],1) }} </td>
+									</tr>
+									<tr>
+										<td class="dark-cell" scope="col"> C  </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['cooling_water_circuit'] }}</td>
 										<td class="dark-cell" scope="col"> </td>
 										<td class="dark-cell" scope="col"> </td>      
@@ -265,9 +319,9 @@
 										<td> 9 </td>
 										<td class="font-class"> {{ $language_datas['glycol_type'] }} </td>
 										<td > </td>
-										@if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
+										@if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
 											<td class="optimal-r1"> NA </td>
-										@elseif($calculation_values['GL'] == 2)
+										@elseif($calculation_values['GLL'] == 2)
 											<td class="optimal-r1">Ethylene</td>
 										@else
 											<td class="optimal-r1">Proplylene</td>
@@ -351,7 +405,7 @@
 										<td class="optimal-r1"> {{ round($calculation_values['ExhaustDuctSize'],1) }}</td>
 									</tr>
 									<tr>
-										<td class="dark-cell" scope="col"> D  </td>
+										<td class="dark-cell" scope="col"> E  </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['electrical_data'] }}</td>
 										<td class="dark-cell" scope="col"> </td>
 										<td class="dark-cell" scope="col"> </td>      
@@ -419,7 +473,7 @@
                                         </tr>
                                     @endif
 									<tr>
-										<td class="dark-cell" scope="col"> E  </td>
+										<td class="dark-cell" scope="col"> F  </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['physical_data'] }}</td>
 										<td class="dark-cell" scope="col"> </td>
 										<td class="dark-cell" scope="col"> </td>      
@@ -473,7 +527,7 @@
 										<td class="optimal-r1"> {{ round($calculation_values['ClearanceForTubeRemoval'],1) }} </td>
 									</tr>
 									<tr>
-										<td class="dark-cell" scope="col"> F  </td>
+										<td class="dark-cell" scope="col"> G  </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['tube_metallurgy'] }}</td>
 										<td class="dark-cell" scope="col"> </td>
 										<td class="dark-cell" scope="col"> </td>      
@@ -517,7 +571,7 @@
 										</tr>
 									@endif	
 									<tr>
-										<td class="dark-cell" scope="col"> G </td>
+										<td class="dark-cell" scope="col"> H </td>
 										<td class="dark-cell font-class" scope="col"> {{ $language_datas['low_temp_heat_exchange'] }}</td>
 										<td class="dark-cell" scope="col"> </td>
 										<td class="dark-cell" class="optimal-r1" scope="col">{{ $calculation_values['HHType'] }} </td>      

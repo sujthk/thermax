@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/calculators/e2-series/download-report/{user_report_id}/{type}', 'E2SeriesController@downloadReport')->name('download.e2report');
     Route::get('/calculators/h1-series/download-report/{user_report_id}/{type}', 'H1SeriesController@downloadReport')->name('download.h1report');
     Route::get('/calculators/chs2-series/download-report/{user_report_id}/{type}', 'ChillerHeaterS2Controller@downloadReport')->name('download.chs2report');
+    Route::get('/calculators/chg2-series/download-report/{user_report_id}/{type}', 'ChillerHeaterG2Controller@downloadReport')->name('download.chg2report');
 
 });	
 
@@ -246,5 +247,7 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
     Route::get('/calculators/chiller-heater-g2-series', 'ChillerHeaterG2Controller@getCHG2Series')->name('calculators/chiller-heater-g2-series');
     Route::post('/calculators/chiller-heater-g2-series/ajax-calculate', 'ChillerHeaterG2Controller@postAjaxCHG2');
     Route::post('/calculators/chiller-heater-g2-series/reset-calculate', 'ChillerHeaterG2Controller@postResetCHG2');
+    Route::post('/calculators/chiller-heater-g2-series/submit-calculate', 'ChillerHeaterG2Controller@postCHG2');
+    Route::post('/calculators/chiller-heater-g2-series/save-report', 'ChillerHeaterG2Controller@postSaveReport');
 
 });

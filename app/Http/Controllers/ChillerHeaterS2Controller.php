@@ -221,21 +221,21 @@ class ChillerHeaterS2Controller extends Controller
 
         
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
     
 
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
 
-        // try {
+        try {
             $this->CALCULATIONS();
             
 
@@ -244,12 +244,12 @@ class ChillerHeaterS2Controller extends Controller
             $this->RESULT_CALCULATE();
     
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
 
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
         
@@ -380,7 +380,7 @@ class ChillerHeaterS2Controller extends Controller
 
         $pdf = PDF::loadView('reports.report_ch_s2_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
 
-        return $pdf->download('s2.pdf');
+        return $pdf->download('ch_s2.pdf');
 
     }
 
@@ -421,6 +421,19 @@ class ChillerHeaterS2Controller extends Controller
                 break;
 
             case "CHILLED_WATER_OUT":
+
+                if (floatval($this->model_values['chilled_water_out']) < 3.5)
+                {
+                    $this->model_values['steam_pressure_min_range'] = 6;
+                }
+                else if (floatval($this->model_values['chilled_water_out']) <= 4.5 && floatval($this->model_values['chilled_water_out']) >= 3.5)
+                {
+                    $this->model_values['steam_pressure_min_range'] = 5;
+                }
+                else
+                {
+                    $this->model_values['steam_pressure_min_range'] = 3.5;
+                }
     
                 // Validation
                 if (floatval($this->model_values['chilled_water_out']) < floatval($this->model_values['min_chilled_water_out']))
@@ -2985,11 +2998,13 @@ class ChillerHeaterS2Controller extends Controller
             if ($this->calculation_values['TCHW2L'] < 7.0)
             {
                 $this->calculation_values['KM2'] = (-0.857413 * $this->calculation_values['TCHW2L'] + 6);     //INCREASED FROM 4 TO 5 FEB 2009
-
+            }
+            else{
+                $this->calculation_values['KM2'] = 0;
             }
 
             $PS1 = $vam_base->STEAM_PRESSURE($this->calculation_values['TSMIN'] + $this->calculation_values['KM2']);       //IN kg/cm2.g
-            $this->calculation_values['PS'] = $PS1 + 0.7;
+            $this->calculation_values['PS'] = $PS1 + 0.5;
 
             $this->calculation_values['T5'] = $vam_base->LIBR_TEMP($this->calculation_values['P4'], $this->calculation_values['XDIL']);
             $this->calculation_values['LMTDHTG'] = (($this->calculation_values['TS'] - $this->calculation_values['T5']) - ($this->calculation_values['TS'] - $this->calculation_values['T4'])) / log(($this->calculation_values['TS'] - $this->calculation_values['T5']) / ($this->calculation_values['TS'] - $this->calculation_values['T4']));
@@ -3720,9 +3735,9 @@ class ChillerHeaterS2Controller extends Controller
                 }
                 else
                 {
-                    if (!$this->SEPARATION_HEIGHT_HTG())
+                    if (!$this->SEPARATION_HEIGHT_LTG())
                     {
-                        $this->calculation_values['Notes'] = $this->notes['NOTES_SEP_HT_HTG'];
+                        $this->calculation_values['Notes'] = $this->notes['NOTES_SEP_HT_LTG'];
                         return false;
                     }
                     else
