@@ -305,12 +305,12 @@ class UserController extends Controller
         {      
             $content ='';
             foreach ($group_calculator->groupCalculatorDetails as $groupCalculatorDetail ){
-                if(in_array($groupCalculatorDetail->calculator_id, $user_calculator_ids)){
+                // if(in_array($groupCalculatorDetail->calculator_id, $user_calculator_ids)){
+                //     $content .='<input type="checkbox"  name="calculators[]" value="'.$groupCalculatorDetail->calculator_id.'" checked="checked">&nbsp;&nbsp;'. ucwords($groupCalculatorDetail->calculator->name).'<br>';
+                // }
+                // else{
                     $content .='<input type="checkbox"  name="calculators[]" value="'.$groupCalculatorDetail->calculator_id.'" checked="checked">&nbsp;&nbsp;'. ucwords($groupCalculatorDetail->calculator->name).'<br>';
-                }
-                else{
-                    $content .='<input type="checkbox"  name="calculators[]" value="'.$groupCalculatorDetail->calculator_id.'" >&nbsp;&nbsp;'. ucwords($groupCalculatorDetail->calculator->name).'<br>';
-                }
+                // }
               
             }
              return response()->json(['status'=>true,'content'=>$content]);

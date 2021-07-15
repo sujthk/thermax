@@ -46,6 +46,24 @@ class S1SeriesController extends Controller
 
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
+
+        if($chiller_form_values['region_type'] == 2 || $chiller_form_values['region_type'] == 3)
+        {
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+
+            if($chiller_form_values['region_type'] == 2){
+                $chiller_form_values['fouling_factor']="ari";
+                $chiller_form_values['fouling_chilled_water_value'] =  $chiller_form_values['fouling_ari_chilled'];
+                $chiller_form_values['fouling_cooling_water_value'] =  $chiller_form_values['fouling_ari_cooling'];
+            }
+            else{
+                $chiller_form_values['fouling_factor']="standard";
+            }
+        }
         
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
         if($min_chilled_water_out > $chiller_form_values['min_chilled_water_out'])

@@ -45,6 +45,28 @@ class ChillerHeaterG2Controller extends Controller
 
         $unit_set_id = Auth::user()->unit_set_id;
         $unit_set = UnitSet::find($unit_set_id);
+
+        if($chiller_form_values['region_type'] == 2 || $chiller_form_values['region_type'] == 3)
+        {
+            $chiller_form_values['capacity'] =  $chiller_form_values['USA_capacity'];
+            $chiller_form_values['chilled_water_in'] =  $chiller_form_values['USA_chilled_water_in'];
+            $chiller_form_values['chilled_water_out'] =  $chiller_form_values['USA_chilled_water_out'];
+            $chiller_form_values['cooling_water_in'] =  $chiller_form_values['USA_cooling_water_in'];
+            $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
+            $chiller_form_values['heat_duty'] =  $chiller_form_values['USA_heat_duty'];
+            $chiller_form_values['heat_duty_min'] =  $chiller_form_values['USA_heat_duty_min'];
+            $chiller_form_values['heat_duty_max'] =  $chiller_form_values['USA_heat_duty_max'];
+
+           if($chiller_form_values['region_type'] == 2){
+                $chiller_form_values['fouling_factor']="ari";
+                $chiller_form_values['fouling_chilled_water_value'] =  $chiller_form_values['fouling_ari_chilled'];
+                $chiller_form_values['fouling_cooling_water_value'] =  $chiller_form_values['fouling_ari_cooling'];
+            }
+            else{
+                $chiller_form_values['fouling_factor']="standard";
+            }
+
+        }
         
         $min_chilled_water_out = Auth::user()->min_chilled_water_out;
         if($min_chilled_water_out > $chiller_form_values['min_chilled_water_out'])
@@ -217,20 +239,20 @@ class ChillerHeaterG2Controller extends Controller
 
         
 
-        // try {
+        try {
             $this->WATERPROP();
             $velocity_status = $this->VELOCITY();
-        // } 
-        // catch (\Exception $e) {
+        } 
+        catch (\Exception $e) {
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
     
         // Log::info($this->calculation_values);    
         if(!$velocity_status['status'])
             return response()->json(['status'=>false,'msg'=>$velocity_status['msg']]);
 
-        // try {
+        try {
             $this->CALCULATIONS();
 
             $this->CONVERGENCE();
@@ -238,12 +260,12 @@ class ChillerHeaterG2Controller extends Controller
             $this->RESULT_CALCULATE();
     
             $this->loadSpecSheetData();
-        // }
-        // catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
 
 
-        //     return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
-        // }
+            return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
+        }
 
             
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
@@ -375,6 +397,73 @@ class ChillerHeaterG2Controller extends Controller
         $pdf = PDF::loadView('reports.report_ch_g2_pdf', ['name' => $name,'phone' => $phone,'project' => $project,'calculation_values' => $calculation_values,'evaporator_name' => $evaporator_name,'absorber_name' => $absorber_name,'condenser_name' => $condenser_name,'unit_set' => $unit_set,'units_data' => $units_data,'language_datas' => $language_datas,'language' => $language]);
 
         return $pdf->download('ch_g2.pdf');
+
+    }
+
+    public function chilledWaterValidating(){
+        if($this->model_values['chilled_water_out'] < 1){
+            $this->model_values['glycol_none'] = 'true';
+            $this->model_values['glycol_selected'] = 2;
+        }
+        else{
+            $this->model_values['glycol_none'] = 'false';
+            // $this->model_values['glycol_selected'] = 2;
+        }
+        
+
+        $glycol_validator = $this->validateChillerAttribute('GLYCOL_TYPE_CHANGED');
+        if(!$glycol_validator['status'])
+            return array('status'=>false,'msg'=>$glycol_validator['msg']);
+
+
+        $metallurgy_validator = $this->metallurgyValidating();
+        if(!$metallurgy_validator['status'])
+            return array('status'=>false,'msg'=>$metallurgy_validator['msg']);
+        
+
+        return  array('status' => true,'msg' => "process run successfully");
+    }
+
+    public function metallurgyValidating(){
+        
+        if ($this->model_values['chilled_water_out'] < 3.499 && $this->model_values['chilled_water_out'] > 0.99 && $this->model_values['glycol_chilled_water'] == 0)
+        {
+            $this->model_values['tube_metallurgy_standard'] = 'false';
+            $this->model_values['metallurgy_standard'] = false;
+            $this->model_values['evaporator_material_value'] = 4;
+            // $this->model_values['evaporator_thickness'] = 0.8;
+            $this->model_values['evaporator_thickness_change'] = true;
+            // $this->chillerAttributesChanged("EVAPORATORTUBETYPE");
+
+        }
+        else
+        {   $this->model_values['tube_metallurgy_standard'] = 'true';
+            $this->model_values['metallurgy_standard'] = true;
+            $this->model_values['evaporator_thickness_change'] = true;
+        }
+
+        $evaporator_validator = $this->validateChillerAttribute('EVAPORATOR_TUBE_TYPE');
+        if(!$evaporator_validator['status'])
+            return array('status'=>false,'msg'=>$evaporator_validator['msg']);
+
+        
+        $this->onChangeMetallurgyOption();
+
+        return  array('status' => true,'msg' => "process run successfully");
+    }
+
+    public function onChangeMetallurgyOption(){
+        if($this->model_values['metallurgy_standard']){
+            $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',(int)$this->model_values['model_number'])->where('max_model','>',(int)$this->model_values['model_number'])->first();
+
+            $this->model_values['evaporator_material_value'] = $chiller_metallurgy_options->eva_default_value;
+            // $this->model_values['evaporator_thickness'] = $this->default_model_values['evaporator_thickness'];
+            $this->model_values['absorber_material_value'] = $chiller_metallurgy_options->abs_default_value;
+            // $this->model_values['absorber_thickness'] = $this->default_model_values['absorber_thickness'];
+            $this->model_values['condenser_material_value'] = $chiller_metallurgy_options->con_default_value;
+            // $this->model_values['condenser_thickness'] = $this->default_model_values['condenser_thickness'];
+        }
 
     }
 
@@ -1160,7 +1249,9 @@ class ChillerHeaterG2Controller extends Controller
         $this->calculation_values['BypassFlow'] = 0;
         $this->calculation_values['ChilledFrictionLoss'] = 0;
         $this->calculation_values['CoolingFrictionLoss'] = 0;
-        $this->calculation_values['SteamConsumption'] = 0;
+        $this->calculation_values['FuelConsumption'] = 0;
+        $this->calculation_values['HotWaterFlow'] = 0;
+        $this->calculation_values['HotWaterConnectionDiameter'] = 0;
 
         if($this->calculation_values['region_type'] == 1){
             $this->calculation_values['SS_FACTOR'] = 1;
@@ -1860,7 +1951,7 @@ class ChillerHeaterG2Controller extends Controller
                 $this->calculation_values['TCHW1H'] = $this->calculation_values['TCHW11'];
                 $this->calculation_values['TCHW2L'] = $this->calculation_values['TCHW12'];
                 $this->calculation_values['TCW1H'] = $this->calculation_values['TCW11'];
-                $this->EVAPORATOR(chiller);
+                $this->EVAPORATOR();
                 //HTG();
 
                 if (($this->calculation_values['ALTG'] / $this->calculation_values['ALTGACT']) > 0.53)
@@ -1949,6 +2040,44 @@ class ChillerHeaterG2Controller extends Controller
                 $t12[$a] = $this->calculation_values['T1'];
                 $t3n2[$a] = $this->calculation_values['T3'];
             } while ((abs($t11[$a] - $t12[$a]) > 0.005) || (abs($t3n1[$a] - $t3n2[$a]) > 0.005));
+        }
+    }
+
+    public function CONCHECK1()
+    {
+        if ($this->calculation_values['MODEL'] < 130)
+        {
+            if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+            else
+            {
+                if ($this->calculation_values['TCW11'] < 29.4)
+                    $this->calculation_values['KM'] = 62.6 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462);
+                else
+                {
+                    if ($this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                        $this->calculation_values['KM'] = 62.6 + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+                    else
+                        $this->calculation_values['KM'] = 62.6;
+                }
+            }
+        }
+        else if ($this->calculation_values['MODEL'] > 130)
+        {
+            if ($this->calculation_values['TCW11'] < 29.4 && $this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462) + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+            else
+            {
+                if ($this->calculation_values['TCW11'] < 29.4)
+                    $this->calculation_values['KM'] = 63.00 - ((29.4 - $this->calculation_values['TCW11']) * 0.038462);
+                else
+                {
+                    if ($this->calculation_values['GCW'] <= $this->calculation_values['TON'])
+                        $this->calculation_values['KM'] = 63.00 + (2.166667 * ($this->calculation_values['GCW'] / $this->calculation_values['TON'])) - 2.166667;
+                    else
+                        $this->calculation_values['KM'] = 63.00;
+                }
+            }
         }
     }
 
@@ -4658,5 +4787,57 @@ class ChillerHeaterG2Controller extends Controller
         ]);
 
         return $calculation_values;
+    }
+
+    public function testingCHG2Calculation($datas){
+        
+        $this->model_values = $datas;
+
+        $vam_base = new VamBaseController();
+        $this->notes = $vam_base->getNotesError();
+
+        $this->model_values['metallurgy_standard'] = $vam_base->getBoolean($this->model_values['metallurgy_standard']);
+        $this->updateInputs();
+
+
+        $this->calculation_values['msg'] = '';
+       try {
+           $this->WATERPROP();
+
+           $velocity_status = $this->VELOCITY();
+
+       } 
+       catch (\Exception $e) {
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
+       
+
+       if(isset($velocity_status['status']) && !$velocity_status['status']){
+            $this->calculation_values['msg'] = $velocity_status['msg'];
+            
+       }
+
+
+
+       try {
+           $this->CALCULATIONS();
+    
+           $this->CONVERGENCE();
+
+           $this->RESULT_CALCULATE();
+    
+           $this->loadSpecSheetData();
+       }
+       catch (\Exception $e) {
+
+            $this->calculation_values['msg'] = $this->notes['NOTES_ERROR'];
+          
+       }
+
+        return $this->calculation_values;
+        // return response()->json(['status'=>true,'msg'=>'Ajax Datas','calculation_values'=>$this->calculation_values]);
+
+    
     }
 }
