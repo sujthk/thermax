@@ -924,7 +924,7 @@ class DoubleSteamController extends Controller
 		{
             case "MODEL_NUMBER":
                 // $this->modulNumberDoubleEffectS2();
-                
+                $this->model_values['metallurgy_standard'] = true;
                 $range_calculation = $this->RANGECAL();
                 
                 if(!$range_calculation['status']){
@@ -3371,6 +3371,8 @@ class DoubleSteamController extends Controller
 	    $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
 	   
         $this->updateInputs();
+
+        Log::info("TU6 = ".$this->calculation_values['TU6']);
       
       
 	    // $chiller_data = $this->getChillerData();
@@ -3496,7 +3498,7 @@ class DoubleSteamController extends Controller
 	    }
 	    else
 	    {
-	        $GCWPMAX = $APA * 4 * 3600;
+	        $GCWPMAX = $APA * 4.2 * 3600;
 	    }
 
 

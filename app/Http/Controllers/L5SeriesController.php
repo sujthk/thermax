@@ -401,7 +401,7 @@ class L5SeriesController extends Controller
         {
             case "MODEL_NUMBER":
                 // $this->modulNumberDoubleEffectS2();
-                
+                $this->model_values['metallurgy_standard'] = true;
                 $range_calculation = $this->CWFLOW();
                 
                 if(!$range_calculation['status']){

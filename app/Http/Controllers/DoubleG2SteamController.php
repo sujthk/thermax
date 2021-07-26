@@ -3346,7 +3346,7 @@ class DoubleG2SteamController extends Controller
         {
             case "MODEL_NUMBER":
                 // $this->modulNumberDoubleEffectG2();
-
+                $this->model_values['metallurgy_standard'] = true;
                 $range_calculation = $this->RANGECAL();
 
                 if(!$range_calculation['status']){
@@ -3936,7 +3936,7 @@ class DoubleG2SteamController extends Controller
         }
         else
         {
-            $GCWPMAX = $APA * 4 * 3600;
+            $GCWPMAX = $APA * 4.2 * 3600;
         }
 
 

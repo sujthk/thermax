@@ -226,6 +226,7 @@ function sendResetValues(chiller_url){
 	    url: chiller_url,
 	    data: { model_number : model_values.model_number,values : model_values,_token: CSRF_TOKEN},
 	    success: function(response){
+	    	$("#errormessage").html("-");
 	        if(response.status){
 	            
 	            $('.emsg').addClass('hidden');
@@ -275,6 +276,7 @@ function submitValues(chiller_url){
 		 },
 		success: function(response){
 			$("#ajax-loader").show();
+			$("#errormessage").html("-");
 			if(response.status){
 				// console.log(response.calculation_values);
 				calculation_values = response.calculation_values;
@@ -333,10 +335,12 @@ function sendValues(chiller_url){
 		data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 		success: function(response){
 			console.log(response);
+			$("#errormessage").html("-");
 			if(response.status){
 				$('#'+changed_value).removeClass("box-color");
 				console.log(response.model_values);
 				$("#calculate_button").prop('disabled', false);
+
 				model_values = response.model_values;
 				if(response.changed_value == 'model_number'){
 					evaporator_options = response.evaporator_options;

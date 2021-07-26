@@ -2236,7 +2236,7 @@ class L1SeriesController extends Controller
         {
             case "MODEL_NUMBER":
                 // $this->modulNumberDoubleEffectS2();
-                
+                $this->model_values['metallurgy_standard'] = true;
                 $range_calculation = $this->RANGECAL();
                 
                 if(!$range_calculation['status']){

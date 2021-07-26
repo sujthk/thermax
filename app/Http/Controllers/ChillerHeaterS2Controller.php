@@ -412,7 +412,7 @@ class ChillerHeaterS2Controller extends Controller
         {
             case "MODEL_NUMBER":
                 // $this->modulNumberDoubleEffectS2();
-                
+                $this->model_values['metallurgy_standard'] = true;
                 $range_calculation = $this->RANGECAL();
                 
                 if(!$range_calculation['status']){
@@ -616,6 +616,7 @@ class ChillerHeaterS2Controller extends Controller
                     }
 
                 }
+
                 if(!$range_validate){
                     return array('status' => false,'msg' => $this->notes['NOTES_COW_RANGE']);
                 }
@@ -1015,6 +1016,198 @@ class ChillerHeaterS2Controller extends Controller
         $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
        
         $this->updateInputs();
+      
+        // $chiller_data = $this->getChillerData();
+
+        $IDC = floatval($this->calculation_values['IDC']);
+        $IDA = floatval($this->calculation_values['IDA']);
+        $TNC = floatval($this->calculation_values['TNC']);
+        $TNAA = floatval($this->calculation_values['TNAA']);
+        $PODA = floatval($this->calculation_values['PODA']);
+        $THPA = floatval($this->calculation_values['THPA']);
+
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
+                                        ->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        // $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$this->model_values['evaporator_material_value'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$this->calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$this->calculation_values['TV5'])->first();
+
+
+        if($this->calculation_values['MODEL'] < 300){
+            $TCP = 2;
+        }
+        else{
+            $TCP = 1;
+        }
+
+        
+        $VAMIN = $absorber_option->metallurgy->abs_min_velocity;          
+        $VAMAX = $absorber_option->metallurgy->abs_max_velocity;
+        $VCMIN = $condenser_option->metallurgy->con_min_velocity;
+        $VCMAX = $condenser_option->metallurgy->con_max_velocity;
+ 
+
+
+        // if ($model_number < 1200)
+        // {
+        //     $VAMIN = 1.33;           //Velocity limit reduced to accomodate more range of cow flow
+        //     $VAMAX = 2.65;
+        //     if ($model_number > 950)
+        //     {
+        //         $VCMIN = 1.0;
+        //         $VCMAX = 2.78;
+        //     }
+        //     else
+        //     {
+        //         $VCMIN = 1.0;            
+        //         $VCMAX = 2.65;
+        //     }                
+        // }
+        // else
+        // {
+        //     $VAMIN = 1.39;
+        //     $VAMAX = 2.78;
+        //     $VCMIN = 1.00;
+        //     $VCMAX = 2.78;
+        // }
+
+
+        $GCWMIN = 3.141593 / 4 * $IDC * $IDC * $VCMIN * $TNC * 3600 / $TCP;     //min required flow in condenser
+        $GCWCMAX = 3.141593 / 4 * $IDC * $IDC * $VCMAX * $TNC * 3600 / 1;
+
+
+        if ($GCWMIN > $GCWMIN1)
+            $GCWMIN2 = $GCWMIN;
+        else
+            $GCWMIN2 = $GCWMIN1;
+
+        $TAPMAX = 4;
+
+        $FMIN[$TAPMAX] = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA / $TAPMAX * $VAMIN;
+
+        if ($FMIN[$TAPMAX] < $GCWMIN2)
+            $FMIN[$TAPMAX] = $GCWMIN2;
+
+        $FMAX[$TAPMAX] = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA / $TAPMAX * $VAMAX;
+
+        $GCWMAX = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA * $VAMAX;
+
+        
+        $INIT = 1;
+        if ($FMIN[$TAPMAX] > $GCWMAX)
+        {
+            
+            return array('status' => false,'msg' => $this->notes['NOTES_COW_MAX_LIM']  );
+        }
+        else
+        {
+            $FMIN1 = $FMIN[$TAPMAX];
+            $FMAX1 = $FMAX[$TAPMAX];
+            for ($TAP = $TAPMAX - 1; $TAP >= 1; $TAP--)
+            {
+                $FMIN[$TAP] = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA / $TAP * $VAMIN;
+                $FMAX[$TAP] = 3.141593 / 4 * $IDA * $IDA * 3600 * $TNAA / $TAP * $VAMAX;
+                if ($FMIN[$TAP] > $FMAX1 && $FMIN1 < $FMAX1)
+                {
+                    $FLOWMN[$INIT] = $FMIN1;
+                    $FLOWMX[$INIT] = $FMAX1;
+                    $INIT++;
+                    $FMIN1 = $FMIN[$TAP];
+                    $FMAX1 = $FMAX[$TAP];
+                }
+                else
+                {
+                    $FMAX1 = $FMAX[$TAP];
+                }
+            }
+        }
+
+        // PR_DROP_DATA();
+        $PIDA = ($PODA - (2 * $THPA)) / 1000;
+        $APA = 3.141593 * $PIDA * $PIDA / 4;
+
+        if ($model_number == 130 || $model_number == 810 || $model_number == 900)  //change
+        {
+            $GCWPMAX = $APA * 3.5 * 3600;
+        }
+        else if ($model_number == 310 || $model_number == 350 || $model_number == 410 || $model_number == 470 || $model_number == 530 || $model_number == 580 || $model_number == 630 || $model_number == 710)
+        {
+            $GCWPMAX = $APA * 3.8 * 3600;
+        }
+        else
+        {
+            $GCWPMAX = $APA * 4.2 * 3600;
+        }
+
+
+        if ($FMAX1 > $GCWPMAX)
+        {
+            $FMAX1 = $GCWPMAX;
+        }
+        //if ($model_number < 360 && GCWCMAX < $FMAX1)
+        //{
+        //    $FMAX1 = GCWCMAX;
+        //}
+
+
+
+        if ($FMIN1 < $FMAX1)
+        {
+            $FLOWMN[$INIT] = $FMIN1;
+            $FLOWMX[$INIT] = $FMAX1;
+        }
+        else
+        {
+            
+            return array('status' => false,'msg' => $this->notes['NOTES_COW_MAX_LIM']);
+        }
+
+        
+
+        $range_values = array();
+        foreach ($FLOWMN as $key => $min) {
+            if(!empty($FLOWMX[$key])){
+                $min = round($FLOWMN[$key], 1);
+                $max = round($FLOWMX[$key], 1);
+
+                $range_values[] = $min;
+                $range_values[] = $max;
+                // $range_values .= "(".$min." - ".$max.")<br>";
+            }
+
+        }
+
+        // $range_values = array_sort($range_values);
+
+
+        // for ($i=0; $i < $INIT; $i++) { 
+        //  $range_values .= "(".$FMIN[$i]." - ".$FMAX[$i].")<br>";
+        // }
+
+        $this->model_values['cooling_water_ranges'] = $range_values;
+
+        return array('status' => true,'msg' => "process run successfully");
+    }
+
+    public function RANGECAL_NEW()
+    {
+        $FMIN1 = 0; 
+        $FMAX1 = 0;
+        $TAPMAX = 0;
+        $FMAX = array();
+        $FMIN = array();
+     
+        $model_number = (int)$this->model_values['model_number'];
+        $chilled_water_out = $this->model_values['chilled_water_out'];
+        $capacity = $this->model_values['capacity'];
+
+        $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
+       
+        $this->updateInputs();
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
                                         ->where('min_model','<=',$model_number)->where('max_model','>',$model_number)->first();
@@ -1111,6 +1304,7 @@ class ChillerHeaterS2Controller extends Controller
         //{
         //    $FMAX1 = $GCWCMAX;
         //}
+
 
         if ($FMIN1 < $FMAX1)
         {
@@ -1436,6 +1630,7 @@ class ChillerHeaterS2Controller extends Controller
 
     private function THICKNESS()
     {
+
         $this->calculation_values['THE'] = $this->calculation_values['TU3'];
         $this->calculation_values['THA'] = $this->calculation_values['TU6'];
         $this->calculation_values['THC'] = $this->calculation_values['TV6'];
@@ -1456,7 +1651,8 @@ class ChillerHeaterS2Controller extends Controller
         else                
             $this->calculation_values['IDC'] = $this->calculation_values['ODC'] - ((2.0 * $this->calculation_values['THC']) / 1000.0);
 
-  
+
+
     }
 
     public function WATERPROP()
