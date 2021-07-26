@@ -316,7 +316,7 @@
 										<td> {{ $language_datas['glycol_type'] }} </td>
 										<td> </td>
 									
-										@if(empty($calculation_values['HWGLY']) || $calculation_values['GL'] == 1)
+										@if($calculation_values['HWGLY'] <= 0 || $calculation_values['GL'] == 1)
 											<td class="optimal-r1"> NA </td>
 										@elseif($calculation_values['GL'] == 2)
 											<td class="optimal-r1">Ethylene</td>
