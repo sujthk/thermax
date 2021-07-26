@@ -177,7 +177,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -271,7 +271,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -708,7 +708,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -802,7 +802,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -886,7 +886,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("8."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['HWGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -1289,7 +1289,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -1383,7 +1383,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -1467,7 +1467,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("8."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['HWGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -1858,7 +1858,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -1952,7 +1952,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -2391,7 +2391,7 @@ class ReportController extends Controller
        $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-       if($calculation_values['GL'] == 1)
+       if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
        else if($calculation_values['GL'] == 2)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -2485,7 +2485,7 @@ class ReportController extends Controller
        $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-       if($calculation_values['GL'] == 1)
+       if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
        else if($calculation_values['GL'] == 2)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -2925,7 +2925,7 @@ class ReportController extends Controller
        $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-       if($calculation_values['GLL'] == 1)
+       if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
        else if($calculation_values['GLL'] == 2)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -3019,7 +3019,7 @@ class ReportController extends Controller
        $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-       if($calculation_values['GLL'] == 1)
+       if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
        else if($calculation_values['GLL'] == 2)
            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -3459,7 +3459,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GLL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GLL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -3553,7 +3553,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GLL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GLL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -3947,7 +3947,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GLL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GLL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -4041,7 +4041,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GLL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GLL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -4478,7 +4478,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -4629,7 +4629,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -5065,7 +5065,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GLL'] == 1)
+        if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GLL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
@@ -5216,7 +5216,7 @@ class ReportController extends Controller
         $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
         $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
         $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if($calculation_values['GLL'] == 1)
+        if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
         else if($calculation_values['GLL'] == 2)
             $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
