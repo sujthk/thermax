@@ -17,6 +17,7 @@
 // Route::get('/user/ldap', 'UserController@ldapUsers');
 // Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
 // Route::get('/word/template', 'ReportController@templateCheck');
+Route::get('/check-mail/{email_id}', 'DeleteController@checkMail');
 
 
 

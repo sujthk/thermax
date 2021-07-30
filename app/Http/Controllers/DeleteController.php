@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\User;
+use App\Mail\SendUserOtp;
+use Mail;
 
 class DeleteController extends Controller
 {
@@ -27,5 +29,11 @@ class DeleteController extends Controller
         }
 
         return "Invalid User or Id belongs to admin";    
+    }
+
+    public function checkMail($email_id){
+        Mail::to($email_id)->send(new SendUserOtp("test name","123"));
+
+        return "Mail Sent Success";
     }
 }
