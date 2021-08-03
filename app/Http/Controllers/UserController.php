@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\SendUserOtp;
 use App\Mail\SendUserPassword;
+use App\Mail\UserCreated;
+use App\Mail\UserActivated;
+use App\Mail\UserExpired;
 use Illuminate\Http\Request;
 use App\ChillerMetallurgyOption;
 use App\User;
@@ -76,7 +79,13 @@ class UserController extends Controller
             if(empty($request->calculators))
                 return Redirect::back()->with('status','error')->with('message', 'Please select  Calculoter');
 
+            if(empty($request->expiry_at))
+                return Redirect::back()->with('status','error')->with('message', 'Please select  Expiry Date');
+
         }
+        
+
+        // return $request->all();
 
 		$hashed_password = Hash::make($request->password);
 
@@ -94,13 +103,16 @@ class UserController extends Controller
         $user->min_chilled_water_out = $request->min_chilled_water_out;
         $user->unitset_status = $request->unitset_type;
         $user->language_id = $request->language_id;
-		$user->status = 1;
+        $user->status = 1;
+		$user->expiry_at = $request->expiry_at;
 		$user->save();
 
         if($request->user_type =='THERMAX_USER' || $request->user_type == 'NON_THERMAX_USER')
         {
             $user->calculators()->sync($request->calculators);
         }
+
+        Mail::to($user->username)->send(new UserCreated($user->name,$user->username,$request->password));
 
 		return redirect('users')->with('message','User Added')
                         ->with('status','success');
@@ -138,6 +150,9 @@ class UserController extends Controller
 
             if(empty($request->calculators))
                 return Redirect::back()->with('status','error')->with('message', 'Please select  Calculater');
+
+            if(empty($request->expiry_at))
+                return Redirect::back()->with('status','error')->with('message', 'Please select  Expiry Date');
         }
 
     	$user = User::find($user_id);
@@ -166,8 +181,17 @@ class UserController extends Controller
         {
             $user->group_calculator_id =NULL;
         }
-
+        $user->expiry_at = $request->expiry_at;
+        if(!empty($request->reactivation_mail)){
+            $user->expiry_status = 1;
+            $user->password_status = 1;
+        }
+        
         $user->save();
+
+        if(!empty($request->reactivation_mail)){
+            Mail::to($user->username)->send(new UserActivated($user->name));
+        }
 
 		return redirect('users')->with('message','User Updated')
                         ->with('status','success');
@@ -231,6 +255,28 @@ class UserController extends Controller
     	if(!$user->status)
     		return response()->json(['status'=>false,'msg'=>'Account Deactivated Contact Admin']);
 
+        if($user->user_type != 'ADMIN'){
+
+            if($user->expiry_status == 0){
+
+                return response()->json(['status'=>false,'msg'=>'Your Account is Expired, Contact Admin']);
+            }
+
+            $current_date = date('Y-m-d');
+
+            if ($user->expiry_at < $current_date){
+
+                DB::table('users')->where('id', $user->id)->update(['expiry_status' => 0]);
+
+                $admin_email = DB::table('admin_settings')->where('name', 'admin_email')->value('value');
+
+                Mail::to($admin_email)->send(new UserExpired($user->username));
+
+                return response()->json(['status'=>false,'msg'=>'Your Account is Expired, Contact Admin..']);
+            }
+
+        }
+
     	// if($request->otp != $user->otp)
     	// 	return response()->json(['status'=>false,'msg'=>'Invalid Otp']);
 
@@ -239,6 +285,8 @@ class UserController extends Controller
             // Authentication passed...
 
 			$user = Auth::user();
+
+            
 
 			$user->otp = NULL;
 			$user->last_logged_in = date("Y-m-d H:i:s");
@@ -251,7 +299,7 @@ class UserController extends Controller
 			$user_tacking->save();
 
 
-            return response()->json(['status'=>true,'msg'=>'Login Success']);
+            return response()->json(['status'=>true,'msg'=>'Login Success','password_change'=>$user->password_status]);
         }
 
 
@@ -444,6 +492,33 @@ class UserController extends Controller
             }
         }
 
+    public function postUserPasswordChange(Request $request)
+    {
+        //dd($request->input());
+        $this->validate($request, [
+            'old_password' => 'required',
+        ]); 
+
+        $user_id=Auth::user()->id;
+        $user =User::where('id',$user_id)->first();
+
+        if (!Hash::check($request->old_password, $user->password))
+        {
+            $errors = ['message' => 'Your Old Password Not Matching.'];
+            return redirect()->back()->with('message','Your Old Password Not Matching.')
+                    ->with('status','error');
+        }
+        else
+        {
+            //return $request->password;
+            $password = Hash::make($request->password);
+            $user->password =  $password;
+            $user->password_status = 0;
+            $user->save();
+            return redirect('/dashboard');
+        }
+    }    
+
     public function logoutUser(){
     	$user = Auth::user();
 
@@ -461,23 +536,25 @@ class UserController extends Controller
             'email' => 'required',
         ]);
 
-        $user = User::where('email',$request->email)->first();
+        $user = User::where('username',$request->email)->first();
         if(!$user)
         {
-            $errors = ['email' => 'Sorry, the Provided Email doesn\'t match.'];
-            return redirect()->back()->withInput()->withErrors($errors); 
+            return response()->json(['status'=>false,'msg'=>'Sorry, the Provided Email doesn\'t match.']); 
         }
             
            
-        $email_token = str_random(30);
-        $name = $user->name; 
-        // Mail::to($user->email)->send(new SendUserPassword($name,$email_token)); 
-        $user->password = bcrypt("admin123");
-        $user->remember_token = $email_token;
+        $email_token = str_random(10);
+
+         
+        $user->password = bcrypt($email_token);
+        $user->password_status = 1;
         $user->save();
-        $errors = ['email' => 'Password Reset Link Sent Email Successfully'];
-        return redirect('/login')->with('status','success')->withErrors($errors);
+
+        Mail::to($user->username)->send(new SendUserPassword($user->name,$user->username,$email_token));
+
+        return response()->json(['status'=>true,'msg'=>'Your new credentials sent to your mail.']);
     }
+
     public function verifyCustomerToken($token){
 
         $user = User::where('remember_token',$token)->first();

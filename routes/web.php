@@ -13,7 +13,7 @@
 
 // Delete Routes strictly for developer access
 
-// Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
+Route::get('/user/delete/{user_id}', 'DeleteController@deleteUser');
 // Route::get('/user/ldap', 'UserController@ldapUsers');
 // Route::get('/viscocity/test', 'VamBaseController@EG_VISCOSITY');
 // Route::get('/word/template', 'ReportController@templateCheck');
@@ -66,7 +66,12 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 	Route::get('/logout', 'UserController@logoutUser')->name('logout');
 	Route::get('/profile', 'UserController@getProfile')->name('profile');
 	Route::post('/user_profile/edit/{user_id}', 'UserController@updateUserProfile');
+	Route::get("/password_change", function(){
+	   return View::make("user_password_change");
+	});
+
 	Route::post('/password_change', 'UserController@postPasswordChange');
+	Route::post('/user-password-change', 'UserController@postUserPasswordChange');
 	
 	Route::group(['middleware' => ['adminmiddleware']], function(){
 		Route::get('/users', 'UserController@getUsers')->name('users');

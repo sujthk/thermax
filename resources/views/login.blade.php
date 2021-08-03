@@ -70,7 +70,7 @@
 									<div class="input-group">
 										<input type="text" class="form-control" name="username" id="username" value="" required placeholder="Email">
 									</div>
-									<div class="input-group">
+									<div class="input-group sign_in__">
 										<input type="password" class="form-control" name="password" id="password" value="" required placeholder="Password">
 										<span class="md-line"></span>
 									</div>
@@ -91,13 +91,15 @@
 										</div>
 										<div class="col-sm-6 col-xs-12 forgot-phone text-right">
 											<!-- <a href="{{url('forgot-password')}}" class="text-right f-w-600 text-inverse"> Forgot Your Password?</a> -->
-											<a href="#" onclick="forgetPassword();" class="text-right f-w-600 text-inverse"> Forgot Password?</a>
+											<a href="#" onclick="forgetPassword();" class="text-right f-w-600 text-inverse sign_in__"> Forgot Password?</a>
+											<a href="#" onclick="signIn();" class="text-right f-w-600 text-inverse forgot__" style="display: none;"> Sign In?</a>
 										</div>
 									</div>
 									<div class="row m-t-30">
 										<div class="col-md-12">
 											<!-- <button type="button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20">Sign in</button> -->
-											<input type="submit" name="submit_value" value="Sign in" id="submit_button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20 disp">
+											<input type="submit" name="submit_value" value="Sign in" id="submit_button" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20 disp sign_in__">
+											<input type="button" name="forgot_password" value="Reset Password" id="forgot_password" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20 disp forgot__" style="display: none;">
 											<input type="button" name="resend_otp" value="Resend Otp" id="resend_otp" style="display: none;" class="btn btn-primary btn-md btn-block waves-effect text-center m-b-20 disp">
 
 										</div>
@@ -105,6 +107,7 @@
 									<hr/>
 								</div>
 							</form>
+
 							<!-- end of form -->
 						</div>
 						<!-- Authentication card end -->
@@ -159,7 +162,14 @@
 					success: function(response){
 						// console.log(response);
 						if(response.status){
-							 window.location = "{!! url('/dashboard') !!}";
+							if(response.password_change){
+								window.location = "{!! url('/password_change') !!}";
+							}
+							else{
+								window.location = "{!! url('/dashboard') !!}";
+							}	
+							 
+							
 						}
 						else{
 							$('#error-display').addClass('weak-password');
@@ -175,9 +185,45 @@
 				$(".disp").prop('disabled', true);
 			});
 
+			$("#forgot_password").click(function() {
+				resetPassword();
+				$(".disp").prop('disabled', true);
+			});
+
 			function forgetPassword(){
-				alert("Kindly Contact Thermax Admin");
+				// alert("Kindly Contact Thermax Admin");
+				$(".sign_in__").hide();
+				$(".forgot__").show();
 			}
+			function signIn(){
+				// alert("Kindly Contact Thermax Admin");
+				$(".sign_in__").show();
+				$(".forgot__").hide();
+			}
+			function resetPassword(){
+				var username = $('#username').val();
+				var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+			   	$.ajax({
+					type: "POST",
+					url: "{{ url('forgot-password') }}",
+					data: { email : username,_token: CSRF_TOKEN},
+					success: function(response){
+						// console.log(response);
+						$(".disp").prop('disabled', false);
+						if(response.status){
+							$('#error-display').removeClass();
+							$('#error-display').html("");
+							alert("Your password resetted and new credentials sent to your mail")
+						}
+						else{
+							
+							$('#error-display').addClass('weak-password');
+							$('#error-display').html(response.msg);
+						}				
+					},
+				});
+			}
+
 			function sendOtp(){
 				var username = $('#username').val();
 				var password = $('#password').val();

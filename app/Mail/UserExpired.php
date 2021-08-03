@@ -7,22 +7,19 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class SendUserPassword extends Mailable
+class UserExpired extends Mailable
 {
     use Queueable, SerializesModels;
-     public $user_email;
-     public $password;
-     public $user_name;
+    public $user_email;
+
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($user_name,$user_email,$password)
+    public function __construct($user_email)
     {
         $this->user_email = $user_email;
-        $this->password = $password;
-        $this->user_name = $user_name;
     }
 
     /**
@@ -32,6 +29,6 @@ class SendUserPassword extends Mailable
      */
     public function build()
     {
-         return $this->subject('Thermax Password Reseted')->view('emails.password_reset');
+        return $this->subject('User Expired')->view('emails.user_expired');
     }
 }

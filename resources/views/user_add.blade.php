@@ -98,9 +98,9 @@
 												</div>
 											</div>
 											<div class="form-group row">
-												<label class="col-sm-4 col-form-label">Username</label>
+												<label class="col-sm-4 col-form-label">User Email</label>
 												<div class="col-sm-8">
-													<input id="username" name="username" type="text" value="{{ old('username') }}" required class="form-control" placeholder="Enter your Email">
+													<input id="username" name="username" type="email" value="{{ old('username') }}" required class="form-control" placeholder="Enter your Email">
 												</div>
 											</div>
 											<div class="form-group row">
@@ -191,6 +191,12 @@
 													<input id="min_chilled_water_out" name="min_chilled_water_out" type="text" value="{{ old('min_chilled_water_out') }}" required class="form-control" placeholder="Enter your Min Chilled Water Out value">
 												</div>
 											</div>
+											<div class="form-group row group_calculator" style="display: none;">
+												<label class="col-sm-3 col-form-label">Expiry At</label>
+												<div class="col-sm-8">
+													<input id="expiry_at" name="expiry_at" type="date" value="{{ old('expiry_at') }}" class="form-control" >
+												</div>
+											</div>
 
 											<div class="form-group row group_calculator" style="display: none;" >
 												<label class="col-sm-3 col-form-label">Group Calculators</label>
@@ -234,6 +240,19 @@
 <script type="text/javascript">
 	$( document ).ready(function() {
 		$("#password").val("thermax@123");
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+		var yyyy = today.getFullYear();
+		if(dd<10){
+		  dd='0'+dd
+		} 
+		if(mm<10){
+		  mm='0'+mm
+		} 
+
+		today = yyyy+'-'+mm+'-'+dd;
+		document.getElementById("expiry_at").setAttribute("min", today);
 		    // swal("Hello world!");
 	});
 

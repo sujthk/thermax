@@ -167,43 +167,10 @@ div[class='h2'] { font-size: 44px !important; line-height: 48px !important; }
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="35" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
 
 <div class="" style="color:#1e1e1e; font-family:Georgia, serif; min-width:auto !important; font-size:20px; line-height:26px; text-align:center">Dear {{ $user_name }}, <strong></strong> </div>
-<div class="h3-1-center" style="color:#1e1e1e; font-family:Georgia, serif; min-width:auto !important; font-size:20px; line-height:26px; text-align:center">Your thermax account password successfully reseted. You can login with the credentials below.<strong></strong> </div>
+<div class="h3-1-center" style="color:#1e1e1e; font-family:Georgia, serif; min-width:auto !important; font-size:20px; line-height:26px; text-align:center">Your thermax account is re-activated successfully. You can login with your old credentials.<strong></strong> </div>
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="20" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
 
 
-<!-- Button -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td align="center">
-	<table width="500" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td align="center" bgcolor="#e10010">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						
-					<td bgcolor="#e10010">
-						<div class="text-btn" style="color:#ffffff; font-family:Arial, sans-serif; min-width:auto !important; font-size:16px; line-height:20px; text-align:center">
-						<span class="link-white" style="color:#ffffff; text-decoration:none">Username : {{ $user_email }}</span>
-						</div>
-					</td>
-					
-					
-				</tr>
-				<tr>
-					<td bgcolor="#e10010">
-						<div class="text-btn" style="color:#ffffff; font-family:Arial, sans-serif; min-width:auto !important; font-size:16px; line-height:20px; text-align:center">
-						<span class="link-white" style="color:#ffffff; text-decoration:none">Password : {{ $password }}</span>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</td>
-</tr>
-</table>
-<!-- END Button -->
 <table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="40" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
 
 

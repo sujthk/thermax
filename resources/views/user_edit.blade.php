@@ -194,42 +194,60 @@ border: #0FA015 1px solid;
 													<input id="min_chilled_water_out" name="min_chilled_water_out" type="text" value="{{$user->min_chilled_water_out}}" required class="form-control" placeholder="Enter your Max Chilled Water Out value">
 												</div>
 										</div>
-										@if($user->group_calculator_id)
-										<div class="form-group row group_calculator"  >
-											<label class="col-sm-4 col-form-label">Group Calculators</label>
+
+										<div class="form-group row group_calculator" >
+											<label class="col-sm-3 col-form-label">Expiry At</label>
 											<div class="col-sm-8">
-												<select name="group_calculator_id" id="group_calculator_id"  class="form-control" >
-													<option value="">-- Group Calculator --</option>
-													@foreach ($group_calculators as $group_calculator)
-													<option  value="{{$group_calculator->id}}" {{ $user->group_calculator_id == $group_calculator->id ? 'selected' : '' }} >{{$group_calculator->name}}</option>
-													@endforeach
-												</select>
+												<input id="expiry_at" name="expiry_at" type="date" value="{{ $user->expiry_at }}" class="form-control" >
 											</div>
 										</div>
-										<div class="form-group row Calculator" >
-											<label class="col-sm-4 col-form-label">Calculators</label>
-											<div class="col-sm-8 calculator-append">
+										<div class="form-group row">
+												<label class="col-sm-4 col-form-label">Send Reactivation Mail</label>
+												<div class="col-sm-8" style="padding: 10px;">
+													<input type="radio" name="reactivation_mail" value="0" checked >
+													 <i class="helper"></i>No &nbsp;&nbsp;
 												
-											</div>
+													<input type="radio" name="reactivation_mail" value="1" >
+													 <i class="helper"></i>Yes		
+												</div>
 										</div>
+
+										@if($user->group_calculator_id)
+											<div class="form-group row group_calculator"  >
+												<label class="col-sm-4 col-form-label">Group Calculators</label>
+												<div class="col-sm-8">
+													<select name="group_calculator_id" id="group_calculator_id"  class="form-control" >
+														<option value="">-- Group Calculator --</option>
+														@foreach ($group_calculators as $group_calculator)
+														<option  value="{{$group_calculator->id}}" {{ $user->group_calculator_id == $group_calculator->id ? 'selected' : '' }} >{{$group_calculator->name}}</option>
+														@endforeach
+													</select>
+												</div>
+											</div>
+											<div class="form-group row Calculator" >
+												<label class="col-sm-4 col-form-label">Calculators</label>
+												<div class="col-sm-8 calculator-append">
+													
+												</div>
+											</div>
 										@else
 											<div class="form-group row group_calculator" style="display: none;" >
-											<label class="col-sm-4 col-form-label">Group Calculators</label>
-											<div class="col-sm-8">
-												<select name="group_calculator_id" id="group_calculator_id"  class="form-control" >
-													<option value="">-- Group Calculator --</option>
-													@foreach ($group_calculators as $group_calculator)
-													<option  value="{{$group_calculator->id}}">{{$group_calculator->name}}</option>
-													@endforeach
-												</select>
+												<label class="col-sm-4 col-form-label">Group Calculators</label>
+												<div class="col-sm-8">
+													<select name="group_calculator_id" id="group_calculator_id"  class="form-control" >
+														<option value="">-- Group Calculator --</option>
+														@foreach ($group_calculators as $group_calculator)
+														<option  value="{{$group_calculator->id}}">{{$group_calculator->name}}</option>
+														@endforeach
+													</select>
+												</div>
 											</div>
-										</div>
-										<div class="form-group row Calculator" style="display: none;">
-											<label class="col-sm-4 col-form-label">Calculators</label>
-											<div class="col-sm-8 calculator-append">
+											<div class="form-group row Calculator" style="display: none;">
+												<label class="col-sm-4 col-form-label">Calculators</label>
+												<div class="col-sm-8 calculator-append">
 
+												</div>
 											</div>
-										</div>
 										@endif
 									</div>
 								</div>
@@ -291,6 +309,20 @@ border: #0FA015 1px solid;
 </script>
 <script>
 	$(document).ready(function() {
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0 so need to add 1 to make it 1!
+		var yyyy = today.getFullYear();
+		if(dd<10){
+		  dd='0'+dd
+		} 
+		if(mm<10){
+		  mm='0'+mm
+		} 
+
+		today = yyyy+'-'+mm+'-'+dd;
+		document.getElementById("expiry_at").setAttribute("min", today);
+
 
 		$("#user_type").click(function () {
 			var user_value = $('#user_type').val();
