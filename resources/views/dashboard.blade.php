@@ -14,6 +14,7 @@
     margin-left: 10%;
 	}
 
+
 </style>	
 <!-- Horizontal-Timeline css -->
 <link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/css/style.css')}}">
@@ -78,18 +79,23 @@
                                 	<div class="col-md-12">
 								
 								<div class="teimeline-header">
-									<h2>{{$time_line->name}}</h2>
-									<em>{{date("F jS,Y ", strtotime($time_line->updated_at))}} </em>
+									<img src="{{$time_line->image_path}}" alt="Snow" style="width:100%;">
+									<a href="{{$time_line->url_link}}" target="_blank"><h2>{{$time_line->name}}</h2></a>
+
 								</div>
 								<div class="t-max-content">
 								   <p>
-                                           {{$time_line->description}}
-                                        </p>
-							</div>
+                                        {{$time_line->description}}
+
+                                    </p>
+                                    
+							</div>						
 						</div>
+
 						</div>                                        
                                      
 								</div>
+
 								@php($j++)
                                 @endforeach
 							</div>

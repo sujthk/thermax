@@ -53,6 +53,7 @@
 	                                    <thead>
 	                                        <tr>
 	                                        	<th>S.No</th>
+	                                        	<th>Image</th>
 	                                            <th style="width: 8%">Title</th>
 	                                            <th >Description</th>
 	                                            <th style="width: 8%">Action</th>
@@ -63,8 +64,9 @@
 	                                    	@foreach ($time_lines as $time_line) 
 	                                    		<tr>
 	                                    			<td>{{ $i }}</td>
-	                                    		    <td>{{ $time_line->name }}</td>
 	                                    		    
+	                                    		    <td> <img src="{{$time_line->image_path}}" alt="" width="30" height="30"></td>
+	                                    		    <td>{{ $time_line->name }}</td>
 	                                    		   <td>
 
 	                                    		   	{{str_limit($time_line->description, 90)  }}</td>
@@ -88,12 +90,20 @@
 									                	{{ csrf_field() }}
 									                    <div class="row">
 									                        <div class="col-sm-12">
-									                            <label class="col-form-label">Name</label> 
+									                            <label class="col-form-label">Title</label> 
 									                            <div class="input-group">
 									                                <input type="text" class="form-control" name="name" required="" placeholder="Title" value="{{$time_line->name}}" >
 									                            </div>
+									                            <label class="col-form-label">Image</label> 
+									                            <div class="input-group">
+									                                <input type="file" class="form-control" name="image" required >
+									                            </div>
+									                            <label class="col-form-label">Url</label> 
+									                            <div class="input-group">
+									                                <input type="text" class="form-control" name="url_link" required="" placeholder="Url" value="{{$time_line->url_link}}" >
+									                            </div>
 									                             <label class="col-form-label">Description</label> 
-									                        <div class="input-group">
+									                        	<div class="input-group">
 								                               
 								                                <textarea class="form-control" required="" rows="10" name="description">{{$time_line->description}}</textarea>
 								                            </div>
@@ -143,6 +153,14 @@
 	                      
 	                            <div class="input-group">
 	                                <input type="text" class="form-control" name="name" required placeholder="title">
+	                            </div>
+	                            <label class="col-form-label">Image</label> 
+	                            <div class="input-group">
+	                                <input type="file" class="form-control" name="image" required >
+	                            </div>
+	                            <label class="col-form-label">Url</label> 
+	                            <div class="input-group">
+	                                <input type="text" class="form-control" name="url_link" required="" placeholder="Url" >
 	                            </div>
 	                           
 	                            <label class="col-form-label">Description</label> 

@@ -29,7 +29,9 @@ class AddExpiryDatePasswordStatusExpiryStatusToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropColumn('expiry_at');
+            $table->dropColumn('expiry_status');
+            $table->dropColumn('password_status');
         });
     }
 }
