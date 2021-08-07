@@ -115,56 +115,63 @@ Route::group(['middleware' => ['auth','revalidate']], function(){
 		Route::post('/metallurgies/edit/{metallurgy_id}', 'MetallurgyController@updateMetallurgy');
 		Route::get('/metallurgies/delete/{metallurgy_id}', 'MetallurgyController@deleteMetallurgy');
 
-			Route::get('/default/calculator-list', 'DefaultCalculatorController@getCalculatorList')->name('default/calculator-list');
-			Route::post('/default/calculator-list/edit/{calculator_id}', 'DefaultCalculatorController@updateChillerCalculator');
+		Route::get('/default/calculator-list', 'DefaultCalculatorController@getCalculatorList')->name('default/calculator-list');
+		Route::post('/default/calculator-list/edit/{calculator_id}', 'DefaultCalculatorController@updateChillerCalculator');
 
 
-			Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');
-			Route::get('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@editCalculator');
-			Route::post('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@updateCalculator');
+		Route::get('/default/calculators', 'DefaultCalculatorController@getCalculators')->name('default/calculators');
+		Route::get('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@editCalculator');
+		Route::post('/default/calculators/edit/{chiller_default_id}', 'DefaultCalculatorController@updateCalculator');
 
-			Route::get('/chiller/calculation-values', 'DefaultCalculatorController@getChillerCalculations')->name('chiller/calculation-values');
-			Route::get('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@editCalculatorValue');
-			Route::post('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@updateCalculatorValue');
-		    Route::get('/chiller/calculation-values/delete/{chiller_calculation_value_id}', 'DefaultCalculatorController@deleteCalculatorValue');
-			Route::post('importExport', 'DefaultCalculatorController@importExport');
-			Route::post('importExcel', 'DefaultCalculatorController@importExcel');
+		Route::get('/chiller/calculation-values', 'DefaultCalculatorController@getChillerCalculations')->name('chiller/calculation-values');
+		Route::get('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@editCalculatorValue');
+		Route::post('/chiller/calculation-values/edit/{chiller_calculation_value_id}', 'DefaultCalculatorController@updateCalculatorValue');
+	    Route::get('/chiller/calculation-values/delete/{chiller_calculation_value_id}', 'DefaultCalculatorController@deleteCalculatorValue');
+		Route::post('importExport', 'DefaultCalculatorController@importExport');
+		Route::post('importExcel', 'DefaultCalculatorController@importExcel');
 
-			Route::get('/calculation-keys', 'DefaultCalculatorController@getCalculationKeys')->name('/calculation-keys');
-			Route::post('/calculation-keys/add', 'DefaultCalculatorController@postCalculationKey');
-			Route::post('/calculation-key/edit/{id}', 'DefaultCalculatorController@editCalculationKey');
+		Route::get('/calculation-keys', 'DefaultCalculatorController@getCalculationKeys')->name('/calculation-keys');
+		Route::post('/calculation-keys/add', 'DefaultCalculatorController@postCalculationKey');
+		Route::post('/calculation-key/edit/{id}', 'DefaultCalculatorController@editCalculationKey');
 
-			Route::get('/error-notes', 'DefaultCalculatorController@getErrorNotes')->name('error-notes');
-			Route::post('/error-notes/edit/{error_notes_id}', 'DefaultCalculatorController@updateErrorNote');
-			Route::post('/error-notes/add', 'DefaultCalculatorController@postErrorNote');
-			Route::get('/error-notes/delete/{error_notes_id}', 'DefaultCalculatorController@DeleteErrorNote');
-		    Route::post('/error-notes/export-excel', 'DefaultCalculatorController@exportErrorExcel');
-		    Route::post('/error-notes/import-excel', 'DefaultCalculatorController@importErrorExcel');
+		Route::get('/error-notes', 'DefaultCalculatorController@getErrorNotes')->name('error-notes');
+		Route::post('/error-notes/edit/{error_notes_id}', 'DefaultCalculatorController@updateErrorNote');
+		Route::post('/error-notes/add', 'DefaultCalculatorController@postErrorNote');
+		Route::get('/error-notes/delete/{error_notes_id}', 'DefaultCalculatorController@DeleteErrorNote');
+	    Route::post('/error-notes/export-excel', 'DefaultCalculatorController@exportErrorExcel');
+	    Route::post('/error-notes/import-excel', 'DefaultCalculatorController@importErrorExcel');
 
-			Route::get('/languages-notes', 'DefaultCalculatorController@getLanguageNotes')->name('language-notes');
-			Route::post('/languages-notes/edit/{language_note_id}', 'DefaultCalculatorController@updateLanguageNote');
-			Route::post('/languages-notes/add', 'DefaultCalculatorController@postLanguageNote');
-		    Route::get('/languages-notes/delete/{language_note_id}', 'DefaultCalculatorController@DeleteLanguageNote');
-		    Route::post('/languages-notes/export-excel', 'DefaultCalculatorController@exportLanguageExcel');
-		    Route::post('/languages-notes/import-excel', 'DefaultCalculatorController@importLanguageExcel');
+		Route::get('/languages-notes', 'DefaultCalculatorController@getLanguageNotes')->name('language-notes');
+		Route::post('/languages-notes/edit/{language_note_id}', 'DefaultCalculatorController@updateLanguageNote');
+		Route::post('/languages-notes/add', 'DefaultCalculatorController@postLanguageNote');
+	    Route::get('/languages-notes/delete/{language_note_id}', 'DefaultCalculatorController@DeleteLanguageNote');
+	    Route::post('/languages-notes/export-excel', 'DefaultCalculatorController@exportLanguageExcel');
+	    Route::post('/languages-notes/import-excel', 'DefaultCalculatorController@importLanguageExcel');
 
-		    Route::get('/languages', 'DefaultCalculatorController@getLanguages')->name('languages');
-		    Route::post('/languages/edit/{language_id}', 'DefaultCalculatorController@updateLanguage');
-		    Route::post('/languages/add', 'DefaultCalculatorController@postLanguage');
-		    Route::get('/languages/status/{language_id}/{status}', 'DefaultCalculatorController@changeLanguageStatus');
+	    Route::get('/languages', 'DefaultCalculatorController@getLanguages')->name('languages');
+	    Route::post('/languages/edit/{language_id}', 'DefaultCalculatorController@updateLanguage');
+	    Route::post('/languages/add', 'DefaultCalculatorController@postLanguage');
+	    Route::get('/languages/status/{language_id}/{status}', 'DefaultCalculatorController@changeLanguageStatus');
 
-			Route::get('/tube-metallurgy/calculators', 'DefaultCalculatorController@getMetallurgyCalculators')->name('tube-metallurgy/calculators');
-			Route::get('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@addMetallurgyCalculator');
-			Route::post('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@postMetallurgyCalculator');
-			Route::get('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@editMetallurgyCalculator');
-			Route::post('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@updateMetallurgyCalculator');
-			Route::get('/tube-metallurgy/calculators/delete/{chiller_metallurgy_id}', 'DefaultCalculatorController@deleteMetallurgyCalculator');
+		Route::get('/tube-metallurgy/calculators', 'DefaultCalculatorController@getMetallurgyCalculators')->name('tube-metallurgy/calculators');
+		Route::get('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@addMetallurgyCalculator');
+		Route::post('/tube-metallurgy/calculators/add', 'DefaultCalculatorController@postMetallurgyCalculator');
+		Route::get('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@editMetallurgyCalculator');
+		Route::post('/tube-metallurgy/calculators/edit/{chiller_metallurgy_id}/{tube_type}', 'DefaultCalculatorController@updateMetallurgyCalculator');
+		Route::get('/tube-metallurgy/calculators/delete/{chiller_metallurgy_id}', 'DefaultCalculatorController@deleteMetallurgyCalculator');
 
-			Route::get('/auto-testing', 'CalculatorTestingController@getAutoTesting')->name('auto-testing');
-			Route::post('auto-testing/export', 'CalculatorTestingController@exportCalculatorForamt');
-		    Route::post('auto-testing/import', 'CalculatorTestingController@importCalculatorForamt');
-		    Route::post('auto-testing/calculator', 'CalculatorTestingController@testingCalculator');
-			Route::post('auto-testing/download', 'CalculatorTestingController@downloadTestedCalculator');
+		Route::get('/auto-testing', 'CalculatorTestingController@getAutoTesting')->name('auto-testing');
+		Route::post('auto-testing/export', 'CalculatorTestingController@exportCalculatorForamt');
+	    Route::post('auto-testing/import', 'CalculatorTestingController@importCalculatorForamt');
+	    Route::post('auto-testing/calculator', 'CalculatorTestingController@testingCalculator');
+		Route::post('auto-testing/download', 'CalculatorTestingController@downloadTestedCalculator');
+
+
+		Route::get('/calculator-reports', 'DefaultCalculatorController@getCalculatorReports');
+		Route::post('/calculator-reports', 'DefaultCalculatorController@exportCalculatorReports');
+
+		Route::get('/versions', 'DefaultCalculatorController@getVersions')->name('versions');
+		Route::post('/versions/add', 'DefaultCalculatorController@postVersion');
 	});	
 	// Route::get('/users', 'UserController@getUsers')->name('users');
 	

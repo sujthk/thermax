@@ -91,7 +91,7 @@
                                 <thead class="thead-dark">
                                     <tr>
                                         <td class="dark-cell font-class" scope="col" style="padding-right: 40px;">{{ $language_datas['client'] }} <span class="cn">:</span> {{ $name }}</td>
-                                        <td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : 5.1.2.0</td>     
+                                        <td class="dark-cell font-class" scope="col">{{ $language_datas['version'] }} : {{ $calculation_values['version'] }} Dt: {{ $calculation_values['version_date'] }}</td>   
                                     </tr>
                                     <tr>
                                         <td class="dark-cell font-class" scope="col">{{ $language_datas['enquiry'] }} : {{ $phone }}</td>

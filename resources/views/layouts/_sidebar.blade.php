@@ -26,7 +26,7 @@
             <?php
                  use App\Calculator;
                  $calculator_full_list=Calculator::orderBy('created_at','asc')->where('status',1)->get();
-
+                 $calculator_orders = array("S1","D_S2","CH_S2","L1","L5","H1","D_H2","D_G2","CH_G2","D_E2");
             ?>   
             @if(Auth::guard()->user()->user_type == 'ADMIN')             
                 <li data-placement="bottom" title="Users" class="nav-item single-item {{ Nav::isRoute('users','has-class') }}">
@@ -122,25 +122,47 @@
                         <span data-i18n="nav.widget.main">Auto Testing</span>
                     </a>
                 </li>
-                @foreach($calculator_full_list as $calculator)
-                    <li data-placement="bottom" title="{{ $calculator->display_name }}" class="nav-item single-item {{ Nav::isRoute( route($calculator->route),'has-class') }}" >
-                        <a href="{{ route($calculator->route)}}">
-                            <img src="{{ $calculator->image_path }}" width="32" height="32">
-                            <span data-i18n="nav.widget.main">{{$calculator->display_name}}</span>
-                        </a>
-                    </li> 
-                @endforeach 
+                 <li data-placement="bottom" title="Calculator Report" class="nav-item single-item {{ Nav::isRoute('calculator-reports','has-class') }}">
+                    <a href="{{ url('/calculator-reports') }}">
+                        
+                        <i class="ti-harddrives"></i>
+                        <span data-i18n="nav.widget.main"> Calculator Report</span>
+                    </a>
+                </li>
+                <li data-placement="bottom" title="Notes" class="nav-item single-item {{ Nav::isRoute('versions','has-class') }}" >
+                    <a href="{{ url('/versions') }}">
+                        <i class="ti-map"></i>
+                        <span data-i18n="nav.widget.main"> Versions</span>
+                    </a>
+                </li>
+                @foreach($calculator_orders as $calculator_order)
+
+                    @foreach($calculator_full_list as $calculator)
+                        @if($calculator_order == $calculator->code)
+                            <li data-placement="bottom" title="{{ $calculator->display_name }}" class="nav-item single-item {{ Nav::isRoute( route($calculator->route),'has-class') }}" >
+                                <a href="{{ route($calculator->route)}}">
+                                    <img src="{{ $calculator->image_path }}" width="32" height="32">
+                                    <span data-i18n="nav.widget.main">{{$calculator->display_name}}</span>
+                                </a>
+                            </li>
+                        @endif     
+                    @endforeach 
+                @endforeach
                  
             @else
-                @foreach(Auth::guard()->user()->userCalculators as $userCalculator)
-                    <li data-placement="bottom" title="{{ $userCalculator->calculator->display_name }}" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >
-                        <a href="{{ route($userCalculator->calculator->route)}}">
-                            <img src="{{ $userCalculator->calculator->image_path }}" width="32" height="32">
-                            <span data-i18n="nav.widget.main">{{$userCalculator->calculator->display_name}}</span>
-                        </a>
-                    </li>
-                    
-                     
+                @php ($userCalculators = Auth::guard()->user()->userCalculators)
+                @foreach($calculator_orders as $calculator_order)
+                    @foreach($userCalculators as $userCalculator)
+                        @if($calculator_order == $userCalculator->calculator->code)
+                            <li data-placement="bottom" title="{{ $userCalculator->calculator->display_name }}" class="nav-item single-item {{ Nav::isRoute( route($userCalculator->calculator->route),'has-class') }}" >
+                                <a href="{{ route($userCalculator->calculator->route)}}">
+                                    <img src="{{ $userCalculator->calculator->image_path }}" width="32" height="32">
+                                    <span data-i18n="nav.widget.main">{{$userCalculator->calculator->display_name}}</span>
+                                </a>
+                            </li>
+                        @endif
+                         
+                    @endforeach  
                 @endforeach  
             @endif
             </ul>

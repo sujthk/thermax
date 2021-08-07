@@ -236,6 +236,7 @@
 								<div class="page-header-title">
 								 <h4>L1 series</h4>
 							 	</div>
+							 	<span id="version"></span>
 							</div>
 			 
 						  	<div class="form-radio col-6">
@@ -828,6 +829,7 @@
             updateAbsorberOptions(model_values.absorber_material_value,model_values.absorber_thickness_change);
             updateCondenserOptions(model_values.condenser_material_value,model_values.condenser_thickness_change);
 
+            $("#version").html(model_values.version);
             $("#model_number").val(model_values.model_number);
             $('#capacity').val(model_values.capacity);
             $('#model_name').html(model_values.model_name);

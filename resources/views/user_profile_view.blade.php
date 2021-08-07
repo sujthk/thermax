@@ -43,12 +43,9 @@
     <div class="tab-header">
         <ul class="nav nav-tabs md-tabs tab-timeline" role="tablist" id="mytab">
            
+            
             <li class="nav-item">
-                <a class="nav-link active" data-toggle="tab" href="#binfo" role="tab">User Report</a>
-                <div class="slide"></div>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" data-toggle="tab" href="#contacts" role="tab">User Trackings</a>
+                <a class="nav-link active" data-toggle="tab" href="#contacts" role="tab">User Trackings</a>
                 <div class="slide"></div>
             </li>
             @if($user->user_type !== "ADMIN")
@@ -65,69 +62,9 @@
     <div class="tab-content">
        
         <!-- tab pane info start -->
-        <div class="tab-pane active" id="binfo" role="tabpanel">
-            <!-- info card start -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-header-text">User Services</h5>
-                    <div class="pull-left" style="float: right;">
-                        <a href="{{ url()->previous() }}" class="btn btn-info" title="Back" >Back</a>
-                    </div>
-                </div>
-                <div class="card-block">
-                    <div class="row">
-                        <div class="card-block contact-details">
-                            <div class="data_table_main table-responsive dt-responsive">
-                                <table id="simpletable" class="table  table-striped table-bordered nowrap">
-                                    <thead>
-                                        <tr>
-                                            <th>S.No</th>
-                                            <th>Customer Name</th>
-                                            <th>Project Name</th>
-                                            <th>Opportunity Number</th>
-                                            <th>Calculator</th>
-                                            <th>Region</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @php($i=1)
-                                        @foreach($user_reports as $user_report)
-                                        <tr>
-                                            <td>{{$i}}</td>
-                                            <td>{{$user_report->name}}</td>
-                                            <td>{{$user_report->project}}</td>
-                                            <td>
-                                               {{$user_report->phone}}
-                                            </td> 
-                                            <td>{{$user_report->calculator_code}}</td>
-                                            <td>
-                                            @if($user_report->region_type == 1)
-                                                Domestic
-                                            @elseif($user_report->region_type == 2)
-                                                USA
-                                            @elseif($user_report->region_type == 3)
-                                                Europe
-                                            @elseif($user_report->region_type == 4)
-                                                Both
-                                            @endif
-
-                                            </td>
-                                            <td> <a href="{{ url('user-profile/download',[$user_report->id]) }}" class="btn btn-info btn-sm m-b-0">Download</a></td>
-                                        </tr>
-                                        @php($i++)
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
         <!-- tab pane info end -->
         <!-- tab pane contact start -->
-        <div class="tab-pane" id="contacts" role="tabpanel">
+        <div class="tab-pane active" id="contacts" role="tabpanel">
             <div class="row">
                 <div class="col-lg-12">
                     <div class="row">

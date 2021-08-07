@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\UserReport;
 use App\UnitSet;
 use App\ChillerMetallurgyOption;
+use App\CalculatorReport;
 use App\Http\Controllers\VamBaseController;
 use Log;
 
@@ -98,7 +99,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -629,7 +630,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -1210,7 +1211,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -1779,7 +1780,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -2312,7 +2313,7 @@ class ReportController extends Controller
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
        $header_table->addRow();
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -2846,7 +2847,7 @@ class ReportController extends Controller
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+       $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
        $header_table->addRow();
        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -3380,7 +3381,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -3868,7 +3869,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -4399,7 +4400,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -4986,7 +4987,7 @@ class ReportController extends Controller
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
         $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
         $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars("0.9 Dt: 24-May-2021"),$header);
+        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
 
         $header_table->addRow();
         $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
@@ -5516,4 +5517,115 @@ class ReportController extends Controller
 
     }
 
+
+    public function saveCalculationReport($model_values,$calculation_values,$user_datas,$model_code){
+
+
+        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
+                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>',(int)$calculation_values['MODEL'])->first();
+
+        $chiller_options = $chiller_metallurgy_options->chillerOptions;
+        
+        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+        $evaporator_name = $evaporator_option->metallurgy->display_name;
+        $absorber_name = $absorber_option->metallurgy->display_name;
+        $condenser_name = $condenser_option->metallurgy->display_name;
+
+        $calculation_report = new CalculatorReport;
+        $calculation_report->version = isset($calculation_values['version']) ?  $calculation_values['version'] : "";
+        $calculation_report->user_mail = isset($user_datas['user_mail']) ?  $user_datas['user_mail'] : "";
+        $calculation_report->ip_address = isset($user_datas['ip_address']) ?  $user_datas['ip_address'] : "";
+        $calculation_report->customer_name = isset($user_datas['customer_name']) ?  $user_datas['customer_name'] : "";
+        $calculation_report->project_name = isset($user_datas['project_name']) ?  $user_datas['project_name'] : "";
+        $calculation_report->opportunity_number = isset($user_datas['opportunity_number']) ?  $user_datas['opportunity_number'] : "";
+        $calculation_report->unit_set = isset($user_datas['unit_set']) ?  $user_datas['unit_set'] : "";
+
+        $calculation_report->model_name = isset($calculation_values['model_name']) ?  $calculation_values['model_name'] : "";
+        $calculation_report->model_number = isset($model_values['model_number']) ?  $model_values['model_number'] : "";
+        $calculation_report->capacity = isset($model_values['capacity']) ?  $model_values['capacity'] : "";
+
+        // Chilled and Cooling
+        $calculation_report->chilled_water_in = isset($model_values['chilled_water_in']) ?  $model_values['chilled_water_in'] : "";
+        $calculation_report->chilled_water_out = isset($model_values['chilled_water_out']) ?  $model_values['chilled_water_out'] : "";
+        $calculation_report->cooling_water_in = isset($model_values['cooling_water_in']) ?  $model_values['cooling_water_in'] : "";
+        $calculation_report->cooling_water_flow = isset($model_values['cooling_water_flow']) ?  $model_values['cooling_water_flow'] : "";
+
+        // Glycol
+        if(empty($model_values['glycol_chilled_water']) || $model_values['glycol_selected'] == 1){
+            $calculation_report->glycol_selected = "NA";
+        }
+        elseif ($model_values['glycol_selected'] == 2) {
+            $calculation_report->glycol_selected = "Ethylene";
+        }
+        else{
+            $calculation_report->glycol_selected = "Proplylene";
+        }
+
+        $calculation_report->glycol_chilled_water = isset($model_values['glycol_chilled_water']) ?  $model_values['glycol_chilled_water'] : "";
+        $calculation_report->glycol_cooling_water = isset($model_values['glycol_cooling_water']) ?  $model_values['glycol_cooling_water'] : "";
+        $calculation_report->metallurgy_standard = isset($model_values['metallurgy_standard']) ?  $model_values['metallurgy_standard'] : "";
+
+        // Metallurgy
+        $calculation_report->evaporator_material_value = isset($evaporator_name) ?  $evaporator_name : "";
+        $calculation_report->evaporator_thickness = isset($calculation_values['TU3']) ?  $calculation_values['TU3'] : "";
+        $calculation_report->absorber_material_value = isset($absorber_name) ?  $absorber_name : "";
+        $calculation_report->absorber_thickness = isset($calculation_values['TU6']) ?  $calculation_values['TU6'] : "";
+        $calculation_report->condenser_material_value = isset($condenser_name) ?  $condenser_name : "";
+        $calculation_report->condenser_thickness = isset($calculation_values['TV6']) ?  $calculation_values['TV6'] : "";
+
+        // Fouling Factor
+        $calculation_report->fouling_factor = isset($model_values['fouling_factor']) ?  $model_values['fouling_factor'] : "";
+        $calculation_report->fouling_chilled_water_value = isset($model_values['fouling_chilled_water_value']) ?  $model_values['fouling_chilled_water_value'] : "";
+        $calculation_report->fouling_cooling_water_value = isset($model_values['fouling_cooling_water_value']) ?  $model_values['fouling_cooling_water_value'] : "";
+
+        // Region
+        if($model_values['region_type'] == 1){
+            $calculation_report->region_type = "Domestic";
+        }
+        elseif ($model_values['region_type'] == 1) {
+            $calculation_report->region_type = "USA";
+        }
+        else{
+            $calculation_report->region_type = "Europe";
+        }
+
+        // Heat Source
+        $calculation_report->steam_pressure = isset($model_values['steam_pressure']) ?  $model_values['steam_pressure'] : "";
+        $calculation_report->fuel_type = isset($model_values['fuel_type']) ?  $model_values['fuel_type'] : "";
+        $calculation_report->fuel_value_type = isset($model_values['fuel_value_type']) ?  $model_values['fuel_value_type'] : "";
+        $calculation_report->calorific_value = isset($model_values['calorific_value']) ?  $model_values['calorific_value'] : "";
+        if($model_code == "CH_G2" || $model_code == "CH_S2"){
+            $calculation_report->heated_water_in = isset($model_values['hot_water_in']) ?  $model_values['hot_water_in'] : "";
+            $calculation_report->heated_water_out = isset($model_values['hot_water_out']) ?  $model_values['hot_water_out'] : "";
+        }
+        else{
+            $calculation_report->hot_water_in = isset($model_values['hot_water_in']) ?  $model_values['hot_water_in'] : "";
+            $calculation_report->hot_water_out = isset($model_values['hot_water_out']) ?  $model_values['hot_water_out'] : "";
+        }
+       
+        $calculation_report->all_work_pr_hw = isset($model_values['all_work_pr_hw']) ?  $model_values['all_work_pr_hw'] : "";
+        $calculation_report->exhaust_gas_in = isset($model_values['exhaust_gas_in']) ?  $model_values['exhaust_gas_in'] : "";
+        $calculation_report->exhaust_gas_out = isset($model_values['exhaust_gas_out']) ?  $model_values['exhaust_gas_out'] : "";
+        $calculation_report->gas_flow = isset($model_values['gas_flow']) ?  $model_values['gas_flow'] : "";
+        $calculation_report->gas_flow_load = isset($model_values['gas_flow_load']) ?  $model_values['gas_flow_load'] : "";
+        $calculation_report->design_load = isset($model_values['design_load']) ?  $model_values['design_load'] : "";
+        $calculation_report->pressure_drop = isset($model_values['pressure_drop']) ?  $model_values['pressure_drop'] : "";
+        $calculation_report->engine_type = isset($model_values['engine_type']) ?  $model_values['engine_type'] : "";
+        $calculation_report->economizer = isset($model_values['economizer']) ?  $model_values['economizer'] : "";
+        $calculation_report->glycol_hot_water = isset($model_values['glycol_hot_water']) ?  $model_values['glycol_hot_water'] : "";
+        $calculation_report->fouling_hot_water_value = isset($model_values['fouling_hot_water_value']) ?  $model_values['fouling_hot_water_value'] : "";
+        $calculation_report->hot_water_flow = isset($model_values['hot_water_flow']) ?  $model_values['hot_water_flow'] : "";
+        $calculation_report->generator_tube_value = isset($model_values['generator_tube_name']) ?  $model_values['generator_tube_name'] : "";
+        $calculation_report->heat_duty = isset($model_values['heat_duty']) ?  $model_values['heat_duty'] : "";
+
+
+        // Result
+        $calculation_report->result = isset($calculation_values['Result']) ?  $calculation_values['Result'] : "";
+
+        $calculation_report->save();
+
+    }
 }

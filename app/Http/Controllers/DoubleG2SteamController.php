@@ -247,6 +247,22 @@ class DoubleG2SteamController extends Controller
             return response()->json(['status'=>false,'msg'=>$this->notes['NOTES_ERROR']]);
         }
 
+        if($this->calculation_values['Result'] != "FAILED"){
+
+            $user_detail = Auth::user();
+
+            $user_data = array();
+            $user_data['user_mail'] = $user_detail->username;
+            $user_data['ip_address'] = $request->ip();;
+            $user_data['customer_name'] = $name;
+            $user_data['project_name'] = $project;
+            $user_data['opportunity_number'] = $phone;
+            $user_data['unit_set'] = $user_detail->unitSet->name;
+
+            $report_controller = new ReportController();
+            $save_report = $report_controller->saveCalculationReport($this->model_values,$this->calculation_values,$user_data,$this->model_code);
+
+        }
             
         $calculated_values = $unit_conversions->reportUnitConversion($this->calculation_values,$this->model_code);
       
@@ -3990,6 +4006,8 @@ class DoubleG2SteamController extends Controller
 
         $this->calculation_values['region_type'] = $this->model_values['region_type'];
         $this->calculation_values['model_name'] = $this->model_values['model_name'];
+        $this->calculation_values['version'] = $this->model_values['version'];
+        $this->calculation_values['version_date'] = $this->model_values['version_date'];
 
         $vam_base = new VamBaseController();
 
@@ -4403,8 +4421,10 @@ class DoubleG2SteamController extends Controller
         else
             $region_name = '';
 
+        $version = DB::table('versions')->orderBy('id', 'desc')->first();
+        $version_date = date('d-M-Y', strtotime($version->created_at));
 
-        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1,'region_name'=>$region_name,'region_type'=>$region_type,'calorific_value' => 0,'std_calorific_value' => 0);
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1,'region_name'=>$region_name,'region_type'=>$region_type,'calorific_value' => 0,'std_calorific_value' => 0,'version' => $version->version,'version_date' => $version_date);
 
 
         $form_values = collect($form_values)->union($standard_values);

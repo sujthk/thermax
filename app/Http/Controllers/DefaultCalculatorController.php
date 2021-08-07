@@ -14,8 +14,13 @@ use App\Language;
 use App\LanguageValue;
 use App\LanguageKey;
 use App\Calculator;
+use App\User;
+use App\CalculatorReport;
+use App\Version;
 use Log;
 use Excel;
+use DB;
+
 class DefaultCalculatorController extends Controller
 {
     public function getCalculators(){
@@ -754,6 +759,152 @@ class DefaultCalculatorController extends Controller
 
 
         return redirect('/default/calculator-list')->with('message','Calculator Updated')
+                        ->with('status','success');
+    }
+
+
+    public function getCalculatorReports(){
+
+        $users = User::all();
+
+
+        return view('calculator_reports')->with('users',$users);
+    }
+
+    public function exportCalculatorReports(Request $request)
+    {
+
+        $report_type = $request->username;
+        if($report_type != 'all'){
+            $calculator_reports = CalculatorReport::where('user_mail',$report_type)->get();
+        }
+        else{
+            $calculator_reports = CalculatorReport::get();
+        }
+
+        if(count($calculator_reports) == 0){
+            return back()->with('message','No Records')
+                        ->with('status','error');
+        }
+        
+
+        $report_datas = array();
+
+        $s_no = 1;
+        foreach ($calculator_reports as $calculator_report) {
+            $report_data = array();
+
+            $report_data['S.No'] = $s_no;
+            $report_data['version'] = $calculator_report->version;
+            $report_data['user_mail'] = $calculator_report->user_mail;
+            $report_data['date_time'] = $calculator_report->created_at;
+            $report_data['ip_address'] = $calculator_report->ip_address;
+            $report_data['customer_name'] = $calculator_report->customer_name;
+            $report_data['project_name'] = $calculator_report->project_name;
+            $report_data['opportunity_number'] = $calculator_report->opportunity_number;
+            $report_data['unit_set'] = $calculator_report->unit_set;
+            $report_data['model_name'] = $calculator_report->model_name;
+            $report_data['model_number'] = $calculator_report->model_number;
+            $report_data['capacity'] = $calculator_report->capacity;
+            $report_data['chilled_water_in'] = $calculator_report->chilled_water_in;
+            $report_data['chilled_water_out'] = $calculator_report->chilled_water_out;
+            $report_data['cooling_water_in'] = $calculator_report->cooling_water_in;
+            $report_data['cooling_water_flow'] = $calculator_report->cooling_water_flow;
+            $report_data['glycol_selected'] = $calculator_report->glycol_selected;
+            $report_data['glycol_chilled_water'] = $calculator_report->glycol_chilled_water;
+            $report_data['glycol_cooling_water'] = $calculator_report->glycol_cooling_water;
+            $report_data['metallurgy_standard'] = $calculator_report->metallurgy_standard;
+            $report_data['evaporator_material_value'] = $calculator_report->evaporator_material_value;
+            $report_data['evaporator_thickness'] = $calculator_report->evaporator_thickness;
+            $report_data['absorber_material_value'] = $calculator_report->absorber_material_value;
+            $report_data['absorber_thickness'] = $calculator_report->absorber_thickness;
+            $report_data['condenser_material_value'] = $calculator_report->condenser_material_value;
+            $report_data['condenser_thickness'] = $calculator_report->condenser_thickness;
+            $report_data['fouling_factor'] = $calculator_report->fouling_factor;
+            $report_data['fouling_chilled_water_value'] = $calculator_report->fouling_chilled_water_value;
+            $report_data['fouling_cooling_water_value'] = $calculator_report->fouling_cooling_water_value;
+            $report_data['region_type'] = $calculator_report->region_type;
+            $report_data['steam_pressure'] = $calculator_report->steam_pressure;
+            $report_data['fuel_type'] = $calculator_report->fuel_type;
+            $report_data['fuel_value_type'] = $calculator_report->fuel_value_type;
+            $report_data['hot_water_in'] = $calculator_report->hot_water_in;
+            $report_data['hot_water_out'] = $calculator_report->hot_water_out;
+            $report_data['all_work_pr_hw'] = $calculator_report->all_work_pr_hw;
+            $report_data['exhaust_gas_in'] = $calculator_report->exhaust_gas_in;
+            $report_data['exhaust_gas_out'] = $calculator_report->exhaust_gas_out;
+            $report_data['gas_flow'] = $calculator_report->gas_flow;
+            $report_data['gas_flow_load'] = $calculator_report->gas_flow_load;
+            $report_data['design_load'] = $calculator_report->design_load;
+            $report_data['pressure_drop'] = $calculator_report->pressure_drop;
+            $report_data['engine_type'] = $calculator_report->engine_type;
+            $report_data['economizer'] = $calculator_report->economizer;
+            $report_data['glycol_hot_water'] = $calculator_report->glycol_hot_water;
+            $report_data['fouling_hot_water_value'] = $calculator_report->fouling_hot_water_value;
+            $report_data['hot_water_flow'] = $calculator_report->hot_water_flow;
+            $report_data['generator_tube_value'] = $calculator_report->generator_tube_value;
+            $report_data['heat_duty'] = $calculator_report->heat_duty;
+            $report_data['heated_water_in'] = $calculator_report->heated_water_in;
+            $report_data['heated_water_out'] = $calculator_report->heated_water_out;
+            $report_data['result'] = $calculator_report->result;
+            $report_data['extra1'] = $calculator_report->extra1;
+            $report_data['extra2'] = $calculator_report->extra2;
+            $report_data['extra3'] = $calculator_report->extra3;
+            $report_data['extra4'] = $calculator_report->extra4;
+            $report_data['extra5'] = $calculator_report->extra5;
+            $report_data['extra6'] = $calculator_report->extra6;
+            $report_data['extra7'] = $calculator_report->extra7;
+            $report_data['extra8'] = $calculator_report->extra8;
+            $report_data['extra9'] = $calculator_report->extra9;
+            $report_data['extra10'] = $calculator_report->extra10;
+            $report_data['extra11'] = $calculator_report->extra11;
+            $report_data['extra12'] = $calculator_report->extra12;
+            $report_data['extra13'] = $calculator_report->extra13;
+            $report_data['extra14'] = $calculator_report->extra14;
+            $report_data['extra15'] = $calculator_report->extra15;
+            $report_data['extra16'] = $calculator_report->extra16;
+            $report_data['extra17'] = $calculator_report->extra17;
+            $report_data['extra18'] = $calculator_report->extra18;
+            $report_data['extra19'] = $calculator_report->extra19;
+            $report_data['extra20'] = $calculator_report->extra20;
+
+            $report_datas[] = $report_data;
+            $s_no++;
+        }
+
+        
+        // return $language_datas;
+        return Excel::create('calculation_reports', function($excel) use ($report_datas) {
+            $excel->sheet('mySheet', function($sheet) use ($report_datas)
+            {
+                $sheet->fromArray($report_datas);
+            });
+        })->download('xlsx');
+       
+        
+    }
+
+    public function getVersions(){
+
+        $versions = Version::get();
+
+
+        return view('versions')->with('versions',$versions);
+    }
+
+    public function postVersion(Request $request){
+        $this->validate($request, [
+            'version' => 'required',
+            'remarks' => 'required',
+
+        ]);
+
+        $version = new Version;
+        $version->version = $request->version;
+        $version->remarks = $request->remarks;
+        $version->save();
+        
+
+        return redirect('versions')->with('message','Version Added')
                         ->with('status','success');
     }
 
