@@ -16,7 +16,7 @@ class CreateCalculatorReportsAllValuesTable extends Migration
         Schema::create('calculator_reports', function (Blueprint $table) {
             $table->increments('id');
             $table->string('version',30)->nullable();
-            $table->string('user_mail',30)->nullable();
+            $table->string('user_mail',50)->nullable();
             $table->string('ip_address',30)->nullable();
             $table->string('customer_name')->nullable();
             $table->string('project_name')->nullable();
