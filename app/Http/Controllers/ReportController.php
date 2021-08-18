@@ -32,7 +32,10 @@ class ReportController extends Controller
         return response()->download(storage_path('l1.docx'));
     }
 
-    public function commonTemplate($my_template, $language_datas, $calculation_values,$units_data, $unit_set){
+    public function commonTemplate($my_template, $language_datas, $calculation_values,$units_data, $unit_set)
+    {
+        $my_template->setValue('doc_title', "TECHNICAL SPECIFICATIONS : VAPOUR ABSORPTION CHILLER");
+
         $my_template->setValue('client', $language_datas['client']);
         $my_template->setValue('client_name', $calculation_values['client_name']);
 
@@ -173,8 +176,7 @@ class ReportController extends Controller
         $my_template->setValue('power_consumption', $language_datas['power_consumption']);
         $my_template->setValue('power_consumption_value', round($calculation_values['TotalPowerConsumption'],1));
 
-        $contains = str_contains($calculation_values['model_name'], 'L5');
-        if($contains)
+        if($calculation_values['calculator_code'] == "L5")
             $my_template->setValue('absorbent_pump_rating', $language_datas['hp_absorbent_pump_rating']);
         else
             $my_template->setValue('absorbent_pump_rating', $language_datas['absorbent_pump_rating']);
@@ -214,42 +216,46 @@ class ReportController extends Controller
             $my_template->setValue('mca_value', round($calculation_values['MCA'],2));
         }
 
-        // Physical Data
-        $my_template->setValue('physical_data', $language_datas['physical_data']);
 
-        $my_template->setValue('length', $language_datas['length']);
-        $my_template->setValue('length_unit', $units_data[$unit_set->LengthUnit]);
-        $my_template->setValue('length_value', ceil($calculation_values['Length']));
+        if($calculation_values['calculator_code'] != "D_E2"){
+            // Physical Data
+            $my_template->setValue('physical_data', $language_datas['physical_data']);
 
-        $my_template->setValue('width', $language_datas['width']);
-        $my_template->setValue('width_unit', $units_data[$unit_set->LengthUnit]);
-        $my_template->setValue('width_value', ceil($calculation_values['Width']));
+            $my_template->setValue('length', $language_datas['length']);
+            $my_template->setValue('length_unit', $units_data[$unit_set->LengthUnit]);
+            $my_template->setValue('length_value', ceil($calculation_values['Length']));
 
-        $my_template->setValue('height', $language_datas['height']);
-        $my_template->setValue('height_unit', $units_data[$unit_set->LengthUnit]);
-        $my_template->setValue('height_value', ceil($calculation_values['Height']));
+            $my_template->setValue('width', $language_datas['width']);
+            $my_template->setValue('width_unit', $units_data[$unit_set->LengthUnit]);
+            $my_template->setValue('width_value', ceil($calculation_values['Width']));
 
-        $my_template->setValue('operating_weight', $language_datas['operating_weight']);
-        $my_template->setValue('operating_weight_unit', $units_data[$unit_set->WeightUnit]);
-        $my_template->setValue('operating_weight_value',round($calculation_values['OperatingWeight'],1));
+            $my_template->setValue('height', $language_datas['height']);
+            $my_template->setValue('height_unit', $units_data[$unit_set->LengthUnit]);
+            $my_template->setValue('height_value', ceil($calculation_values['Height']));
 
-        $my_template->setValue('shipping_weight', $language_datas['shipping_weight']);
-        $my_template->setValue('shipping_weight_unit', $units_data[$unit_set->WeightUnit]);
-        $my_template->setValue('shipping_weight_value', round($calculation_values['MaxShippingWeight'],1));
+            $my_template->setValue('operating_weight', $language_datas['operating_weight']);
+            $my_template->setValue('operating_weight_unit', $units_data[$unit_set->WeightUnit]);
+            $my_template->setValue('operating_weight_value',round($calculation_values['OperatingWeight'],1));
 
-        $my_template->setValue('flooded_weight', $language_datas['flooded_weight']);
-        $my_template->setValue('flooded_weight_unit', $units_data[$unit_set->WeightUnit]);
-        $my_template->setValue('flooded_weight_value', round($calculation_values['FloodedWeight'],1));
+            $my_template->setValue('shipping_weight', $language_datas['shipping_weight']);
+            $my_template->setValue('shipping_weight_unit', $units_data[$unit_set->WeightUnit]);
+            $my_template->setValue('shipping_weight_value', round($calculation_values['MaxShippingWeight'],1));
 
-        $my_template->setValue('dry_weight', $language_datas['dry_weight']);
-        $my_template->setValue('dry_weight_unit', $units_data[$unit_set->WeightUnit]);
-        $my_template->setValue('dry_weight_value', round($calculation_values['DryWeight'],1));
+            $my_template->setValue('flooded_weight', $language_datas['flooded_weight']);
+            $my_template->setValue('flooded_weight_unit', $units_data[$unit_set->WeightUnit]);
+            $my_template->setValue('flooded_weight_value', round($calculation_values['FloodedWeight'],1));
+
+            $my_template->setValue('dry_weight', $language_datas['dry_weight']);
+            $my_template->setValue('dry_weight_unit', $units_data[$unit_set->WeightUnit]);
+            $my_template->setValue('dry_weight_value', round($calculation_values['DryWeight'],1));
 
 
 
-        $my_template->setValue('tube_cleaning_space', $language_datas['tube_clearing_space']." (".$language_datas['one_side_length_wise'].")");
-        $my_template->setValue('tube_cleaning_space_unit', $units_data[$unit_set->LengthUnit]);
-        $my_template->setValue('tube_cleaning_space_value', round($calculation_values['ClearanceForTubeRemoval'],1));
+            $my_template->setValue('tube_cleaning_space', $language_datas['tube_clearing_space']." (".$language_datas['one_side_length_wise'].")");
+            $my_template->setValue('tube_cleaning_space_unit', $units_data[$unit_set->LengthUnit]);
+            $my_template->setValue('tube_cleaning_space_value', round($calculation_values['ClearanceForTubeRemoval'],1));
+        }
+        
 
         // Tune Metallurgy
         $my_template->setValue('tube_metallurgy', $language_datas['tube_metallurgy']);
@@ -276,6 +282,108 @@ class ReportController extends Controller
 
         return $my_template;
     }
+
+    public function wordFormatE2($user_report_id,$model_code){
+         $user_report = UserReport::find($user_report_id);
+
+         $unit_set = UnitSet::find($user_report->unit_set_id);
+
+
+         $calculation_values = json_decode($user_report->calculation_values,true);
+         $date = date('d-M-Y, H:i ', strtotime($user_report->created_at));
+
+         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
+                                         ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
+
+         $chiller_options = $chiller_metallurgy_options->chillerOptions;
+         
+         $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
+         $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
+         $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
+
+         $evaporator_name = $evaporator_option->metallurgy->report_name;
+         $absorber_name = $absorber_option->metallurgy->report_name;
+         $condenser_name = $condenser_option->metallurgy->report_name;
+
+         $vam_base = new VamBaseController();
+         $language_datas = $vam_base->getLanguageDatas();
+         $units_data = $vam_base->getUnitsData();
+
+         $calculation_values['client_name'] = $user_report->name;
+         $calculation_values['enquiry_name'] = $user_report->phone;
+         $calculation_values['project_name'] = $user_report->project;
+         $calculation_values['date_time'] = date('d-M-Y, H:i ', strtotime($user_report->created_at));
+         $calculation_values['evaporator_name'] = $evaporator_name;
+         $calculation_values['absorber_name'] = $absorber_name;
+         $calculation_values['condenser_name'] = $condenser_name;
+         $calculation_values['GL'] = $calculation_values['GLL'];
+         $calculation_values['calculator_code'] = $model_code;
+
+         if($calculation_values['region_type'] ==2){
+             $my_template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('report_template/E2_USA.docx'));
+         }
+         else{
+             $my_template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('report_template/E2.docx'));
+         }
+         
+
+
+         $my_template = $this->commonTemplate($my_template, $language_datas, $calculation_values, $units_data, $unit_set);
+
+
+         // Exhaust circuit
+         $my_template->setValue('exhaust_circuit', $language_datas['exhaust_gas_circuit']);
+
+         $my_template->setValue('heat_input', $language_datas['heat_input']);
+         $my_template->setValue('heat_input_unit', $units_data[$unit_set->HeatUnit]);
+         $my_template->setValue('heat_input_value', round($calculation_values['HeatInput'],1));
+
+         $my_template->setValue('engine_type', $language_datas['engine_type']);
+         $my_template->setValue('engine_type_value', $calculation_values['engine_type']);
+
+         $my_template->setValue('exhaust_gas_flow', $language_datas['exhaust_gas_flow']);
+         $my_template->setValue('exhaust_gas_flow_unit', $units_data[$unit_set->ExhaustGasFlowUnit]);
+         $my_template->setValue('exhaust_gas_flow_value', round($calculation_values['GEXHAUST'],1));
+
+         $my_template->setValue('exhaust_gas_inlet_temp', $language_datas['exhaust_gas_in_temp']);
+         $my_template->setValue('exhaust_gas_inlet_temp_unit', $units_data[$unit_set->TemperatureUnit]);
+         $my_template->setValue('exhaust_gas_inlet_temp_value', round($calculation_values['TEXH1'],1));
+
+         $my_template->setValue('exhaust_gas_out_temp', $language_datas['exhaust_gas_out_temp']);
+         $my_template->setValue('exhaust_gas_out_temp_unit', $units_data[$unit_set->TemperatureUnit]);
+         $my_template->setValue('exhaust_gas_out_temp_value', round($calculation_values['ActExhaustGasTempOut'],1));
+
+         $my_template->setValue('exhaust_gas_conn_dia', $language_datas['exhaust_connection_diameter']);
+         $my_template->setValue('exhaust_gas_conn_dia_unit', $units_data[$unit_set->NozzleDiameterUnit]);
+         $my_template->setValue('exhaust_gas_conn_dia_value', round($calculation_values['ExhaustConnectionDiameter'],1));
+
+         $my_template->setValue('exhaust_gas_sp_heat', $language_datas['exhaust_gas_sp_heat_capacity']);
+         $my_template->setValue('exhaust_gas_sp_heat_unit', $units_data[$unit_set->HeatCapacityUnit]);
+         $my_template->setValue('exhaust_gas_sp_heat_value', round($calculation_values['AvgExhGasCp'],1));
+
+         $my_template->setValue('exhaust_gas_flow_rate', $language_datas['exhaust_gas_flow']);
+         $my_template->setValue('exhaust_gas_flow_rate_unit', $units_data[$unit_set->ExhaustGasFlowUnit]);
+         $my_template->setValue('exhaust_gas_flow_rate_value', round($calculation_values['ExhaustGasFlowRate'],1));
+
+         $my_template->setValue('engine_load', $language_datas['percentage_engine_load_considered']);
+         $my_template->setValue('engine_load_value', $calculation_values['LOAD']);
+
+         $my_template->setValue('exhaust_pressure_drop', $language_datas['pressure_drop']);
+         $my_template->setValue('exhaust_pressure_drop_unit', $units_data[$unit_set->FurnacePressureDropUnit]);
+         $my_template->setValue('exhaust_pressure_drop_value', round($calculation_values['FURNPRDROP'],1));    
+         
+         $file_name = Auth::user()->id."_E2.docx";
+
+         try{
+             $my_template->saveAs(storage_path($file_name));
+         }catch (Exception $e){
+             //handle exception
+         }
+
+
+         return $file_name; 
+        
+     }
 
     public function wordFormatCHG2($user_report_id,$model_code){
         $user_report = UserReport::find($user_report_id);
@@ -311,6 +419,7 @@ class ReportController extends Controller
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
         $calculation_values['GL'] = $calculation_values['GLL'];
+        $calculation_values['calculator_code'] = $model_code;
 
         if($calculation_values['region_type'] ==2){
             $my_template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('report_template/CHG2_USA.docx'));
@@ -456,6 +565,7 @@ class ReportController extends Controller
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
         $calculation_values['GL'] = $calculation_values['GLL'];
+        $calculation_values['calculator_code'] = $model_code;
 
         if($calculation_values['region_type'] ==2){
             $my_template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('report_template/G2_USA.docx'));
@@ -563,6 +673,7 @@ class ReportController extends Controller
         $calculation_values['evaporator_name'] = $evaporator_name;
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
+        $calculation_values['calculator_code'] = $model_code;
 
         if($calculation_values['region_type'] ==2){
             $my_template = new \PhpOffice\PhpWord\TemplateProcessor(storage_path('report_template/H2_USA.docx'));
@@ -659,6 +770,7 @@ class ReportController extends Controller
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
         $calculation_values['GL'] = $calculation_values['GLL'];
+        $calculation_values['calculator_code'] = $model_code;
 
 
         if($calculation_values['region_type'] ==2){
@@ -761,6 +873,7 @@ class ReportController extends Controller
         $calculation_values['USA_AbsorbentPumpMotorAmp'] = $calculation_values['USA_HPAbsorbentPumpMotorAmp'];
         $calculation_values['AbsorbentPumpMotorKW'] = $calculation_values['HPAbsorbentPumpMotorKW'];
         $calculation_values['AbsorbentPumpMotorAmp'] = $calculation_values['HPAbsorbentPumpMotorAmp'];
+        $calculation_values['calculator_code'] = $model_code;
 
 
         if($calculation_values['region_type'] ==2){
@@ -890,6 +1003,7 @@ class ReportController extends Controller
         $calculation_values['evaporator_name'] = $evaporator_name;
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
+        $calculation_values['calculator_code'] = $model_code;
 
 
         if($calculation_values['region_type'] ==2){
@@ -1006,6 +1120,7 @@ class ReportController extends Controller
         $calculation_values['evaporator_name'] = $evaporator_name;
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
+        $calculation_values['calculator_code'] = $model_code;
 
 
         if($calculation_values['region_type'] ==2){
@@ -1150,6 +1265,7 @@ class ReportController extends Controller
         $calculation_values['evaporator_name'] = $evaporator_name;
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
+        $calculation_values['calculator_code'] = $model_code;
 
 
         if($calculation_values['region_type'] ==2){
@@ -1247,6 +1363,7 @@ class ReportController extends Controller
         $calculation_values['evaporator_name'] = $evaporator_name;
         $calculation_values['absorber_name'] = $absorber_name;
         $calculation_values['condenser_name'] = $condenser_name;
+        $calculation_values['calculator_code'] = $model_code;
 
 
         if($calculation_values['region_type'] ==2){
@@ -1311,490 +1428,7 @@ class ReportController extends Controller
     }
 
 
-   public function wordFormatE2($user_report_id,$model_code){
-        
-        $user_report = UserReport::find($user_report_id);
-
-        $unit_set = UnitSet::find($user_report->unit_set_id);
-
-
-        $calculation_values = json_decode($user_report->calculation_values,true);
-        $date = date('d-M-Y, H:i ', strtotime($user_report->created_at));
-
-        $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$model_code)
-                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>=',(int)$calculation_values['MODEL'])->first();
-
-        $chiller_options = $chiller_metallurgy_options->chillerOptions;
-        
-        $evaporator_option = $chiller_options->where('type', 'eva')->where('value',$calculation_values['TU2'])->first();
-        $absorber_option = $chiller_options->where('type', 'abs')->where('value',$calculation_values['TU5'])->first();
-        $condenser_option = $chiller_options->where('type', 'con')->where('value',$calculation_values['TV5'])->first();
-
-        $evaporator_name = $evaporator_option->metallurgy->report_name;
-        $absorber_name = $absorber_option->metallurgy->report_name;
-        $condenser_name = $condenser_option->metallurgy->report_name;
-
-        $vam_base = new VamBaseController();
-        $language_datas = $vam_base->getLanguageDatas();
-        $units_data = $vam_base->getUnitsData();
-
-        $phpWord = new \PhpOffice\PhpWord\PhpWord();
-
-
-        $section = $phpWord->addSection();
-
-        
-        
-        // $section->addImage(asset('assets/images/pic.png'),array('align' => 'center'));
-        $section->addTextBreak(1);
-        $description = "Technical Specification : Vapour Absorption Chiller";
-
-        // $section->addImage(asset('assets/images/pic.png'),array('marginLeft' => 5));
-        $title = array('size' => 12, 'bold' => true,'align' => 'center');
-
-        
-        $section->addTextRun($title)->addText($description,$title);
-        //$section->addTextBreak(1);
-        $cellRowSpan = array('bgColor' => 'e5e5e5');
-
-        $table_style = new \PhpOffice\PhpWord\Style\Table;
-        $table_style->setBorderColor('cccccc');
-        $table_style->setBorderSize(10);
-        $table_style->setUnit(\PhpOffice\PhpWord\Style\Table::WIDTH_PERCENT);
-        $table_style->setWidth(100 * 50);
-
-        $alignment = array('bold' => true, 'align' => 'center');
-
-
-        $header = array('size' => 10, 'bold' => true);
-
-        $header_table = $section->addTable($table_style);
-        $header_table->addRow();
-        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['client']),$header);
-        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->name),$header);
-        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['version']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['version']." Dt : ".$calculation_values['version_date']),$header);
-
-        $header_table->addRow();
-        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['enquiry']),$header);
-        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->phone),$header);
-        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['date']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($date),$header);
-
-        $header_table->addRow();
-        $header_table->addCell(1050,$cellRowSpan)->addText(htmlspecialchars($language_datas['project']),$header);
-        $header_table->addCell(2550,$cellRowSpan)->addText(htmlspecialchars($user_report->project),$header);
-        $header_table->addCell(1550,$cellRowSpan)->addText(htmlspecialchars($language_datas['model']),$header);
-        $header_table->addCell(2000,$cellRowSpan)->addText(htmlspecialchars($calculation_values['model_name']),$header);
-
-        $section->addTextBreak(1);
-
-        $description_table = $section->addTable($table_style);
-        $description_table->addRow();
-        $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['description']),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($language_datas['unit']),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-
-        $description_table->addRow();
-        $description_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $description_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['capacity']."(+/-3%)"),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->CapacityUnit]),$header);
-        $description_table->addCell(1750,$cellRowSpan)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TON'],1)),$header);
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars("A"),$header);
-        $chilled_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['chilled_water_circuit']),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_water_flow']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->FlowRateUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ChilledWaterFlow'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_inlet_temp']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TCHW11'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_outlet_temp']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['TCHW12'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['evaporate_pass']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "No" ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['EvaporatorPasses'] ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_pressure_loss']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->PressureDropUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['ChilledFrictionLoss'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_connection_diameter']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->NozzleDiameterUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['ChilledConnectionDiameter'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if(empty($calculation_values['CHGLY']) || $calculation_values['GLL'] == 1)
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
-        else if($calculation_values['GLL'] == 2)
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
-        else
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Proplylene" ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("8."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_gylcol']. "%"));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(" ( % )"));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['CHGLY'],1)));
-       
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['chilled_fouling_factor']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
-        if($calculation_values['TUU'] == "standard")
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['TUU'] ));
-        else
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['FFCHW1'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("10."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['max_working_pressure']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->WorkPressureUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( ceil($calculation_values['m_maxCHWWorkPressure']) ));
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars("B"),$header);
-        $chilled_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['cooling_water_circuit']),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['heat_rejected']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->HeatUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['HeatRejected'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_water_flow']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->FlowRateUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['GCW'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_inlet_temp']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['TCW11'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_outlet_temp']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->TemperatureUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['CoolingWaterOutTemperature'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['absorber_condenser_pass']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "No" ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['AbsorberPasses']."/".$calculation_values['CondenserPasses'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_bypass_flow']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->FlowRateUnit] ));
-        if(empty($calculation_values['BypassFlow']))
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "-" ));
-        else
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['BypassFlow'],1) ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_pressure_loss']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->PressureDropUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['CoolingFrictionLoss'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("8."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_connection_diameter']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->NozzleDiameterUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['CoolingConnectionDiameter'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['glycol_type']));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        if(empty($calculation_values['COGLY']) || $calculation_values['GLL'] == 1)
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "NA" ));
-        else if($calculation_values['GLL'] == 2)
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Ethylene" ));
-        else
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "Proplylene" ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("10."));
-        $chilled_table->addCell(2550)->addText(htmlspecialchars($language_datas['cooling_gylcol']." ( % )"));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "%" ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['COGLY'],1) ));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("11."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['cooling_fouling_factor']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->FoulingFactorUnit] ));
-        if($calculation_values['TUU'] == "standard")
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['TUU'] ));
-        else
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['FFCOW1'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("12."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['max_working_pressure']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->WorkPressureUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( ceil($calculation_values['m_maxCOWWorkPressure']) ));
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars("C"),$header);
-        $chilled_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['exhaust_gas_circuit']),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['heat_input']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $units_data[$unit_set->HeatUnit] ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['HeatInput'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['engine_type']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("-"));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($calculation_values['engine_type']));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_flow']." (+/-3%)"));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->ExhaustGasFlowUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['GEXHAUST'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_in_temp']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TEXH1'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_out_temp']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->TemperatureUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ActExhaustGasTempOut'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_connection_diameter']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->NozzleDiameterUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ExhaustConnectionDiameter'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_sp_heat_capacity']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->HeatCapacityUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['AvgExhGasCp'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("8."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['exhaust_gas_flow']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->ExhaustGasFlowUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['ExhaustGasFlowRate'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("9."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['percentage_engine_load_considered']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars("%"));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['LOAD'],1)));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("10."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['pressure_drop']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->FurnacePressureDropUnit]));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['FURNPRDROP'],1)));
-
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars("D"),$header);
-        $chilled_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['electrical_data']),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['power_supply']));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( $calculation_values['PowerSupply'] ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['power_consumption']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kVA" ));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['TotalPowerConsumption'],1) ));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['absorbent_pump_rating']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-        if($calculation_values['region_type'] ==2){
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['USA_AbsorbentPumpMotorAmp'],2)." )" ));
-        }
-        else{
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['AbsorbentPumpMotorKW'],2) ."( ". round($calculation_values['AbsorbentPumpMotorAmp'],2)." )" ));
-        }
-        
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['refrigerant_pump_rating']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-        if($calculation_values['region_type'] ==2){
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['USA_RefrigerantPumpMotorAmp'],2)." )" ));
-        }
-        else{
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['RefrigerantPumpMotorKW'],2) ."( ". round($calculation_values['RefrigerantPumpMotorAmp'],2)." )" ));
-        }
-        
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['vaccum_pump_rating']));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( "kW (A)" ));
-        if($calculation_values['region_type'] ==2){
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['USA_PurgePumpMotorKW'],2) ."( ". round($calculation_values['USA_PurgePumpMotorAmp'],2)." )" ));
-        }
-        else{
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['PurgePumpMotorKW'],2) ."( ". round($calculation_values['PurgePumpMotorAmp'],2)." )" ));
-        }
-        
-        if($calculation_values['region_type'] ==2)
-        {
-
-            $chilled_table->addRow();
-            $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
-            $chilled_table->addCell(2850)->addText(htmlspecialchars("MOP"));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['MOP'],2)));
-
-            $chilled_table->addRow();
-            $chilled_table->addCell(700)->addText(htmlspecialchars("7."));
-            $chilled_table->addCell(2850)->addText(htmlspecialchars("MCA"));
-            $chilled_table->addCell(1750)->addText(htmlspecialchars( "" ));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars( round($calculation_values['MCA'],2) ));
-        }
-
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars("F"),$header);
-        $chilled_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['tube_metallurgy']),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("1."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['evaporator_tube_material']));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($evaporator_name));
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("2."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['absorber_tube_material']));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($absorber_name));
-
-
-        $chilled_table->addRow();
-        $chilled_table->addCell(700)->addText(htmlspecialchars("3."));
-        $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['condenser_tube_material']));
-        $chilled_table->addCell(1750)->addText(htmlspecialchars(""));
-        $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($condenser_name));
-
-        if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true'){
-            $chilled_table->addRow();
-            $chilled_table->addCell(700)->addText(htmlspecialchars("4."));
-            $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['evaporator_tube_thickness']));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TU3'],1)));
-
-            $chilled_table->addRow();
-            $chilled_table->addCell(700)->addText(htmlspecialchars("5."));
-            $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['absorber_tube_thickness']));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TU6'],1)));
-
-            $chilled_table->addRow();
-            $chilled_table->addCell(700)->addText(htmlspecialchars("6."));
-            $chilled_table->addCell(2850)->addText(htmlspecialchars($language_datas['condenser_tube_thickness']));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars($units_data[$unit_set->LengthUnit]));
-            $chilled_table->addCell(1750)->addTextRun($alignment)->addText(htmlspecialchars(round($calculation_values['TV6'],1)));
-        }
-
-        $section->addTextBreak(1);
-
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars("G"),$header);
-        $chilled_table->addCell(2850,$cellRowSpan)->addText(htmlspecialchars($language_datas['low_temp_heat_exchange']),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars(""),$header);
-        $chilled_table->addCell(1750,$cellRowSpan)->addText(htmlspecialchars($calculation_values['HHType']),$header);
-        
-        $section->addTextBreak(1);
-        $chilled_table = $section->addTable($table_style);
-        $chilled_table->addRow();
-        $chilled_table->addCell(700,$cellRowSpan)->addText(htmlspecialchars($language_datas['caption_notes']." : "),$header);
-
-        foreach ($calculation_values['notes'] as $key => $note) {
-            $section->addText(($key + 1).". ".$note);
-        }
-
-        $file_name = "E2-Series-".Auth::user()->id.".docx";
-        $objWriter = \PhpOffice\PhpWord\IOFactory::createWriter($phpWord, 'Word2007');
-        try {
-            $objWriter->save(storage_path($file_name));
-        } catch (Exception $e) {
-            Log::info($e);
-        }
-
-        return $file_name;
-
-    }
+   
 
      
     

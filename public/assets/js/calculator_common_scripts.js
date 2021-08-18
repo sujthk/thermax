@@ -415,5 +415,10 @@ function roundCommonValues(){
 	model_values.glycol_max_chilled_water = parseFloat(model_values.glycol_max_chilled_water).toFixed(1);
 	model_values.glycol_min_cooling_water = parseFloat(model_values.glycol_min_cooling_water).toFixed(1);
 	model_values.glycol_max_cooling_water = parseFloat(model_values.glycol_max_cooling_water).toFixed(1);
+	model_values.glycol_max_cooling_water = parseFloat(model_values.glycol_max_cooling_water).toFixed(1);
+	model_values.fouling_ari_chilled = parseFloat(model_values.fouling_ari_chilled.toFixed(8));
+	model_values.fouling_ari_cooling = parseFloat(model_values.fouling_ari_cooling.toFixed(8));
+	model_values.fouling_non_chilled = parseFloat(model_values.fouling_non_chilled.toFixed(8));
+	model_values.fouling_non_cooling = parseFloat(model_values.fouling_non_cooling.toFixed(8));
 
 }
