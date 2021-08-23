@@ -1,23 +1,29 @@
-@extends('layouts.app') 
+@extends('layouts.app')
 
 @section('styles')
 <style type="text/css">
 	.teimeline-header {
 		text-align: center;
 	}
+
+	.teimeline-header img {
+		height: 100vh;
+		width: 100%;
+	}
+
 	.t-max-content p {
 		text-align: justify;
 		text-indent: 40px;
 	}
+
 	.t-max-content {
 		width: 80%;
-    margin-left: 10%;
+		margin-left: 10%;
 	}
-
-
-</style>	
+</style>
 <!-- Horizontal-Timeline css -->
-<link rel="stylesheet" type="text/css" href="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/css/style.css')}}">
+<link rel="stylesheet" type="text/css"
+	href="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/css/style.css')}}">
 @endsection
 
 @section('content')
@@ -49,80 +55,86 @@
 					<div class="card-header">
 						<h5>Time Line</h5>
 						<div class="card-header-right">
-							
+
 						</div>
 					</div>
 					<div class="card-block">
 						<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 							<ol class="carousel-indicators">
 								@php($i=1)
-                                @foreach($time_lines as $time_line)	
-                                @if($i==1)
-                                <li data-target="#carouselExampleIndicators" data-slide-to="{{$time_line->id}}" class="active"></li>
-                                @else
-                                	<li data-target="#carouselExampleIndicators" data-slide-to="{{$time_line->id}}"></li>
-                                @endif                  
-                                @php($i++)
-                                @endforeach
+								@foreach($time_lines as $time_line)
+								@if($i==1)
+								<li data-target="#carouselExampleIndicators" data-slide-to="{{$time_line->id}}"
+									class="active"></li>
+								@else
+								<li data-target="#carouselExampleIndicators" data-slide-to="{{$time_line->id}}"></li>
+								@endif
+								@php($i++)
+								@endforeach
 
 							</ol>
 
 							<div class="carousel-inner" role="listbox">
 								@php($j=1)
-                                @foreach($time_lines as $time_line)
-                                @if($j==1)
-                                <div class="carousel-item active">
-                                @else
-                                <div class="carousel-item ">
-                                @endif
-                                <div class="row">
-                                	<div class="col-md-12">
-								
-								<div class="teimeline-header">
-									<img src="{{$time_line->image_path}}" alt="Snow" style="width:100%;">
-									<a href="{{$time_line->url_link}}" target="_blank"><h2>{{$time_line->name}}</h2></a>
+								@foreach($time_lines as $time_line)
+								@if($j==1)
+								<div class="carousel-item active">
+									@else
+									<div class="carousel-item ">
+										@endif
+										<div class="row">
+											<div class="col-md-12">
 
+												<div class="teimeline-header">
+													<img src="{{$time_line->image_path}}" alt="Snow" class="img-fluid">
+													<a href="{{$time_line->url_link}}" target="_blank">
+														<h2>{{$time_line->name}}</h2>
+													</a>
+
+												</div>
+												<div class="t-max-content">
+													<p>
+														{{$time_line->description}}
+
+													</p>
+
+												</div>
+											</div>
+
+										</div>
+
+									</div>
+
+									@php($j++)
+									@endforeach
 								</div>
-								<div class="t-max-content">
-								   <p>
-                                        {{$time_line->description}}
-
-                                    </p>
-                                    
-							</div>						
-						</div>
-
-						</div>                                        
-                                     
-								</div>
-
-								@php($j++)
-                                @endforeach
+								<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button"
+									data-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="sr-only">Previous</span>
+								</a>
+								<a class="carousel-control-next" href="#carouselExampleIndicators" role="button"
+									data-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="sr-only">Next</span>
+								</a>
 							</div>
-							<a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
-								<span class="carousel-control-prev-icon" aria-hidden="true"></span>
-								<span class="sr-only">Previous</span>
-							</a>
-							<a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
-								<span class="carousel-control-next-icon" aria-hidden="true"></span>
-								<span class="sr-only">Next</span>
-							</a>
 						</div>
 					</div>
+					<!-- Bootstrap slider card end -->
 				</div>
-				<!-- Bootstrap slider card end -->
 			</div>
+			<!-- Horizontal Timeline end -->
 		</div>
-		<!-- Horizontal Timeline end -->
 	</div>
-</div>
-@endsection
+	@endsection
 
-@section('scripts')	
-<script type="text/javascript">
-	
-</script>
-<!-- Horizontal-Timeline js -->
-<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/js/main.js')}}"></script>
-<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/project-dashboard.js')}}"></script>
-@endsection
+	@section('scripts')
+	<script type="text/javascript">
+
+	</script>
+	<!-- Horizontal-Timeline js -->
+	<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/horizontal-timeline/js/main.js')}}">
+	</script>
+	<script type="text/javascript" src="{{asset('dark-assets/assets/pages/dashboard/project-dashboard.js')}}"></script>
+	@endsection
