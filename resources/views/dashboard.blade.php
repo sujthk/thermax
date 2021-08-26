@@ -48,8 +48,8 @@
 			</div>
 		</div> -->
 		<!-- Horizontal Timeline start -->
-		<div class="col-md-12 ">
-			<div class="col-sm-12">
+		<div class="col-md-12 p-0">
+			<div class="col-sm-12 p-0">
 				<!-- Bootstrap slider card start -->
 				<div class="card">
 					<div class="card-header">

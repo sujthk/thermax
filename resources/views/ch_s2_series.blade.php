@@ -268,21 +268,21 @@
 								<div class="form-radio col-6">
 									<div class="row " id="region_list" style="display: none;">
 										<div class="radio radio-inline">
-											<label class="red-check">
+											<label id="region_domestic_label" class="red-check">
 												<input type="radio" name="region_type" class="region_type" id="domestic"
 													value="1">
 												<i class="helper"></i> Domestic
 											</label>
 										</div>
 										<div class="radio radio-inline">
-											<label>
+											<label id="region_usa_label">
 												<input type="radio" name="region_type" id="USA_type" value="2"
 													class="region_type">
 												<i class="helper"></i> USA
 											</label>
 										</div>
 										<div class="radio radio-inline">
-											<label>
+											<label id="region_europe_label">
 												<input type="radio" name="region_type" id="Europe_type" value="3"
 													class="region_type">
 												<i class="helper"></i> Europe
@@ -325,11 +325,11 @@
 												<div class="col-md-12">
 													<div class="row ther-model">
 														<div class="col-lg-5">
-															<label>{{ $language_datas['model'] }}</label>
+															<p>{{ $language_datas['model'] }}</p>
 														</div>
 														<div class="col-lg-5">
 															<select name="model_number" id="model_number"
-																class="form-control"
+																class="form-control pl-4"
 																onchange="updateModelValues('model_number')">
 																<option value="60">S2 M1</option>
 																<option value="75">S2 M2</option>
@@ -367,14 +367,15 @@
 														</div>
 
 														<div class="col-lg-5">
-															<label>{{ $language_datas['capacity'] }}</label></div>
+															<p>{{ $language_datas['capacity'] }}</p>
+														</div>
 														<div class="col-lg-5">
 															<input id="capacity" name="capacity" type="text" value=""
 																onchange="updateModelValues('capacity')"
 																class="form-control">
 														</div>
 														<div class="col-lg-2" style="padding: 0;">
-															<label>({{ $units_data[$unit_set->CapacityUnit] }})</label>
+															<p>({{ $units_data[$unit_set->CapacityUnit] }})</p>
 														</div>
 													</div>
 												</div>
@@ -476,7 +477,7 @@
 											</div>
 										</div>
 										<div class="water-chill">
-											<strong>heat</strong>
+											<strong>Heated Water</strong>
 											<div class="row inside-chill">
 												<div class="col-md-12">
 													<div class="row">
@@ -537,7 +538,7 @@
 														<div class="row">
 															<div class="form-radio col-md-6">
 																<div class="radio radio-inline">
-																	<label class="red-check">
+																	<label id="metallurgy_standard_label" class="red-check">
 																		<input type="radio" name="tube_metallurgy"
 																			id="tube_metallurgy_standard"
 																			value="standard" checked="checked">
@@ -545,9 +546,9 @@
 																	</label>
 																</div>
 															</div>
-															<div class="col-md-6 form-radio">
+															<div class="form-radio col-md-6">
 																<div class="radio radio-inline">
-																	<label>
+																	<label id="metallurgy_non_standard_label">
 																		<input type="radio" name="tube_metallurgy"
 																			id="tube_metallurgy_non_standard"
 																			value="non_standard">
@@ -564,7 +565,7 @@
 																		class=" col-form-label">{{ $language_datas['evaporator'] }}</label>
 																</p>
 															</div>
-															<div class="col-md-5" style="padding: 0;">
+															<div class="col-md-5 mt-2" style="padding: 0;">
 																<select name="evaporator_material"
 																	id="evaporator_material"
 																	onchange="updateModelValues('evaporator_tube_type');"
@@ -576,7 +577,7 @@
 																	@endforeach
 																</select>
 															</div>
-															<div class="col-md-3 range-hide">
+															<div class="col-md-3 range-hide mt-2">
 																<input type="text" name="evaporator_thickness"
 																	id="evaporator_thickness"
 																	onchange="updateModelValues('evaporator_thickness')"
@@ -585,7 +586,7 @@
 																	data-animation="false" data-placement="bottom">
 																<span class="" id="evaporator_range"></span>
 															</div>
-															<div class="col-md-1 range-hide" style="padding: 0;">
+															<div class="col-md-1 range-hide mt-1" style="padding: 0;">
 																<label class="padd-mm">
 																	({{ $units_data[$unit_set->LengthUnit] }})
 																</label>
@@ -599,7 +600,7 @@
 																		class=" col-form-label">{{ $language_datas['absorber'] }}</label>
 																</p>
 															</div>
-															<div class="col-md-5" style="padding: 0;">
+															<div class="col-md-5 mt-2" style="padding: 0;">
 																<select name="absorber_material" id="absorber_material"
 																	onchange="updateModelValues('absorber_tube_type');"
 																	class="form-control metallurgy_standard">
@@ -610,7 +611,7 @@
 																	@endforeach
 																</select>
 															</div>
-															<div class="col-md-3 range-hide">
+															<div class="col-md-3 range-hide mt-2">
 																<input type="text" name="absorber_thickness"
 																	id="absorber_thickness"
 																	onchange="updateModelValues('absorber_thickness')"
@@ -619,7 +620,7 @@
 																<span class="metallurgy_standard_span"
 																	id="absorber_range"></span>
 															</div>
-															<div class="col-md-1 range-hide" style="padding: 0;">
+															<div class="col-md-1 range-hide mt-1" style="padding: 0;">
 																<label class="padd-mm">
 																	({{ $units_data[$unit_set->LengthUnit] }})
 																</label>
@@ -633,7 +634,7 @@
 																		class=" col-form-label">{{ $language_datas['condenser'] }}</label>
 																</p>
 															</div>
-															<div class="col-md-5" style="padding: 0;">
+															<div class="col-md-5 mt-2" style="padding: 0;">
 																<select name="condenser_material"
 																	id="condenser_material"
 																	onchange="updateModelValues('condenser_tube_type');"
@@ -645,7 +646,7 @@
 																	@endforeach
 																</select>
 															</div>
-															<div class="col-md-3 range-hide">
+															<div class="col-md-3 range-hide mt-2">
 																<input type="text" name="condenser_thickness"
 																	id="condenser_thickness"
 																	onchange="updateModelValues('condenser_thickness')"
@@ -654,7 +655,7 @@
 																<span class="metallurgy_standard_span"
 																	id="condenser_range"></span>
 															</div>
-															<div class="col-md-1 range-hide" style="padding: 0;">
+															<div class="col-md-1 range-hide mt-1" style="padding: 0;">
 																<label class="padd-mm">
 																	({{ $units_data[$unit_set->LengthUnit] }})
 																</label>
@@ -672,9 +673,9 @@
 												<div class="row">
 													<div class="col-md-12">
 														<div class="row">
-															<div class="col-md-4 form-radio">
+															<div class="form-radio col-md-4">
 																<div class="radio radio-inline">
-																	<label class="red-check">
+																	<label id="fouling_factor_standard_label" class="red-check">
 																		<input type="radio" name="fouling_factor"
 																			id="fouling_factor_standard"
 																			value="standard" checked="checked">
@@ -682,9 +683,9 @@
 																	</label>
 																</div>
 															</div>
-															<div class="col-md-5 form-radio" style="padding: 0;">
+															<div class="form-radio col-md-5">
 																<div class="radio radio-inline">
-																	<label>
+																	<label id="fouling_factor_non_standard_label">
 																		<input type="radio" name="fouling_factor"
 																			id="fouling_factor_non_standard"
 																			value="non_standard">
@@ -692,9 +693,9 @@
 																	</label>
 																</div>
 															</div>
-															<div class="col-md-3 form-radio">
+															<div class="form-radio col-md-3">
 																<div class="radio radio-inline">
-																	<label>
+																	<label id="fouling_factor_ari_label">
 																		<input type="radio" name="fouling_factor"
 																			id="fouling_factor_ari" value="ari">
 																		<i class="helper"></i><span
@@ -724,7 +725,7 @@
 																	</label>
 																</p>
 															</div>
-															<div class="col-md-5" style="padding: 0;">
+															<div class="col-md-5" style="padding: 0 14px;">
 																<input type="text" name="fouling_chilled_value"
 																	id="fouling_chilled_value"
 																	onchange="updateModelValues('fouling_chilled_value')"
@@ -754,7 +755,7 @@
 																</p>
 															</div>
 
-															<div class="col-md-5" style="padding: 0;">
+															<div class="col-md-5" style="padding: 0 14px;">
 																<input type="text" name="fouling_cooling_value"
 																	id="fouling_cooling_value"
 																	onchange="updateModelValues('fouling_cooling_value')"
@@ -777,27 +778,27 @@
 												<div class="row">
 													<div class="col-md-12">
 														<div class="row">
-															<div class="col-md-4 form-radio">
+															<div class="form-radio col-md-4">
 																<div class="radio radio-inline">
-																	<label>
+																	<label id="glycol_none_label" class="red-check">
 																		<input type="radio" name="glycol" value="1"
 																			id="glycol_none" checked="checked">
 																		<i class="helper"></i>None
 																	</label>
 																</div>
 															</div>
-															<div class="col-md-4 form-radio">
+															<div class="form-radio col-md-4">
 																<div class="radio radio-inline">
-																	<label>
+																	<label id="glycol_ethylene_label">
 																		<input type="radio" name="glycol"
 																			id="glycol_ethylene" value="2">
 																		<i class="helper"></i>Ethylene
 																	</label>
 																</div>
 															</div>
-															<div class="col-md-4 form-radio">
+															<div class="form-radio col-md-4">
 																<div class="radio radio-inline">
-																	<label>
+																	<label id="glycol_proplene_label">
 																		<input type="radio" name="glycol"
 																			id="glycol_propylene" value="3">
 																		<i class="helper"></i>Propylene
@@ -1059,6 +1060,11 @@
 			var condenser_range = "("+model_values.condenser_thickness_min_range+" - "+model_values.condenser_thickness_max_range+")";
 			$("#condenser_thickness").attr('data-original-title',condenser_range);
 		}
+
+		glycolRedClass(model_values.glycol_selected);
+		foulingFactorRedClass(model_values.fouling_factor);
+		metalluryRedClass(model_values.metallurgy_standard);
+		regionTypeRedClass(model_values.region_type);
 	}
 
 	$('input:radio[name="glycol"]').change(function() {
@@ -1071,6 +1077,8 @@
 			$("#glycol_chilled_water").prop('disabled', false);
 			$("#glycol_cooling_water").prop('disabled', false);
 		}
+
+		glycolRedClass($(this).val());
 	});
 
 	
@@ -1118,6 +1126,7 @@
 			model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
 		}
 		foulingFactor($(this).val());
+		foulingFactorRedClass($(this).val());
 	});
 	
 	function foulingFactor(value){
@@ -1203,6 +1212,7 @@
 		model_values.model_number = 60;
 		sendResetValues(reset_url);
 		// sendRegionValues();
+		regionTypeRedClass($(this).val());
 	});
 
 		
@@ -1233,6 +1243,8 @@
             updateCondenserOptions(chiller_metallurgy_options.con_default_value,true);
             updateValues();
         }
+
+        metalluryRedClass(this.value);
         
     });
 

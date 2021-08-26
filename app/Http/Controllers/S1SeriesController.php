@@ -32,7 +32,6 @@ class S1SeriesController extends Controller
 
         $chiller_form_values = $this->getFormValues(60);
 
-
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')
                                         ->where('code',$this->model_code)
                                         ->where('min_model','<=',60)->where('max_model','>=',60)->first();

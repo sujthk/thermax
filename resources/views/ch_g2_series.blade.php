@@ -269,30 +269,27 @@
                                 <div class="form-radio col-6">
                                     <div class="row " id="region_list" style="display: none;">
                                         <div class="radio radio-inline">
-                                            <label>
+                                            <label id="region_domestic_label" class="red-check">
                                                 <input type="radio" name="region_type" class="region_type" id="domestic"
                                                     value="1">
                                                 <i class="helper"></i> Domestic
                                             </label>
                                         </div>
                                         <div class="radio radio-inline">
-                                            <label>
+                                            <label id="region_usa_label">
                                                 <input type="radio" name="region_type" id="USA_type" value="2"
                                                     class="region_type">
                                                 <i class="helper"></i> USA
                                             </label>
                                         </div>
                                         <div class="radio radio-inline">
-                                            <label>
+                                            <label id="region_europe_label">
                                                 <input type="radio" name="region_type" id="Europe_type" value="3"
                                                     class="region_type">
                                                 <i class="helper"></i> Europe
                                             </label>
                                         </div>
-
                                     </div>
-
-
                                 </div>
                             </div>
                             <div class="row">
@@ -326,7 +323,7 @@
                                                         </div>
                                                         <div class="col-md-5">
                                                             <select name="model_number" id="model_number"
-                                                                class="form-control"
+                                                                class="form-control pl-4"
                                                                 onchange="updateModelValues('model_number')">
                                                                 <option value="60">G2 M1</option>
                                                                 <option value="75">G2 M2</option>
@@ -453,7 +450,7 @@
                                                             <div class="row">
                                                                 <div class="col-md-6 form-radio">
                                                                     <div class="radio radio-inline">
-                                                                        <label>
+                                                                        <label id="fuel_type_gross_label" >
                                                                             <input type="radio" name="fuel_type"
                                                                                 class="fuel_type" id="fuel_gross"
                                                                                 value="Gross">
@@ -463,7 +460,7 @@
                                                                 </div>
                                                                 <div class="col-md-6 form-radio">
                                                                     <div class="radio radio-inline">
-                                                                        <label>
+                                                                        <label id="fuel_type_normal_label" class="red-check">
                                                                             <input type="radio" name="fuel_type"
                                                                                 class="fuel_type" id="fuel_normal"
                                                                                 value="Normal">
@@ -475,11 +472,11 @@
                                                         </div>
                                                         <div class="col-md-12">
                                                             <div class="row">
-                                                                <div class="col-md-4">
+                                                                <div class="col-md-12">
                                                                     <div class="row">
-                                                                        <div class="col-md-12 form-radio">
+                                                                        <div class="col-md-6 form-radio">
                                                                             <div class="radio radio-inline">
-                                                                                <label>
+                                                                                <label id="fuel_value_natural_label" class="red-check">
                                                                                     <input type="radio"
                                                                                         name="fuel_value_type"
                                                                                         id="fuel_natural_gas"
@@ -488,8 +485,10 @@
                                                                                     <i class="helper"></i> Natural Gas
                                                                                 </label>
                                                                             </div>
+                                                                        </div>
+                                                                        <div class="col-md-6 form-radio">
                                                                             <div class="radio radio-inline">
-                                                                                <label>
+                                                                                <label id="fuel_value_hsd_label">
                                                                                     <input type="radio"
                                                                                         name="fuel_value_type"
                                                                                         class="fuel_value_type"
@@ -497,7 +496,7 @@
                                                                                     <i class="helper"></i>HSD
                                                                                 </label>
                                                                             </div>
-                                                                            <div class="radio radio-inline">
+                                                                            {{-- <div class="radio radio-inline">
                                                                                 <label>
                                                                                     <input type="radio"
                                                                                         name="fuel_value_type"
@@ -505,22 +504,23 @@
                                                                                         class="fuel_value_type">
                                                                                     <i class="helper"></i>SKO
                                                                                 </label>
-                                                                            </div>
+                                                                            </div> --}}
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                <div class="col-md-8">
+                                                                <div class="col-md-12">
                                                                     <div class="row">
                                                                         <div class="col-md-4">
                                                                             <p>{{ $language_datas['cal_value'] }} </p>
                                                                         </div>
-                                                                        <div class="col-md-4" style="padding: 0;">
+                                                                        <div class="col-md-5"
+                                                                            style="padding: 0 15px 0 0;">
                                                                             <input type="text" name="calorific_value"
                                                                                 id="calorific_value"
                                                                                 onchange="updateModelValues('calorific_value')"
-                                                                                value="" class="form-control">
+                                                                                value="" class="form-control std_calorific_value_span" data-placement="bottom" title="">
                                                                         </div>
-                                                                        <div class="col-md-4" style="padding: 0;">
+                                                                        <div class="col-md-3" style="padding: 0;">
                                                                             <p class="natural_gas_unit">
                                                                                 ({{ $units_data[$unit_set->CalorificValueGasUnit] }})
                                                                             </p>
@@ -559,12 +559,12 @@
                                             </div>
                                         </div>
                                         <div class="water-chill">
-                                            <strong>Hot Water</strong>
+                                            <strong>Heated Water</strong>
                                             <div class="row inside-chill">
                                                 <div class="col-md-12">
                                                     <div class="row">
                                                         <div class="col-md-5">
-                                                            <p>{{ $language_datas['heat_duty'] }} : </p>
+                                                            <p>{{ $language_datas['heat_duty'] }} </p>
                                                         </div>
                                                         <div class="col-md-5">
                                                             <input type="text" name="heat_duty" id="heat_duty"
@@ -621,9 +621,9 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="row">
-                                                            <div class="col-md-6 form-radio">
+                                                            <div class="form-radio col-md-6">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="metallurgy_standard_label" class="red-check">
                                                                         <input type="radio" name="tube_metallurgy"
                                                                             id="tube_metallurgy_standard"
                                                                             value="standard" checked="checked">
@@ -631,9 +631,9 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-6 form-radio">
+                                                            <div class="form-radio col-md-6">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="metallurgy_non_standard_label">
                                                                         <input type="radio" name="tube_metallurgy"
                                                                             id="tube_metallurgy_non_standard"
                                                                             value="non_standard">
@@ -650,7 +650,7 @@
                                                                         class=" col-form-label">{{ $language_datas['evaporator'] }}</label>
                                                                 </p>
                                                             </div>
-                                                            <div class="col-md-5" style="padding: 0;">
+                                                            <div class="col-md-5 mt-2" style="padding: 0;">
                                                                 <select name="evaporator_material"
                                                                     id="evaporator_material"
                                                                     onchange="updateModelValues('evaporator_tube_type');"
@@ -662,7 +662,7 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                            <div class="col-md-3 range-hide">
+                                                            <div class="col-md-3 range-hide mt-2">
                                                                 <input type="text" name="evaporator_thickness"
                                                                     id="evaporator_thickness"
                                                                     onchange="updateModelValues('evaporator_thickness')"
@@ -671,7 +671,7 @@
                                                                     data-placement="bottom">
                                                                 <span class="" id="evaporator_range"></span>
                                                             </div>
-                                                            <div class="col-md-1 range-hide" style="padding: 0;">
+                                                            <div class="col-md-1 range-hide mt-1" style="padding: 0;">
                                                                 <label class="padd-mm">
                                                                     ({{ $units_data[$unit_set->LengthUnit] }})
                                                                 </label>
@@ -685,7 +685,7 @@
                                                                         class=" col-form-label">{{ $language_datas['absorber'] }}</label>
                                                                 </p>
                                                             </div>
-                                                            <div class="col-md-5" style="padding: 0;">
+                                                            <div class="col-md-5 mt-2" style="padding: 0;">
                                                                 <select name="absorber_material" id="absorber_material"
                                                                     onchange="updateModelValues('absorber_tube_type');"
                                                                     class="form-control metallurgy_standard">
@@ -696,7 +696,7 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                            <div class="col-md-3 range-hide">
+                                                            <div class="col-md-3 range-hide mt-2">
                                                                 <input type="text" name="absorber_thickness"
                                                                     id="absorber_thickness"
                                                                     onchange="updateModelValues('absorber_thickness')"
@@ -705,7 +705,7 @@
                                                                 <span class="metallurgy_standard_span"
                                                                     id="absorber_range"></span>
                                                             </div>
-                                                            <div class="col-md-1 range-hide" style="padding: 0;">
+                                                            <div class="col-md-1 range-hide mt-1" style="padding: 0;">
                                                                 <label class="padd-mm">
                                                                     ({{ $units_data[$unit_set->LengthUnit] }})
                                                                 </label>
@@ -719,7 +719,7 @@
                                                                         class=" col-form-label">{{ $language_datas['condenser'] }}</label>
                                                                 </p>
                                                             </div>
-                                                            <div class="col-md-5" style="padding: 0;">
+                                                            <div class="col-md-5 mt-2" style="padding: 0;">
                                                                 <select name="condenser_material"
                                                                     id="condenser_material"
                                                                     onchange="updateModelValues('condenser_tube_type');"
@@ -731,7 +731,7 @@
                                                                     @endforeach
                                                                 </select>
                                                             </div>
-                                                            <div class="col-md-3 range-hide">
+                                                            <div class="col-md-3 range-hide mt-2">
                                                                 <input type="text" name="condenser_thickness"
                                                                     id="condenser_thickness"
                                                                     onchange="updateModelValues('condenser_thickness')"
@@ -740,7 +740,7 @@
                                                                 <span class="metallurgy_standard_span"
                                                                     id="condenser_range"></span>
                                                             </div>
-                                                            <div class="col-md-1 range-hide" style="padding: 0;">
+                                                            <div class="col-md-1 range-hide mt-1" style="padding: 0;">
                                                                 <label class="padd-mm">
                                                                     ({{ $units_data[$unit_set->LengthUnit] }})
                                                                 </label>
@@ -758,9 +758,9 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="row">
-                                                            <div class="col-md-4 form-radio">
+                                                            <div class="form-radio col-md-4">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="fouling_factor_standard_label" class="red-check">
                                                                         <input type="radio" name="fouling_factor"
                                                                             id="fouling_factor_standard"
                                                                             value="standard" checked="checked">
@@ -768,9 +768,9 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4 form-radio">
+                                                            <div class="form-radio col-md-5">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="fouling_factor_non_standard_label">
                                                                         <input type="radio" name="fouling_factor"
                                                                             id="fouling_factor_non_standard"
                                                                             value="non_standard">
@@ -778,9 +778,9 @@
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4 form-radio">
+                                                            <div class="form-radio col-md-3">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="fouling_factor_ari_label">
                                                                         <input type="radio" name="fouling_factor"
                                                                             id="fouling_factor_ari" value="ari">
                                                                         <i class="helper"></i><span
@@ -810,7 +810,7 @@
                                                                 </p>
                                                             </div>
 
-                                                            <div class="col-md-5" style="padding: 0;">
+                                                            <div class="col-md-5" style="padding: 0 14px;">
                                                                 <input type="text" name="fouling_chilled_value"
                                                                     id="fouling_chilled_value"
                                                                     onchange="updateModelValues('fouling_chilled_value')"
@@ -839,7 +839,7 @@
                                                                 </p>
                                                             </div>
 
-                                                            <div class="col-md-5" style="padding: 0;">
+                                                            <div class="col-md-5" style="padding: 0 14px;">
                                                                 <input type="text" name="fouling_cooling_value"
                                                                     id="fouling_cooling_value"
                                                                     onchange="updateModelValues('fouling_cooling_value')"
@@ -862,27 +862,27 @@
                                                 <div class="row">
                                                     <div class="col-md-12">
                                                         <div class="row">
-                                                            <div class="col-md-4 form-radio">
+                                                            <div class="form-radio col-md-4">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="glycol_none_label" class="red-check">
                                                                         <input type="radio" name="glycol" value="1"
                                                                             id="glycol_none" checked="checked">
                                                                         <i class="helper"></i>None
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4 form-radio">
+                                                            <div class="form-radio col-md-4">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="glycol_ethylene_label">
                                                                         <input type="radio" name="glycol"
                                                                             id="glycol_ethylene" value="2">
                                                                         <i class="helper"></i>Ethylene
                                                                     </label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4 form-radio">
+                                                            <div class="form-radio col-md-4">
                                                                 <div class="radio radio-inline">
-                                                                    <label>
+                                                                    <label id="glycol_proplene_label">
                                                                         <input type="radio" name="glycol"
                                                                             id="glycol_propylene" value="3">
                                                                         <i class="helper"></i>Propylene
@@ -1134,17 +1134,17 @@
             $("#condenser_thickness").attr('data-original-title',condenser_range);
         }
 
+        glycolRedClass(model_values.glycol_selected);
+        foulingFactorRedClass(model_values.fouling_factor);
+        metalluryRedClass(model_values.metallurgy_standard);
+        regionTypeRedClass(model_values.region_type);
+        fuelTypeRedClass(model_values.fuel_type);
+        fuelValueRedClass(model_values.fuel_value_type);
+
     }
 
     function updateFuelValues(){
-        if(model_values.fuel_type == 'Normal'){
-            $("#fuel_normal").prop('checked', true);
-            $("#fuel_cv_stds").hide();
-        }
-        else{
-            $("#fuel_gross").prop('checked', true);
-            $("#fuel_cv_stds").show();
-        }
+        
 
         if(model_values.fuel_value_type == 'NaturalGas'){
             $("#fuel_natural_gas").prop('checked', true);
@@ -1185,6 +1185,16 @@
         $("#calorific_value").val(model_values.calorific_value);
         $("#std_calorific_value").val(model_values.std_calorific_value);
 
+        if(model_values.fuel_type == 'Normal'){
+            $("#fuel_normal").prop('checked', true);
+            $("#fuel_cv_stds").hide();
+            $('.std_calorific_value_span').attr('data-original-title',"");
+        }
+        else{
+            $("#fuel_gross").prop('checked', true);
+            $('.std_calorific_value_span').attr('data-original-title',model_values.std_calorific_value);
+        }
+
     }
 
     $('input:radio[name="glycol"]').change(function() {
@@ -1197,6 +1207,8 @@
             $("#glycol_chilled_water").prop('disabled', false);
             $("#glycol_cooling_water").prop('disabled', false);
         }
+
+        glycolRedClass($(this).val());
     });
 
     $('input:radio[name="fuel_type"]').change(function() {
@@ -1208,6 +1220,8 @@
         }
 
         updateFuelValues();
+
+        fuelTypeRedClass($(this).val());
     });
 
     $('input:radio[name="fuel_value_type"]').change(function() {
@@ -1223,6 +1237,7 @@
         }
 
         updateFuelValues();
+        fuelValueRedClass($(this).val());
     });
 
     $('#fouling_chilled_water').change(function() {
@@ -1270,6 +1285,7 @@
             model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling;
         }
         foulingFactor($(this).val());
+        foulingFactorRedClass($(this).val());
     });
 
     function foulingFactor(value){
@@ -1371,6 +1387,7 @@
             model_values.model_number = 60;
             
             sendResetValues(reset_url);
+            regionTypeRedClass($(this).val());
         });
 
         $('input[type=radio][name=tube_metallurgy]').change(function() {
@@ -1399,6 +1416,8 @@
                 updateCondenserOptions(chiller_metallurgy_options.con_default_value,true);
                 updateValues();
             }
+
+            metalluryRedClass(this.value);
             
         });
 
@@ -1542,6 +1561,26 @@
     	model_values.max_hot_water_in = parseFloat(model_values.max_hot_water_in).toFixed(1);
     	model_values.max_hot_water_out = parseFloat(model_values.max_hot_water_out).toFixed(1);
     	
+    }
+
+    function fuelTypeRedClass(value){
+        if (value == 'Normal') {
+            $("#fuel_type_normal_label").addClass('red-check');
+            $("#fuel_type_gross_label").removeClass('red-check');  
+        } else {
+            $("#fuel_type_normal_label").removeClass('red-check');
+            $("#fuel_type_gross_label").addClass('red-check');
+        }
+    }
+
+    function fuelValueRedClass(value){
+        if (value == 'NaturalGas') {
+            $("#fuel_value_natural_label").addClass('red-check');
+            $("#fuel_value_hsd_label").removeClass('red-check');  
+        } else {
+            $("#fuel_value_natural_label").removeClass('red-check');
+            $("#fuel_value_hsd_label").addClass('red-check');
+        }
     }
     
         

@@ -91,8 +91,6 @@ class DoubleSteamController extends Controller
         
         $converted_values = $unit_conversions->formUnitConversion($chiller_form_values,$this->model_code);
 
-        
-  
         $regions = Region::all();
     	// return $evaporator_options;
 

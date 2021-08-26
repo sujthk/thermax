@@ -16,6 +16,73 @@ function getBoolean(value){
 }
 
 
+function metalluryRedClass(value){
+	if(value == 'non_standard'){
+		$("#metallurgy_non_standard_label").addClass('red-check');
+		$("#metallurgy_standard_label").removeClass('red-check');
+	}
+	else{
+		$("#metallurgy_non_standard_label").removeClass('red-check');
+		$("#metallurgy_standard_label").addClass('red-check');
+	}
+}
+
+
+function foulingFactorRedClass(value){
+	if(value == 'ari'){
+		$("#fouling_factor_ari_label").addClass('red-check');
+		$("#fouling_factor_non_standard_label").removeClass('red-check');
+		$("#fouling_factor_standard_label").removeClass('red-check');
+	}
+	else if(value == 'non_standard'){
+		$("#fouling_factor_ari_label").removeClass('red-check');
+		$("#fouling_factor_non_standard_label").addClass('red-check');
+		$("#fouling_factor_standard_label").removeClass('red-check');
+	}
+	else{
+		$("#fouling_factor_ari_label").removeClass('red-check');
+		$("#fouling_factor_non_standard_label").removeClass('red-check');
+		$("#fouling_factor_standard_label").addClass('red-check');
+	}
+}
+
+function glycolRedClass(value){
+	if(value == '3'){
+		$("#glycol_proplene_label").addClass('red-check');
+		$("#glycol_ethylene_label").removeClass('red-check');
+		$("#glycol_none_label").removeClass('red-check');
+	}
+	else if(value == '2'){
+		$("#glycol_proplene_label").removeClass('red-check');
+		$("#glycol_ethylene_label").addClass('red-check');
+		$("#glycol_none_label").removeClass('red-check');
+	}
+	else{
+		$("#glycol_proplene_label").removeClass('red-check');
+		$("#glycol_ethylene_label").removeClass('red-check');
+		$("#glycol_none_label").addClass('red-check');
+	}
+}
+
+function regionTypeRedClass(value){
+	if(value == '3'){
+		$("#region_europe_label").addClass('red-check');
+		$("#region_usa_label").removeClass('red-check');
+		$("#region_domestic_label").removeClass('red-check');
+	}
+	else if(value == '2'){
+		$("#region_europe_label").removeClass('red-check');
+		$("#region_usa_label").addClass('red-check');
+		$("#region_domestic_label").removeClass('red-check');
+	}
+	else{
+		$("#region_europe_label").removeClass('red-check');
+		$("#region_usa_label").removeClass('red-check');
+		$("#region_domestic_label").addClass('red-check');
+	}
+}
+
+
 function getCoolingWaterRanges(cooling_water_ranges){
 	var range_values = "";
 	 // console.log(cooling_water_ranges);
@@ -185,7 +252,7 @@ function saveReport(chiller_url,report_type){
 			data: { calculation_values : calculation_values,_token: CSRF_TOKEN,name: name,project: project,phone: phone,report_type: report_type},
 			success: function(response){
 				//$("#exampleModalLong1").modal('toggle');
-				console.log(response);	
+				// console.log(response);	
 				window.open(response.redirect_url, '_blank');
 
 			},
@@ -334,11 +401,11 @@ function sendValues(chiller_url){
 		url: chiller_url,
 		data: { values : model_values,_token: CSRF_TOKEN,changed_value: changed_value},
 		success: function(response){
-			console.log(response);
+			
 			$("#errormessage").html("-");
 			if(response.status){
 				$('#'+changed_value).removeClass("box-color");
-				console.log(response.model_values);
+				
 				$("#calculate_button").prop('disabled', false);
 
 				model_values = response.model_values;
@@ -403,6 +470,8 @@ function castToBoolean(){
 }
 
 function roundCommonValues(){
+	
+
 	model_values.capacity = parseFloat(model_values.capacity).toFixed(1);
 	model_values.chilled_water_in = parseFloat(model_values.chilled_water_in).toFixed(1);
 	model_values.chilled_water_out = parseFloat(model_values.chilled_water_out).toFixed(1);
@@ -420,5 +489,6 @@ function roundCommonValues(){
 	model_values.fouling_ari_cooling = parseFloat(model_values.fouling_ari_cooling.toFixed(8));
 	model_values.fouling_non_chilled = parseFloat(model_values.fouling_non_chilled.toFixed(8));
 	model_values.fouling_non_cooling = parseFloat(model_values.fouling_non_cooling.toFixed(8));
+
 
 }

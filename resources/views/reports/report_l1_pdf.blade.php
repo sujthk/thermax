@@ -55,7 +55,7 @@
 		}
 
 		.report-end {
-			border: 1px solid #676767;
+			border: 1px solid #000;
 		}
 
 		.report-end p {
@@ -85,7 +85,7 @@
 
 		.report-top tbody tr .empty-space {
 			padding: 2px 0 3px 0;
-			border: none;
+			border: 1px solid #000;
 		}
 	</style>
 </head>
@@ -937,41 +937,7 @@
 										class="optimal-r1"> SS316L ERW </td>
 									@endif
 								</tr>
-								@if(!$calculation_values['isStandard'] || $calculation_values['isStandard'] != 'true')
-								<tr>
-									<td
-										style="text-align: center; font-family:Arial, Helvetica, sans-serif; font-size: 14px;">
-										4 </td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="font-class"> {{ $language_datas['evaporator_tube_thickness'] }}</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $calculation_values['TU3'] }}</td>
-								</tr>
-								<tr>
-									<td
-										style="text-align: center; font-family:Arial, Helvetica, sans-serif; font-size: 14px;">
-										5 </td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="font-class"> {{ $language_datas['absorber_tube_thickness'] }}</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $calculation_values['TU6'] }} </td>
-								</tr>
-								<tr>
-									<td
-										style="text-align: center; font-family:Arial, Helvetica, sans-serif; font-size: 14px;">
-										6 </td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="font-class"> {{ $language_datas['condenser_tube_thickness'] }} </td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $units_data[$unit_set->LengthUnit] }}</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $calculation_values['TV6'] }} </td>
-								</tr>
-								@endif
+
 							</tbody>
 
 						</table>
