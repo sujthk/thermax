@@ -80,6 +80,8 @@ class L5SeriesController extends Controller
         
         $converted_values = $unit_conversions->formUnitConversion($chiller_form_values,$this->model_code);
 
+        $calculator_name = DB::table('calculators')->where('code', $this->model_code)->first();
+        $calculator_name = $calculator_name->display_name;
 
         return view('l5_series')->with('default_values',$converted_values)
                                         ->with('language_datas',$language_datas)
@@ -89,6 +91,7 @@ class L5SeriesController extends Controller
                                         ->with('chiller_metallurgy_options',$chiller_metallurgy_options)
                                         ->with('unit_set',$unit_set)
                                         ->with('units_data',$units_data)
+                                        ->with('calculator_name',$calculator_name)
                                         ->with('regions',$regions);
     }
 

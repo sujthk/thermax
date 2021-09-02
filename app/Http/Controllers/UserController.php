@@ -305,6 +305,34 @@ class UserController extends Controller
 
 		return response()->json(['status'=>false,'msg'=>'Invalid Credentials']);
     }
+
+
+    public function changePassword(){
+        $user = Auth::user();
+        Auth::logout();
+
+        return view('password')->with('user',$user);
+    }
+
+    public function updatePassword(Request $request){
+        $this->validate($request, [
+            'user_id' => 'required',
+            'password' => 'required|confirmed',
+        ]);
+
+        $user = User::find($request->user_id);
+        $password = Hash::make($request->password);
+        $user->password =  $password;
+        $user->password_status = 0;
+        $user->save();
+
+        Auth::loginUsingId($user->id);
+        return redirect('/dashboard');
+
+
+    }
+
+
     public function updateUserProfile(Request $request,$user_id){
         $this->validate($request, [
             'mobile' => 'required',

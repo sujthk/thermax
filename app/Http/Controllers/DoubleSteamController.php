@@ -99,6 +99,9 @@ class DoubleSteamController extends Controller
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
 
+        $calculator_name = DB::table('calculators')->where('code', $this->model_code)->first();
+        $calculator_name = $calculator_name->display_name;
+
         // return $language_datas;
 
 		return view('double_steam_s2')->with('default_values',$converted_values)
@@ -109,6 +112,7 @@ class DoubleSteamController extends Controller
 										->with('condenser_options',$condenser_options)
                                         ->with('chiller_metallurgy_options',$chiller_metallurgy_options) 
 										->with('language_datas',$language_datas) 
+                                        ->with('calculator_name',$calculator_name)
                                         ->with('regions',$regions);
 	}
 

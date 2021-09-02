@@ -78,6 +78,9 @@ class DoubleH2SteamController extends Controller
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
 
+        $calculator_name = DB::table('calculators')->where('code', $this->model_code)->first();
+        $calculator_name = $calculator_name->display_name;
+
         return view('double_effect_h2_series')->with('default_values',$converted_values)
                                             ->with('unit_set',$unit_set)
                                             ->with('units_data',$units_data)
@@ -86,6 +89,7 @@ class DoubleH2SteamController extends Controller
                                             ->with('condenser_options',$condenser_options)
                                             ->with('chiller_metallurgy_options',$chiller_metallurgy_options)
                                             ->with('language_datas',$language_datas)
+                                            ->with('calculator_name',$calculator_name)
                                             ->with('regions',$regions);
     }
 

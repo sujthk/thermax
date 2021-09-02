@@ -260,7 +260,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="page-header-title">
-										<h4>L5 series</h4>
+										<h4>{{ $calculator_name }}</h4>
 									</div>
 									<span style="color: #a3a3a3; font-weight: 600; font-size: 7px;" id="version"></span>
 								</div>

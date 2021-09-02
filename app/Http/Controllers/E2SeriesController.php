@@ -56,9 +56,9 @@ class E2SeriesController extends Controller
             $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
 
             if($chiller_form_values['region_type'] == 2){
-                $chiller_form_values['fouling_factor']="ari";
-                $chiller_form_values['fouling_chilled_water_value'] =  $chiller_form_values['fouling_ari_chilled'];
-                $chiller_form_values['fouling_cooling_water_value'] =  $chiller_form_values['fouling_ari_cooling'];
+                $chiller_form_values['fouling_factor']="standard";
+                // $chiller_form_values['fouling_chilled_water_value'] =  $chiller_form_values['fouling_ari_chilled'];
+                // $chiller_form_values['fouling_cooling_water_value'] =  $chiller_form_values['fouling_ari_cooling'];
             }
             else{
                 $chiller_form_values['fouling_factor']="standard";
@@ -77,8 +77,11 @@ class E2SeriesController extends Controller
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
+
+        $calculator_name = DB::table('calculators')->where('code', $this->model_code)->first();
+        $calculator_name = $calculator_name->display_name;
         
-        return view('e2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions,'language_datas'=>$language_datas]);
+        return view('e2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions,'language_datas'=>$language_datas,'calculator_name'=>$calculator_name]);
                            
     }
 
@@ -152,7 +155,7 @@ class E2SeriesController extends Controller
             $chiller_form_values['cooling_water_flow'] =  $chiller_form_values['USA_cooling_water_flow'];
 
             if($chiller_form_values['region_type'] == 2)
-                $chiller_form_values['fouling_factor']="ari";
+                $chiller_form_values['fouling_factor']="standard";
             else
                 $chiller_form_values['fouling_factor']="standard";
 

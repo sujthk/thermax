@@ -78,8 +78,11 @@ class DoubleG2SteamController extends Controller
         $vam_base = new VamBaseController();
         $language_datas = $vam_base->getLanguageDatas();
         $units_data = $vam_base->getUnitsData();
+
+        $calculator_name = DB::table('calculators')->where('code', $this->model_code)->first();
+        $calculator_name = $calculator_name->display_name;
         
-		return view('double_effect_g2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions,'language_datas'=>$language_datas]);
+		return view('double_effect_g2_series')->with(['default_values'=>$converted_values,'unit_set'=>$unit_set,'units_data'=>$units_data,'evaporator_options'=>$evaporator_options,'absorber_options'=>$absorber_options,'condenser_options'=>$condenser_options,'chiller_metallurgy_options'=>$chiller_metallurgy_options,'regions'=>$regions,'language_datas'=>$language_datas,'calculator_name'=>$calculator_name]);
                            
 	}
 

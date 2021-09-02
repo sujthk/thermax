@@ -1,282 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
 
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-xmlns:v="urn:schemas-microsoft-com:vml"
-xmlns:o="urn:schemas-microsoft-com:office:office">
 <head>
-<!--[if gte mso 9]><xml>
-<o:OfficeDocumentSettings>
-<o:AllowPNG/>
-<o:PixelsPerInch>96</o:PixelsPerInch>
-</o:OfficeDocumentSettings>
-</xml><![endif]-->
-<meta http-equiv="Content-type" content="text/html; charset=utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-<meta name="format-detection" content="date=no" />
-<meta name="format-detection" content="address=no" />
-<meta name="format-detection" content="telephone=no" />
-<title>Email Template</title>
+    <title>Email Template</title>
+    <style>
+        body {
+            background-color: #fff;
+        }
 
+        @font-face {
+            font-family: "f1";
+            src: url({{asset('mail/font/nexa/NexaBold.otf')}});
+        }
 
-<style type="text/css" media="screen">
-/* Linked Styles */
-body { padding:0 !important; margin:0 !important; display:block !important; background:#1e1e1e; -webkit-text-size-adjust:none }
-a { color:#a88123; text-decoration:none }
-p { padding:0 !important; margin:0 !important } 
+        @font-face {
+            font-family: "f2";
+            src: url({{asset('mail/font/nunito/Nunito-Regular.ttf')}});
+        }
 
-/* Mobile styles */
-</style>
-<style media="only screen and (max-device-width: 480px), only screen and (max-width: 480px)" type="text/css">
-@media only screen and (max-device-width: 480px), only screen and (max-width: 480px) { 
-div[class='mobile-br-5'] { height: 5px !important; }
-div[class='mobile-br-10'] { height: 10px !important; }
-div[class='mobile-br-15'] { height: 15px !important; }
-div[class='mobile-br-20'] { height: 20px !important; }
-div[class='mobile-br-25'] { height: 25px !important; }
-div[class='mobile-br-30'] { height: 30px !important; }
+        .mail-bg {
+            width: 50%;
+            margin: 0 auto;
+        }
 
-th[class='m-td'], 
-td[class='m-td'], 
-div[class='hide-for-mobile'], 
-span[class='hide-for-mobile'] { display: none !important; width: 0 !important; height: 0 !important; font-size: 0 !important; line-height: 0 !important; min-height: 0 !important; }
+        .mail-template {
+            padding: 80px 20px 40px;
+            text-align: center;
+            background-color: #eaeff2;
+        }
 
-span[class='mobile-block'] { display: block !important; }
+        .mail-temp-logo {
+            text-align: center;
+        }
 
-div[class='wgmail'] img { min-width: 320px !important; width: 320px !important; }
+        .mail-top h1 {
+            font-family: "f1";
+            font-size: 35px;
+            margin: 20px 0;
+        }
 
-div[class='img-m-center'] { text-align: center !important; }
+        .mail-top p {
+            font-family: "f2";
+            font-size: 32px;
+            font-weight: 600;
+            color: #2f2f2f;
+            margin: 0 auto;
+        }
 
-div[class='fluid-img'] img,
-td[class='fluid-img'] img { width: 100% !important; max-width: 100% !important; height: auto !important; }
+        .mail-logo {
+            padding: 30px 0;
+        }
 
-table[class='mobile-shell'] { width: 100% !important; min-width: 100% !important; }
-td[class='td'] { width: 100% !important; min-width: 100% !important; }
+        .mail-logo img {
+            width: 50%;
+        }
 
-table[class='center'] { margin: 0 auto; }
+        .mail-content p {
+            font-family: "f2";
+            line-height: 30px;
+            font-weight: 600;
+            color: #2f2f2f;
+            font-size: 20px;
+        }
 
-td[class='column-top'],
-th[class='column-top'],
-td[class='column'],
-th[class='column'] { float: left !important; width: 100% !important; display: block !important; }
+        .mail-back {
+            background-color: #fff;
+            padding: 40px 40px 60px 40px;
+            margin: 40px 0 20px 0;
+            border-radius: 10px;
+        }
 
-td[class='content-spacing'] { width: 15px !important; }
+        .mail-content h5 {
+            background: #e20010;
+            padding: 10px 50px;
+            border-radius: 5px;
+            margin: 0 auto;
+            display: inline-block;
+            color: #fff;
+            font-size: 19px;
+            margin-top: 15px;
+            font-family: "f1";
+            letter-spacing: 5px;
+        }
 
-div[class='h2'] { font-size: 44px !important; line-height: 48px !important; }
-} 
-</style>
+        .social-media-mail ul li {
+            list-style: none;
+            display: inline-block;
+        }
+
+        .social-media-mail ul li img {
+            width: 80%;
+        }
+
+        .social-media-mail ul {
+            padding: 0;
+        }
+
+        .social-media-mail h5 {
+            font-family: "f1";
+            font-size: 30px;
+            margin: 20px 0;
+            color: #242424;
+        }
+    </style>
 </head>
-<body class="body" style="padding:0 !important; margin:0 !important; display:block !important; background:#1e1e1e; -webkit-text-size-adjust:none">
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#1e1e1e">
-<tr>
-<td align="center" valign="top">
-<!-- Top -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#161616">
-<tr>
-<td align="center" valign="top">
-<table width="600" border="0" cellspacing="0" cellpadding="0" class="mobile-shell">
-<tr>
-<td class="td" style="font-size:0pt; line-height:0pt; padding:0; margin:0; font-weight:normal; width:600px; min-width:600px; Margin:0" width="600">
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<!-- END Top -->
 
-<table width="600" border="0" cellspacing="0" cellpadding="0" class="mobile-shell">
-<tr>
-<td class="td" style="font-size:0pt; line-height:0pt; padding:0; margin:0; font-weight:normal; width:600px; min-width:600px; Margin:0" width="600">
-<!-- Header -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="30" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="30" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-
-<div class="hide-for-mobile">
-
-</div>
-</td>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-</tr>
-</table>
-<!-- END Header -->
-
-<!-- Main -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td>
-<!-- Head -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#e10010">
-<tr>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="27"><img src="https://d1pgqke3goo8l6.cloudfront.net/JJxrFRyVRr20CJD3pOx9_top_left.jpg" border="0" width="27" height="27" alt="" /></td>
-<td>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" height="3" bgcolor="#e6ae57">&nbsp;</td>
-		</tr>
-	</table>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="24" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-</td>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="27"><img src="https://d1pgqke3goo8l6.cloudfront.net/SNcoUN5kSfCDagqSBEZ4_top_right.jpg" border="0" width="27" height="27" alt="" /></td>
-</tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="3" bgcolor="#e6ae57"></td>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="10"></td>
-<td>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="15" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-	<div class="h2" style="color:#ffffff; font-family:Georgia, serif; min-width:auto !important; font-size:60px; line-height:64px; text-align:center">
-		<em>Thermax</em>
-	</div>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="15" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="35" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-</td>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="10"></td>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="3" bgcolor="#e6ae57"></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<!-- END Head -->
-
-<!-- Body -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff">
-<tr>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="35" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-<div class="" style="color:#1e1e1e; font-family:Georgia, serif; min-width:auto !important; font-size:20px; line-height:26px; text-align:center">Dear {{ $user_name }}, <strong></strong> </div>
-<div class="h3-1-center" style="color:#1e1e1e; font-family:Georgia, serif; min-width:auto !important; font-size:20px; line-height:26px; text-align:center">Your thermax account password successfully reseted. You can login with the credentials below.<strong></strong> </div>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="20" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-
-<!-- Button -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td align="center">
-	<table width="500" border="0" cellspacing="0" cellpadding="0">
-		<tr>
-			<td align="center" bgcolor="#e10010">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						
-					<td bgcolor="#e10010">
-						<div class="text-btn" style="color:#ffffff; font-family:Arial, sans-serif; min-width:auto !important; font-size:16px; line-height:20px; text-align:center">
-						<span class="link-white" style="color:#ffffff; text-decoration:none">Username : {{ $user_email }}</span>
-						</div>
-					</td>
-					
-					
-				</tr>
-				<tr>
-					<td bgcolor="#e10010">
-						<div class="text-btn" style="color:#ffffff; font-family:Arial, sans-serif; min-width:auto !important; font-size:16px; line-height:20px; text-align:center">
-						<span class="link-white" style="color:#ffffff; text-decoration:none">Password : {{ $password }}</span>
-						</div>
-					</td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</td>
-</tr>
-</table>
-<!-- END Button -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="40" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-
-</td>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-</tr>
-</table>
-<!-- END Body -->
-
-<!-- Foot -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#e10010">
-<tr>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="3" bgcolor="#e6ae57"></td>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="30" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="15" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-
-
-<!-- END Socials -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="15" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-</td>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="3" bgcolor="#e6ae57"></td>
-</tr>
-</table>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="27"><img src="https://d1pgqke3goo8l6.cloudfront.net/nK8bYazcQWGAQt8sAH2g_bot_left.jpg" border="0" width="27" height="27" alt="" /></td>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="24" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-	<tr>
-		<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" height="3" bgcolor="#e6ae57">&nbsp;</td>
-	</tr>
-</table>
-</td>
-<td class="img" style="font-size:0pt; line-height:0pt; text-align:left" width="27"><img src="https://d1pgqke3goo8l6.cloudfront.net/v9RanaDRM2FzjQNT9PwV_bot_right.jpg" border="0" width="27" height="27" alt="" /></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<!-- END Foot -->
-</td>
-</tr>
-</table>
-<!-- END Main -->
-
-<!-- Footer -->
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-<tr>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-<td>
-<table width="100%" border="0" cellspacing="0" cellpadding="0" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%"><tr><td height="30" class="spacer" style="font-size:0pt; line-height:0pt; text-align:center; width:100%; min-width:100%">&nbsp;</td></tr></table>
-
-</td>
-<td class="content-spacing" style="font-size:0pt; line-height:0pt; text-align:left" width="20"></td>
-</tr>
-</table>
-<!-- END Footer -->
-</td>
-</tr>
-</table>
-<div class="wgmail" style="font-size:0pt; line-height:0pt; text-align:center"><img src="https://d1pgqke3goo8l6.cloudfront.net/oD2XPM6QQiajFKLdePkw_gmail_fix.gif" width="600" height="1" style="min-width:600px" alt="" border="0" /></div>
-</td>
-</tr>
-</table>
+<body class="mail-bg">
+    <section class="mail-template">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="mail-temp-logo">
+                        <img src="{{asset('mail/images/Thermax-logo-fin.png')}}" alt="thermax-logo" class="img-fluid">
+                    </div>
+                    <div class="mail-top">
+                        <h1>Hi {{ $user_name }},</h1>
+                        <!-- <p>Your thermax account password successfully reseted. You can login with the credentials below.
+                        </p> -->
+                    </div>
+                    <div class="mail-back">
+                        <div class="mail-logo">
+                            <img src="{{asset('mail/images/resetpassword.png')}}" alt="email-logo" class="img-fluid">
+                        </div>
+                        <div class="mail-content">
+                            <p>Your iChill password has been reset. Please login with the following credentials and change the password immediately after logging in.</p>
+                            <h5>Username : {{ $user_email }}</h5>
+                            <h5>Password : {{ $password }}</h5>
+                        </div>
+                    </div>
+                    <div class="social-media-mail">
+                        <h5>Follow Us</h5>
+                        <ul>
+                            <li><a href="#"><img src="{{asset('mail/images/facebook.png')}}" alt="facebook-logo"></a></li>
+                            <li><a href="#"><img src="{{asset('mail/images/twitter.png')}}" alt="twitter-logo"></a></li>
+                            <li><a href="#"><img src="{{asset('mail/images/linkedin.png')}}" alt="linkedin-logo"></a></li>
+                            <li><a href="#"><img src="{{asset('mail/images/instagram.png')}}" alt="instagram-logo"></a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </body>
+
 </html>

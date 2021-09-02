@@ -774,12 +774,20 @@ class DefaultCalculatorController extends Controller
     public function exportCalculatorReports(Request $request)
     {
 
+        $this->validate($request, [
+            'from_date' => 'required',
+            'to_date' => 'required',
+        ]);
+
+        $start_date = date("Y-m-d", strtotime($request->from_date));
+        $end_date = date("Y-m-d", strtotime($request->to_date));
+
         $report_type = $request->username;
         if($report_type != 'all'){
-            $calculator_reports = CalculatorReport::where('user_mail',$report_type)->get();
+            $calculator_reports = CalculatorReport::whereBetween('created_at', [$start_date, $end_date])->where('user_mail',$report_type)->get();
         }
         else{
-            $calculator_reports = CalculatorReport::get();
+            $calculator_reports = CalculatorReport::whereBetween('created_at', [$start_date, $end_date])->get();
         }
 
         if(count($calculator_reports) == 0){

@@ -52,12 +52,6 @@
 			<div class="col-sm-12 p-0">
 				<!-- Bootstrap slider card start -->
 				<div class="card">
-					<div class="card-header">
-						<h5>Time Line</h5>
-						<div class="card-header-right">
-
-						</div>
-					</div>
 					<div class="card-block">
 						<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
 							<ol class="carousel-indicators">

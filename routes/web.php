@@ -43,6 +43,9 @@ Route::group(['middleware' => 'guest'], function(){
 
 });
 
+Route::get('/change-password', 'UserController@changePassword');
+Route::post('/change-password', 'UserController@updatePassword');
+
 // Route::get('/data', 'DoubleSteamController@getChillerData');
 
 Route::group(['middleware' => ['auth']], function(){

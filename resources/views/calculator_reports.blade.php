@@ -58,6 +58,20 @@
 			 											@endforeach
 		 											</select>
 		 											<br>
+		 											<br>
+		 											<div class="form-group row">
+		 											    <label class="col-sm-4 col-form-label">From Data</label>
+		 											    <div class="col-sm-6">
+		 											        <input id="from_date" name="from_date" type="date" required class="form-control">
+		 											    </div>
+		 											</div>
+		 											<div class="form-group row">
+		 											    <label class="col-sm-4 col-form-label">To Data</label>
+		 											    <div class="col-sm-6">
+		 											        <input id="to_date" name="to_date" type="date" required class="form-control">
+		 											    </div>
+		 											</div>
+		 											<br>
 									            	 <button class="btn btn-primary m-b-0" type="submit">Export Report</button>
 									            </form>	 
 								            </div>

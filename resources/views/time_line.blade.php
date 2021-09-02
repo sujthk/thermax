@@ -96,7 +96,7 @@
 									                            </div>
 									                            <label class="col-form-label">Image</label> 
 									                            <div class="input-group">
-									                                <input type="file" class="form-control" name="image" required >
+									                                <input type="file" class="form-control" name="image" >
 									                            </div>
 									                            <label class="col-form-label">Url</label> 
 									                            <div class="input-group">

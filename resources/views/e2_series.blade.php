@@ -261,7 +261,7 @@
 							<div class="row">
 								<div class="col-md-6">
 									<div class="page-header-title">
-										<h4>E2 Series</h4>
+										<h4>{{ $calculator_name }}</h4>
 									</div>
 									<span style="color: #a3a3a3; font-weight: 600; font-size: 7px;" id="version"></span>
 								</div>
@@ -486,39 +486,20 @@
 															</div>
 														</div>
 														<div class="col-12">
-															<div class="water-chill w-100 mt-2 pt-1 pb-1">
-																<strong>Economizer</strong>
-																<div class="row inside-chill">
-																	<div class="col-md-12">
-																		<div class="row">
-																			<div class="col-md-6 form-radio">
-																				<div class="radio radio-inline">
-																					<label>
-																						<input class="economizer_status"
-																							type="radio"
-																							name="economizer"
-																							id="economizer_yes"
-																							value="yes"
-																							checked="checked">
-																						<i class="helper"></i>Yes
-																					</label>
-																				</div>
-																			</div>
-																			<div class="col-md-6 form-radio">
-																				<div class="radio radio-inline">
-																					<label>
-																						<input class="economizer_status"
-																							type="radio"
-																							name="economizer"
-																							id="economizer_no"
-																							value="no">
-																						<i class="helper"></i>No
-																					</label>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																</div>
+															<div
+																class="col-md-4 padding-0 checkbox-fade fade-in-primary">
+																<p>
+																	<label style="margin-bottom: 0 !important;">
+																		<input type="checkbox" 
+																			name="economizer"
+																			id="economizer" >
+																		<span class="cr">
+																			<i
+																				class="cr-icon icofont icofont-ui-check txt-primary"></i>
+																		</span><span>Economizer</span><span
+																			id=""></span>
+																	</label>
+																	<p>
 															</div>
 														</div>
 														<div class="col-md-12">
@@ -1141,11 +1122,11 @@
 		}
 
 		if(model_values.economizer == 'yes'){
-			$("#economizer_yes").prop('checked', true);
+			$("#economizer").prop('checked', true);
 
 		}
 		else{
-			$("#economizer_no").prop('checked', true);
+			$("#economizer").prop('checked', false);
 
 		}
 
@@ -1298,12 +1279,12 @@
 	function engine_type_change(){
 		if(model_values.engine_type == 'gas'){
 			$("#engine_type_gas").prop('checked', true);			
-			$(".economizer_status").prop('disabled', false);
+			$("#economizer").prop('disabled', false);
 		}
 		else{
 			$("#engine_type_oil").prop('checked', true);
-			$("#economizer_no").prop('checked', true);
-			$(".economizer_status").prop('disabled', true);
+			$("#economizer").prop('checked', false);
+			$("#economizer").prop('disabled', true);
 			model_values.economizer = 'no';
 			
 		}
@@ -1325,9 +1306,16 @@
 		engineTypeRedClass(this.value);
 	});
 
-	$('input[type=radio][name=economizer]').change(function() {
-		model_values.economizer = this.value;
+
+	$('#economizer').change(function() {
+		if($(this).is(":checked")) {
+			model_values.economizer = "yes";
+		}
+		else{
+			model_values.economizer = "no";
+		}
 		updateModelValues('economizer');
+
 	});
     
 	$('input:radio[name="region_type"]').change(function() {
