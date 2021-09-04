@@ -247,6 +247,11 @@
 	.radio-inline .red-check {
 		color: #e10010 !important;
 	}
+
+	/*:disabled {
+	  color: #e6e3e3 !important;
+	}*/
+
 </style>
 @endsection
 @section('content')

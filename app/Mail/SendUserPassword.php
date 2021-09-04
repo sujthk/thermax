@@ -32,6 +32,6 @@ class SendUserPassword extends Mailable
      */
     public function build()
     {
-         return $this->subject('Thermax Password Reseted')->view('emails.password_reset');
+         return $this->subject('iChill Password Reseted')->view('emails.password_reset');
     }
 }

@@ -1123,16 +1123,24 @@
 
         $("#calorific_value").val(model_values.calorific_value);
         $("#std_calorific_value").val(model_values.std_calorific_value);
-
+        var standard_cal_value = "";
         if(model_values.fuel_type == 'Normal'){
             $("#fuel_normal").prop('checked', true);
             $("#fuel_cv_stds").hide();
-            $('.std_calorific_value_span').attr('data-original-title',"");
+            if(model_values.fuel_value_type == 'NaturalGas')
+                standard_cal_value = model_values.normal_std_min_natural_gas+" - "+model_values.normal_std_max_natural_gas;
+            else
+                standard_cal_value = model_values.normal_std_min_hsd+" - "+model_values.normal_std_max_hsd;
         }
         else{
             $("#fuel_gross").prop('checked', true);
-            $('.std_calorific_value_span').attr('data-original-title',model_values.std_calorific_value);
+            if(model_values.fuel_value_type == 'NaturalGas')
+                standard_cal_value = model_values.gross_std_min_natural_gas+" - "+model_values.gross_std_max_natural_gas;
+            else
+                standard_cal_value = model_values.gross_std_min_hsd+" - "+model_values.gross_std_max_hsd;
         }
+
+        $('.std_calorific_value_span').attr('data-original-title',standard_cal_value);
 
     }
 

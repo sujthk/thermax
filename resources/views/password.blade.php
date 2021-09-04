@@ -69,11 +69,11 @@
 									<hr/>
 									<input type="hidden" value="{{ $user->id }}" name="user_id">
 									<div class="input-group sign_in__">
-										<input type="password" class="form-control" onKeyUp="checkPasswordStrength();" name="password" id="password" value="" required placeholder="Password">
+										<input type="password" class="form-control" onKeyUp="checkPasswordStrength();" name="password" id="password" value="" required placeholder="New Password">
 										<span class="md-line"></span>
 									</div>
 									<div class="input-group">
-										<input type="text" class="form-control" name="password_confirmation" id="confirm_password" value="" required placeholder="Confirm Password">
+										<input type="password" class="form-control" name="password_confirmation" id="confirm_password" value="" required placeholder="Confirm Password">
 									</div>
 									<div id="password-strength-status"></div>
 									<div class="row m-t-25 text-left">

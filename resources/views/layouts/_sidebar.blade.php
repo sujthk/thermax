@@ -86,7 +86,7 @@
                         <span data-i18n="nav.widget.main"> Calculation Keys</span>
                     </a>
                 </li>
-                <li data-placement="bottom" title="Notes" class="nav-item single-item {{ Nav::isRoute('languages','has-class') }}" >
+                <li data-placement="bottom" title="Languages" class="nav-item single-item {{ Nav::isRoute('languages','has-class') }}" >
                     <a href="{{ url('/languages') }}">
                         <i class="ti-layout-menu-v"></i>
                         <span data-i18n="nav.widget.main">Languages</span>
@@ -98,7 +98,7 @@
                         <span data-i18n="nav.widget.main"> Notes</span>
                     </a>
                 </li>
-                <li data-placement="bottom" title="Notes" class="nav-item single-item {{ Nav::isRoute('languages-notes','has-class') }}" >
+                <li data-placement="bottom" title="Language Notes" class="nav-item single-item {{ Nav::isRoute('languages-notes','has-class') }}" >
                     <a href="{{ url('/languages-notes') }}">
                         <i class="ti-layout-menu-v"></i>
                         <span data-i18n="nav.widget.main">Language Notes</span>
@@ -116,7 +116,7 @@
                         <span data-i18n="nav.widget.main">Region</span>
                     </a>
                 </li>
-                <li data-placement="bottom" title="Testing" class="nav-item single-item {{ Nav::isRoute('auto-testing','has-class') }}" >
+                <li data-placement="bottom" title="Auto Testing" class="nav-item single-item {{ Nav::isRoute('auto-testing','has-class') }}" >
                     <a href="{{ url('/auto-testing') }}">
                         <i class="ti-eye"></i>
                         <span data-i18n="nav.widget.main">Auto Testing</span>
@@ -129,7 +129,7 @@
                         <span data-i18n="nav.widget.main"> Calculator Report</span>
                     </a>
                 </li>
-                <li data-placement="bottom" title="Notes" class="nav-item single-item {{ Nav::isRoute('versions','has-class') }}" >
+                <li data-placement="bottom" title="Versions" class="nav-item single-item {{ Nav::isRoute('versions','has-class') }}" >
                     <a href="{{ url('/versions') }}">
                         <i class="ti-map"></i>
                         <span data-i18n="nav.widget.main"> Versions</span>

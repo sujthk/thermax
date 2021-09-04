@@ -188,7 +188,7 @@ Change Password
                                 <tr>
                                     <td>
                                          <div class="input-group">
-                                            <span class="input-group-addon"> New Image</span>
+                                            <span class="input-group-addon"> Profile Picture</span>
                                              <input id="image" name="image" type="file" value="" class="form-control">
                                         </div>
                                     </td>

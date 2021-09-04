@@ -213,7 +213,7 @@
 						if(response.status){
 							$('#error-display').removeClass();
 							$('#error-display').html("");
-							alert("Your password resetted and new credentials sent to your mail")
+							alert("Your password has been reset and new credentials has been sent to your mail")
 						}
 						else{
 							

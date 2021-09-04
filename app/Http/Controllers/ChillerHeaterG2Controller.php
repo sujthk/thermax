@@ -4296,7 +4296,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 M1";
+                    $this->calculation_values['model_name'] = "TCH G2 M1";
                 }
 
                 break;
@@ -4308,7 +4308,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 M2";
+                    $this->calculation_values['model_name'] = "TCH G2 M2";
                 }
 
                 break;    
@@ -4320,7 +4320,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 N1";
+                    $this->calculation_values['model_name'] = "TCH G2 N1";
                 }
 
                 break;     
@@ -4332,7 +4332,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 N2";
+                    $this->calculation_values['model_name'] = "TCH G2 N2";
                 }
 
                 break;     
@@ -4344,7 +4344,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 N3";
+                    $this->calculation_values['model_name'] = "TCH G2 N3";
                 }
 
                 break;      
@@ -4356,7 +4356,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 N4";
+                    $this->calculation_values['model_name'] = "TCH G2 N4";
                 }
 
                 break;     
@@ -4369,7 +4369,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 P1";
+                    $this->calculation_values['model_name'] = "TCH G2 P1";
                 }
                 break;     
 
@@ -4380,7 +4380,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 P2";
+                    $this->calculation_values['model_name'] = "TCH G2 P2";
                 }
 
                 break; 
@@ -4392,7 +4392,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 D3";
+                    $this->calculation_values['model_name'] = "TCH G2 D3";
                 }
 
             break;
@@ -4404,7 +4404,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 D4";
+                    $this->calculation_values['model_name'] = "TCH G2 D4";
                 }
 
             break;
@@ -4415,7 +4415,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 E1";
+                    $this->calculation_values['model_name'] = "TCH G2 E1";
 
                 }
 
@@ -4430,7 +4430,7 @@ class ChillerHeaterG2Controller extends Controller
                 else
                 {
 
-                    $this->calculation_values['model_name'] = "TAC G2 E2";
+                    $this->calculation_values['model_name'] = "TCH G2 E2";
                 }
 
             break;
@@ -4443,7 +4443,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 E3";
+                    $this->calculation_values['model_name'] = "TCH G2 E3";
 
                 }
 
@@ -4456,7 +4456,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 E4";
+                    $this->calculation_values['model_name'] = "TCH G2 E4";
                 }
 
 
@@ -4469,7 +4469,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 E5";
+                    $this->calculation_values['model_name'] = "TCH G2 E5";
                 }
 
             break;
@@ -4481,7 +4481,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 E6";
+                    $this->calculation_values['model_name'] = "TCH G2 E6";
 
                 }
 
@@ -4496,7 +4496,7 @@ class ChillerHeaterG2Controller extends Controller
                 else
                 {
 
-                    $this->calculation_values['model_name'] = "TAC G2 F1";
+                    $this->calculation_values['model_name'] = "TCH G2 F1";
 
                 }
 
@@ -4509,7 +4509,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 F2"; 
+                    $this->calculation_values['model_name'] = "TCH G2 F2"; 
                 }
 
             break;
@@ -4522,7 +4522,7 @@ class ChillerHeaterG2Controller extends Controller
                 else
                 {
 
-                    $this->calculation_values['model_name'] = "TAC G2 F3";
+                    $this->calculation_values['model_name'] = "TCH G2 F3";
                 }
 
 
@@ -4538,7 +4538,7 @@ class ChillerHeaterG2Controller extends Controller
                 else
                 {
 
-                    $this->calculation_values['model_name'] = "TAC G2 G1";
+                    $this->calculation_values['model_name'] = "TCH G2 G1";
 
                 }
 
@@ -4551,7 +4551,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 G2";
+                    $this->calculation_values['model_name'] = "TCH G2 G2";
 
                 }
 
@@ -4566,7 +4566,7 @@ class ChillerHeaterG2Controller extends Controller
                 else
                 {
 
-                    $this->calculation_values['model_name'] = "TAC G2 G3";
+                    $this->calculation_values['model_name'] = "TCH G2 G3";
                 }
 
             break;
@@ -4578,7 +4578,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 G4";
+                    $this->calculation_values['model_name'] = "TCH G2 G4";
                 }
 
             break;
@@ -4590,7 +4590,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 G5";
+                    $this->calculation_values['model_name'] = "TCH G2 G5";
                 }
 
             break;
@@ -4602,7 +4602,7 @@ class ChillerHeaterG2Controller extends Controller
                 }
                 else
                 {
-                    $this->calculation_values['model_name'] = "TAC G2 G6";
+                    $this->calculation_values['model_name'] = "TCH G2 G6";
                 }
 
             break;

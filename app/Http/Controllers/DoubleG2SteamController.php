@@ -4427,7 +4427,16 @@ class DoubleG2SteamController extends Controller
         $version = DB::table('versions')->orderBy('id', 'desc')->first();
         $version_date = date('d-M-Y', strtotime($version->created_at));
 
-        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1,'region_name'=>$region_name,'region_type'=>$region_type,'calorific_value' => 0,'std_calorific_value' => 0,'version' => $version->version,'version_date' => $version_date);
+        $normal_std_min_natural_gas = 8000;
+        $normal_std_max_natural_gas = 12000;
+        $gross_std_min_natural_gas = 8000;
+        $gross_std_max_natural_gas = 12000;
+        $normal_std_min_hsd = 8000;
+        $normal_std_max_hsd = 12000;
+        $gross_std_min_hsd = 8000;
+        $gross_std_max_hsd = 12000;
+
+        $standard_values = array('evaporator_thickness' => 0,'absorber_thickness' => 0,'condenser_thickness' => 0,'evaporator_thickness_min_range' => 0,'evaporator_thickness_max_range' => 0,'absorber_thickness_min_range' => 0,'absorber_thickness_max_range' => 0,'condenser_thickness_min_range' => 0,'condenser_thickness_max_range' => 0,'fouling_chilled_water_value' => 0,'fouling_cooling_water_value' => 0,'evaporator_thickness_change' => 1,'absorber_thickness_change' => 1,'condenser_thickness_change' => 1,'fouling_chilled_water_checked' => 0,'fouling_cooling_water_checked' => 0,'fouling_chilled_water_disabled' => 1,'fouling_cooling_water_disabled' => 1,'fouling_chilled_water_value_disabled' => 1,'fouling_cooling_water_value_disabled' => 1,'region_name'=>$region_name,'region_type'=>$region_type,'calorific_value' => 0,'std_calorific_value' => 0,'version' => $version->version,'version_date' => $version_date,'normal_std_min_natural_gas' => $normal_std_min_natural_gas,'normal_std_max_natural_gas' => $normal_std_max_natural_gas,'gross_std_min_natural_gas' => $gross_std_min_natural_gas,'gross_std_max_natural_gas' => $gross_std_max_natural_gas,'normal_std_min_hsd' => $normal_std_min_hsd,'normal_std_max_hsd' => $normal_std_max_hsd,'gross_std_min_hsd' => $gross_std_min_hsd,'gross_std_max_hsd' => $gross_std_max_hsd);
 
 
         $form_values = collect($form_values)->union($standard_values);

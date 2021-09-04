@@ -33,6 +33,6 @@ class UserCreated extends Mailable
      */
     public function build()
     {
-        return $this->subject('Welcome To Thermax')->view('emails.send_user_credentials');
+        return $this->subject('Welcome To iChill')->view('emails.send_user_credentials');
     }
 }

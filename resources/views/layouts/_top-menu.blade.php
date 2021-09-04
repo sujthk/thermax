@@ -55,7 +55,7 @@
                                 <i class=""></i>
                             </a>
                         </li>
-                        <li style="text-align: right;">
+                        <li>
                             <a href="{{ url('logout') }}">
                                 <i class="ti-layout-sidebar-left"></i> Logout
                             </a>

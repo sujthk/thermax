@@ -29,6 +29,6 @@ class UserActivated extends Mailable
      */
     public function build()
     {
-        return $this->subject('Thermax Account Reacivated')->view('emails.user_reactivation');
+        return $this->subject('iChill Account Reacivated')->view('emails.user_reactivation');
     }
 }
