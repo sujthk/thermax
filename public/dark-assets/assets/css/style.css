@@ -1970,6 +1970,10 @@ h5,
 	margin: 0 auto
 }
 
+.disable-style{
+	opacity: 0.3
+}
+
 .img-hover:hover .img-overlay {
 	left: 0;
 	right: 0;

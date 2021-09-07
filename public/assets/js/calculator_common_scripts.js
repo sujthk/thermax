@@ -17,13 +17,15 @@ function getBoolean(value){
 
 
 function metalluryRedClass(value){
-	if(value == 'non_standard'){
+	if(!value){
 		$("#metallurgy_non_standard_label").addClass('red-check');
 		$("#metallurgy_standard_label").removeClass('red-check');
+		$(".metallurgy-disabled").removeClass('disable-style');
 	}
 	else{
 		$("#metallurgy_non_standard_label").removeClass('red-check');
 		$("#metallurgy_standard_label").addClass('red-check');
+		$(".metallurgy-disabled").addClass('disable-style');
 	}
 }
 
@@ -33,16 +35,19 @@ function foulingFactorRedClass(value){
 		$("#fouling_factor_ari_label").addClass('red-check');
 		$("#fouling_factor_non_standard_label").removeClass('red-check');
 		$("#fouling_factor_standard_label").removeClass('red-check');
+		$(".fouling-factor-disabled").removeClass('disable-style');
 	}
 	else if(value == 'non_standard'){
 		$("#fouling_factor_ari_label").removeClass('red-check');
 		$("#fouling_factor_non_standard_label").addClass('red-check');
 		$("#fouling_factor_standard_label").removeClass('red-check');
+		$(".fouling-factor-disabled").removeClass('disable-style');
 	}
 	else{
 		$("#fouling_factor_ari_label").removeClass('red-check');
 		$("#fouling_factor_non_standard_label").removeClass('red-check');
 		$("#fouling_factor_standard_label").addClass('red-check');
+		$(".fouling-factor-disabled").addClass('disable-style');
 	}
 }
 
@@ -51,16 +56,19 @@ function glycolRedClass(value){
 		$("#glycol_proplene_label").addClass('red-check');
 		$("#glycol_ethylene_label").removeClass('red-check');
 		$("#glycol_none_label").removeClass('red-check');
+		$(".glycol-disabled").removeClass('disable-style');
 	}
 	else if(value == '2'){
 		$("#glycol_proplene_label").removeClass('red-check');
 		$("#glycol_ethylene_label").addClass('red-check');
 		$("#glycol_none_label").removeClass('red-check');
+		$(".glycol-disabled").removeClass('disable-style');
 	}
 	else{
 		$("#glycol_proplene_label").removeClass('red-check');
 		$("#glycol_ethylene_label").removeClass('red-check');
 		$("#glycol_none_label").addClass('red-check');
+		$(".glycol-disabled").addClass('disable-style');
 	}
 }
 

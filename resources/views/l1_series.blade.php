@@ -475,7 +475,7 @@
 												<div class="row">
 													<div class="col-md-12">
 														<div class="row">
-															<div class="form-radio col-md-6">
+															<div class="form-radio col-md-6 tube_metallurgy_standard_disabled">
 																<div class="radio radio-inline">
 																	<label id="metallurgy_standard_label" class="red-check">
 																		<input type="radio" name="tube_metallurgy"
@@ -497,7 +497,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-12">
+													<div class="col-md-12 metallurgy-disabled">
 														<div class="row">
 															<div class="col-md-3">
 																<p><label style="margin-bottom: 0 !important;"
@@ -533,7 +533,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-12">
+													<div class="col-md-12 metallurgy-disabled">
 														<div class="row">
 															<div class="col-md-3">
 																<p><label style="margin-bottom: 0 !important;"
@@ -568,7 +568,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-12">
+													<div class="col-md-12 metallurgy-disabled">
 														<div class="row">
 															<div class="col-md-3">
 																<p> <label style="margin-bottom: 0 !important;"
@@ -604,7 +604,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-12">
+													<div class="col-md-12 metallurgy-disabled">
 														<div class="row">
 															<div class="col-md-3">
 																<p> <label style="margin-bottom: 0 !important;"
@@ -665,7 +665,7 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-12">
+													<div class="col-md-12 fouling-factor-disabled">
 														<div class="row margin-0">
 															<div
 																class="col-md-4 padding-0 checkbox-fade fade-in-primary">
@@ -769,7 +769,7 @@
 												<div class="row">
 													<div class="col-md-12">
 														<div class="row">
-															<div class="form-radio col-md-4">
+															<div class="form-radio col-md-4 glycol_none_disabled">
 																<div class="radio radio-inline">
 																	<label id="glycol_none_label" class="red-check">
 																		<input type="radio" name="glycol" value="1"
@@ -798,43 +798,43 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-4">
+													<div class="col-md-4 glycol-disabled">
 														<p>{{ $language_datas['chilled_water'] }} </p>
 													</div>
-													<div class="col-md-5">
+													<div class="col-md-5 glycol-disabled">
 														<input type="text" name="glycol_chilled_water"
 															id="glycol_chilled_water" value="0"
 															onchange="updateModelValues('glycol_chilled_water')"
 															value="" class="form-control glycol_chilled_water_ranges"
 															data-placement="bottom" data-original-title>
 													</div>
-													<div class="col-md-3">
+													<div class="col-md-3 glycol-disabled">
 														<p>% (By Vol)</p>
 													</div>
-													<div class="col-md-4">
+													<div class="col-md-4 glycol-disabled">
 														<p>{{ $language_datas['cooling_water'] }} </p>
 													</div>
-													<div class="col-md-5">
+													<div class="col-md-5 glycol-disabled">
 														<input type="text" name="glycol_cooling_water"
 															id="glycol_cooling_water" value="0"
 															onchange="updateModelValues('glycol_cooling_water')"
 															class="form-control glycol_cooling_water_ranges"
 															data-placement="bottom" data-original-title>
 													</div>
-													<div class="col-md-3">
+													<div class="col-md-3 glycol-disabled">
 														<p>% (By Vol)</p>
 													</div>
-													<div class="col-md-4">
+													<div class="col-md-4 glycol-disabled">
 														<p>{{ $language_datas['hot_water_glycol'] }} </p>
 													</div>
-													<div class="col-md-5">
+													<div class="col-md-5 glycol-disabled">
 														<input type="text" name="glycol_hot_water" id="glycol_hot_water"
 															value="0" onchange="updateModelValues('glycol_hot_water')"
 															class="form-control glycol_hot_water_ranges"
 															data-animation="false" data-placement="bottom"
 															data-original-title>
 													</div>
-													<div class="col-md-3">
+													<div class="col-md-3 glycol-disabled">
 														<p>% (By Vol)</p>
 													</div>
 												</div>
@@ -1017,8 +1017,8 @@
             var glycol_hot_water_range = model_values.glycol_min_hot_water+" - "+model_values.glycol_max_hot_water;
             $('.glycol_hot_water_ranges').attr('data-original-title', glycol_hot_water_range);
             
-            $('#evaporator_thickness').val(model_values.evaporator_thickness);
             $('#absorber_thickness').val(model_values.absorber_thickness);
+            $('#evaporator_thickness').val(model_values.evaporator_thickness);
             $('#condenser_thickness').val(model_values.condenser_thickness);
             $("#evaporator_material").val(model_values.evaporator_material_value);
             $("#absorber_material").val(model_values.absorber_material_value);
@@ -1028,10 +1028,14 @@
             var hot_water_in_ranges = model_values.how_water_temp_min_range+" - "+model_values.how_water_temp_max_range;
             $('.hot_water_in_ranges').attr('data-original-title', hot_water_in_ranges);
 
-            if(model_values.glycol_none === 'true')
-                $("#glycol_none").prop('disabled', true);
-            else
-                $("#glycol_none").prop('disabled', false);
+            if(model_values.glycol_none === 'true'){
+            	$("#glycol_none").prop('disabled', true);
+            	$(".glycol_none_disabled").addClass('disable-style');
+            }
+            else{
+            	$("#glycol_none").prop('disabled', false);
+            	$(".glycol_none_disabled").removeClass('disable-style');
+            }
 
 
             foulingFactor(model_values.fouling_factor);
@@ -1063,15 +1067,20 @@
                 $(".metallurgy_standard").prop('disabled', true);
                 $(".metallurgy_standard_span").html("");
                 $(".range-hide").removeClass('show-div').addClass('hidden-div');
+                $(".tube_metallurgy_standard_disabled").removeClass('disable-style');
 
             }else{
                 $(".range-hide").addClass('show-div');
                 $("#tube_metallurgy_non_standard").prop('checked', true);
 
-                if(model_values.tube_metallurgy_standard === 'false')
-                    $("#tube_metallurgy_standard").prop('disabled', true);
-                else
-                    $("#tube_metallurgy_standard").prop('disabled', false);
+                if(model_values.tube_metallurgy_standard === 'false'){
+                	$("#tube_metallurgy_standard").prop('disabled', true);
+                	$(".tube_metallurgy_standard_disabled").addClass('disable-style');
+                }
+                else{
+                	$("#tube_metallurgy_standard").prop('disabled', false);
+                	$(".tube_metallurgy_standard_disabled").removeClass('disable-style');
+                }
                 // $("#tube_metallurgy_standard").prop('disabled', true);
                 $(".metallurgy_standard").prop('disabled', false);
                 var evaporator_range = "("+model_values.evaporator_thickness_min_range+" - "+model_values.evaporator_thickness_max_range+")";
@@ -1242,7 +1251,8 @@
                 loadGeneratorOptions();
             }
 
-            metalluryRedClass(this.value);
+			metalluryRedClass(model_values.metallurgy_standard);	
+            
             
         });
 
@@ -1483,6 +1493,12 @@
         	model_values.hot_water_in = parseFloat(model_values.hot_water_in).toFixed(1);
         	model_values.how_water_temp_min_range = parseFloat(model_values.how_water_temp_min_range).toFixed(1);
         	model_values.how_water_temp_max_range = parseFloat(model_values.how_water_temp_max_range).toFixed(1);
+        	model_values.glycol_chilled_water = parseFloat(model_values.glycol_chilled_water).toFixed(1);
+        	model_values.glycol_min_chilled_water = parseFloat(model_values.glycol_min_chilled_water).toFixed(1);
+        	model_values.glycol_max_chilled_water = parseFloat(model_values.glycol_max_chilled_water).toFixed(1);
+        	model_values.glycol_cooling_water = parseFloat(model_values.glycol_cooling_water).toFixed(1);
+        	model_values.glycol_min_cooling_water = parseFloat(model_values.glycol_min_cooling_water).toFixed(1);
+        	model_values.glycol_max_cooling_water = parseFloat(model_values.glycol_max_cooling_water).toFixed(1);
         	
         }
 

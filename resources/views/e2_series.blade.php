@@ -349,7 +349,7 @@
 																<option value="410">E2 E1</option>
 																<option value="470">E2 E2</option>
 																<option value="530">E2 E3</option>
-																<option value="580">S1 E4</option>
+																<option value="580">E2 E4</option>
 																<option value="630">E2 E5</option>
 																<option value="710">E2 E6</option>
 																<option value="760">E2 F1</option>
