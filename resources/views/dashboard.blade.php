@@ -4,11 +4,11 @@
 <style type="text/css">
 	.teimeline-header {
 		text-align: center;
+		position: relative;
 	}
 
 	.teimeline-header img {
-		height: 100vh;
-		width: 100%;
+		height: 75vh;
 	}
 
 	.t-max-content p {
@@ -52,8 +52,9 @@
 			<div class="col-sm-12 p-0">
 				<!-- Bootstrap slider card start -->
 				<div class="card">
-					<div class="card-block">
-						<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+					<div class="card-block p-0">
+						<div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel"
+							data-interval="5000">
 							<ol class="carousel-indicators">
 								@php($i=1)
 								@foreach($time_lines as $time_line)
@@ -65,7 +66,6 @@
 								@endif
 								@php($i++)
 								@endforeach
-
 							</ol>
 
 							<div class="carousel-inner" role="listbox">
@@ -76,27 +76,20 @@
 									@else
 									<div class="carousel-item ">
 										@endif
-										<div class="row">
-											<div class="col-md-12">
-
-												<div class="teimeline-header">
-													<img src="{{$time_line->image_path}}" alt="Snow" class="img-fluid">
+										<div class="col-md-12">
+											<div class="teimeline-header">
+												<img src="{{$time_line->image_path}}" alt="Snow" class="img-fluid">
+												<div>
 													<a href="{{$time_line->url_link}}" target="_blank">
 														<h2>{{$time_line->name}}</h2>
 													</a>
-
-												</div>
-												<div class="t-max-content">
 													<p>
 														{{$time_line->description}}
 
 													</p>
-
 												</div>
 											</div>
-
 										</div>
-
 									</div>
 
 									@php($j++)

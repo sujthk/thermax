@@ -148,7 +148,15 @@ p {
 }
 
 .card .card-block p {
-	line-height: 25px
+	line-height: 25px;
+	font-size: 15px;
+	color: #000;
+}
+
+.teimeline-header a h2 {
+	font-size: 22px;
+	margin-bottom: 0;
+
 }
 
 .card .card-block a.dropdown-item {
@@ -9084,7 +9092,6 @@ body.menu-sidebar .navbar-wrapper {
 	font-size: 15px;
 	padding: 10px 19px;
 	font-family: 'Open Sans';
-	width: 15%;
 }
 
 .button-page .card-block {
@@ -10352,7 +10359,7 @@ body.menu-sidebar .navbar-wrapper {
 
 .form-radio label {
 	position: relative;
-	padding-left: 1.5rem;
+	padding-left: 1rem;
 	text-align: left;
 	color: #333;
 	display: block;

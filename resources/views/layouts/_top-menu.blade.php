@@ -7,9 +7,9 @@
                     src="{{asset('assets/images/Thermax ichill.png')}}" alt="logo.png">
             </div>
 
-            <a class="mobile-menu" id="mobile-collapse" href="#!">
+            {{-- <a class="mobile-menu" id="mobile-collapse" href="#!">
                 <i class="ti-menu"></i>
-            </a>
+            </a> --}}
 
             <a class="mobile-options">
                 <i class="ti-more"></i>
@@ -50,11 +50,11 @@
                                 <i class="ti-user"></i> Profile
                             </a>
                         </li>
-                        <li>
+                        {{-- <li>
                             <a href="">
                                 <i class=""></i>
                             </a>
-                        </li>
+                        </li> --}}
                         <li>
                             <a href="{{ url('logout') }}">
                                 <i class="ti-layout-sidebar-left"></i> Logout

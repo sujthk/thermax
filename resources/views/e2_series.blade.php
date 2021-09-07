@@ -251,7 +251,6 @@
 	/*:disabled {
 	  color: #e6e3e3 !important;
 	}*/
-
 </style>
 @endsection
 @section('content')
@@ -468,10 +467,11 @@
 												<div class="col-md-12">
 													<div class="row">
 														<div class="col-md-12">
-															<div class="row">
-																<div class="col-md-6 form-radio">
+															<div class="row ml-1">
+																<div class="form-radio" style="width: 100px">
 																	<div class="radio radio-inline">
-																		<label id="engine_type_gas_label" class="red-check">
+																		<label id="engine_type_gas_label"
+																			class="red-check">
 																			<input type="radio" name="engine_type"
 																				id="engine_type_gas" value="gas"
 																				checked="checked">
@@ -479,7 +479,7 @@
 																		</label>
 																	</div>
 																</div>
-																<div class="col-md-6 form-radio">
+																<div class="form-radio" style="width: 100px">
 																	<div class="radio radio-inline">
 																		<label id="engine_type_oil_label">
 																			<input type="radio" name="engine_type"
@@ -488,23 +488,21 @@
 																		</label>
 																	</div>
 																</div>
-															</div>
-														</div>
-														<div class="col-12">
-															<div
-																class="col-md-4 padding-0 checkbox-fade fade-in-primary">
-																<p>
-																	<label style="margin-bottom: 0 !important;">
-																		<input type="checkbox" 
-																			name="economizer"
-																			id="economizer" >
-																		<span class="cr">
-																			<i
-																				class="cr-icon icofont icofont-ui-check txt-primary"></i>
-																		</span><span>Economizer</span><span
-																			id=""></span>
-																	</label>
-																	<p>
+																<div class="form-radio" style="width: 120px">
+																	<div
+																		class="padding-0 checkbox-fade fade-in-primary">
+																		<label style="margin-bottom: 0 !important;">
+																			<input type="checkbox" name="economizer"
+																				id="economizer">
+																			<span class="cr mt-0">
+																				<i
+																					class="cr-icon icofont icofont-ui-check txt-primary"></i>
+																			</span><span
+																				style="position: absolute; margin-top: -8px">Economizer</span><span
+																				id=""></span>
+																		</label>
+																	</div>
+																</div>
 															</div>
 														</div>
 														<div class="col-md-12">
@@ -629,7 +627,8 @@
 														<div class="row">
 															<div class="form-radio col-md-6">
 																<div class="radio radio-inline">
-																	<label id="metallurgy_standard_label" class="red-check">
+																	<label id="metallurgy_standard_label"
+																		class="red-check">
 																		<input type="radio" name="tube_metallurgy"
 																			id="tube_metallurgy_standard"
 																			value="standard" checked="checked">
@@ -766,7 +765,8 @@
 														<div class="row">
 															<div class="form-radio col-md-4">
 																<div class="radio radio-inline">
-																	<label id="fouling_factor_standard_label" class="red-check">
+																	<label id="fouling_factor_standard_label"
+																		class="red-check">
 																		<input type="radio" name="fouling_factor"
 																			id="fouling_factor_standard"
 																			value="standard" checked="checked">

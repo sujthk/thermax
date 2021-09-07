@@ -2,22 +2,21 @@
 <html lang="en">
 
 <head>
-    <title>Email Template</title>
-    <style>
+    <title>iChill Account Re-Activated</title>
+    <!-- <style>
         body {
             background-color: #fff;
         }
 
         @font-face {
             font-family: "f1";
-            src: url({{asset('mail/font/nexa/NexaBold.otf')}});
+            src: url(../termax-mail/font/nexa/NexaBold.otf);
         }
 
         @font-face {
             font-family: "f2";
-            src: url({{asset('mail/font/nunito/Nunito-Regular.ttf')}});
+            src: url(../termax-mail/font/nunito/Nunito-Regular.ttf);
         }
-
 
         .mail-bg {
             width: 50%;
@@ -103,39 +102,61 @@
             margin: 20px 0;
             color: #242424;
         }
-    </style>
+    </style> -->
 </head>
 
-<body class="mail-bg">
-    <section class="mail-template">
+<body class="mail-bg" style="
+width: 50%;
+margin: 0 auto;">
+    <section class="mail-template" style="
+    padding: 80px 20px 40px;
+    text-align: center;
+    background-color: #eaeff2;">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="mail-temp-logo">
+                    <div class="mail-temp-logo" style="text-align: center;">
                         <img src="{{asset('mail/images/Thermax-logo-fin.png')}}" alt="thermax-logo" class="img-fluid">
                     </div>
                     <div class="mail-top">
-                        <h1>Hi {{ $user_name }},</h1>
+                        <h1 style="font-family: 'MyWebFont', Fallback, sans-serif;;font-size: 35px;
+                        margin: 20px 0;">Hi {{ $user_name }},</h1>
                         <!-- <p>Your thermax account is re-activated successfully. You can login with your old credentials.
                         </p> -->
                     </div>
-                    <div class="mail-back">
-                        <div class="mail-logo">
-                            <img src="{{asset('mail/images/email.png')}}" alt="email-logo" class="img-fluid">
+                    <div class="mail-back" style=" background-color: #fff;
+                    padding: 40px 40px 60px 40px;
+                    margin: 40px 0 20px 0;
+                    border-radius: 10px;">
+                        <div class="mail-logo" style="padding: 30px 0;">
+                            <img style="width: 150px" src="{{asset('mail/images/email.png')}}" alt="email-logo" class="img-fluid">
                         </div>
                         <div class="mail-content">
-                            <p>Your iChill account has been re-activated, please login with the existing credentials.</p>
-                            </p>
-                            <!-- <h5>1994</h5> -->
+                            <p style="font-family: 'MyWebFont', Fallback, sans-serif;
+                            line-height: 30px;
+                            font-weight: 600;
+                            color: #2f2f2f;
+                            font-size: 20px;">Your iChill account has been re-activated, please login with the existing credentials.</p>
                         </div>
                     </div>
-                    <div class="social-media-mail">
+                    <div class="social-media-mail" style="font-family: 'MyWebFont', Fallback, sans-serif;;
+                    font-size: 30px;
+                    margin: 20px 0;
+                    color: #242424;">
                         <h5>Follow Us</h5>
-                        <ul>
-                            <li><a href="#"><img src="{{asset('mail/images/facebook.png')}}" alt="facebook-logo"></a></li>
-                            <li><a href="#"><img src="{{asset('mail/images/twitter.png')}}" alt="twitter-logo"></a></li>
-                            <li><a href="#"><img src="{{asset('mail/images/linkedin.png')}}" alt="linkedin-logo"></a></li>
-                            <li><a href="#"><img src="{{asset('mail/images/instagram.png')}}" alt="instagram-logo"></a></li>
+                        <ul style=" padding: 0;">
+                            <li style="list-style: none;display: inline-block;"><a href="#"><img
+                                        src="{{asset('mail/images/facebook.png')}}" alt="facebook-logo"></a>
+                            </li>
+                            <li style="list-style: none;
+            display: inline-block;"><a href="#"><img style="width: 80%;" src="{{asset('mail/images/twitter.png')}}"
+                                        alt="twitter-logo"></a></li>
+                            <li style="list-style: none;
+            display: inline-block;"><a href="#"><img style="width: 80%;" src="{{asset('mail/images/linkedin.png')}}"
+                                        alt="linkedin-logo"></a></li>
+                            <li style="list-style: none;
+            display: inline-block;"><a href="#"><img style="width: 80%;" src="{{asset('mail/images/instagram.png')}}"
+                                        alt="instagram-logo"></a></li>
                         </ul>
                     </div>
                 </div>
