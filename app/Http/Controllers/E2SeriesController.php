@@ -374,7 +374,7 @@ class E2SeriesController extends Controller
         $phone = $user_report->phone;
 
         $chiller_metallurgy_options = ChillerMetallurgyOption::with('chillerOptions.metallurgy')->where('code',$this->model_code)
-                                        ->where('min_model','<=',$calculation_values['MODEL'])->where('max_model','>',$calculation_values['MODEL'])->first();
+                                        ->where('min_model','<=',(int)$calculation_values['MODEL'])->where('max_model','>',(int)$calculation_values['MODEL'])->first();
 
         $chiller_options = $chiller_metallurgy_options->chillerOptions;
         
