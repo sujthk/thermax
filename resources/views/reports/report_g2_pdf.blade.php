@@ -547,17 +547,7 @@
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="optimal-r1"> {{ $calculation_values['CV'] }}</td>
 								</tr>
-								@if($calculation_values['GCV'] == 'NaturalGas')
-								<tr>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"> </td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="font-class">{{ $language_datas['gas_pressure'] }}</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1">mbar </td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> 100</td>
-								</tr>
-								@endif
+								
 								<tr>
 									<td
 										style="text-align: center; font-family:Arial, Helvetica, sans-serif; font-size: 14px;">
@@ -596,6 +586,19 @@
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="optimal-r1"> {{ round($calculation_values['ExhaustDuctSize'],1) }}</td>
 								</tr>
+								@if($calculation_values['GCV'] == 'NaturalGas')
+								<tr>
+									<td
+										style="text-align: center; font-family:Arial, Helvetica, sans-serif; font-size: 14px;">
+										7 </td>
+									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
+										class="font-class">{{ $language_datas['gas_pressure'] }}</td>
+									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
+										class="optimal-r1">mbar </td>
+									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
+										class="optimal-r1"> 100</td>
+								</tr>
+								@endif
 								<tr>
 									<td style="padding: 11px;" class="empty-space" colspan="4"></td>
 								</tr>

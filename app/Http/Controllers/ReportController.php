@@ -615,11 +615,13 @@ class ReportController extends Controller
             $my_template->setValue('gas_pressure', $language_datas['gas_pressure']);
             $my_template->setValue('gas_pressure_unit', "mbar");
             $my_template->setValue('gas_pressure_value', "100");
+            $my_template->setValue('gas_s_no', "7.");
         }
         else{
             $my_template->setValue('gas_pressure', "");
             $my_template->setValue('gas_pressure_unit', "");
             $my_template->setValue('gas_pressure_value', "");
+            $my_template->setValue('gas_s_no', "");
         }
         
         // Burner
