@@ -498,5 +498,4 @@ function roundCommonValues(){
 	model_values.fouling_non_chilled = parseFloat(model_values.fouling_non_chilled.toFixed(8));
 	model_values.fouling_non_cooling = parseFloat(model_values.fouling_non_cooling.toFixed(8));
 
-
 }

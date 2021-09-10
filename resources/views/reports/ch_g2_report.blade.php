@@ -338,13 +338,7 @@
                                         <td class="optimal-r1"> </td>
                                         <td class="optimal-r1"> {{ $calculation_values['CV'] }}</td>
                                     </tr>
-                                    @if($calculation_values['GCV'] == 'NaturalGas')
-	                                    <tr>
-	                                        <td> {{ $language_datas['gas_pressure'] }}</td>
-	                                        <td class="optimal-r1">mbar </td>
-	                                        <td class="optimal-r1"> 100</td>
-	                                    </tr>
-	                                @endif    
+                                       
                                     <tr>
                                         <td>{{ $language_datas['calorific_value'] }}</td>
                                         @if($calculation_values['GCV'] == 'NaturalGas')
@@ -369,6 +363,13 @@
                                         <td class="optimal-r1">{{ $units_data[$unit_set->NozzleDiameterUnit] }}</td>
                                         <td class="optimal-r1"> {{ $calculation_values['ExhaustDuctSize'] }}</td>
                                     </tr>
+                                    @if($calculation_values['GCV'] == 'NaturalGas')
+	                                    <tr>
+	                                        <td> {{ $language_datas['gas_pressure'] }}</td>
+	                                        <td class="optimal-r1">mbar </td>
+	                                        <td class="optimal-r1"> 100</td>
+	                                    </tr>
+	                                @endif 
 									<tr>
 										
 										<th scope="col"> {{ $language_datas['electrical_data'] }}</th>

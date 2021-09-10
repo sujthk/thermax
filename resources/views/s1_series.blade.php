@@ -1319,6 +1319,7 @@
 	});
 
     function afterReset(){
+    	roundCommonValues();
         if(model_values.region_type == 2){
             model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
             model_values.fouling_cooling_water_value = model_values.fouling_ari_cooling

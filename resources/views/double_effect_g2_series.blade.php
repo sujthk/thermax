@@ -1149,6 +1149,7 @@
                 standard_cal_value = model_values.gross_std_min_hsd+" - "+model_values.gross_std_max_hsd;
         }
 
+
         $('.std_calorific_value_span').attr('data-original-title',standard_cal_value);
 
     }
@@ -1483,6 +1484,7 @@
     });
 
     function afterReset(){
+        roundCommonValues();
         if(model_values.region_type == 2){
             //console.log("usa selected");
             model_values.fouling_chilled_water_value = model_values.fouling_ari_chilled
@@ -1507,7 +1509,15 @@
 		model_values.normal_sko_calorific_value = parseFloat(model_values.normal_sko_calorific_value).toFixed(1);
 		model_values.gross_sko_calorific_value = parseFloat(model_values.gross_sko_calorific_value).toFixed(1);
 		model_values.calorific_value = parseFloat(model_values.calorific_value).toFixed(1);
-		model_values.std_calorific_value = parseFloat(model_values.std_calorific_value).toFixed(1);
+        model_values.std_calorific_value = parseFloat(model_values.std_calorific_value).toFixed(1);
+        model_values.normal_std_min_natural_gas = parseFloat(model_values.normal_std_min_natural_gas).toFixed(1);
+        model_values.normal_std_max_natural_gas = parseFloat(model_values.normal_std_max_natural_gas).toFixed(1);
+        model_values.gross_std_min_natural_gas = parseFloat(model_values.gross_std_min_natural_gas).toFixed(1);
+        model_values.gross_std_max_natural_gas = parseFloat(model_values.gross_std_max_natural_gas).toFixed(1);
+        model_values.normal_std_min_hsd = parseFloat(model_values.normal_std_min_hsd).toFixed(1);
+        model_values.normal_std_max_hsd = parseFloat(model_values.normal_std_max_hsd).toFixed(1);
+        model_values.gross_std_min_hsd = parseFloat(model_values.gross_std_min_hsd).toFixed(1);
+		model_values.gross_std_max_hsd = parseFloat(model_values.gross_std_max_hsd).toFixed(1);
 		
 	}
 

@@ -120,7 +120,13 @@ class UnitConversionController extends Controller
             if($chiller_values['fuel_value_type'] == 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
                 $chiller_values['std_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['std_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+                
             }
+
+            $chiller_values['normal_std_min_natural_gas'] = $this->convertCalorificValueGasUnit($chiller_values['normal_std_min_natural_gas'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+            $chiller_values['normal_std_max_natural_gas'] = $this->convertCalorificValueGasUnit($chiller_values['normal_std_max_natural_gas'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+            $chiller_values['gross_std_min_natural_gas'] = $this->convertCalorificValueGasUnit($chiller_values['gross_std_min_natural_gas'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
+            $chiller_values['gross_std_max_natural_gas'] = $this->convertCalorificValueGasUnit($chiller_values['gross_std_max_natural_gas'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
              
              $chiller_values['normal_ng_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['normal_ng_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
              $chiller_values['gross_ng_calorific_value'] = $this->convertCalorificValueGasUnit($chiller_values['gross_ng_calorific_value'],"kCPerNcubicmetre",$unit_set->CalorificValueGasUnit);
@@ -132,7 +138,13 @@ class UnitConversionController extends Controller
             if($chiller_values['fuel_value_type'] != 'NaturalGas'){
                 $chiller_values['calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
                 $chiller_values['std_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['std_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+
             }
+            $chiller_values['normal_std_min_hsd'] = $this->convertCalorificValueOilUnit($chiller_values['normal_std_min_hsd'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['normal_std_max_hsd'] = $this->convertCalorificValueOilUnit($chiller_values['normal_std_max_hsd'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['gross_std_min_hsd'] = $this->convertCalorificValueOilUnit($chiller_values['gross_std_min_hsd'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+            $chiller_values['gross_std_max_hsd'] = $this->convertCalorificValueOilUnit($chiller_values['gross_std_max_hsd'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
+
             $chiller_values['normal_hsd_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['normal_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
             $chiller_values['gross_hsd_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['gross_hsd_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
             $chiller_values['normal_sko_calorific_value'] = $this->convertCalorificValueOilUnit($chiller_values['normal_sko_calorific_value'],"kCPerKilogram",$unit_set->CalorificValueOilUnit);
