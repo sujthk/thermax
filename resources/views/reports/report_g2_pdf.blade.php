@@ -570,8 +570,14 @@
 										5 </td>
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="font-class"> {{ $language_datas['fuel_consumption'] }} ( + 3 %)</td>
-									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> GCV</td>
+									@if($calculation_values['GCV'] == 'NaturalGas')
+										<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
+										class="optimal-r1"> {{ $units_data[$unit_set->FuelConsumptionGasUnit] }}</td>
+									@else
+									    <td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
+										class="optimal-r1"> {{ $units_data[$unit_set->FuelConsumptionOilUnit] }}</td>
+									@endif	
+									
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="optimal-r1"> {{ round($calculation_values['FuelConsumption'],1) }} </td>
 								</tr>

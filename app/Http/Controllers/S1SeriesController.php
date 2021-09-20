@@ -3658,7 +3658,7 @@ class S1SeriesController extends Controller
                 }
                 else
                 {
-                    $this->model_values['model_name'] = "TAC S1 F1";
+                    $this->model_values['model_name'] = "TAC S1 J1";
                 }
                 break;
 

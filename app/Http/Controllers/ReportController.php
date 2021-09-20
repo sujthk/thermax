@@ -359,14 +359,14 @@ class ReportController extends Controller
 
          $my_template->setValue('exhaust_gas_sp_heat', $language_datas['exhaust_gas_sp_heat_capacity']);
          $my_template->setValue('exhaust_gas_sp_heat_unit', $units_data[$unit_set->HeatCapacityUnit]);
-         $my_template->setValue('exhaust_gas_sp_heat_value', round($calculation_values['AvgExhGasCp'],1));
+         $my_template->setValue('exhaust_gas_sp_heat_value', round($calculation_values['AvgExhGasCp'],3));
 
          $my_template->setValue('exhaust_gas_flow_rate', $language_datas['exhaust_gas_flow']);
          $my_template->setValue('exhaust_gas_flow_rate_unit', $units_data[$unit_set->ExhaustGasFlowUnit]);
          $my_template->setValue('exhaust_gas_flow_rate_value', round($calculation_values['ExhaustGasFlowRate'],1));
 
          $my_template->setValue('engine_load', $language_datas['percentage_engine_load_considered']);
-         $my_template->setValue('engine_load_value', $calculation_values['LOAD']);
+         $my_template->setValue('engine_load_value', $calculation_values['PERCENT']);
 
          $my_template->setValue('exhaust_pressure_drop', $language_datas['pressure_drop']);
          $my_template->setValue('exhaust_pressure_drop_unit', $units_data[$unit_set->FurnacePressureDropUnit]);
@@ -492,7 +492,12 @@ class ReportController extends Controller
         $my_template->setValue('calorific_value_value', ceil($calculation_values['RCV1']));
 
         $my_template->setValue('fuel_consumption', $language_datas['fuel_consumption']);
-        $my_template->setValue('fuel_consumption_unit', "GCV");
+        if($calculation_values['GCV'] == 'NaturalGas'){
+            $my_template->setValue('fuel_consumption_unit', $units_data[$unit_set->FuelConsumptionGasUnit]);
+        }
+        else{
+            $my_template->setValue('fuel_consumption_unit', $units_data[$unit_set->FuelConsumptionOilUnit]);
+        }
         $my_template->setValue('fuel_consumption_value', round($calculation_values['FuelConsumption'],1));
 
         $my_template->setValue('gas_duct_size', $language_datas['exhaust_gas_duct_size']);
@@ -604,7 +609,13 @@ class ReportController extends Controller
         $my_template->setValue('calorific_value_value', ceil($calculation_values['RCV1']));
 
         $my_template->setValue('fuel_consumption', $language_datas['fuel_consumption']);
-        $my_template->setValue('fuel_consumption_unit', "GCV");
+        if($calculation_values['GCV'] == 'NaturalGas'){
+            $my_template->setValue('fuel_consumption_unit', $units_data[$unit_set->FuelConsumptionGasUnit]);
+        }
+        else{
+            $my_template->setValue('fuel_consumption_unit', $units_data[$unit_set->FuelConsumptionOilUnit]);
+        }
+        
         $my_template->setValue('fuel_consumption_value', round($calculation_values['FuelConsumption'],1));
 
         $my_template->setValue('gas_duct_size', $language_datas['exhaust_gas_duct_size']);
@@ -909,7 +920,7 @@ class ReportController extends Controller
 
         $my_template->setValue('hot_water_out_temp', $language_datas['hot_water_out_temp']);
         $my_template->setValue('hot_water_out_temp_unit', $units_data[$unit_set->TemperatureUnit]);
-        $my_template->setValue('hot_water_out_temp_value', ceil($calculation_values['THW4']));
+        $my_template->setValue('hot_water_out_temp_value', round($calculation_values['THW4'],1));
 
         $my_template->setValue('generator_passes', $language_datas['generator_passes']);
         $my_template->setValue('generator_passes_value', ($calculation_values['TGP']." + ".$calculation_values['TGP']));

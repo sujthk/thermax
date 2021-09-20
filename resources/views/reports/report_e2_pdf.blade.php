@@ -589,7 +589,7 @@
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="optimal-r1"> {{ $units_data[$unit_set->HeatCapacityUnit] }}</td>
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ round($calculation_values['AvgExhGasCp'],1) }} </td>
+										class="optimal-r1"> {{ round($calculation_values['AvgExhGasCp'],3) }} </td>
 								</tr>
 								<tr>
 									<td
@@ -613,7 +613,7 @@
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="optimal-r1"> %</td>
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ round($calculation_values['LOAD'],1) }} </td>
+										class="optimal-r1"> {{ $calculation_values['PERCENT'] }} </td>
 								</tr>
 								<tr>
 									<td

@@ -309,7 +309,7 @@
 										
 										<td> {{ $language_datas['exhaust_gas_sp_heat_capacity'] }}</td>
 										<td class="optimal-r1"> {{ $units_data[$unit_set->HeatCapacityUnit] }}</td>
-										<td class="optimal-r1"> {{ round($calculation_values['AvgExhGasCp'],1) }}</td>
+										<td class="optimal-r1"> {{ round($calculation_values['AvgExhGasCp'],3) }}</td>
 									</tr>
 									<tr>
 										
@@ -321,7 +321,7 @@
 										
 										<td> {{ $language_datas['percentage_engine_load_considered'] }}</td>
 										<td class="optimal-r1"> %</td>
-										<td class="optimal-r1"> {{ round($calculation_values['LOAD'],1) }}</td>
+										<td class="optimal-r1"> {{ $calculation_values['PERCENT'] }}</td>
 									</tr>
 									<tr>
 										

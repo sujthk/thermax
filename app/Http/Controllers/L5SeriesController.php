@@ -1570,6 +1570,7 @@ class L5SeriesController extends Controller
 
         }
 
+        
         switch ($model_number) {
             case 185:
                 if ($this->calculation_values['TCHW2L'] < 3.5)
@@ -1655,7 +1656,17 @@ class L5SeriesController extends Controller
                 {
                     $this->model_values['model_name'] = "TAC L5 E6";
                 }
-                break;     
+                break;
+            case 450:
+                if ($this->calculation_values['TCHW2L'] < 3.5)
+                {
+                    $this->model_values['model_name'] = "TZC L5 F1";
+                }
+                else
+                {
+                    $this->model_values['model_name'] = "TAC L5 F1";
+                }
+                break;          
             case 485:
                 if ($this->calculation_values['TCHW2L'] < 3.5)
                 {
@@ -1779,7 +1790,8 @@ class L5SeriesController extends Controller
             default:
                 # code...
                 break;    
-        }    
+        }  
+         
     }
 
     public function WATERPROP(){
