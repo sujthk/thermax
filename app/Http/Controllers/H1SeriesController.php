@@ -420,6 +420,7 @@ class H1SeriesController extends Controller
         $capacity = $this->model_values['capacity'];
 
         $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
+        Log::info($GCWMIN1);
 
         $this->updateInputs();
 
@@ -566,7 +567,7 @@ class H1SeriesController extends Controller
         $TCHW12 = $chilled_water_out;
         $TON = $capacity;
 
-        if ($model_number < 600.0)
+        if ($model_number < 750)
         {
             if ($TCHW12 < 6.699 && $TCHW12 > 4.99)
                 $KM1 = 1.8824 - 0.1765 * $TCHW12;
@@ -621,6 +622,8 @@ class H1SeriesController extends Controller
             }
             $GCWMIN1 = $TON * $KM1;
         }
+
+        return $GCWMIN1;
     }
 
     public function updateInputs(){

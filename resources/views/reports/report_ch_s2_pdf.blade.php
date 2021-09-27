@@ -362,7 +362,7 @@
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="font-class">{{ $language_datas['hot_water_flow'] }}(+/- 3%)</td>
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
-										class="optimal-r1"> {{ $units_data[$unit_set->PressureUnit] }}</td>
+										class="optimal-r1"> {{ $units_data[$unit_set->FlowRateUnit] }}</td>
 									<td style="font-family:Arial, Helvetica, sans-serif; font-size: 14px;"
 										class="optimal-r1"> {{ round($calculation_values['HotWaterFlow'],1) }}</td>
 								</tr>

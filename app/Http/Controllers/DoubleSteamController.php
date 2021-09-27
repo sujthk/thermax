@@ -3391,6 +3391,7 @@ class DoubleSteamController extends Controller
 	    $capacity = $this->model_values['capacity'];
 
 	    $GCWMIN1 = $this->RANGECAL1($model_number,$chilled_water_out,$capacity);
+        Log::info($GCWMIN1);
 	   
         $this->updateInputs();
       

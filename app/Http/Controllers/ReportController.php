@@ -1050,7 +1050,7 @@ class ReportController extends Controller
 
         $my_template->setValue('hot_water_out_temp', $language_datas['hot_water_out_temp']);
         $my_template->setValue('hot_water_out_temp_unit', $units_data[$unit_set->TemperatureUnit]);
-        $my_template->setValue('hot_water_out_temp_value', ceil($calculation_values['THW2']));
+        $my_template->setValue('hot_water_out_temp_value', round($calculation_values['THW2'],1));
 
         $my_template->setValue('generator_passes', $language_datas['generator_passes']);
         $my_template->setValue('generator_passes_value', round($calculation_values['TGP'],1));

@@ -1415,6 +1415,8 @@ class ChillerHeaterS2Controller extends Controller
             }
             $GCWMIN1 = $TON * $KM1;
         }
+
+        return $GCWMIN1;
     }
 
     public function updateInputs()

@@ -163,6 +163,17 @@ class UnitConversionController extends Controller
         }
 
 
+        // Heat Unit
+        if($calculator_code == "CH_G2" || $calculator_code == "CH_S2"){
+
+            $chiller_values['heat_duty'] = $this->convertHeatUnit($chiller_values['heat_duty'],"kCPerHour",$unit_set->HeatUnit);
+            $chiller_values['heat_duty_min'] = $this->convertHeatUnit($chiller_values['heat_duty_min'],"kCPerHour",$unit_set->HeatUnit);
+            $chiller_values['heat_duty_max'] = $this->convertHeatUnit($chiller_values['heat_duty_max'],"kCPerHour",$unit_set->HeatUnit);
+            $chiller_values['USA_heat_duty'] = $this->convertHeatUnit($chiller_values['USA_heat_duty'],"kCPerHour",$unit_set->HeatUnit);
+            $chiller_values['USA_heat_duty_min'] = $this->convertHeatUnit($chiller_values['USA_heat_duty_min'],"kCPerHour",$unit_set->HeatUnit);
+            $chiller_values['USA_heat_duty_max'] = $this->convertHeatUnit($chiller_values['USA_heat_duty_max'],"kCPerHour",$unit_set->HeatUnit);
+        }
+
 
     	return $chiller_values;
 
@@ -305,6 +316,17 @@ class UnitConversionController extends Controller
         if($calculator_code == "D_E2"){
             $chiller_values['gas_flow'] = $this->convertExhaustGasFlowUnit($chiller_values['gas_flow'],$unit_set->ExhaustGasFlowUnit,"KilogramsPerHr");
             $chiller_values['gas_flow_load'] = $this->convertExhaustGasFlowUnit($chiller_values['gas_flow_load'],$unit_set->ExhaustGasFlowUnit,"KilogramsPerHr");
+        }
+
+        // Heat Unit
+        if($calculator_code == "CH_G2" || $calculator_code == "CH_S2"){
+
+            $chiller_values['heat_duty'] = $this->convertHeatUnit($chiller_values['heat_duty'],$unit_set->HeatUnit,"kCPerHour");
+            $chiller_values['heat_duty_min'] = $this->convertHeatUnit($chiller_values['heat_duty_min'],$unit_set->HeatUnit,"kCPerHour");
+            $chiller_values['heat_duty_max'] = $this->convertHeatUnit($chiller_values['heat_duty_max'],$unit_set->HeatUnit,"kCPerHour");
+            $chiller_values['USA_heat_duty'] = $this->convertHeatUnit($chiller_values['USA_heat_duty'],$unit_set->HeatUnit,"kCPerHour");
+            $chiller_values['USA_heat_duty_min'] = $this->convertHeatUnit($chiller_values['USA_heat_duty_min'],$unit_set->HeatUnit,"kCPerHour");
+            $chiller_values['USA_heat_duty_max'] = $this->convertHeatUnit($chiller_values['USA_heat_duty_max'],$unit_set->HeatUnit,"kCPerHour");
         }
         
 
@@ -461,6 +483,8 @@ class UnitConversionController extends Controller
         if(isset($calculated_values['HeatInput'])){
             $calculated_values['HeatInput'] = $this->convertHeatUnit($calculated_values['HeatInput'],"kCPerHour",$unit_set->HeatUnit);
         }
+
+
         
 
         // CalorificValueGasUnit
